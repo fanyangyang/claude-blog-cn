@@ -30,32 +30,49 @@ function fetch(url) {
 function extractArticles(html) {
   const $ = cheerio.load(html);
   const articles = [];
+  const seen = new Set();
 
-  // Each blog card is a w-dyn-item
+  // Get ALL unique blog links from the page (main grid + sidebar + recommended)
+  const allSlugs = new Set();
+  $('a[href^="/blog/"]').each((i, el) => {
+    const href = $(el).attr('href');
+    if (href) {
+      const slug = href.replace('/blog/', '').replace(/\/.*$/, '');
+      if (slug && !slug.includes('#') && !slug.includes('?')) allSlugs.add(slug);
+    }
+  });
+
+  // Build a map: slug -> { title, date, category } from w-dyn-item cards (which have rich metadata)
+  const cardMeta = {};
   $('.w-dyn-item').each((i, el) => {
     const $el = $(el);
-
-    // Title from fs-list-field="heading"
     const title = $el.find('[fs-list-field="heading"]').first().text().trim();
-    // Date from fs-list-field="date"
     const date = $el.find('[fs-list-field="date"]').first().text().trim();
-    // Category from fs-list-field="category"
-    let category = $el.find('[fs-list-field="category"]').first().text().trim();
-    if (!category) category = 'General';
-    // Slug from href
+    const category = $el.find('[fs-list-field="category"]').first().text().trim() || 'General';
     const href = $el.find('a[href^="/blog/"]').first().attr('href') || '';
     const slug = href.replace('/blog/', '');
-
     if (slug && title) {
-      articles.push({
-        slug,
+      cardMeta[slug] = {
         title: title.replace(/&amp;/g, '&').replace(/&#x27;/g, "'").replace(/&#x2019;/g, "'"),
         date,
         category,
-        url: `https://claude.com/blog/${slug}`,
-      });
+      };
     }
   });
+
+  // Merge: all slugs get metadata from cards if available
+  for (const slug of allSlugs) {
+    if (seen.has(slug)) continue;
+    seen.add(slug);
+    const meta = cardMeta[slug] || {};
+    articles.push({
+      slug,
+      title: meta.title || slug,
+      date: meta.date || '',
+      category: meta.category || 'General',
+      url: `https://claude.com/blog/${slug}`,
+    });
+  }
 
   return articles;
 }
