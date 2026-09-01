@@ -6,7 +6,7 @@
     <description>Anthropic Claude 官方博客的中文翻译</description>
     <atom:link href="https://claude-blog-cn.vercel.app/rss.xml" rel="self" type="application/rss+xml"/>
     <language>zh-CN</language>
-    <lastBuildDate>Tue, 01 Sep 2026 11:20:03 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 01 Sep 2026 22:58:55 GMT</lastBuildDate>
     <item>
       <title>Anthropic 员工如何使用 Claude Tag</title>
       <link>https://claude-blog-cn.vercel.app/posts/how-anthropic-employees-use-claude-tag/</link>
@@ -111,6 +111,62 @@
       <guid>https://claude-blog-cn.vercel.app/posts/turning-conversation-into-knowledge-how-slack-builds-human-agent-teams/</guid>
       <pubDate>Tue, 18 Aug 2026 16:00:00 GMT</pubDate>
       <category>Enterprise AI</category>
+    </item>
+    <item>
+      <title>Claude Code 现已支持 Artifacts</title>
+      <link>https://claude-blog-cn.vercel.app/posts/artifacts-in-claude-code/</link>
+      <guid>https://claude-blog-cn.vercel.app/posts/artifacts-in-claude-code/</guid>
+      <pubDate>Invalid Date</pubDate>
+      <category>Product announcements</category>
+    </item>
+    <item>
+      <title>Claude 支持苹果 Foundation Models 框架</title>
+      <link>https://claude-blog-cn.vercel.app/posts/claude-for-foundation-models/</link>
+      <guid>https://claude-blog-cn.vercel.app/posts/claude-for-foundation-models/</guid>
+      <pubDate>Invalid Date</pubDate>
+      <category>Product announcements</category>
+    </item>
+    <item>
+      <title>Claude 托管代理新功能：自托管沙箱和 MCP 隧道</title>
+      <link>https://claude-blog-cn.vercel.app/posts/claude-managed-agents-updates/</link>
+      <guid>https://claude-blog-cn.vercel.app/posts/claude-managed-agents-updates/</guid>
+      <pubDate>Invalid Date</pubDate>
+      <category>Product announcements</category>
+    </item>
+    <item>
+      <title>Claude 托管代理新功能：梦境、成果和多代理编排</title>
+      <link>https://claude-blog-cn.vercel.app/posts/new-in-claude-managed-agents/</link>
+      <guid>https://claude-blog-cn.vercel.app/posts/new-in-claude-managed-agents/</guid>
+      <pubDate>Invalid Date</pubDate>
+      <category>Product announcements</category>
+    </item>
+    <item>
+      <title>Claude 新增日常连接器</title>
+      <link>https://claude-blog-cn.vercel.app/posts/connectors-for-everyday-life/</link>
+      <guid>https://claude-blog-cn.vercel.app/posts/connectors-for-everyday-life/</guid>
+      <pubDate>Invalid Date</pubDate>
+      <category>Product announcements</category>
+    </item>
+    <item>
+      <title>Claude 托管代理记忆功能：跨会话学习</title>
+      <link>https://claude-blog-cn.vercel.app/posts/claude-managed-agents-memory/</link>
+      <guid>https://claude-blog-cn.vercel.app/posts/claude-managed-agents-memory/</guid>
+      <pubDate>Invalid Date</pubDate>
+      <category>Product announcements</category>
+    </item>
+    <item>
+      <title>桌面版 Claude Code 重新设计：支持并行代理</title>
+      <link>https://claude-blog-cn.vercel.app/posts/claude-code-desktop-redesign/</link>
+      <guid>https://claude-blog-cn.vercel.app/posts/claude-code-desktop-redesign/</guid>
+      <pubDate>Invalid Date</pubDate>
+      <category>Claude Code</category>
+    </item>
+    <item>
+      <title>为 AI 加速的攻击做好安全准备</title>
+      <link>https://claude-blog-cn.vercel.app/posts/preparing-your-security-program-for-ai-accelerated-offense/</link>
+      <guid>https://claude-blog-cn.vercel.app/posts/preparing-your-security-program-for-ai-accelerated-offense/</guid>
+      <pubDate>Invalid Date</pubDate>
+      <category>Agents</category>
     </item>
   </channel>
 </rss>

@@ -179,7 +179,103 @@
       "translatedTitle": "将对话转化为知识：Slack 如何构建人机协作团队",
       "translatedAt": "2026-09-01T11:19:56.930Z",
       "translateLang": "zh"
+    },
+    {
+      "slug": "artifacts-in-claude-code",
+      "title": "Claude Code now supports artifacts",
+      "date": "Unknown",
+      "category": "Product announcements",
+      "url": "https://claude.com/blog/artifacts-in-claude-code",
+      "fetchedAt": "2026-09-01T22:57:53.189Z",
+      "translated": true,
+      "translatedTitle": "Claude Code 现已支持 Artifacts",
+      "translatedAt": "2026-09-01T22:58:46.951Z",
+      "translateLang": "zh"
+    },
+    {
+      "slug": "claude-for-foundation-models",
+      "title": "Claude support for Apple's Foundation Models framework",
+      "date": "Unknown",
+      "category": "Product announcements",
+      "url": "https://claude.com/blog/claude-for-foundation-models",
+      "fetchedAt": "2026-09-01T22:57:55.171Z",
+      "translated": true,
+      "translatedTitle": "Claude 支持苹果 Foundation Models 框架",
+      "translatedAt": "2026-09-01T22:58:46.955Z",
+      "translateLang": "zh"
+    },
+    {
+      "slug": "claude-managed-agents-updates",
+      "title": "New in Claude Managed Agents: self-hosted sandboxes and MCP tunnels",
+      "date": "Unknown",
+      "category": "Product announcements",
+      "url": "https://claude.com/blog/claude-managed-agents-updates",
+      "fetchedAt": "2026-09-01T22:57:57.119Z",
+      "translated": true,
+      "translatedTitle": "Claude 托管代理新功能：自托管沙箱和 MCP 隧道",
+      "translatedAt": "2026-09-01T22:58:46.955Z",
+      "translateLang": "zh"
+    },
+    {
+      "slug": "new-in-claude-managed-agents",
+      "title": "New in Claude Managed Agents: dreaming, outcomes, and multiagent orchestration",
+      "date": "Unknown",
+      "category": "Product announcements",
+      "url": "https://claude.com/blog/new-in-claude-managed-agents",
+      "fetchedAt": "2026-09-01T22:57:59.069Z",
+      "translated": true,
+      "translatedTitle": "Claude 托管代理新功能：梦境、成果和多代理编排",
+      "translatedAt": "2026-09-01T22:58:46.955Z",
+      "translateLang": "zh"
+    },
+    {
+      "slug": "connectors-for-everyday-life",
+      "title": "New connectors in Claude for everyday life",
+      "date": "Unknown",
+      "category": "Product announcements",
+      "url": "https://claude.com/blog/connectors-for-everyday-life",
+      "fetchedAt": "2026-09-01T22:58:00.999Z",
+      "translated": true,
+      "translatedTitle": "Claude 新增日常连接器",
+      "translatedAt": "2026-09-01T22:58:46.955Z",
+      "translateLang": "zh"
+    },
+    {
+      "slug": "claude-managed-agents-memory",
+      "title": "Memory for Claude Managed Agents: agents that learn across sessions",
+      "date": "Unknown",
+      "category": "Product announcements",
+      "url": "https://claude.com/blog/claude-managed-agents-memory",
+      "fetchedAt": "2026-09-01T22:58:02.943Z",
+      "translated": true,
+      "translatedTitle": "Claude 托管代理记忆功能：跨会话学习",
+      "translatedAt": "2026-09-01T22:58:46.956Z",
+      "translateLang": "zh"
+    },
+    {
+      "slug": "claude-code-desktop-redesign",
+      "title": "Redesigning Claude Code on desktop for parallel agents",
+      "date": "Unknown",
+      "category": "Claude Code",
+      "url": "https://claude.com/blog/claude-code-desktop-redesign",
+      "fetchedAt": "2026-09-01T22:58:04.866Z",
+      "translated": true,
+      "translatedTitle": "桌面版 Claude Code 重新设计：支持并行代理",
+      "translatedAt": "2026-09-01T22:58:46.956Z",
+      "translateLang": "zh"
+    },
+    {
+      "slug": "preparing-your-security-program-for-ai-accelerated-offense",
+      "title": "Preparing your security program for AI-accelerated offense",
+      "date": "Unknown",
+      "category": "Agents",
+      "url": "https://claude.com/blog/preparing-your-security-program-for-ai-accelerated-offense",
+      "fetchedAt": "2026-09-01T22:58:06.803Z",
+      "translated": true,
+      "translatedTitle": "为 AI 加速的攻击做好安全准备",
+      "translatedAt": "2026-09-01T22:58:46.956Z",
+      "translateLang": "zh"
     }
   ],
-  "lastFetched": "2026-09-01T11:10:43.930Z"
+  "lastFetched": "2026-09-01T22:58:08.304Z"
 }
