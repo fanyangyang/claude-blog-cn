@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Claude Blog 中文翻译</title>
+    <link>https://claude-blog-cn.vercel.app</link>
+    <description>Anthropic Claude 官方博客的中文翻译</description>
+    <atom:link href="https://claude-blog-cn.vercel.app/rss.xml" rel="self" type="application/rss+xml"/>
+    <language>zh-CN</language>
+    <lastBuildDate>Tue, 01 Sep 2026 11:15:18 GMT</lastBuildDate>
+    <item>
+      <title>How Anthropic employees use Claude Tag</title>
+      <link>https://claude-blog-cn.vercel.app/posts/how-anthropic-employees-use-claude-tag/en.html</link>
+      <guid>https://claude-blog-cn.vercel.app/posts/how-anthropic-employees-use-claude-tag/en.html</guid>
+      <pubDate>Thu, 27 Aug 2026 16:00:00 GMT</pubDate>
+      <category>Enterprise AI</category>
+    </item>
+    <item>
+      <title>Claude for Teachers 现已面向美国 K-12 学校和学区开放</title>
+      <link>https://claude-blog-cn.vercel.app/posts/claude-for-teachers-now-available-for-schools-and-districts/</link>
+      <guid>https://claude-blog-cn.vercel.app/posts/claude-for-teachers-now-available-for-schools-and-districts/</guid>
+      <pubDate>Thu, 27 Aug 2026 16:00:00 GMT</pubDate>
+      <category>Product announcements</category>
+    </item>
+    <item>
+      <title>How Warp builds self-improving agents on Claude</title>
+      <link>https://claude-blog-cn.vercel.app/posts/how-warp-builds-self-improving-agents-on-claude/en.html</link>
+      <guid>https://claude-blog-cn.vercel.app/posts/how-warp-builds-self-improving-agents-on-claude/en.html</guid>
+      <pubDate>Tue, 25 Aug 2026 16:00:00 GMT</pubDate>
+      <category>Agents</category>
+    </item>
+    <item>
+      <title>Claude in Chrome is generally available</title>
+      <link>https://claude-blog-cn.vercel.app/posts/claude-in-chrome-generally-available/en.html</link>
+      <guid>https://claude-blog-cn.vercel.app/posts/claude-in-chrome-generally-available/en.html</guid>
+      <pubDate>Tue, 25 Aug 2026 16:00:00 GMT</pubDate>
+      <category>Product announcements</category>
+    </item>
+    <item>
+      <title>Claude Cowork 内置浏览器：无需安装</title>
+      <link>https://claude-blog-cn.vercel.app/posts/cowork-built-in-browser/</link>
+      <guid>https://claude-blog-cn.vercel.app/posts/cowork-built-in-browser/</guid>
+      <pubDate>Tue, 25 Aug 2026 16:00:00 GMT</pubDate>
+      <category>Product announcements</category>
+    </item>
+    <item>
+      <title>Bain &amp; Company 加入 Claude Partner Network，成为全球首要合作伙伴</title>
+      <link>https://claude-blog-cn.vercel.app/posts/bain-company-joins-the-claude-partner-network-as-a-global-premier-partner/</link>
+      <guid>https://claude-blog-cn.vercel.app/posts/bain-company-joins-the-claude-partner-network-as-a-global-premier-partner/</guid>
+      <pubDate>Mon, 24 Aug 2026 16:00:00 GMT</pubDate>
+      <category>Enterprise AI</category>
+    </item>
+    <item>
+      <title>Claude 的记忆功能全面可用，内容由你决定</title>
+      <link>https://claude-blog-cn.vercel.app/posts/claudes-memory-works-everywhere-and-you-decide-whats-in-it/</link>
+      <guid>https://claude-blog-cn.vercel.app/posts/claudes-memory-works-everywhere-and-you-decide-whats-in-it/</guid>
+      <pubDate>Mon, 24 Aug 2026 16:00:00 GMT</pubDate>
+      <category>Product announcements</category>
+    </item>
+    <item>
+      <title>How an Anthropic field marketer uses Claude Code to send weekly personalized updates to every sales rep</title>
+      <link>https://claude-blog-cn.vercel.app/posts/how-an-anthropic-field-marketer-uses-claude-code-to-send-weekly-personalized-updates-to-every-sales-rep/en.html</link>
+      <guid>https://claude-blog-cn.vercel.app/posts/how-an-anthropic-field-marketer-uses-claude-code-to-send-weekly-personalized-updates-to-every-sales-rep/en.html</guid>
+      <pubDate>Sun, 23 Aug 2026 16:00:00 GMT</pubDate>
+      <category>Enterprise AI</category>
+    </item>
+    <item>
+      <title>Bringing the cybersecurity capabilities of Claude Mythos 5 to more defenders</title>
+      <link>https://claude-blog-cn.vercel.app/posts/bringing-claude-mythos-5-to-more-defenders/en.html</link>
+      <guid>https://claude-blog-cn.vercel.app/posts/bringing-claude-mythos-5-to-more-defenders/en.html</guid>
+      <pubDate>Thu, 20 Aug 2026 16:00:00 GMT</pubDate>
+      <category>Product announcements</category>
+    </item>
+    <item>
+      <title>The AI-Native SDLC playbook</title>
+      <link>https://claude-blog-cn.vercel.app/posts/the-ai-native-sdlc-playbook/en.html</link>
+      <guid>https://claude-blog-cn.vercel.app/posts/the-ai-native-sdlc-playbook/en.html</guid>
+      <pubDate>Thu, 20 Aug 2026 16:00:00 GMT</pubDate>
+      <category>Enterprise AI</category>
+    </item>
+    <item>
+      <title>Anthropic’s approach to teaching and learning AI</title>
+      <link>https://claude-blog-cn.vercel.app/posts/anthropics-approach-to-teaching-and-learning-ai/en.html</link>
+      <guid>https://claude-blog-cn.vercel.app/posts/anthropics-approach-to-teaching-and-learning-ai/en.html</guid>
+      <pubDate>Wed, 19 Aug 2026 16:00:00 GMT</pubDate>
+      <category>Enterprise AI</category>
+    </item>
+    <item>
+      <title>How monday.com transformed its platform into an agent-first product where humans and agents collaborate</title>
+      <link>https://claude-blog-cn.vercel.app/posts/how-monday-com-transformed-its-platform-into-an-agent-first-product-where-humans-and-agents-collaborate/en.html</link>
+      <guid>https://claude-blog-cn.vercel.app/posts/how-monday-com-transformed-its-platform-into-an-agent-first-product-where-humans-and-agents-collaborate/en.html</guid>
+      <pubDate>Wed, 19 Aug 2026 16:00:00 GMT</pubDate>
+      <category>Agents</category>
+    </item>
+    <item>
+      <title>The Claude Code Guide For Startups</title>
+      <link>https://claude-blog-cn.vercel.app/posts/claude-code-guide-for-startups/en.html</link>
+      <guid>https://claude-blog-cn.vercel.app/posts/claude-code-guide-for-startups/en.html</guid>
+      <pubDate>Wed, 19 Aug 2026 16:00:00 GMT</pubDate>
+      <category>Enterprise AI</category>
+    </item>
+    <item>
+      <title>Computer Use、Skills API 和 Files API 现已全面可用</title>
+      <link>https://claude-blog-cn.vercel.app/posts/computer-use-skills-api-files-api/</link>
+      <guid>https://claude-blog-cn.vercel.app/posts/computer-use-skills-api-files-api/</guid>
+      <pubDate>Wed, 19 Aug 2026 16:00:00 GMT</pubDate>
+      <category>Enterprise AI</category>
+    </item>
+    <item>
+      <title>Turning conversation into knowledge: how Slack builds human-agent teams</title>
+      <link>https://claude-blog-cn.vercel.app/posts/turning-conversation-into-knowledge-how-slack-builds-human-agent-teams/en.html</link>
+      <guid>https://claude-blog-cn.vercel.app/posts/turning-conversation-into-knowledge-how-slack-builds-human-agent-teams/en.html</guid>
+      <pubDate>Tue, 18 Aug 2026 16:00:00 GMT</pubDate>
+      <category>Enterprise AI</category>
+    </item>
+  </channel>
+</rss>

@@ -1,0 +1,155 @@
+{
+  "articles": [
+    {
+      "slug": "how-anthropic-employees-use-claude-tag",
+      "title": "How Anthropic employees use Claude Tag",
+      "date": "August 28, 2026",
+      "category": "Enterprise AI",
+      "url": "https://claude.com/blog/how-anthropic-employees-use-claude-tag",
+      "fetchedAt": "2026-09-01T11:10:15.077Z",
+      "translated": false
+    },
+    {
+      "slug": "claude-for-teachers-now-available-for-schools-and-districts",
+      "title": "Claude for Teachers, now available for U.S. K-12 schools and districts",
+      "date": "August 28, 2026",
+      "category": "Product announcements",
+      "url": "https://claude.com/blog/claude-for-teachers-now-available-for-schools-and-districts",
+      "fetchedAt": "2026-09-01T11:10:17.013Z",
+      "translated": true,
+      "translatedTitle": "Claude for Teachers 现已面向美国 K-12 学校和学区开放",
+      "translatedAt": "2026-09-01T11:14:09.463Z",
+      "translateLang": "zh"
+    },
+    {
+      "slug": "how-warp-builds-self-improving-agents-on-claude",
+      "title": "How Warp builds self-improving agents on Claude",
+      "date": "August 26, 2026",
+      "category": "Agents",
+      "url": "https://claude.com/blog/how-warp-builds-self-improving-agents-on-claude",
+      "fetchedAt": "2026-09-01T11:10:18.987Z",
+      "translated": false
+    },
+    {
+      "slug": "claude-in-chrome-generally-available",
+      "title": "Claude in Chrome is generally available",
+      "date": "August 26, 2026",
+      "category": "Product announcements",
+      "url": "https://claude.com/blog/claude-in-chrome-generally-available",
+      "fetchedAt": "2026-09-01T11:10:20.934Z",
+      "translated": false
+    },
+    {
+      "slug": "cowork-built-in-browser",
+      "title": "Claude Cowork gets a built-in browser: nothing to install",
+      "date": "August 26, 2026",
+      "category": "Product announcements",
+      "url": "https://claude.com/blog/cowork-built-in-browser",
+      "fetchedAt": "2026-09-01T11:10:22.881Z",
+      "translated": true,
+      "translatedTitle": "Claude Cowork 内置浏览器：无需安装",
+      "translatedAt": "2026-09-01T11:12:27.765Z",
+      "translateLang": "zh"
+    },
+    {
+      "slug": "bain-company-joins-the-claude-partner-network-as-a-global-premier-partner",
+      "title": "Bain & Company joins the Claude Partner Network as a Global Premier partner",
+      "date": "August 25, 2026",
+      "category": "Enterprise AI",
+      "url": "https://claude.com/blog/bain-company-joins-the-claude-partner-network-as-a-global-premier-partner",
+      "fetchedAt": "2026-09-01T11:10:24.841Z",
+      "translated": true,
+      "translatedTitle": "Bain & Company 加入 Claude Partner Network，成为全球首要合作伙伴",
+      "translatedAt": "2026-09-01T11:14:09.468Z",
+      "translateLang": "zh"
+    },
+    {
+      "slug": "claudes-memory-works-everywhere-and-you-decide-whats-in-it",
+      "title": "Claude's memory works everywhere, and you decide what's in it",
+      "date": "August 25, 2026",
+      "category": "Product announcements",
+      "url": "https://claude.com/blog/claudes-memory-works-everywhere-and-you-decide-whats-in-it",
+      "fetchedAt": "2026-09-01T11:10:26.750Z",
+      "translated": true,
+      "translatedTitle": "Claude 的记忆功能全面可用，内容由你决定",
+      "translatedAt": "2026-09-01T11:14:09.468Z",
+      "translateLang": "zh"
+    },
+    {
+      "slug": "how-an-anthropic-field-marketer-uses-claude-code-to-send-weekly-personalized-updates-to-every-sales-rep",
+      "title": "How an Anthropic field marketer uses Claude Code to send weekly personalized updates to every sales rep",
+      "date": "August 24, 2026",
+      "category": "Enterprise AI",
+      "url": "https://claude.com/blog/how-an-anthropic-field-marketer-uses-claude-code-to-send-weekly-personalized-updates-to-every-sales-rep",
+      "fetchedAt": "2026-09-01T11:10:28.738Z",
+      "translated": false
+    },
+    {
+      "slug": "bringing-claude-mythos-5-to-more-defenders",
+      "title": "Bringing the cybersecurity capabilities of Claude Mythos 5 to more defenders",
+      "date": "August 21, 2026",
+      "category": "Product announcements",
+      "url": "https://claude.com/blog/bringing-claude-mythos-5-to-more-defenders",
+      "fetchedAt": "2026-09-01T11:10:30.681Z",
+      "translated": false
+    },
+    {
+      "slug": "the-ai-native-sdlc-playbook",
+      "title": "The AI-Native SDLC playbook",
+      "date": "August 21, 2026",
+      "category": "Enterprise AI",
+      "url": "https://claude.com/blog/the-ai-native-sdlc-playbook",
+      "fetchedAt": "2026-09-01T11:10:32.672Z",
+      "translated": false
+    },
+    {
+      "slug": "anthropics-approach-to-teaching-and-learning-ai",
+      "title": "Anthropic’s approach to teaching and learning AI",
+      "date": "August 20, 2026",
+      "category": "Enterprise AI",
+      "url": "https://claude.com/blog/anthropics-approach-to-teaching-and-learning-ai",
+      "fetchedAt": "2026-09-01T11:10:34.611Z",
+      "translated": false
+    },
+    {
+      "slug": "how-monday-com-transformed-its-platform-into-an-agent-first-product-where-humans-and-agents-collaborate",
+      "title": "How monday.com transformed its platform into an agent-first product where humans and agents collaborate",
+      "date": "August 20, 2026",
+      "category": "Agents",
+      "url": "https://claude.com/blog/how-monday-com-transformed-its-platform-into-an-agent-first-product-where-humans-and-agents-collaborate",
+      "fetchedAt": "2026-09-01T11:10:36.575Z",
+      "translated": false
+    },
+    {
+      "slug": "claude-code-guide-for-startups",
+      "title": "The Claude Code Guide For Startups",
+      "date": "August 20, 2026",
+      "category": "Enterprise AI",
+      "url": "https://claude.com/blog/claude-code-guide-for-startups",
+      "fetchedAt": "2026-09-01T11:10:38.536Z",
+      "translated": false
+    },
+    {
+      "slug": "computer-use-skills-api-files-api",
+      "title": "Build production agents with computer use, the Skills API, and the Files API",
+      "date": "August 20, 2026",
+      "category": "Enterprise AI",
+      "url": "https://claude.com/blog/computer-use-skills-api-files-api",
+      "fetchedAt": "2026-09-01T11:10:40.489Z",
+      "translated": true,
+      "translatedTitle": "Computer Use、Skills API 和 Files API 现已全面可用",
+      "translatedAt": "2026-09-01T11:14:09.468Z",
+      "translateLang": "zh"
+    },
+    {
+      "slug": "turning-conversation-into-knowledge-how-slack-builds-human-agent-teams",
+      "title": "Turning conversation into knowledge: how Slack builds human-agent teams",
+      "date": "August 19, 2026",
+      "category": "Enterprise AI",
+      "url": "https://claude.com/blog/turning-conversation-into-knowledge-how-slack-builds-human-agent-teams",
+      "fetchedAt": "2026-09-01T11:10:42.427Z",
+      "translated": false
+    }
+  ],
+  "lastFetched": "2026-09-01T11:10:43.930Z"
+}

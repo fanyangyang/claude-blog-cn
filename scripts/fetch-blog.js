@@ -2,7 +2,7 @@ const https = require('https');
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
-const { JSDOM } = require('jsdom');
+const cheerio = require('cheerio');
 
 const BASE_URL = 'https://claude.com/blog';
 const CONTENT_DIR = path.join(__dirname, '..', 'content', 'en');
@@ -11,9 +11,7 @@ const META_FILE = path.join(__dirname, '..', 'content', 'index.json');
 // Track which articles we've already fetched
 let meta = { articles: [], lastFetched: null };
 if (fs.existsSync(META_FILE)) {
-  try {
-    meta = JSON.parse(fs.readFileSync(META_FILE, 'utf-8'));
-  } catch (e) { /* ignore */ }
+  try { meta = JSON.parse(fs.readFileSync(META_FILE, 'utf-8')); } catch (e) {}
 }
 
 const knownSlugs = new Set(meta.articles.map(a => a.slug));
@@ -30,64 +28,76 @@ function fetch(url) {
 }
 
 function extractArticles(html) {
-  // Extract article cards from the blog listing page
+  const $ = cheerio.load(html);
   const articles = [];
-  // Match heading, date, category, and href from the HTML
-  const headingRegex = /fs-list-field="heading">([^<]+)</g;
-  const dateRegex = /fs-list-field="date">([^<]+)</g;
-  const categoryRegex = /fs-list-field="category"[^>]*>([^<]+)</g;
-  const hrefRegex = /href="\/blog\/([^"]+)"/g;
 
-  const headings = [...html.matchAll(headingRegex)].map(m => m[1].trim());
-  const dates = [...html.matchAll(dateRegex)].map(m => m[1].trim());
-  const categories = [...html.matchAll(categoryRegex)].map(m => m[1].trim());
-  const slugs = [...html.matchAll(hrefRegex)].map(m => m[1]);
+  // Each blog card is a w-dyn-item
+  $('.w-dyn-item').each((i, el) => {
+    const $el = $(el);
 
-  // Deduplicate slugs (blog page has multiple refs per article)
-  const uniqueSlugs = [...new Set(slugs)];
+    // Title from fs-list-field="heading"
+    const title = $el.find('[fs-list-field="heading"]').first().text().trim();
+    // Date from fs-list-field="date"
+    const date = $el.find('[fs-list-field="date"]').first().text().trim();
+    // Category from fs-list-field="category"
+    let category = $el.find('[fs-list-field="category"]').first().text().trim();
+    if (!category) category = 'General';
+    // Slug from href
+    const href = $el.find('a[href^="/blog/"]').first().attr('href') || '';
+    const slug = href.replace('/blog/', '');
 
-  const count = Math.min(headings.length, dates.length, uniqueSlugs.length);
-  for (let i = 0; i < count; i++) {
-    articles.push({
-      slug: uniqueSlugs[i],
-      title: headings[i].replace(/&amp;/g, '&').replace(/&#x27;/g, "'"),
-      date: dates[i],
-      category: categories[i] || 'General',
-      url: `https://claude.com/blog/${uniqueSlugs[i]}`,
-    });
-  }
+    if (slug && title) {
+      articles.push({
+        slug,
+        title: title.replace(/&amp;/g, '&').replace(/&#x27;/g, "'").replace(/&#x2019;/g, "'"),
+        date,
+        category,
+        url: `https://claude.com/blog/${slug}`,
+      });
+    }
+  });
+
   return articles;
 }
 
 function extractArticleContent(html) {
-  // Extract the article body from the rich text content div
-  const bodyMatch = html.match(/<div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext">([\s\S]*?)<\/div>\s*<\/div>\s*<\/div>\s*<\/div>\s*<\/div>\s*<\/div>\s*<\/div>\s*<\/div>\s*<\/div>\s*<\/div>\s*<\/section>/);
-  if (bodyMatch) {
-    return bodyMatch[1];
+  const $ = cheerio.load(html);
+
+  // The main content div: data-readtime="content" with class w-richtext
+  // First try the exact match
+  const contentDiv = $('div[data-readtime="content"].w-richtext').first();
+  if (contentDiv.length && contentDiv.text().trim().length > 0) {
+    return $.html(contentDiv);
   }
-  // Fallback: try to get any w-richtext content
-  const fallbackMatch = html.match(/<div[^>]*class="[^"]*u-rich-text-blog[^"]*w-richtext[^"]*"[\s\S]*?<\/div>\s*<\/div>\s*<\/div>\s*<\/div>\s*<\/div>\s*<\/div>\s*<\/div>\s*<\/div>\s*<\/div>\s*<\/div>\s*<\/section>/);
-  if (fallbackMatch) {
-    // Extract the inner content
-    const inner = fallbackMatch[0].match(/<div[^>]*w-richtext[^>]*>([\s\S]*)<\/div>\s*<\/div>\s*<\/div>\s*<\/div>\s*<\/div>\s*<\/div>\s*<\/div>\s*<\/div>\s*<\/div>\s*<\/div>\s*<\/section>/);
-    if (inner) return inner[1];
+
+  // Fallback: try any w-richtext inside the blog post section
+  const blogSection = $('section.blog_post_section_wrap').first();
+  if (blogSection.length) {
+    const richtext = blogSection.find('.w-richtext.u-rich-text-blog').first();
+    if (richtext.length && richtext.text().trim().length > 100) {
+      return $.html(richtext);
+    }
   }
+
+  // Last resort: any w-richtext with substantial content (not nav/footer)
+  $('.w-richtext').each((i, el) => {
+    const $el = $(el);
+    const text = $el.text().trim();
+    // Skip if too short, or if it's in header/footer
+    if (text.length > 500 && !$el.closest('header').length && !$el.closest('footer').length) {
+      return $.html($el);
+    }
+  });
+
   return null;
 }
 
-function extractTitle(html) {
-  const m = html.match(/<title>([^<]+)<\/title>/);
-  return m ? m[1].replace(/ \| Claude by Anthropic$/, '').trim() : null;
-}
-
-function extractDate(html) {
-  const m = html.match(/fs-list-field="date"[^>]*>([^<]+)</);
-  return m ? m[1].trim() : null;
-}
-
-function extractCategory(html) {
-  const m = html.match(/fs-list-field="category"[^>]*>([^<]+)</);
-  return m ? m[1].trim() : null;
+function extractMeta(html) {
+  const $ = cheerio.load(html);
+  const title = $('title').text().replace(/ \| Claude by Anthropic$/, '').trim();
+  const date = $('[fs-list-field="date"]').first().text().trim() || null;
+  const category = $('[fs-list-field="category"]').first().text().trim() || 'General';
+  return { title, date, category };
 }
 
 async function main() {
@@ -123,23 +133,18 @@ async function main() {
     const content = extractArticleContent(articleHtml);
     if (content) {
       fs.writeFileSync(path.join(articleDir, 'content.html'), content, 'utf-8');
+      console.log(`  ✓ content saved (${content.length} bytes)`);
     } else {
       console.warn(`  ⚠ Could not extract content for ${article.slug}`);
     }
 
-    // Extract title from page
-    const pageTitle = extractTitle(articleHtml);
-    if (pageTitle) article.title = pageTitle;
+    // Extract meta from page
+    const pageMeta = extractMeta(articleHtml);
+    if (pageMeta.title) article.title = pageMeta.title;
+    if (pageMeta.date) article.date = pageMeta.date;
+    if (pageMeta.category) article.category = pageMeta.category;
 
-    // Extract date from page
-    const pageDate = extractDate(articleHtml);
-    if (pageDate) article.date = pageDate;
-
-    // Extract category from page
-    const pageCategory = extractCategory(articleHtml);
-    if (pageCategory) article.category = pageCategory;
-
-    // Save metadata
+    // Save article metadata
     const articleMeta = {
       slug: article.slug,
       title: article.title,
@@ -161,17 +166,19 @@ async function main() {
       newCount++;
     }
 
+    // Mark as known so we don't refetch in this run
+    knownSlugs.add(article.slug);
+
     // Be nice to the server
-    await new Promise(r => setTimeout(r, 1000));
+    await new Promise(r => setTimeout(r, 1500));
   }
 
-  // Sort articles by date descending
+  // Sort by date descending
   meta.articles.sort((a, b) => new Date(b.date) - new Date(a.date));
   meta.lastFetched = new Date().toISOString();
   fs.writeFileSync(META_FILE, JSON.stringify(meta, null, 2), 'utf-8');
 
   console.log(`\nDone! ${newCount} new, ${updatedCount} updated, ${meta.articles.length} total`);
-  console.log(`Articles saved to ${CONTENT_DIR}`);
 }
 
 main().catch(console.error);
