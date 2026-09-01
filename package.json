@@ -1,0 +1,16 @@
+{
+  "name": "claude-blog-cn",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "fetch": "node scripts/fetch-blog.js",
+    "build": "node scripts/build-site.js",
+    "deploy": "node scripts/build-site.js && cd .. && git add . && git commit -m 'auto sync' && git push",
+    "sync": "node scripts/fetch-blog.js && node scripts/build-site.js"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0",
+    "jsdom": "^29.1.1",
+    "turndown": "^7.2.0"
+  }
+}
