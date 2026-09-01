@@ -6,11 +6,11 @@
     <description>Anthropic Claude 官方博客的中文翻译</description>
     <atom:link href="https://claude-blog-cn.vercel.app/rss.xml" rel="self" type="application/rss+xml"/>
     <language>zh-CN</language>
-    <lastBuildDate>Tue, 01 Sep 2026 11:15:18 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 01 Sep 2026 11:16:41 GMT</lastBuildDate>
     <item>
       <title>How Anthropic employees use Claude Tag</title>
-      <link>https://claude-blog-cn.vercel.app/posts/how-anthropic-employees-use-claude-tag/en.html</link>
-      <guid>https://claude-blog-cn.vercel.app/posts/how-anthropic-employees-use-claude-tag/en.html</guid>
+      <link>https://claude-blog-cn.vercel.app/posts/how-anthropic-employees-use-claude-tag/</link>
+      <guid>https://claude-blog-cn.vercel.app/posts/how-anthropic-employees-use-claude-tag/</guid>
       <pubDate>Thu, 27 Aug 2026 16:00:00 GMT</pubDate>
       <category>Enterprise AI</category>
     </item>
@@ -23,8 +23,8 @@
     </item>
     <item>
       <title>How Warp builds self-improving agents on Claude</title>
-      <link>https://claude-blog-cn.vercel.app/posts/how-warp-builds-self-improving-agents-on-claude/en.html</link>
-      <guid>https://claude-blog-cn.vercel.app/posts/how-warp-builds-self-improving-agents-on-claude/en.html</guid>
+      <link>https://claude-blog-cn.vercel.app/posts/how-warp-builds-self-improving-agents-on-claude/</link>
+      <guid>https://claude-blog-cn.vercel.app/posts/how-warp-builds-self-improving-agents-on-claude/</guid>
       <pubDate>Tue, 25 Aug 2026 16:00:00 GMT</pubDate>
       <category>Agents</category>
     </item>

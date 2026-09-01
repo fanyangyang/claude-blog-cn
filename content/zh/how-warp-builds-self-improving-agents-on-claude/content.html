@@ -1,0 +1,69 @@
+<div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p><em>在我们的系列文章中，我们重点介绍初创公司如何利用 AI 重塑行业。本文分享 Warp 如何将无状态用户反馈转变为代理的自改进循环。</em></p><div class="w-embed"><figure>
+  <div role="region" tabindex="0">
+    <table>
+      <thead>
+        <tr>
+          <th colspan="2">快速概览</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>公司名称</td>
+          <td>Warp</td>
+        </tr>
+        <tr>
+          <td>成立时间</td>
+          <td>2020 年</td>
+        </tr>
+        <tr>
+          <td>创始人</td>
+          <td>Zach Lloyd（CEO）</td>
+        </tr>
+        <tr>
+          <td>技术栈</td>
+          <td>Rust, Golang, GitHub Actions, 内部代理编排平台 (Oz), Claude Platform</td>
+        </tr>
+        <tr>
+          <td>增长数据</td>
+          <td>融资 7300 万美元。月均 80 万开发者使用 Warp 构建。财富 500 强中 56% 使用 Warp。Warp 内累计运行 1000 万次 Claude Code 会话，每周超过 40 万次。Warp Agent 总对话量达 4000 万次。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</figure></div><p>代理需要可靠且高效地处理重复性任务。初次提示词能完成 80% 的任务，但剩下的 20% 可能给用户带来混乱和烦扰的体验。Warp 通过亲身经历深刻体会到了这一点，并据此调整了产品策略，为全球近 100 万开发者创造了更好的体验。</p><p>Warp 是一款 AI 驱动的终端和代理开发环境，基于 Claude Platform 构建。团队在内部的代码审查代理中遇到了这种"体验混乱"的问题。工程师们抱怨他们的代理发表了无用的评论，输出了低质量的结果。</p><p>团队最初尝试了一些临时解决方案，比如根据观察到的代码审查失败手动重写提示词。这让输出更可用了一些，但无法规模化。改进 AGENTS.md 等上下文文件也有帮助，但远非彻底解决。</p><p>最终，他们意识到真正的问题是：无论用途如何，对代理的反馈通常在会话结束时消失，从代理循环中移除了关键上下文。他们的解决方案是：基于 <a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview" target="_blank">Agent Skills</a> 的框架，创建自改进代理，让反馈随时间的积累不断优化和增强代理输出。</p><p>继续阅读，了解他们如何在 Claude Platform 之上使用 skills 构建这个系统。</p><h2><strong>基于 skills 的代理自改进循环</strong></h2><p>核心技术是一个使用 <a href="https://support.claude.com/en/articles/12512176-what-are-skills" target="_blank"><strong>skills</strong></a> 的自改进循环。Skills 是基于文件的编码知识，将指令从原始提示词中分离出来。Warp 演进出了一个由两个 skills 组成的自改进代理架构，中间有人类反馈环节。</p><figure style="max-width:3600px" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a8f1a9a1b33f40618a9d59a_selfimprove-loop.jpg" loading="lazy"></div></figure><p><strong>内层/基础 skill</strong> 持有功能性领域知识和指令。例如，当 PR 被创建时，Warp 的代码代理使用该基础 skill 和上下文来生成审查意见。</p><p><strong>人类反馈</strong> 对代理输出是自改进循环的关键组成部分。对于代码审查，这可能简单到只是一个点赞，但越明确越好。</p><p>"人类可以确认'这是一个有用的好评论'，"Warp 创始人 Zach Lloyd 解释道，"但人类也可以给出详细的原因，说明为什么代码审查不好。比如'你建议重命名这个变量，但我们的代码库约定是这类全局变量使用特定的命名上下文'——这些具体信息告诉代理下次如何做对。"</p><p><strong>外层/改进 skill</strong> 充当观察者代理，按计划运行而非按任务运行。它收集累积的人类反馈，比较代理的建议与人类的回应，然后提出对基础 skill 的小幅、聚焦的修改。</p><p>由于 skills 是纯文本文件，代理非常擅长更新它们。这些更新是可审查、可批准、可合并的，可以通过正常的 PR/代码审查流程流转；一旦合并，内层 skill 的下一次运行就会继承改进。</p><p>Warp 现在将这一模式应用于其整个开源仓库，配备了独立的规范编写、审查和分类代理，每个都有自己的自改进循环。</p><p>"基于文件的 skills 是一种为代理编码知识的方式，无需将这些知识直接放入提示词中，代理可以在执行任务时查找这些知识，"Zach 说。"这个框架其实很简单：有一个特定领域的基础 skill，还有一个改进 skill 来优化这个领域特定 skill。这种简单性正是这种方法的魅力所在。"</p><h2><strong>如何为代理编写自改进 skills</strong></h2><p>以下是 Warp 团队在编写代理循环的自改进 skills 时经实践验证的一些技巧：</p><ul role="list"><li><strong>写原则，而不是规则。</strong>"构建 skill 时，就像在指导一个聪明人，而不是在编程一台计算机，"Zach 说。"像'查找重复代码'这样的方向性指导，比穷举变量命名规则提供了更好的方向。"</li><li><strong>解释为什么。</strong>提供规则背后的理由，让代理能够推理问题而不是遵循僵化的指令，再次实现更好的泛化。</li><li><strong>让反馈的给予变得轻松。</strong>在人们已经在工作的地方捕获反馈，比如直接在 PR 或 issue 上评论。同时，让这个过程自动发生，无需额外的提交流程。"低摩擦是保持信号流动的关键，"Zach 指出。"如果你让反馈太难给出，你就得不到反馈，也就无法改进 skill。"</li><li><strong>保持 skill 小巧，使用渐进式披露。</strong><a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices" target="_blank">一个好的 skill</a> 文件不大；它引用资源文件和脚本，而不是一次性将所有内容倾入上下文。</li><li><strong>反馈质量 > 数量，但数量也有帮助。</strong>来自高级工程师的少量、详细、领域特定的反馈，可能比大量粗略的反馈更有价值，因为二进制点赞/点踩无法说明<em>原因</em>。"即使是从相对较小的样本量中，如果来自了解领域知识的人提供了非常详细的反馈，你也可以获得非常好的信号——否则代理根本无法获得这些知识，"Zach 继续说道。"话虽如此，高质量信号的数据量越大越好。在 Warp，我们使用一个循环来管理整个开源仓库。我们有数百人贡献，我们正在进行数千次代码审查。"</li><li><strong>在改进 skill 上投入更多精力。</strong>在编写改进 skill（观察者代理）上投入额外精力，其回报远不止于当前的代理循环，因为改进 skill 在不同用例之间非常可复用。"除了领域特定知识部分，这是一个相当可复用的机制——代码审查代理的改进 skill 与其他任何代理的改进 skill 并没有太大区别。"</li></ul><h2><strong>循环的实际应用：Warp 的 issue 分类代理</strong></h2><p><a href="https://github.com/warpdotdev/warp-agents-demo-github-issue-triage" target="_blank">Warp 的 issue 分类代理</a>展示了自改进代理 skill 框架。每当有人提交新的 GitHub Issue 时，该模式就会被触发：一个 GitHub Action 启动一个代理，分析 issue 的复杂性和可行性，分配标签，并建议修复方向。该分类代理基于一个内层 skill 文件运行，该文件持有关于每个标签含义以及如何在行动前研究代码库的领域知识。</p><p>在一个示例 issue 上，第一阶段的内层 skill 做得不错，但漏掉了一个标签："ready to spec"（准备编写规格说明），该标签表示贡献者可以开始针对该 issue 构建产品和规格说明。Warp 团队的一名维护者发现了这个遗漏，并直接在 issue 上留下了反馈——这正是工作发生的地方。关键是，他既解释了他的期望，也解释了为什么这样期望：可操作的反馈，便于代理后续吸收。</p><p>外层改进 skill 在 <a href="https://docs.warp.dev/" target="_blank">Oz（Warp 的代理编排平台）</a>中作为计划运行的"更新分类"代理运行。该代理认证到 GitHub，运行与 skill 捆绑的 Python 脚本，提取带有反馈的近期 issue，将其总结为 JSON 文件，然后读回上下文。捆绑脚本本身也是一种最佳实践；skills 可以引用资源文件，而不是每次运行时都编写新代码。</p><p>然后，代理识别维护者评论中的具体反馈信号，并提出包含这些信号的最小编辑方案。它发起了一个 PR 来编辑内层 skill，以便在 issue 描述了真实问题（即使确切的 UI 或 UX 形态尚未确定）时应用"ready to spec"标签。</p><p>由于整个更新是一个 skill 文件，它通过正常的代码审查流程流转。PR 附带描述，说明哪些信号触发了更改以及它更改了什么。人类审查、批准并合并，下一次分类 skill 运行时就继承了新知识。这最后的人类步骤关闭了循环，并确保人类控制实际更改的内容。</p><p>这就是 Warp 现在在其开源仓库中大规模运行的同一机制，规范编写代理、审查代理和分类代理各自都有自己的自改进循环。</p><p>任何代理，无论其任务是什么，只要从一开始就构建这些循环之一——捕获人类反馈信号，将其转化为 skill 更新，将代理从一次性帮手扩展为能够在整个组织中积累能力的系统——它就会随着时间推移变得更好。</p><div class="w-embed"><figure>
+  <div role="region" tabindex="0">
+    <table>
+      <thead>
+        <tr>
+          <th colspan="2">Warp 团队的最佳实践</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>你是否混淆了 skills 与 memory？</td>
+          <td>Skills 是程序性和稳定的——"如何做某事"，与运行无关，审慎修改。Memory 由代理在推理时自动写入，永不停歇地变化。</td>
+        </tr>
+        <tr>
+          <td>你需要一个改进循环，还是每个代理一个？</td>
+          <td>取中间方案：一个模板化的基础循环捕获代理之间的重叠，在其上叠加领域特定的权重。少数几个改进器可以各自拥有一个；上百个则应该共享。</td>
+        </tr>
+        <tr>
+          <td>当反馈错误时怎么办？</td>
+          <td>假设它会发生。不要让代理盲目接受反馈——给它上下文进行合理性检查，过滤谁的输入有价值，并在过滤或最终审查阶段保持人类参与。</td>
+        </tr>
+        <tr>
+          <td>你的领域是否可验证？</td>
+          <td>先构建验证框架，然后让代理针对它进行调优：生成参考语料库，比较输出与参考，修复，重复。</td>
+        </tr>
+        <tr>
+          <td>如果领域不可验证呢？</td>
+          <td>在存在金标准输出的地方，依赖确定性评估。在必须使用人类反馈的地方，将其限制在领域专家——不要向所有人开放。</td>
+        </tr>
+        <tr>
+          <td>如何知道整个系统在改进？</td>
+          <td>跟踪人类已经在关注的全局指标——合并时间、贡献者数量、成本——并将它们反馈给改进代理。部署时采用渐进式推进。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</figure></div><p><a href="https://www.anthropic.com/webinars/how-warp-builds-self-improving-agents-on-claude" target="_blank"><em>查看完整网络研讨会</em></a><em>，观看现场演示，深入了解 Warp 如何使用 Claude 构建从团队反馈中学习并随时间自我改进的代理。</em></p><p><em>立即开始使用 </em><a href="https://platform.claude.com/" target="_blank"><em>Claude Platform</em></a><em> 进行构建。</em></p></div>
