@@ -6,9 +6,9 @@
     <description>Anthropic Claude 官方博客的中文翻译</description>
     <atom:link href="https://claude-blog-cn.vercel.app/rss.xml" rel="self" type="application/rss+xml"/>
     <language>zh-CN</language>
-    <lastBuildDate>Tue, 01 Sep 2026 11:16:41 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 01 Sep 2026 11:20:03 GMT</lastBuildDate>
     <item>
-      <title>How Anthropic employees use Claude Tag</title>
+      <title>Anthropic 员工如何使用 Claude Tag</title>
       <link>https://claude-blog-cn.vercel.app/posts/how-anthropic-employees-use-claude-tag/</link>
       <guid>https://claude-blog-cn.vercel.app/posts/how-anthropic-employees-use-claude-tag/</guid>
       <pubDate>Thu, 27 Aug 2026 16:00:00 GMT</pubDate>
@@ -22,16 +22,16 @@
       <category>Product announcements</category>
     </item>
     <item>
-      <title>How Warp builds self-improving agents on Claude</title>
+      <title>Warp 如何在 Claude 上构建自改进代理</title>
       <link>https://claude-blog-cn.vercel.app/posts/how-warp-builds-self-improving-agents-on-claude/</link>
       <guid>https://claude-blog-cn.vercel.app/posts/how-warp-builds-self-improving-agents-on-claude/</guid>
       <pubDate>Tue, 25 Aug 2026 16:00:00 GMT</pubDate>
       <category>Agents</category>
     </item>
     <item>
-      <title>Claude in Chrome is generally available</title>
-      <link>https://claude-blog-cn.vercel.app/posts/claude-in-chrome-generally-available/en.html</link>
-      <guid>https://claude-blog-cn.vercel.app/posts/claude-in-chrome-generally-available/en.html</guid>
+      <title>Claude in Chrome 现已全面可用</title>
+      <link>https://claude-blog-cn.vercel.app/posts/claude-in-chrome-generally-available/</link>
+      <guid>https://claude-blog-cn.vercel.app/posts/claude-in-chrome-generally-available/</guid>
       <pubDate>Tue, 25 Aug 2026 16:00:00 GMT</pubDate>
       <category>Product announcements</category>
     </item>
@@ -57,44 +57,44 @@
       <category>Product announcements</category>
     </item>
     <item>
-      <title>How an Anthropic field marketer uses Claude Code to send weekly personalized updates to every sales rep</title>
-      <link>https://claude-blog-cn.vercel.app/posts/how-an-anthropic-field-marketer-uses-claude-code-to-send-weekly-personalized-updates-to-every-sales-rep/en.html</link>
-      <guid>https://claude-blog-cn.vercel.app/posts/how-an-anthropic-field-marketer-uses-claude-code-to-send-weekly-personalized-updates-to-every-sales-rep/en.html</guid>
+      <title>Anthropic 现场营销人员如何使用 Claude Code 为每位销售代表发送每周个性化更新</title>
+      <link>https://claude-blog-cn.vercel.app/posts/how-an-anthropic-field-marketer-uses-claude-code-to-send-weekly-personalized-updates-to-every-sales-rep/</link>
+      <guid>https://claude-blog-cn.vercel.app/posts/how-an-anthropic-field-marketer-uses-claude-code-to-send-weekly-personalized-updates-to-every-sales-rep/</guid>
       <pubDate>Sun, 23 Aug 2026 16:00:00 GMT</pubDate>
       <category>Enterprise AI</category>
     </item>
     <item>
-      <title>Bringing the cybersecurity capabilities of Claude Mythos 5 to more defenders</title>
-      <link>https://claude-blog-cn.vercel.app/posts/bringing-claude-mythos-5-to-more-defenders/en.html</link>
-      <guid>https://claude-blog-cn.vercel.app/posts/bringing-claude-mythos-5-to-more-defenders/en.html</guid>
+      <title>将 Claude Mythos 5 的网络安全能力带给更多防御者</title>
+      <link>https://claude-blog-cn.vercel.app/posts/bringing-claude-mythos-5-to-more-defenders/</link>
+      <guid>https://claude-blog-cn.vercel.app/posts/bringing-claude-mythos-5-to-more-defenders/</guid>
       <pubDate>Thu, 20 Aug 2026 16:00:00 GMT</pubDate>
       <category>Product announcements</category>
     </item>
     <item>
-      <title>The AI-Native SDLC playbook</title>
-      <link>https://claude-blog-cn.vercel.app/posts/the-ai-native-sdlc-playbook/en.html</link>
-      <guid>https://claude-blog-cn.vercel.app/posts/the-ai-native-sdlc-playbook/en.html</guid>
+      <title>AI 原生软件开发生命周期手册</title>
+      <link>https://claude-blog-cn.vercel.app/posts/the-ai-native-sdlc-playbook/</link>
+      <guid>https://claude-blog-cn.vercel.app/posts/the-ai-native-sdlc-playbook/</guid>
       <pubDate>Thu, 20 Aug 2026 16:00:00 GMT</pubDate>
       <category>Enterprise AI</category>
     </item>
     <item>
-      <title>Anthropic’s approach to teaching and learning AI</title>
-      <link>https://claude-blog-cn.vercel.app/posts/anthropics-approach-to-teaching-and-learning-ai/en.html</link>
-      <guid>https://claude-blog-cn.vercel.app/posts/anthropics-approach-to-teaching-and-learning-ai/en.html</guid>
+      <title>Anthropic 的 AI 教学与学习方法论</title>
+      <link>https://claude-blog-cn.vercel.app/posts/anthropics-approach-to-teaching-and-learning-ai/</link>
+      <guid>https://claude-blog-cn.vercel.app/posts/anthropics-approach-to-teaching-and-learning-ai/</guid>
       <pubDate>Wed, 19 Aug 2026 16:00:00 GMT</pubDate>
       <category>Enterprise AI</category>
     </item>
     <item>
-      <title>How monday.com transformed its platform into an agent-first product where humans and agents collaborate</title>
-      <link>https://claude-blog-cn.vercel.app/posts/how-monday-com-transformed-its-platform-into-an-agent-first-product-where-humans-and-agents-collaborate/en.html</link>
-      <guid>https://claude-blog-cn.vercel.app/posts/how-monday-com-transformed-its-platform-into-an-agent-first-product-where-humans-and-agents-collaborate/en.html</guid>
+      <title>monday.com 如何将平台转变为人类与 AI 代理协作的产品</title>
+      <link>https://claude-blog-cn.vercel.app/posts/how-monday-com-transformed-its-platform-into-an-agent-first-product-where-humans-and-agents-collaborate/</link>
+      <guid>https://claude-blog-cn.vercel.app/posts/how-monday-com-transformed-its-platform-into-an-agent-first-product-where-humans-and-agents-collaborate/</guid>
       <pubDate>Wed, 19 Aug 2026 16:00:00 GMT</pubDate>
       <category>Agents</category>
     </item>
     <item>
-      <title>The Claude Code Guide For Startups</title>
-      <link>https://claude-blog-cn.vercel.app/posts/claude-code-guide-for-startups/en.html</link>
-      <guid>https://claude-blog-cn.vercel.app/posts/claude-code-guide-for-startups/en.html</guid>
+      <title>创业公司 Claude Code 指南</title>
+      <link>https://claude-blog-cn.vercel.app/posts/claude-code-guide-for-startups/</link>
+      <guid>https://claude-blog-cn.vercel.app/posts/claude-code-guide-for-startups/</guid>
       <pubDate>Wed, 19 Aug 2026 16:00:00 GMT</pubDate>
       <category>Enterprise AI</category>
     </item>
@@ -106,9 +106,9 @@
       <category>Enterprise AI</category>
     </item>
     <item>
-      <title>Turning conversation into knowledge: how Slack builds human-agent teams</title>
-      <link>https://claude-blog-cn.vercel.app/posts/turning-conversation-into-knowledge-how-slack-builds-human-agent-teams/en.html</link>
-      <guid>https://claude-blog-cn.vercel.app/posts/turning-conversation-into-knowledge-how-slack-builds-human-agent-teams/en.html</guid>
+      <title>将对话转化为知识：Slack 如何构建人机协作团队</title>
+      <link>https://claude-blog-cn.vercel.app/posts/turning-conversation-into-knowledge-how-slack-builds-human-agent-teams/</link>
+      <guid>https://claude-blog-cn.vercel.app/posts/turning-conversation-into-knowledge-how-slack-builds-human-agent-teams/</guid>
       <pubDate>Tue, 18 Aug 2026 16:00:00 GMT</pubDate>
       <category>Enterprise AI</category>
     </item>

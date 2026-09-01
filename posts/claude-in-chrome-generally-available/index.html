@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude in Chrome 现已全面可用 — Claude Blog 中文翻译</title>
+  <meta name="description" content="Claude in Chrome 现已全面可用">
+  <link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-icon">🦞</span>
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/claude-in-chrome-generally-available" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Product announcements</span>
+            <span class="article-date">August 26, 2026</span>
+            
+          </div>
+          <h1 class="article-title">Claude in Chrome 现已全面可用</h1>
+          <a href="/posts/claude-in-chrome-generally-available/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>Claude in Chrome 现在在所有付费 Claude 计划中全面可用。Claude 现在还可以在浏览器中自主执行操作，而无需每步都请求批准。一个安全分类器会在每个操作执行前进行验证，确保操作安全且符合你的请求。</p><figure style="max-width:1920pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a8e8c30f077b615a7429ea1_a9d1d161.png" loading="lazy"></div></figure><p>许多你日常使用的工具已经<a href="http://claude.com/connectors" target="_blank">与 Claude 连接</a>。但还有更多工具没有，比如内部仪表盘、遗留系统和供应商门户。Claude in Chrome 让 Claude 也能访问这些工具。它可以查看你当前所在的页面，并执行阅读和输入文本、点击链接、页面间导航、填写表单等操作，使用你现有的登录状态。</p><p>我们去年首次以预览形式发布了 Claude in Chrome，以便在测试的同时加强我们对<a href="https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks" target="_blank">提示注入</a>的防御：隐藏在网站、邮件或文档中的恶意指令，试图诱骗 AI 代理做出违背用户意愿的行为。下文描述的这些防御措施，给了我们让 Claude in Chrome 全面可用的信心。</p><h2>防范提示注入</h2><p>正如我们发布预览时<a href="https://claude.com/blog/claude-for-chrome" target="_blank">所述</a>，在浏览器中工作的 AI 代理也容易受到提示注入攻击。因此，在更广泛地发布 Claude in Chrome 之前，我们一直在改进安全防护措施。</p><p>在提示注入攻击中，恶意行为者将指令隐藏在网页、邮件或表单字段等网络内容中。你可能永远看不到这些指令，但它们可以指示代理执行你从未要求过的操作。例如，如果你让 Claude 起草邮件回复，一条消息中的隐藏指令可以告诉 Claude 将你的其他邮件转发给攻击者。</p><p>在发布时，我们描述了如何测试 Claude 对这些攻击的防御能力以及当时已有的防护措施；后来我们发布了关于<a href="https://www.anthropic.com/research/prompt-injection-defenses" target="_blank">浏览器使用安全防护</a>的更详细描述。自那以后，我们改进了对模型和我们的<a href="https://www.anthropic.com/research/next-generation-constitutional-classifiers" target="_blank">探测器</a>的训练方法，并增加了一组额外的分类器，使 Claude 能够在 Chrome 中更安全地执行更多自主操作。在下一节中，我们将讨论评估结果，这些结果展示了这些防护措施的有效性。</p><p><strong>Claude 能识别更多攻击。</strong>我们针对不断增长的提示注入攻击库对 Claude 进行训练，这些攻击来自我们的内部自动化攻击器、外部红队测试和真实世界监控。当一种新的攻击在当前模型上成功时，它会被添加到攻击库中，用于指导未来模型的训练和我们部署的防御措施，使它们学会识别这种攻击。自 2025 年 11 月我们首次撰写关于<a href="https://www.anthropic.com/research/prompt-injection-defenses" target="_blank">浏览器使用的提示注入防御</a>以来，我们已经使 Claude 对这些攻击的抵抗力大幅提升。</p><p><strong>探测器在 Claude 对网络内容采取行动前进行筛查。</strong>网络内容通过工具结果到达 Claude。为了执行阅读页面或打开邮件等操作，模型会进行工具调用；工具结果让模型读取输出（本例中为页面或邮件的内容）。我们训练探测器扫描这些结果，寻找潜在的提示注入。当探测器检测到可能的攻击时，Claude 会收到警告，要求对内容保持怀疑，并在必要时在采取行动前与你确认。我们最初在 Claude Opus 4.5 中部署了这些探测器，此后扩展了它们覆盖的攻击类型。</p><p><strong>操作在执行前经过验证。</strong>在 Claude in Chrome 中，Claude 现在会自动批准它判断为安全的操作，使用与 Claude Code 中的<a href="https://claude.com/blog/auto-mode-default-in-claude-code" target="_blank">自动模式</a>相同的机制。（如果你希望继续手动批准 Claude 的操作，可以在设置中关闭此功能。）一个分类器会审查 Claude 即将执行的操作，例如导航到新网站或在页面中输入文本，并与你最初的请求进行核对。如果操作与你的请求不匹配，它会被阻止。</p><h2>衡量 Claude 对提示注入的鲁棒性</h2><p>我们已经测试了这些防护措施，以确保 Claude in Chrome 在浏览器端工作时的安全性。以下是我们最新评估的结果。</p><p>在我们对 Claude Cowork 抵抗提示注入攻击能力的<a href="https://claude.com/blog/claude-for-chrome" target="_blank">初始评估</a>中（首次开发于我们发布 Claude in Chrome 预览时），在 <a href="https://claude.com/blog/cowork-chrome-side-panel" target="_blank">Cowork 框架</a>中，即使没有上面讨论的探测器和分类器，也没有任何攻击能成功针对 Claude Fable 5、Claude Opus 5 或 Claude Sonnet 5。</p><figure style="max-width:2048pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a8e8c30f077b615a7429ea7_8477d7f5.png" loading="lazy"></div><figcaption><em>针对 Claude Opus 4.5、Sonnet 5、Opus 5 和 Fable 5 的提示注入攻击成功率。Opus 4.5 使用了扩展思考模式，因为它不支持我们较新的默认自适应思考模式。所有其他模型默认使用中等努力的自适应思考模式。2025 年 11 月<a href="https://www.anthropic.com/research/prompt-injection-defenses" target="_blank">博文</a>中讨论的结果是在未启用扩展思考的情况下运行的，但由于 Fable 5 无法禁用思考功能，我们在此报告的是启用思考的结果。2025 年 11 月使用的评分模型也不再可用，因此我们转而使用更强大的评分管道，并结合对成功攻击的人工审查，这产生了更少的误报。</em></figcaption></figure><p>由于该评估已经饱和（0% 的成功率证明了这一点），我们决定停止使用它。在我们的<a href="https://www-cdn.anthropic.com/b514064af1408018e64b1ad24e7d5e75850b4ffd/Claude%20Opus%205%20System%20Card.pdf#page=76.73" target="_blank">当前评估</a>中，使用了由专业红队人员提供的更强攻击，在没有任何额外防护措施的情况下，到达模型的攻击对 Opus 4.5 的成功率为 17.6%，对 Opus 5 为 3.8%。在 2025 年 11 月可用的最强防护措施下，运行探测器的 Opus 4.5 攻击成功率为 16.7%。而对于从 Opus 4.8 开始的每个模型，当运行探测器和安全分类器时，没有任何攻击能成功针对 Claude Sonnet 5、Claude Opus 5 或 Claude Mythos 5。我们观察到对 Fable 5 的攻击成功率为 0.3%。我们已经人工验证所有成功的突破都属于低严重性场景，并正在努力缓解这些问题。</p><figure style="max-width:2048pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a8e8c30f077b615a7429ea4_b8a100e7.png" loading="lazy"></div><figcaption><em>在启用探测器加上自动批准安全分类器的情况下，没有任何攻击能成功针对 Claude Sonnet 5 或 Opus 5，而对 Fable 5 的攻击成功率为 0.3%。Opus 4.5 的模型行为导致实际到达模型的攻击数量较少，但其成功攻击的百分比仍然最高。</em></figcaption></figure><p>提示注入仍然是一个不断变化的威胁。虽然这种方法可以防御当前的攻击，但我们还需要确保我们的防护措施领先于攻击者不断演化的方法。随着每个模型的发布，我们持续投资于开发更复杂的自动化攻击发现系统、红队测试，以及构建更强的分类器。</p><h2>开始使用</h2><p>要开始使用 Claude in Chrome，请从 <a href="https://chromewebstore.google.com/detail/claude/fcoeoabgfenejglbffodgkkbkcdhcgfn" target="_blank">Chrome Web Store</a> 安装。在 Enterprise 计划中，管理员可以在组织设置中管理它，并将其限制在批准的域名范围内。请参阅<a href="https://support.claude.com/en/articles/13065128-claude-in-chrome-admin-controls#h_bdb63199e1" target="_blank">管理员设置指南</a>。</p><p>你仍然需要使用 Claude 桌面应用程序来处理计算机上的文件或其他应用程序。Claude in Chrome 目前不支持其他 Chromium 浏览器，也不支持移动端。</p><p>‍</p><p><em>¹ 并非所有攻击都能到达模型——即被模型看到。在某些情况下，Claude 执行的操作导致它从未遇到恶意指令。</em></p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/claude-in-chrome-generally-available" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成</p>
+    </div>
+  </footer>
+</body>
+</html>
