@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Code w/ Claude SF 2026 回顾：在 AI 指数级增长之上构建 — Claude Blog 中文翻译</title>
+  <meta name="description" content="Code w/ Claude SF 2026 回顾：在 AI 指数级增长之上构建">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/code-w-claude-sf-2026-sf" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Product announcements</span>
+            <span class="article-date">May 12, 2026</span>
+            
+          </div>
+          <h1 class="article-title">Code w/ Claude SF 2026 回顾：在 AI 指数级增长之上构建</h1>
+          <a href="/posts/code-w-claude-sf-2026-sf/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>本周，我们在旧金山举办了年度开发者大会 <a href="https://claude.com/code-with-claude/san-francisco#agenda">Code w/ Claude</a>。来自各地的开发者、工程师和创业者齐聚一堂，与打造 Claude 的团队一起，进行了为期两天的主题演讲、分论坛和动手工作坊。&nbsp;</p><p>从提示词技巧和<a href="https://www.youtube.com/watch?v=OXJO4LldSnc&amp;list=PLmWCw1CzcFim2obQ-w3ohbULOfwp5lApR&amp;index=12">模型选择</a>，到 Skills 架构设计与<a href="https://www.youtube.com/watch?v=igO8iyca2_g&amp;list=PLmWCw1CzcFim2obQ-w3ohbULOfwp5lApR&amp;index=11">AI 原生工程团队的规模化</a>，每一场session都指向同一个转变：从想法到生产软件的距离正在缩短，而杠杆最大的团队正在为 AI 的指数级增长做设计——而不是被动应对。&nbsp;</p><p>我们通过<a href="https://www.youtube.com/watch?v=DlTCu_pNDHE&amp;list=PLmWCw1CzcFim2obQ-w3ohbULOfwp5lApR&amp;index=5">现场编程</a>、<a href="https://www.youtube.com/watch?v=EdmuYPBt_EM&amp;list=PLmWCw1CzcFim2obQ-w3ohbULOfwp5lApR&amp;index=2">客户深度分享</a>和动手教程，展示了这一切今天的真实模样。</p><figure class="w-richtext-align-center w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a02b62b0fd6f5b85ee0bea3_CwC.jpeg" loading="lazy"></div><figcaption>联合创始人兼总裁 Daniela Amodei 与联合创始人兼 CEO Dario Amodei 在 CPO Ami Vora 主持的炉边谈话中对谈。</figcaption></figure><h2>我们发布了什么</h2><p>大会现场宣布，我们<a href="https://www.anthropic.com/news/higher-limits-spacex">将 Claude Code 的速率限制翻倍</a>，并上调了 Claude Opus 的 API 限额，让开发者、初创公司和企业能够更可靠地规模化构建。两项变更均已生效。</p><p>我们还为 Claude Platform 上的 <a href="https://platform.claude.com/docs/en/managed-agents/overview">Claude Managed Agents</a> 推出了新能力，帮助团队大规模构建和部署云端托管的智能体。以下四项<a href="https://claude.com/blog/new-in-claude-managed-agents">新功能</a>现已向所有开发者开放：</p><ul role="list"><li><strong>Dreaming（做梦）。</strong>一个定时运行的过程，会回顾智能体过往的会话、提炼模式并整理记忆，让智能体在每次运行之间不断进步。反复出现的错误、共享的工作流和团队偏好都会被纳入一个更实用的记忆存储中。</li><li><strong>多智能体编排。</strong>一个主智能体可以把任务委派给多个并行工作的专家子智能体，它们共享同一个文件系统，各自拥有独立的模型、提示词和工具。整个流程都可以在 Claude Console 中追踪。</li><li><strong>Outcomes（成果评估）。</strong>开发者定义"好的输出"的评分标准，一个独立的评分器会在自己的上下文窗口中评估每次结果，并让智能体反复修订，直到达标。在我们的内部基准测试中，Outcomes 在最难的问题上将任务成功率最多提升了 10 个百分点。</li><li><strong>Webhooks</strong>：定义好 outcome 之后，你就可以放手让智能体运行，完成时通过 webhook 通知你。</li></ul><h2>精彩回看</h2><figure class="w-richtext-align-center w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a02b5708e141ac8abcd4968_Exec%20Boris%20Cherny.jpg" loading="lazy"></div><figcaption>Claude Code 之父 Boris Cherny 在旧金山 Code w/ Claude 2026 大会上演讲。</figcaption></figure><p>如果你错过了直播，可以在<a href="https://www.youtube.com/playlist?list=PLmWCw1CzcFim2obQ-w3ohbULOfwp5lApR">这里</a>观看主题演讲和分论坛录像。</p><p>我们的演讲深入揭秘了 Anthropic 各团队构建 Claude 的幕后，还分享了 <a href="https://www.youtube.com/watch?v=BrpB-h1e--k&amp;list=PLmWCw1CzcFim2obQ-w3ohbULOfwp5lApR&amp;index=10">Asana</a>、<a href="https://www.youtube.com/watch?v=BbYSGxtsMic&amp;list=PLmWCw1CzcFim2obQ-w3ohbULOfwp5lApR&amp;index=15">Cursor</a>、<a href="https://www.youtube.com/watch?v=y5TmF_6o6xk&amp;list=PLmWCw1CzcFim2obQ-w3ohbULOfwp5lApR&amp;index=7">GitHub</a>、<a href="https://www.youtube.com/watch?v=snroDwX1-JU&amp;list=PLmWCw1CzcFim2obQ-w3ohbULOfwp5lApR&amp;index=14">Replit</a> 和 <a href="https://www.youtube.com/watch?v=bJKdXhnw7NU&amp;list=PLmWCw1CzcFim2obQ-w3ohbULOfwp5lApR&amp;index=3&amp;pp=iAQB0gcJCQMLAYcqIYzv">Vercel</a> 等客户如何设计可用于生产环境的智能体，并不断拓展智能体开发的边界。&nbsp;</p><p>接下来，<a href="https://claude.com/code-with-claude/london">Code w/ Claude 将登陆伦敦</a>（5 月 20-21 日）和<a href="https://claude.com/code-with-claude/tokyo">东京</a>（6 月 5-6 日）。第一天所有的主题演讲和分论坛都将进行直播。</p><p><em>敬请期待源自这些演讲的技术教程、指南和客户故事。&nbsp;</em></p><p>‍</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/code-w-claude-sf-2026-sf" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

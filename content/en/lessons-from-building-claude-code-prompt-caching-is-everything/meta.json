@@ -1,0 +1,17 @@
+{
+  "slug": "lessons-from-building-claude-code-prompt-caching-is-everything",
+  "title": "Lessons from building Claude Code: Prompt caching is everything",
+  "date": "April 30, 2026",
+  "category": "Claude Code",
+  "url": "https://claude.com/blog/lessons-from-building-claude-code-prompt-caching-is-everything",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/lessons-from-building-claude-code-prompt-caching-is-everything.svg",
+  "illustrationBg": "Heather",
+  "fetchedAt": "2026-09-02T03:50:17.776Z",
+  "translatedTitle": "构建 Claude Code 的经验教训：提示词缓存就是一切",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:25:11.859Z",
+  "translateLang": "zh-CN"
+}

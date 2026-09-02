@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude can now use tools — Claude Blog CN</title>
+  <meta name="description" content="Claude can now use tools">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="/posts/tool-use-ga/" class="nav-link">中文版 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Product announcements</span>
+            <span class="article-date">May 30, 2024</span>
+            <span class="lang-badge-large">EN</span>
+          </div>
+          <h1 class="article-title">Claude can now use tools</h1>
+          <a href="/posts/tool-use-ga/" class="lang-toggle">阅读中文翻译 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>Tool use, which enables Claude to interact with external tools and APIs, is now generally available across the entire Claude 3 model family on the Anthropic Messages API, Amazon Bedrock, and Google Cloud's Vertex AI. With tool use, Claude can perform tasks, manipulate data, and provide more dynamic—and accurate—responses.</p><h2>Tool use</h2><p>Define a toolset for Claude and specify your request in natural language. Claude will then select the appropriate tool to fulfill the task and, when appropriate, execute the corresponding action:</p><ul role="list"><li><strong>Extract structured data from unstructured text</strong>: Pull names, dates, and amounts from invoices to reduce manual data entry.</li><li><strong>Convert natural language requests into structured API calls</strong>: Enable teams to self-serve common actions (e.g., "cancel subscription") with simple commands.</li><li><strong>Answer questions by searching databases or using web APIs</strong>: Provide instant, accurate responses to customer inquiries in support chatbots.</li><li><strong>Automate simple tasks through software APIs</strong>: Save time and minimize errors in data entry or file management.</li><li><strong>Orchestrate multiple fast Claude subagents for granular tasks</strong>: Automatically find the optimal meeting time based on attendee availability.</li></ul><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/b77htH1eX-s" title="Claude 3 tool use: customer support" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><h2>Improved developer experience</h2><p>To make it easier to leverage the intelligence of the Claude 3 models with tools, we’ve also built in features that help developers further customize the end-user experience.</p><ul role="list"><li><strong>Tool use with streaming reduces wait times to create more engaging interactions</strong>: Streaming enables real-time responses in applications like customer support chatbots for smoother, more natural conversations.</li><li><strong>Forced tool use allows developers to instruct Claude on tool selection</strong>: Developers can specify which tools Claude should use or leave the choice with Claude, helping create more targeted and efficient applications.</li><li><strong>Tools also work with images</strong>:<strong> </strong>Claude can incorporate image inputs in live applications.</li></ul><p>During our beta many developers used Opus to build sophisticated user-facing assistants. To further enhance this experience, Opus will now include &lt;thinking&gt; tags in its outputs, clarifying Claude’s reasoning and simplifying the debugging process for developers. Our Claude 3 models are currently unable to support parallel tool calls.</p><h2>Customer spotlight: StudyFetch</h2><p>AI-native learning platform <a href="https://www.claude.com/customers/studyfetch" target="_blank">StudyFetch </a>uses Claude's tool use capabilities to power its personalized AI tutor, Spark.E. By integrating tools to track student progress, navigate course materials and lectures, and create interactive user interfaces, StudyFetch has created a more engaging educational environment for students globally.</p><p>"Claude with tool use is accurate and cost-effective, and now powers our live voice-enabled AI tutoring sessions. Within just a few days, we integrated tools into our platform,” said Ryan Trattner, CTO and Co-Founder at StudyFetch. “As a result, our AI tutor, Spark.E, acts agentically—displaying interactive UIs, tracking student progress in context, and navigating through lectures and materials. Since implementing Claude with tool use, we've observed a 42% increase in positive human feedback."</p><h2>Customer spotlight: Intuned</h2><p>Intuned, the browser automation platform, uses Claude to power data extraction within their cloud platform. With AI-powered data extraction, Intuned is able to drastically improve the developer experience in building and executing more reliable browser automations.</p><p>"Claude 3 Haiku with tool use has been a game changer for us. After accessing the model and running our benchmarks on it, we realized the quality, speed, and price combination is unmatched,” said Faisal Ilaiwi, Co-Founder at Intuned. “Haiku is helping us scale our customers' data extraction tasks to a completely new level."</p><h2>Customer spotlight: Hebbia</h2><p><a href="https://www.claude.com/customers/hebbia" target="_blank">Hebbia </a>is building the AI knowledge worker for leading financial and legal services firms. They use Claude 3 Haiku to help power several complex, multi-step customer workflows.</p><p>"We leverage Claude 3 Haiku for generating live suggestions, automating prompt writing, and extracting key metadata from long documents,” shared Divya Mehta, Product Manager at Hebbia. “Claude 3 Haiku's tool use feature has unlocked capabilities and speed for our platform to generate reliable suggestions and prompts in real-time."</p><h2>Get started</h2><p>You can get started with tool use today on the Anthropic Messages API, Amazon Bedrock, and Google Cloud's Vertex AI. To learn more, explore our <a href="https://docs.anthropic.com/en/docs/tool-use" target="_blank">documentation</a>, <a href="https://github.com/anthropics/courses/tree/master/tool_use" target="_blank">tool use tutorial</a>, and <a href="https://platform.claude.com/cookbook/tool-use-calculator-tool" target="_blank">Anthropic Cookbooks on tool use</a>.</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/tool-use-ga" target="_blank">View original</a></p>
+          <p><a href="/">← Back to home</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>Content from <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · Translation by AI</p>
+    </div>
+  </footer>
+
+</body>
+</html>

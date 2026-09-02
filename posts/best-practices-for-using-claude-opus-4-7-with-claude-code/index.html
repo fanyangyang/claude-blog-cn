@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>在 Claude Code 中使用 Claude Opus 4.7 的最佳实践 — Claude Blog 中文翻译</title>
+  <meta name="description" content="在 Claude Code 中使用 Claude Opus 4.7 的最佳实践">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/best-practices-for-using-claude-opus-4-7-with-claude-code" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Claude Code</span>
+            <span class="article-date">April 16, 2026</span>
+            
+          </div>
+          <h1 class="article-title">在 Claude Code 中使用 Claude Opus 4.7 的最佳实践</h1>
+          <a href="/posts/best-practices-for-using-claude-opus-4-7-with-claude-code/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p><a href="https://www.anthropic.com/news/claude-opus-4-7">Opus 4.7</a> 是我们迄今最强的正式可用模型，覆盖编程、企业工作流和长时间运行的 agentic 任务。它比 Opus 4.6 更善于处理模糊性，在查找 bug 和审查代码方面能力显著更强，跨会话的上下文保持更可靠，并且在方向指引更少的情况下也能推理清楚含糊的任务。</p><p>在<a href="https://www.anthropic.com/news/claude-opus-4-7">发布公告</a>中，我们提到两项变化——更新后的分词器，以及在更高 effort 等级（尤其是长会话的靠后轮次）倾向于思考更多——会影响 token 用量。因此，从 Opus 4.6 切换到 Opus 4.7 时，可能需要一些调优才能达到最佳性能。对提示词和 harness 做一些小调整，效果会大不相同。&nbsp;</p><p>这篇文章将带你了解具体变化，以及如何在 Claude Code 中最有效地使用 Opus 4.7。</p><h2>组织交互式编程会话</h2><p>Opus 4.7 的 token 用量和行为会因使用方式而异：是部署只有单轮用户输入的更自主、异步的编程 agent，还是使用多轮用户输入的更交互、同步的编程 agent。在交互式场景下，它会在用户轮次之后进行更多推理：这提升了长会话中的连贯性、指令遵循和编程质量，但往往也会消耗更多 token。</p><p>为了在 Claude Code 中充分发挥 Opus 4.7 的能力，我们发现一个有效的做法是：把 Claude 当作一位你能放心托付的能干工程师，而不是需要你逐行指导的结对程序员：</p><ul role="list"><li><strong>在第一轮就把任务说明白。</strong>一份交代清楚意图、约束、验收标准和相关文件位置的任务描述，能给 Opus 4.7 提供产出更高质量结果所需的上下文。把模糊的提示词拆成很多轮渐进式地给，往往会同时降低 token 效率，有时还会拉低整体质量。</li><li><strong>减少必要的用户交互次数。</strong>每一轮用户输入都会增加推理开销。把问题攒到一起问，并给模型继续推进所需的上下文。</li><li><strong>在合适的场景使用 </strong><a href="https://claude.com/blog/auto-mode"><strong>auto 模式</strong></a><strong>。</strong>对于你放心让模型安全执行而无需频繁确认的任务，auto 模式能缩短周期。它特别适合那种一开始就提供了完整上下文的长时间运行任务。auto 模式目前以研究预览版面向 Claude Code Max 用户开放——可以用 Shift+Tab 切换开启。</li><li><strong>为任务完成设置通知。</strong>让 Claude 在完成任务时播放提示音，它可以自己创建基于 hook 的通知。</li></ul><h2>Opus 4.7 推荐的 effort 设置</h2><figure style="max-width:1920pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69e1088ee4f61fecf4983993_Opus-4-7-Agentic-coding-performance-by-effort-Break.png" loading="lazy"></div></figure><p>Opus 4.7 在 Claude Code 中的默认 effort 等级现在是 <code>xhigh</code>。这是一个介于 <code>high</code> 和 <code>max</code> 之间的新档位，让用户在困难问题上对推理与延迟的权衡有更多掌控。我们推荐大多数 agentic 编程工作使用 xhigh，尤其是对智能水平敏感的任务，比如设计 API 和 schema、迁移遗留代码、审查大型代码库。&nbsp;</p><p>以下是各档位的一些补充建议：</p><ul role="list"><li><strong><code>medium</code> 和 <code>low</code></strong>：适用于对成本、延迟敏感或范围很窄的工作。在更难的任务上，模型会比高 effort 档位弱一些，但在相同 effort 等级下仍然胜过 Opus 4.6——有时 token 用量还更少。</li><li><strong><code>high:</code></strong>：在智能和成本之间取得平衡。如果你在并行跑多个会话，或想少花点钱又不至于质量大幅下降，选 high。&nbsp;</li><li><strong><code>xhigh</code>（默认，推荐）</strong>：适合大多数编程和 agentic 用法的最佳档位。它拥有强大的自主性和智能，又不会像 max 在长时间 agentic 运行中那样出现 token 失控。</li><li><strong><code>max</code></strong>：在真正困难的问题上榨出额外性能，但收益递减，而且更容易过度思考。请有意识地把它用在诸如在评测中测试模型能力上限，以及对智能极端敏感、对成本不敏感的场景。&nbsp;</li></ul><p>如果你在升级到新模型，我们建议重新试验 effort 档位，而不是直接照搬旧设置。你可以在同一个任务中切换 effort 等级，更有效地管理 token 用量和推理强度。&nbsp;</p><p>我们把 Opus 4.7 的默认 effort 设为 xhigh，是因为相信它是大多数编程任务的最佳设置。如果你是 Claude Code 的现有用户但没有手动设置过 effort，你会被自动升级到 <code>xhigh</code>。你仍然可以手动调整。</p><h2>使用自适应思考</h2><p><strong>Opus 4.7 不支持带固定思考预算的 Extended Thinking。</strong>取而代之的是自适应思考（adaptive thinking）。它让思考在每一步都变成<em>可选</em>的，允许模型根据上下文决定何时投入更多思考。它可以快速回应简单查询，在某个步骤无益时跳过思考，并把思考 token 投入到最有价值的地方。在一次 agentic 运行中，这累积起来就是更快的响应和更好的使用体验。</p><p>这一版的自适应思考有明显改进——尤其是 Opus 4.7 不那么容易过度思考了。</p><p>如果你想更精细地控制思考频率，可以直接在提示词里说：</p><ul role="list"><li><strong>想让它多思考，</strong>可以试试："请仔细地一步步思考后再作答；这个问题比看上去更难。"</li><li><strong>想让它少思考，</strong>可以试试："优先快速回应，而不是深入思考。拿不准时就直接回答。"这样能省 token，但在较难的步骤上可能损失一些准确性。&nbsp;</li></ul><h2>值得了解的行为变化</h2><p>Opus 4.6 到 4.7 之间有几个默认行为发生了变化。如果你曾针对旧模型精心调优过提示词或 harness，这些变化值得留意。</p><p><strong>回复长度会根据任务复杂度校准。</strong>Opus 4.7 不像 Opus 4.6 那样默认啰嗦。简单查询的回复会更短，开放式分析的回复会更长。如果你的用例依赖特定长度或风格，请在提示词中明确说明。我们发现，给出你想要的语气风格的正面示例，效果要好于"不要这样做"式的否定式指令。</p><p><strong>模型调用工具的频率降低，推理更多。</strong>这在很多场景下会产生更好的结果。如果你想要<em>更多</em>工具调用（比如在 agentic 工作中更激进地搜索或读文件），请提供明确描述何时、为何应使用该工具的指引。</p><p><strong>默认生成的 subagent 更少。</strong>Opus 4.7 在何时把工作委托给 subagent 上更加审慎。如果你的用例能从并行 subagent 中获益（例如跨文件或跨独立条目分头处理），我们建议明说。例如：</p><p>对于你能在单次回复中直接完成的工作（比如重构一个你已经能看到的函数），不要生成 subagent。在跨条目分头处理或读取多个文件时，在同一轮中生成多个 subagent。</p><h2>接下来可以尝试什么</h2><p>Opus 4.7 在长时间运行任务上的表现优于以往的模型。这使它很适合那些过去以人工监督为瓶颈的任务，比如复杂的多文件改动、模糊不清的调试、跨服务的代码审查，以及多步骤 agentic 工作。</p><p>我们建议把 effort 保持为 <code>xhigh</code>，看看你的第一轮输入能走多远。</p><p><em>更多信息请参阅我们的 </em><a href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"><em>Opus 4.7 提示词指南</em></a><em>，以及我们关于 Claude Code 中</em><a href="https://claude.com/blog/using-claude-code-session-management-and-1m-context"><em>上下文与会话管理</em></a><em>的文章。</em></p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/best-practices-for-using-claude-opus-4-7-with-claude-code" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

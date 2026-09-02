@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude 的 Prompt caching — Claude Blog 中文翻译</title>
+  <meta name="description" content="Claude 的 Prompt caching">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/prompt-caching" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Product announcements</span>
+            <span class="article-date">August 14, 2025</span>
+            
+          </div>
+          <h1 class="article-title">Claude 的 Prompt caching</h1>
+          <a href="/posts/prompt-caching/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p><strong><em>更新</em></strong><em>：Prompt caching 已在 Anthropic API 上正式发布（GA）。Amazon Bedrock 和 Google Cloud 的 Vertex AI 也提供了预览版。（2024 年 12 月 17 日）<br><br></em>Prompt caching 允许开发者在 API 调用之间缓存常用的上下文，现已在 Anthropic API 上推出。借助 prompt caching，客户可以为 Claude 提供更多背景知识和示例输出——同时针对长提示词将成本降低多达 90%、延迟降低多达 85%。Prompt caching 今天以公开测试版形式面向 Claude 3.5 Sonnet、Claude 3 Opus 和 Claude 3 Haiku 提供。</p><h2>何时使用 prompt caching</h2><p>当你想一次性发送大量提示词上下文，然后在后续请求中反复引用这些信息时，prompt caching 会非常有效，典型场景包括：</p><ul role="list"><li><strong>对话式智能体：</strong>为长对话降低成本和延迟，尤其是包含长指令或上传文档的对话。</li><li><strong>编程助手：</strong>将代码库的摘要版本保留在提示词中，提升自动补全和代码库问答的效果。</li><li><strong>大型文档处理：</strong>在提示词中纳入完整的长篇材料（包括图片），而不会增加响应延迟。</li><li><strong>详尽的指令集：</strong>分享大量的指令、流程和示例，精细调校 Claude 的回应。开发者常在提示词里放几个示例，而有了 prompt caching，你可以放入数十个多样的高质量输出示例，获得更好的效果。</li><li><strong>智能体式搜索与工具使用：</strong>为涉及多轮工具调用和迭代修改的场景提升性能——这类任务的每一步通常都需要一次新的 API 调用。</li><li><strong>与书籍、论文、文档、播客转录等长内容对话：</strong>把整篇文档嵌入提示词，让用户直接向它提问，让任何知识库都“活”起来。<br></li></ul><p>早期客户已在多种场景中通过 prompt caching 获得了可观的速度与成本改善——从纳入完整知识库、100 个示例的 few-shot 提示，到把对话的每一轮都包含在提示词中。</p><div class="w-embed"><figure>
+  <div role="region" tabindex="0">
+    <table>
+      <tbody>
+        <tr>
+          <th><strong>使用场景</strong></th>
+          <th>
+            <strong>未使用缓存的延迟（首 token 耗时）</strong>
+          </th>
+          <th>
+            <strong>使用缓存的延迟（首 token 耗时）</strong>
+          </th>
+          <th><strong>成本降幅</strong></th>
+        </tr>
+        <tr>
+          <td>与一本书对话（100,000 token 的缓存提示词）[1]</td>
+          <td>11.5s</td>
+          <td>2.4s (-79%)</td>
+          <td>-90%</td>
+        </tr>
+        <tr>
+          <td>Many-shot prompting（10,000 token 提示词）[1]</td>
+          <td>1.6s</td>
+          <td>1.1s (-31%)</td>
+          <td>-86%</td>
+        </tr>
+        <tr>
+          <td>
+            多轮对话（带长系统提示词的 10 轮对话）
+            [2]
+          </td>
+          <td>~10s</td>
+          <td>~2.5s (-75%)</td>
+          <td>-53%</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <figcaption>Prompt caching</figcaption>
+</figure></div><h3>缓存提示词如何计费</h3><p>缓存提示词的定价取决于你缓存的输入 token 数量和使用该内容的频率。写入缓存的价格比任一模型的基础输入 token 价格高 25%，而使用缓存内容的成本则低得多，仅为基础输入 token 价格的 10%。</p><div class="w-embed"><figure>
+  <div role="region" tabindex="0">
+    <table>
+      <tbody>
+        <tr>
+          <td>
+            <strong>Claude 3.5 Sonnet</strong>
+            <ul>
+              <li>迄今最智能的模型</li>
+              <li>200K 上下文窗口</li>
+            </ul>
+          </td>
+          <td>
+            <strong>输入</strong>
+            <ul>
+              <li>$3 / MTok</li>
+            </ul>
+            <br>
+          </td>
+          <td>
+            <strong>Prompt caching</strong>
+            <ul>
+              <li>
+                $3.75 / MTok -
+                <!-- -->缓存写入
+              </li>
+              <li>$0.30 / MTok - 缓存读取</li>
+            </ul>
+          </td>
+          <td>
+            <strong>输出</strong>
+            <ul>
+              <li>$15 / MTok</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong>Claude 3 Opus</strong>
+            <ul>
+              <li>面向复杂任务的强大模型</li>
+              <li>200K 上下文窗口<br></li>
+            </ul>
+          </td>
+          <td>
+            <strong>输入</strong>
+            <ul>
+              <li>$15 / MTok</li>
+            </ul>
+            <br>
+          </td>
+          <td>
+            <strong>Prompt caching</strong>
+            <ul>
+              <li>
+                $18.75 / MTok -
+                <!-- -->缓存写入
+              </li>
+              <li>$1.50 / MTok - 缓存读取</li>
+            </ul>
+          </td>
+          <td>
+            <strong>输出</strong>
+            <ul>
+              <li>$75 / MTok</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong>Claude 3 Haiku</strong>
+            <ul>
+              <li>最快、最具成本效益的模型</li>
+              <li>200K 上下文窗口</li>
+            </ul>
+          </td>
+          <td>
+            <strong>输入</strong>
+            <ul>
+              <li>$0.25 / MTok</li>
+            </ul>
+          </td>
+          <td>
+            <strong>Prompt caching</strong>
+            <ul>
+              <li>
+                $0.30 / MTok<!-- -->
+                -
+                <!-- -->缓存写入
+              </li>
+              <li>$0.03 / MTok - 缓存读取</li>
+            </ul>
+          </td>
+          <td>
+            <strong>输出</strong>
+            <ul>
+              <li>$1.25 / MTok</li>
+            </ul>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <figcaption>Pricing</figcaption>
+</figure></div><h3>客户聚焦：Notion</h3><p><a target="_blank" href="https://www.notion.so/product/ai">Notion</a> 正在为其 AI 助手 Notion AI 中由 Claude 驱动的功能加入 prompt caching。凭借更低的成本和更快的速度，Notion 得以优化内部运营，并为客户打造更精致、响应更快的用户体验。</p><blockquote>我们很高兴能通过 prompt caching 让 Notion AI 更快、更便宜，同时保持业界领先的质量。</blockquote><p>—— Notion 联合创始人 Simon Last</p><h3>开始使用</h3><p>要在 Anthropic API 上开始使用 prompt caching 公开测试版，请查阅我们的<a target="_blank" href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching">文档</a>和<a target="_blank" href="https://www.anthropic.com/pricing#anthropic-api">定价页面</a>。</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/prompt-caching" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

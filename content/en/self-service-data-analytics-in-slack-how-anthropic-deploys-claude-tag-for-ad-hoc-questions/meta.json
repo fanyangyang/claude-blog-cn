@@ -1,0 +1,17 @@
+{
+  "slug": "self-service-data-analytics-in-slack-how-anthropic-deploys-claude-tag-for-ad-hoc-questions",
+  "title": "Self-service data analytics in Slack: how Anthropic deploys Claude Tag for ad-hoc questions",
+  "date": "August 13, 2026",
+  "category": "Agents",
+  "url": "https://claude.com/blog/self-service-data-analytics-in-slack-how-anthropic-deploys-claude-tag-for-ad-hoc-questions",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/self-service-data-analytics-in-slack-how-anthropic-deploys-claude-tag-for-ad-hoc-questions.svg",
+  "illustrationBg": "Sky",
+  "fetchedAt": "2026-09-02T03:50:17.776Z",
+  "translatedTitle": "Slack 里的自助数据分析：Anthropic 如何部署 Claude Tag 应对临时数据问题",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:30:13.000Z",
+  "translateLang": "zh-CN"
+}

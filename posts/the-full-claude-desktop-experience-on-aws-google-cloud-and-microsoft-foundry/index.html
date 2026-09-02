@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>在 AWS、Google Cloud 和 Microsoft Foundry 上获得完整的 Claude Desktop 体验 — Claude Blog 中文翻译</title>
+  <meta name="description" content="在 AWS、Google Cloud 和 Microsoft Foundry 上获得完整的 Claude Desktop 体验">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/the-full-claude-desktop-experience-on-aws-google-cloud-and-microsoft-foundry" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Enterprise AI</span>
+            <span class="article-date">June 22, 2026</span>
+            
+          </div>
+          <h1 class="article-title">在 AWS、Google Cloud 和 Microsoft Foundry 上获得完整的 Claude Desktop 体验</h1>
+          <a href="/posts/the-full-claude-desktop-experience-on-aws-google-cloud-and-microsoft-foundry/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>通过 AWS、Google Cloud 和 Microsoft Foundry 使用 Claude Desktop 的组织，现在可以获得完整的 Desktop 体验——对话、Claude Cowork 和 Claude Code，尽在一个应用中。</p><p>如今，IT 团队可以让推理在所有产品中都留在自己的环境内，并通过按用户的 SSO、MDM 策略模板、离线安装程序选项，以及可完全在设备上运行的 M365 连接器，在整个组织范围内部署 Claude Desktop。&nbsp;</p><p>推理在你配置的云区域中运行，对话历史存储在本地。数据连接器访问哪些端点、Anthropic 接收哪些汇总遥测数据，都由你掌控。</p><h3>面向整个组织的统一界面</h3><p>在此之前，通过 AWS、Google Cloud 和 Microsoft Foundry 使用 Claude Desktop 的客户只能使用 Claude Cowork 和 Claude Code。现在，一次部署即可覆盖所有角色，且每个界面都有独立的策略键，由你来决定谁在何时获得什么。<br>用对话快速获取答案、梳理问题。用 Claude Cowork 处理员工更愿意交出去的工作：Claude 在已批准的来源中调研，处理设备上已有的文件并构建交付物，完成后呈现结果。用 Claude Code 让工程师无需守在终端里也能进行智能体编程。<br></p><h3>部署控制</h3><p>在整个组织范围部署 Claude Desktop，意味着要融入你现有的体系。</p><p><strong>像登录任何办公应用一样登录。</strong>员工使用与其他工作一模一样的工作账号：IAM Identity Center、Workforce Identity Federation、Microsoft Entra ID，或 Okta 等任何 OIDC 提供商。没有需要轮换的共享密钥，终端用户机器上也不存在云凭据。</p><p><strong>像管理现有应用一样部署。</strong>从设置界面导出策略模板，通过 Intune、GPO 或 Jamf 下发。离线安装程序可覆盖物理隔离环境。</p><p><strong>在任何人看到之前先确认它能用。</strong>在正式推出前测试每个连接器，确认你的提供商提供哪些 Claude 模型，并验证连接。模型防护机制可确保路由始终停留在 Claude 上——即使某个配置有误——GovCloud 环境中也不例外。</p><p><strong>小规模起步，随采用扩大。</strong>对话、Claude Cowork 和 Claude Code 各自有独立的策略键，因此你可以先给非技术团队开放对话和 Claude Cowork，给工程团队开放 Claude Code，再随着各团队对每个界面的采用逐步放宽访问。你的硬性拒绝规则在所有标签页中一律生效。</p><p><strong>把 Claude 带到工作发生的地方。</strong>Microsoft 365 连接器让 Claude 通过你自己的 Entra 应用访问邮件和文档，支持租户白名单，并对 GCC High/DoD 端点提供测试版支持。对于最严格的数据驻留要求，可以使用我们的本地连接器，连接只存在于设备与 Microsoft 之间。</p><blockquote>"我们通过现有的云环境快速上线了 Claude Desktop——无需单独签订供应商合同。借助我们自有的 LLM Gateway，一个团队就将其部署给了全球数百名用户，无需进行庞大的基础设施建设。" - Hanwha Solutions 分析/AI 团队负责人 Sarang Oh<br></blockquote><h3>开始使用</h3><p>对于管理员，<a href="http://claude.com/docs/third-party/claude-desktop/installation">部署指南</a>详细介绍了 SSO、策略模板和上线前验证。也可以联系你的客户团队，我们会帮你规划 rollout。</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/the-full-claude-desktop-experience-on-aws-google-cloud-and-microsoft-foundry" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

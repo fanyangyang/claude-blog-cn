@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Introducing dynamic workflows in Claude Code — Claude Blog CN</title>
+  <meta name="description" content="Introducing dynamic workflows in Claude Code">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="/posts/introducing-dynamic-workflows-in-claude-code/" class="nav-link">中文版 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Product announcements</span>
+            <span class="article-date">May 28, 2026</span>
+            <span class="lang-badge-large">EN</span>
+          </div>
+          <h1 class="article-title">Introducing dynamic workflows in Claude Code</h1>
+          <a href="/posts/introducing-dynamic-workflows-in-claude-code/" class="lang-toggle">阅读中文翻译 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p><strong>Update: </strong>Dynamic workflows are now generally available.</p><p>Today we're introducing dynamic workflows in Claude Code, helping Claude take on the most challenging tasks end-to-end. Work you'd normally plan in quarters now finishes in days. Claude dynamically writes orchestration scripts that run tens to hundreds of parallel subagents in a single session, checking its work before anything reaches you.</p><p>Some problems are too big for one pass by a single agent, especially in complex, legacy codebases: a bug hunt across an entire service, a migration that touches hundreds of files, a plan you want stress-tested from every angle before you commit to it. Dynamic workflows can handle all of these end-to-end.</p><figure style="max-width:2048pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a186b2e070156fbb2df90ad_166befe7.png" loading="lazy"></div></figure><p>Dynamic workflows are generally available in the Claude Code CLI, Desktop, and the VS code extension for Pro, Max, Team, and Enterprise plans, as well as on the Claude API, on Amazon Bedrock, Vertex AI, and Microsoft Foundry.</p><p>Note: Dynamic workflows can consume substantially more tokens than a typical Claude Code session, so we recommend starting on a scoped task to get a feel for usage in your work.&nbsp;</p><p>For the best experience, turn on auto mode when using dynamic workflows. From there, you have two ways to start a workflow:</p><ol role="list"><li>Ask Claude to create a dynamic workflow directly (e.g.,&nbsp; “Create a workflow”), or</li><li>Switch on a new Claude Code-specific setting called <code>ultracode</code>. This is accessible through the effort menu and it sets the effort level to xhigh, while letting Claude decide automatically when to use a workflow to handle your task.</li></ol><h2><strong>Dynamic workflows in action</strong></h2><p>Early access users and teams inside Anthropic have been using dynamic workflows for a wide range of use cases, including:</p><ul role="list"><li><strong>Codebase-wide bug hunts, profiler-guided optimization audits, and security audits:</strong> Claude searches a service or repo in parallel, then runs independent verification on every finding so the report surfaces real issues. The same shape works for hardening passes:&nbsp; auth checks, input validation, and unsafe patterns across an entire codebase.</li><li><strong>Large migrations and modernization efforts:</strong> Claude can handle framework swaps, API deprecations, language ports that span thousands of files end-to-end.<strong>‍</strong></li><li><strong>Critical work you need checked twice:</strong> When the cost of a wrong answer is high, a workflow gives Claude independent attempts at the problem and adversarial agents working to break the result before you see it.</li></ul></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/introducing-dynamic-workflows-in-claude-code" target="_blank">View original</a></p>
+          <p><a href="/">← Back to home</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>Content from <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · Translation by AI</p>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -5,5 +5,13 @@
   "category": "Product announcements",
   "url": "https://claude.com/blog/claude-for-teachers-now-available-for-schools-and-districts",
   "fetchedAt": "2026-09-01T11:10:17.013Z",
-  "translated": false
+  "translated": true,
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/claude-for-teachers-now-available-for-schools-and-districts.svg",
+  "illustrationBg": "Clay",
+  "translatedTitle": "Claude for Teachers 现已面向美国 K-12 学校和学区开放",
+  "translatedAt": "2026-09-01T11:19:19.935Z",
+  "translateLang": "zh"
 }

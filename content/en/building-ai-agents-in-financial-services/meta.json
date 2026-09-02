@@ -1,0 +1,17 @@
+{
+  "slug": "building-ai-agents-in-financial-services",
+  "title": "Building AI agents for financial services",
+  "date": "October 30, 2025",
+  "category": "Agents",
+  "url": "https://claude.com/blog/building-ai-agents-in-financial-services",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/building-ai-agents-in-financial-services.svg",
+  "illustrationBg": "Mineral",
+  "fetchedAt": "2026-09-02T03:50:17.789Z",
+  "translatedTitle": "在金融服务领域构建 AI 智能体",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:55:16.000Z",
+  "translateLang": "zh-CN"
+}

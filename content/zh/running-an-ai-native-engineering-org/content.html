@@ -1,0 +1,126 @@
+<div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><div class="w-embed"><style>
+  /* Fluid breakout for blog embeds + code blocks */
+  .u-rich-text-blog .w-embed,
+  .u-rich-text-blog pre.w-code-block {
+    --max-w: 860px;
+    --gutter: 24px;
+    --available: calc(100vw - (var(--gutter) * 2));
+    --w: min(var(--max-w), var(--available));
+    width: var(--w);
+    max-width: var(--w);
+    margin-left: calc((640px - var(--w)) / 2);
+    margin-right: calc((640px - var(--w)) / 2);
+    box-sizing: border-box;
+  }
+  @media (max-width: 720px) {
+    .u-rich-text-blog .w-embed,
+    .u-rich-text-blog pre.w-code-block {
+      width: 100%;
+      max-width: 100%;
+      margin-left: 0;
+      margin-right: 0;
+    }
+    /* Constrain the post column to the viewport so nothing overflows the page */
+    .blog_post_layout.u-column-custom,
+    .blog_post_content_wrap,
+    .u-rich-text-blog {
+      max-width: 100% !important;
+      box-sizing: border-box;
+    }
+    html,
+    body {
+      overflow-x: hidden;
+    }
+  }
+  /* Embed inner wrappers: scroll horizontally when content overflows */
+  .u-rich-text-blog .w-embed figure {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+  .u-rich-text-blog .w-embed figure > div {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  /* Tables: ratios on wider screens, natural width + scroll on mobile */
+  .u-rich-text-blog .w-embed table {
+    width: 100% !important;
+    table-layout: fixed !important;
+  }
+  .u-rich-text-blog .w-embed table th:nth-child(1),
+  .u-rich-text-blog .w-embed table td:nth-child(1) {
+    width: 22%;
+  }
+  .u-rich-text-blog .w-embed table th:nth-child(2),
+  .u-rich-text-blog .w-embed table td:nth-child(2) {
+    width: 39%;
+  }
+  .u-rich-text-blog .w-embed table th:nth-child(3),
+  .u-rich-text-blog .w-embed table td:nth-child(3) {
+    width: 39%;
+  }
+  .u-rich-text-blog .w-embed td code,
+  .u-rich-text-blog .w-embed th code {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    white-space: normal;
+  }
+  @media (max-width: 639px) {
+    .u-rich-text-blog .w-embed table {
+      width: auto !important;
+      min-width: 640px !important;
+      table-layout: auto !important;
+    }
+    .u-rich-text-blog .w-embed table th,
+    .u-rich-text-blog .w-embed table td {
+      min-width: 0 !important;
+      width: auto !important;
+    }
+  }
+  /* Code blocks */
+  .u-rich-text-blog pre.w-code-block {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  @media (max-width: 639px) {
+    .u-rich-text-blog pre.w-code-block {
+      font-size: 0.82rem;
+    }
+  }
+</style></div><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/igO8iyca2_g?start=433" title="Running an AI-native engineering org" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><p>多年来，工程带宽一直是构建应用中最昂贵的部分。我们过去围绕软件规划和交付建立的所有流程，从瀑布式到敏捷，都是围绕这一成本设计的。</p><p>我的职业生涯始于 2000 年代初，当时在开发 Visual Studio。那时候我们把软件刻在 CD-ROM 上交付，有着刚性的制造截止日期。当软件可以在线分发之后，我们开始不断提高更新频率，走向持续交付。现在，我们又一次在改变工作方式，这次围绕的是写软件所需的时间和人力。</p><p>在 Claude Code 团队，写代码、写测试和重构已经很少再拖慢我们的进度。但当智能体编程让“亲手敲代码”不再是必需之后，瓶颈并没有消失，而是换成了验证、代码审查和安全。</p><p>现在我们都能非常快地生成大量代码，但这也带来了新的问题：这些代码正确吗？如何维护它们？工程负责人最常问我的问题之一是：“你们做代码审查时，人是怎么跟得上的？”<em>&nbsp;</em></p><h2>那些悄悄失效的流程</h2><p>我们设立每个流程都有原因，或是为了填补某个缺口，或是为了让某件事运转得更好。但当那个缺口不复存在、流程变得过时之后，它们很少会自行消失。当 Claude Code 团队开始把智能体编程作为默认工作方式时，我们的许多既有流程就失效了。下面是我们重写的那些规范，以及背后的原因。</p><h3>规划：把路线图转向“即时制”</h3><p>过去的惯例是在预规划上花大量时间，因为编码时间很昂贵。我刚加入 Claude Code 团队时，我们写了一份相当不错的六个月路线图，然后<em>正是因为</em> Claude Code，变化来得太多太快，到第三个月这份路线图就过时了。</p><p>工程速度和吞吐量已经不一样了，所以我们规划迭代的方式也随之改变。我称之为即时制（JIT）规划，有点像 JIT 编译：如何在恰当的时机只做恰当分量的规划？我们的规划仪式从设计文档转向了在 PR 或原型中的讨论。这个领域变化太快，所以我们不做很多产品评审。现在的流程是：先做原型，让大量内部用户用起来，然后根据他们的反馈行动。</p><h3>获取上下文：问 Claude，而不是问作者</h3><p>在过去，工程师想知道大多数问题的答案，第一步是找到写这段代码的人。现在，由于我们所有的 PR 都有 Claude 参与，“这个改动是谁做的？”已经不够用了。我们的新规范是再深入一层：你真正想知道的是什么？比如：你是想找出谁造成了某次回归？找一位专家回答客户问题？还是想了解某个决策的背景？你把这个问题抛给 Claude，看看 Claude 能否借助更多的数据和上下文直接回答。</p><p>在 Claude Code 团队，无论这个问题是什么，我们的流程都会再追问一句：“有没有办法把它自动化？”比如，让 Claude 每天早上汇总客户反馈渠道，这件事从我自己端着咖啡手动完成的例行公事，变成了后台自动运行的任务。</p><h3>代码审查：信任但要验证</h3><p>我们大量使用 <a href="https://code.claude.com/docs/en/code-review" target="_blank">Code Review</a>。Claude 负责所有风格检查和 lint、PR 反馈请求、在完整提交之前发现并修复 Bug，以及补充测试。我们仍然绝对需要人类介入的地方是专业性判断。</p><p>新规范是在关键环节进行人工审查：涉及法务审查时，我始终希望我的法务伙伴参与风险容忍度的判断；涉及信任边界和安全敏感代码时，我需要领域专家；产品经理和设计师也需要参与进来，贡献产品感觉和品味。</p><p>不过，持续评估很重要，因为“信任”与“验证”之间的合理平衡会随着模型的进步不断变化。今天需要人类把关的事情，到下一代模型时可能就不一样了。</p><h3>团队构成：角色边界模糊化</h3><p>Claude 和 AI 重塑了团队中的角色。我们的产品经理现在会写很多代码，这看起来很有意思。有了 Claude，非传统意义上的程序员可以做更多工程工作，而工程师也开始承担内容和设计这类传统上不属于技术侧的工作。</p><p>在 Claude Code 工程团队，我特别看重两类人才画像。一类是有产品感觉的创造性构建者：那些充满好奇心、热爱打造能解决实际问题的产品的梦想家。另一类是具备深厚系统专业知识的工程师。比如我刚加入团队时，发现我们缺少有系统背景的专家，而构建 <a href="https://www.anthropic.com/news/claude-code-on-the-web" target="_blank">Claude Code on the Web</a> 时我们需要这样的人才，以确保 Claude 能在任何地方运行。</p><p>相应地，我较少关注的是原始吞吐量，模型会解决这个。更重要的问题是：哪里仍然需要人类的专业判断？我会把重心放在那里。</p><div class="w-embed"><figure>
+  <div role="region" tabindex="0">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col"></th>
+          <th scope="col">之前</th>
+          <th scope="col">之后</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">规划</th>
+          <td>六个月的产品路线图。</td>
+          <td>即时制（JIT）规划：先做原型，让内部用户用起来，再根据反馈行动。</td>
+        </tr>
+        <tr>
+          <th scope="row">获取上下文</th>
+          <td>找到写代码的人，直接问他们。</td>
+          <td>先问 Claude，再追问这件事能否被自动化。</td>
+        </tr>
+        <tr>
+          <th scope="row">代码审查</th>
+          <td>人工审查所有内容。</td>
+          <td>Claude 负责风格、Bug 和测试，人类在需要领域专业判断的地方审查。</td>
+        </tr>
+        <tr>
+          <th scope="row">团队构成</th>
+          <td>固定角色：工程师写代码，产品经理做规划，设计师做设计。</td>
+          <td>角色边界模糊：产品经理做原型，工程师承担设计和上下文工作。招聘时看重创造性构建者和深厚的系统专业知识。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</figure></div><h2>我们如何推行新规范</h2><p>在这些规范变化的过程中，有些内容被确立为团队原则强制执行，另一些则放手让小型子团队（pod）自行摸索。Claude Code 核心团队有一套不可妥协的“必做”原则：</p><ul role="list"><li><strong>不遗余力地吃自己的狗粮：</strong>Claude Code 团队的每一位成员，包括跨职能伙伴，都在使用 Claude Code（以及 Claude Cowork）。我们始终在思考如何让 Claude 帮我们更快、更高效地完成工作。</li><li><strong>让团队尽可能扁平。</strong>我加入 Claude Code 时，希望每位经理先从独立贡献者（IC）做起，通过实际交付学会如何在这个团队里做一名高效的工程师，真正亲身体会并理解在 Anthropic 当工程师是什么感觉。Claude Code 和 Claude Cowork 只有同一个整体团队使命。经理们支持各个工作小组，同时保持团队敏捷，让人能流动到工作所在的地方。</li><li><strong>果断砍掉不再奏效的流程：</strong>最后，我们不断地追问为什么事情要这样做。当某件事不再合理时，团队成员有明确的授权去质疑并废除旧流程。</li></ul><p>不过在这几条规则之内，每个小组都有很大的自主权。他们可以自行决定如何用 Claude 做问题分流、如何组织规划仪式或站会，以及优先把哪些工作流“Claude 化”。</p><h2>如何判断新流程是否真正落地</h2><p>在推行变革时，每位工程负责人都应该开始跟踪下面三个数字。</p><ul role="list"><li><strong>新人上手时间缩短：</strong>一位工程师、设计师或产品经理多快能开始产生实际产出？在我们团队，这比一年前快得多，工程师现在入职第一周就能交付真正的代码。</li><li><strong>PR 周期时间缩短：</strong>这一项值得深挖，因为它可能帮你找到流水线中难以扩展的环节。随着我们生成的代码量大增，有时候构建系统和持续集成（CI）可能会跟不上。</li><li><strong>Claude 辅助的提交占比上升：</strong>对我们来说，默认情况下每一次提交都有 Claude 参与。过去四个月里，我想我已经没见过不经 Claude 辅助的提交了。</li></ul><p>关于第三条，不要把吞吐量和成功混为一谈。吞吐量是一个指标，但真正的指标是衡量你到底想解决的问题本身。只要方向对齐，吞吐量能帮你更快地解决问题。</p><h2>从哪里开始</h2><p>如果只让我留给你一句话：<strong>挑出你最“吵”的那个工作流。</strong>它可能是你最昂贵的工作流、你可能一直在逃避的那个，或者你的团队最不期待的那个。然后问自己：它还在发挥原本的作用吗？如果是，能不能把它自动化？</p><p>我曾经在一个团队里，每周都有一场成本高昂的评审会，一大群人坐在会议室里。我注意到，除了轮到自己汇报进展的时候，所有人都盯着自己的笔记本电脑。他们抬起头说一句状态，然后又低头回到电脑上。我问了一个很简单的问题：“我们为什么还要开这个会？这好像是在浪费大家很昂贵的时间。”就这一个问题让所有人意识到它没有必要，于是我们把它取消了。</p><p>所以，问问自己：你的工程工作流中，有哪一块是可以考虑自动化、甚至干脆去掉的？</p><p>‍</p></div>

@@ -1,0 +1,17 @@
+{
+  "slug": "auto-mode-in-production",
+  "title": "Running auto mode in production",
+  "date": "August 7, 2026",
+  "category": "Claude Code",
+  "url": "https://claude.com/blog/auto-mode-in-production",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/auto-mode-in-production.svg",
+  "illustrationBg": "Mineral",
+  "fetchedAt": "2026-09-02T03:50:17.776Z",
+  "translatedTitle": "在生产环境中运行自动模式",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:30:13.000Z",
+  "translateLang": "zh-CN"
+}

@@ -1,0 +1,17 @@
+{
+  "slug": "cowork-web-mobile",
+  "title": "Claude Cowork is coming to mobile and web",
+  "date": "July 7, 2026",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/cowork-web-mobile",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/cowork-web-mobile.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.784Z",
+  "translatedTitle": "Claude Cowork 登陆移动端和 Web 端",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:35:00.000Z",
+  "translateLang": "zh-CN"
+}

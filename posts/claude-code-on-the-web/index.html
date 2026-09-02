@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude Code on the web — Claude Blog 中文翻译</title>
+  <meta name="description" content="Claude Code on the web">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/claude-code-on-the-web" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Product announcements</span>
+            <span class="article-date">October 20, 2025</span>
+            
+          </div>
+          <h1 class="article-title">Claude Code on the web</h1>
+          <a href="/posts/claude-code-on-the-web/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p><strong><em>更新：</em></strong><em> Claude Code on the web 现已作为研究预览版，面向拥有高级席位（premium seats）的 Team 和 Enterprise 用户开放，Pro 和 Max 用户同样可以使用。对于这些用户，Claude Code on the web 默认开启，账户管理员可以在 Claude 设置中开关此功能。2025 年 11 月 12 日</em></p><p>今天，我们推出 Claude Code on the web，这是一种直接在浏览器中委派编码任务的新方式。</p><p>目前以研究预览版的形式进行 beta 测试，你可以将多个编码任务交给 Claude，在 Anthropic 管理的云基础设施上运行，非常适合处理积压的 Bug、例行修复或并行开发工作。</p><h2>并行运行编码任务</h2><p>Claude Code on the web 让你无需打开终端就能启动编码会话。连接你的 GitHub 仓库，描述你的需求，剩下的实现工作由 Claude 完成。</p><p>每个会话都在相互隔离的独立环境中运行，并提供实时进度跟踪；在 Claude 处理任务的过程中，你也可以随时引导它调整方向。</p><figure style="padding-bottom:56.25%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube-nocookie.com/embed/s-avRazvmLg?autoplay=0&amp;mute=1&amp;controls=1&amp;origin=https%3A%2F%2Fwww.staging.ant.dev&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;iv_load_policy=3&amp;modestbranding=1&amp;enablejsapi=1&amp;widgetid=1&amp;forigin=https%3A%2F%2Fwww.staging.ant.dev%2Fnews%2Fclaude-code-on-the-web&amp;aoriginsup=1&amp;gporigin=https%3A%2F%2Fwww.staging.ant.dev%2Fantaccess%2Fstructure%2Fposts%3Bnews%3Bbf9ddf12-70b1-493c-b667-b2c908f0bcb7%252Cview%253Dpreview&amp;vf=1" frameborder="0" allowfullscreen=""></iframe></div></figure><p>由于 Claude Code 运行在云端，你现在可以<strong>通过单一界面在不同仓库间并行运行多个任务</strong>，并借助自动创建 PR 和清晰的变更摘要<strong>更快地交付</strong>。</p><h2>灵活适配各种工作流</h2><p>Web 界面与你现有的 Claude Code 工作流形成互补。在云端运行任务尤其适合：</p><ul role="list"><li>解答关于项目运作方式和仓库结构的问题</li><li>Bug 修复以及边界清晰的例行任务</li><li>后端变更，Claude Code 可以采用测试驱动开发来验证修改</li></ul><p>你也可以在移动端使用 Claude Code。作为本次研究预览的一部分，我们在 iOS 应用中提供了 Claude Code，让开发者可以随时随地用 Claude 进行编码。这还是一个早期预览版本，我们希望根据你的反馈快速完善移动端体验。<br></p><h2>安全优先的云端执行</h2><p>每个 Claude Code 任务都运行在带有网络和文件系统限制的隔离沙箱环境中。Git 交互通过安全的代理服务处理，确保 Claude 只能访问经过授权的仓库——在整个工作流中保护你的代码和凭据安全。</p><p>你还可以添加自定义网络配置，指定 Claude Code 可以从沙箱中连接哪些域名。例如，你可以允许 Claude 从互联网下载 npm 包，以便它运行测试并验证更改。</p><p>欢迎阅读我们的<a href="https://www.anthropic.com/engineering/claude-code-sandboxing">工程博客</a>和<a href="https://docs.claude.com/en/docs/claude-code/sandboxing">文档</a>，深入了解 Claude Code 的沙箱机制。</p><h2>开始使用</h2><p>Claude Code on the web 现已作为研究预览版面向 Pro 和 Max 用户开放。访问 <a href="http://claude.com/code">claude.com/code</a>，连接你的第一个仓库，开始委派任务。</p><p>云端会话与其他所有 Claude Code 用途共享速率限制。<a href="https://docs.claude.com/en/docs/claude-code/claude-code-on-the-web">查阅我们的文档</a>了解更多信息。</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/claude-code-on-the-web" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

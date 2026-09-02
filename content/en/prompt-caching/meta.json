@@ -1,0 +1,17 @@
+{
+  "slug": "prompt-caching",
+  "title": "Prompt caching with Claude",
+  "date": "August 14, 2025",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/prompt-caching",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/prompt-caching.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.789Z",
+  "translated": true,
+  "translatedTitle": "Claude 的 Prompt caching",
+  "translatedAt": "2026-09-02T12:36:00.000Z",
+  "translateLang": "zh-CN"
+}

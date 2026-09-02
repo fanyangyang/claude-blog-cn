@@ -1,0 +1,29 @@
+<div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p><em>在我们的系列文章 </em><strong>《创业公司如何用 Claude 构建》</strong>（How startups build with Claude）中，我们聚焦创业公司如何用 AI 变革所在行业。本文将分享 Outtake 如何构建一个自主网络犯罪调查员，它能检测、调查并瓦解数字威胁——从克隆的登录页面到整张对抗性网络。</p><div class="w-embed"><figure>
+  <div role="region" tabindex="0">
+    <table>
+      <thead>
+        <tr>
+          <th colspan="2" scope="colgroup">快速了解</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">公司名称</th>
+          <td>Outtake</td>
+        </tr>
+        <tr>
+          <th scope="row">成立时间</th>
+          <td>2023 年</td>
+        </tr>
+        <tr>
+          <th scope="row">创始人</th>
+          <td>Alex Dhillon（CEO），曾任职于 Palantir 登月项目团队</td>
+        </tr>
+        <tr>
+          <th scope="row">增长情况</th>
+          <td>年经常性收入同比增长 6 倍，客户数增长超过 10 倍，仅 2025 年就扫描了 2000 万次以上潜在网络攻击。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</figure></div><p>即便有强大的防护措施和管控手段，不法分子仍可以把 AI 伪装成看似无害的用途，借以掩盖恶意意图。代码生成平台可以炮制出以假乱真的登录门户，智能体化的营销工具可以为钓鱼攻击的分发提供动力，图像生成能力则可以伪造身份。传统网络安全防御已经难以招架。</p><p>"如果你戴上坏人的帽子想一想，现在其实是发动攻击的大好时机，"AI 网络安全平台 <a href="https://www.outtake.ai/">Outtake</a> 的创始人兼 CEO Alex Dhillon 说，"有了 AI，平均而言攻击不仅执行得更快，而且能攫取更深层的访问权限。"</p><p>Outtake 将完整的<a href="https://www.outtake.ai/blog/2026-digital-trust-industry-pain-report">数字信任攻击链</a>统一到单一防御体系之下，利用成群的 AI 智能体自主检测、调查并瓦解针对客户的威胁——其客户包括领先的 AI 实验室、大型对冲基金和美国联邦机构。&nbsp;</p><p>下面是 Outtake 团队近期基于 Claude，使用 <a href="https://code.claude.com/docs/en/quickstart">Claude Code</a> 和 <a href="https://code.claude.com/docs/en/agent-sdk/overview">Agent SDK</a> 构建 Recon Agent（侦察智能体）——一个可长时间运行的自主网络调查员——的过程。</p><h2><strong>智能体化的攻击需要智能体化的防御</strong></h2><p>攻击者在攻击一家公司时，通常遵循相同的流程：武器化公开数据 → 搭建仿冒诱饵 → 渗透内部系统。这一流程已被 AI 大幅加速。</p><p>在攻破任何系统之前，他们会搜集组织及其高管、员工的公开信息。</p><p>然后把这些情报变成诱饵，比如一个带欺诈性登录页面的假网站，诱骗受害者交出凭证。通过这些诱饵获得的访问权限，帮助攻击者突破边界防线，触达组织最有价值、最敏感的资产。</p><p>&nbsp;<br>这个三段式流程是可预测的，但传统安全工具每次只守住其中一段：</p><ul role="list"><li>威胁情报工具监控公开数据阶段，</li><li>品牌保护工具盯防仿冒行为，</li><li>端点工具守卫内部系统。&nbsp;</li></ul><p>Outtake 的 Recon Agent 调查的是仿冒事件背后的整张网络。举例来说，它不只是下线一个克隆的登录页面，而是从仿冒事件中收集并归类证据。&nbsp;</p><p>它顺着这些线索追查关联基础设施——比如一个自称"客服"的假 Telegram 账号——并用图谱把这张对抗性网络绘制出来。最后一步，智能体产出一份报告，解释调查过程、威胁行为者的画像，以及重建出的攻击者行为时间线。&nbsp;</p><p>为了执行这套复杂的工作流，Recon Agent 能够读、写并运行代码。它甚至可以直接与恶意登录页面交互，看看窃取来的凭证最终流向了哪里。&nbsp;</p><p>这类调查可能要求智能体长时间自主运行。智能体会话的中位时长为 16 分钟，但经常延长到一小时以上；迄今为止最长的一次，是在持续两个小时的智能体工作后才返回结果。</p></div>

@@ -1,9 +1,17 @@
 {
   "slug": "new-in-claude-managed-agents",
   "title": "New in Claude Managed Agents: dreaming, outcomes, and multiagent orchestration",
-  "date": "Unknown",
+  "date": "May 19, 2026",
   "category": "Product announcements",
   "url": "https://claude.com/blog/new-in-claude-managed-agents",
   "fetchedAt": "2026-09-01T22:57:59.069Z",
-  "translated": false
+  "translated": true,
+  "inHero": true,
+  "heroIndex": 5,
+  "inGrid": true,
+  "illustration": "assets/illustrations/new-in-claude-managed-agents.svg",
+  "illustrationBg": "Clay",
+  "translatedTitle": "Claude Managed Agents 新功能：dreaming、outcomes 与多智能体编排",
+  "translatedAt": "2026-09-02T05:14:34.865Z",
+  "translateLang": "zh-CN"
 }

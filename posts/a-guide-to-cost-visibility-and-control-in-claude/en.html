@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A guide to cost visibility and control in Claude — Claude Blog CN</title>
+  <meta name="description" content="A guide to cost visibility and control in Claude">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="/posts/a-guide-to-cost-visibility-and-control-in-claude/" class="nav-link">中文版 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Enterprise AI</span>
+            <span class="article-date">August 4, 2026</span>
+            <span class="lang-badge-large">EN</span>
+          </div>
+          <h1 class="article-title">A guide to cost visibility and control in Claude</h1>
+          <a href="/posts/a-guide-to-cost-visibility-and-control-in-claude/" class="lang-toggle">阅读中文翻译 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>Businesses use Claude in many ways, from rolling it out to thousands of employees to startups and single teams building applications on the Claude Platform. Cost matters to all of them.</p><p>In this post, we explain how IT admins can use the controls available today for seeing and managing what Claude costs, along with some best practices for deciding where to spend.</p><h3><strong>Useful ways to think about cost&nbsp;</strong></h3><p>It’s helpful to measure AI’s cost-per-outcome instead of token consumption as the primary metric of value. Here are two questions to ask about a project:</p><ol role="list"><li>What would this work have cost without AI, whether in resources, time, or never attempting the project at all?</li><li>Is a model completing a task that is hard and requires judgment and reasoning, or is it just large, meaning a high volume of straightforward work?&nbsp;&nbsp;</li></ol><p>The answer to the first question is specific to your business and needs—no vendor can measure it for you. The second question can be addressed by matching the model to the work. Assigning a less expensive model complex reasoning often makes the finished task more expensive, because it burns tokens on retries and needs more human correction. Putting a frontier model on basic document processing pays for capabilities the task never uses.&nbsp;</p><p>Claude’s <a href="https://claude.com/blog/claude-models-explained" target="_blank">family of models</a> gives you choice:&nbsp;</p><ul role="list"><li><strong>Fable</strong> for the hardest problems;</li><li><strong>Opus</strong> for long-horizon work and coding;&nbsp;</li><li><strong>Sonnet</strong> for everyday work and analysis;&nbsp;</li><li><strong>Haiku</strong> for high-volume and routine tasks.&nbsp;</li></ul><p>For any of these, <a href="https://platform.claude.com/docs/en/build-with-claude/effort" target="_blank">effort controls</a> dial up or down how much the model “thinks” when it solves a problem, and the <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/advisor-tool" target="_blank">advisor tool</a> lets smaller models consult a frontier model only when it hits a wall.&nbsp;</p><p>Many organizations use several models, often on the same project. For example, an insurance company might put a frontier model helping an adjuster evaluate a complex commercial claim while Haiku tags and triages the documents feeding into it.</p><h3><strong>How to see and control your spend</strong></h3><p>The controls you have access to depend on whether Claude is running as a product for your employees or as an API behind your applications. The first puts controls with the admin, and the second with the engineers who build on it, and most large customers use both.</p><p><strong>Cost controls for Claude Enterprise</strong></p><p>We generally suggest working through these in order, since it's hard to set a sensible limit before you've seen a month of real usage.&nbsp;</p><ul role="list"><li><a href="https://support.claude.com/en/articles/13930452-manage-custom-roles-on-enterprise-plans" target="_blank"><strong>Access gating</strong></a> lets an admin determine the groups and custom roles that can use products like Claude Code and Claude Cowork, rather than an all-at-once switch. Start with one team, watch the results, and expand department by department.</li><li><strong>Model controls</strong> work at two levels. <a href="https://support.claude.com/en/articles/15694740-manage-model-access-for-your-organization" target="_blank">Entitlements</a> determine which models a team can access, while <a href="https://support.claude.com/en/articles/15330088-set-a-default-model-for-your-organization" target="_blank">defaults</a> set which model a new conversation starts on. Admins can entitle teams doing your hardest work to the most capable models, and default everyone else to Sonnet.</li><li><a href="https://support.claude.com/en/articles/11526368-how-am-i-billed-for-my-enterprise-plan#h_deb29b5a4f" target="_blank"><strong>Hard spend caps</strong></a> place ceilings on usage. Set them once you know your baseline for the full organization, for individual users, or for a group, in which case each member gets the limit. Caps bind right away.</li></ul><p>Admins can also automate the review of spend limit increase requests, identify members close to their spend limit, and find members with rapidly changing usage.&nbsp;</p><p><strong>Tools to observe Claude usage</strong></p><p>Usage data is available to view in the admin dashboard, to send to your systems, or to ask Claude about directly. Here are three features IT admins can use to better understand their organization’s Claude usage:&nbsp;</p><ul role="list"><li><a href="https://support.claude.com/en/articles/12883420-view-usage-analytics-for-team-and-enterprise-plans" target="_blank"><strong>Usage analytics</strong></a><strong> </strong>break spend down by person, team, and model. Data exports closely match invoices so that you can better reconcile usage with a bill.&nbsp;</li><li><a href="https://platform.claude.com/docs/en/manage-claude/analytics-api" target="_blank"><strong>The Analytics API</strong></a><strong> </strong>makes the same data available to the systems a team already uses. Connect it to business intelligence tools, finance systems, and internal dashboards, so Claude spend can be evaluated alongside other costs like budgeting and forecasting.</li><li><a href="https://support.claude.com/en/articles/14729354-use-analytics-chat-to-ask-claude-about-usage" target="_blank"><strong>Analysis with analytics chat </strong></a>lets admins ask about usage in plain language. Ask "Who are our top spenders this month?" or "Which team's usage grew fastest this quarter?", without pulling a full report.&nbsp;</li></ul><h3><strong>Controls for building on the API</strong></h3><p>The Claude Console offers controls to organizations and developers building on the Claude Platform. Workspaces separate API usage by product, team, or environment, and it has its own line in your cost and usage reporting</p><p>&nbsp;Useful cost levers on the Claude Platform include:</p><ul role="list"><li><a href="https://platform.claude.com/docs/en/build-with-claude/prompt-caching" target="_blank"><strong>Prompt caching</strong></a><strong> </strong>stores content that gets reused across requests, so the model doesn’t reprocess it every time. Turn it on if you send the same reference material with every call, which can cost 10% of the normal input rate on cache hits.&nbsp;</li><li><a href="https://platform.claude.com/docs/en/build-with-claude/batch-processing" target="_blank"><strong>Batch processing</strong></a><strong> </strong>runs jobs that don't need an immediate answer at half price like an e-commerce company classifying its catalog overnight. Move anything that can wait; batch discounts stack with caching.</li><li><a href="https://platform.claude.com/docs/en/build-with-claude/effort"><strong>The effort parameter</strong></a><strong> </strong>controls how much reasoning the model does on a given call. Dial it down for routing and extraction, but turn it up for the final recommendation, so you pay peak rates only on the calls that need them.&nbsp;</li><li><a href="https://platform.claude.com/docs/en/build-with-claude/effort" target="_blank"><strong>The advisor strategy </strong></a>has a smaller model like Sonnet call a frontier model at key moments, like evaluating work before it ships. Run most of a task on a smaller model and pay for the larger model only where its judgment is applied.&nbsp;</li></ul><p>Used together, these features can routinely cut the cost of a production workload substantially before anyone touches a budget line.</p><h3><strong>Getting started</strong></h3><p>Cost controls are available in Claude Enterprise today. To see plans and pricing, visit <a href="https://claude.com/pricing" target="_blank">claude.com/pricing</a>. Enterprise organizations can <a href="http://claude.ai/create/enterprise" target="_blank">get started directly</a> with the <a href="https://support.claude.com/en/articles/9797531-what-is-the-enterprise-plan" target="_blank">Claude Enterprise </a>offering. Developers can find Workspaces, caching, and batch documentation at <a href="https://docs.claude.com">docs.claude.com</a>.</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/a-guide-to-cost-visibility-and-control-in-claude" target="_blank">View original</a></p>
+          <p><a href="/">← Back to home</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>Content from <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · Translation by AI</p>
+    </div>
+  </footer>
+
+</body>
+</html>

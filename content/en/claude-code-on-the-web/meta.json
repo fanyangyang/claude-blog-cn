@@ -1,0 +1,17 @@
+{
+  "slug": "claude-code-on-the-web",
+  "title": "Claude Code on the web",
+  "date": "October 20, 2025",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/claude-code-on-the-web",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/claude-code-on-the-web.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.792Z",
+  "translatedTitle": "Claude Code on the web",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:38:31.000Z",
+  "translateLang": "zh-CN"
+}

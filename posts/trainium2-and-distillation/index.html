@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AWS Trainium2 上的 Claude 3.5 Haiku 与 Amazon Bedrock 中的模型蒸馏 — Claude Blog 中文翻译</title>
+  <meta name="description" content="AWS Trainium2 上的 Claude 3.5 Haiku 与 Amazon Bedrock 中的模型蒸馏">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/trainium2-and-distillation" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Product announcements</span>
+            <span class="article-date">December 3, 2024</span>
+            
+          </div>
+          <h1 class="article-title">AWS Trainium2 上的 Claude 3.5 Haiku 与 Amazon Bedrock 中的模型蒸馏</h1>
+          <a href="/posts/trainium2-and-distillation/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>作为我们与 <a href="https://www.anthropic.com/news/anthropic-amazon-trainium" target="_blank">AWS 扩大合作</a>的一部分，我们已开始优化 Claude 模型，使其运行在 <a href="https://aws.amazon.com/ai/machine-learning/trainium/" target="_blank">AWS Trainium2</a>——他们最先进的 AI 芯片上。</p><p>为了预览 Trainium2 的潜力，Claude 3.5 Haiku 现已在 <a href="https://aws.amazon.com/bedrock/claude/" target="_blank">Amazon Bedrock</a> 中支持延迟优化推理，在保持精度的前提下让模型速度显著提升。</p><p>我们还在 Amazon Bedrock 中新增模型蒸馏（model distillation）支持，把更大 Claude 模型的智能带给速度更快、更具成本优势的模型。</p><h3>Trainium2 上的新一代模型</h3><p>我们正与 AWS 合作构建 Project Rainier——一个由 Trn2 UltraServer 组成的 EC2 UltraCluster 集群，包含数十万颗 Trainium2 芯片。该集群将提供超过当前一代领先 AI 模型训练所用算力（以 exaflops 计）五倍以上的计算能力。</p><p>Trainium2 让我们能够在 Amazon Bedrock 中提供更快的模型，首先是现已支持延迟优化推理公开预览的 Claude 3.5 Haiku。启用延迟优化后，Claude 3.5 Haiku 的推理速度最多可提升 60%——这使它成为从代码补全到实时内容审核和聊天机器人等各类用例的理想选择。</p><p>这一由 Trainium2 驱动的更快版本 Claude 3.5 Haiku，已在美国东部（俄亥俄）区域通过<a href="https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html" target="_blank">跨区域推理</a>提供，定价为每百万输入 token $1、每百万输出 token $5。</p><h3>Amazon Bedrock 模型蒸馏</h3><p>我们还在帮助客户从 Claude 3 Haiku——上一代中最具成本效益的模型——获得前沿性能。通过蒸馏，Claude 3 Haiku 现在可以获得显著的性能提升，在特定任务上达到接近 Claude 3.5 Sonnet 的准确率——而价格和速度仍是我们最具成本效益模型的水平。</p><p>这项技术将知识从"教师"模型（Claude 3.5 Sonnet）迁移到"学生"模型（Claude 3 Haiku），让客户能够以极低的成本运行检索增强生成（RAG）和数据分析等复杂任务。</p><p>与需要开发者手工构造训练样本并不断调整参数的传统微调不同，Amazon Bedrock 模型蒸馏将整个流程自动化：</p><ol role="list"><li>从 Claude 3.5 Sonnet <strong>生成合成训练数据</strong></li><li><strong>训练并评估</strong> Claude 3 Haiku</li><li><strong>托管</strong>最终的蒸馏模型用于推理</li></ol><p>Amazon Bedrock 模型蒸馏会自动应用不同的数据合成方法——从生成相似的提示词，到基于你提供的提示词-回答示例对创建新的高质量回答。</p><p>Amazon Bedrock 中面向 Claude 3 Haiku 的蒸馏现已开启预览。详情请参阅 AWS 的<a href="https://aws.amazon.com/blogs/aws/build-faster-more-cost-efficient-highly-accurate-models-with-amazon-bedrock-model-distillation-preview/" target="_blank">发布博客</a>和<a href="https://docs.aws.amazon.com/bedrock/latest/userguide/model-distillation.html" target="_blank">文档</a>。</p><h3>Claude 3.5 Haiku 降价</h3><p>除了在 Trainium2 上提供更快版本之外，客户仍可通过 <a href="https://console.anthropic.com/workbench" target="_blank">Anthropic API</a>、<a href="https://aws.amazon.com/bedrock/claude/" target="_blank">Amazon Bedrock</a> 和 <a href="https://cloud.google.com/vertex-ai/generative-ai/docs/partner-models/use-claude" target="_blank">Google Cloud 的 Vertex AI</a> 使用 <a href="https://www.anthropic.com/claude/haiku" target="_blank">Claude 3.5 Haiku</a>。</p><p>为了让这一模型惠及更广泛的用例，我们将在所有平台上把 Claude 3.5 Haiku 的价格降至每百万输入 token $0.80、每百万输出 token $4。</p><h3>开始使用</h3><p>从今天起，模型蒸馏和更快的 Claude 3.5 Haiku 已在 Amazon Bedrock 中开启预览。对于追求价格、性能与速度最佳平衡的开发者，你现在有了更丰富的 Claude 模型选择：</p><ul role="list"><li>由 Trainium2 驱动、支持延迟优化的 Claude 3.5 Haiku，适合通用场景</li><li>经蒸馏获得前沿性能的 Claude 3 Haiku，适合高流量、重复性场景</li></ul><p>要开始使用，请访问 <a href="https://signin.aws.amazon.com/signup?request_type=register">Amazon Bedrock 控制台</a>。我们迫不及待想看到你将构建出什么。</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/trainium2-and-distillation" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

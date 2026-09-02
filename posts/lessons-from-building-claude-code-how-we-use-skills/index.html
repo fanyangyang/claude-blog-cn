@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>构建 Claude Code 的经验：我们如何使用 Skills — Claude Blog 中文翻译</title>
+  <meta name="description" content="构建 Claude Code 的经验：我们如何使用 Skills">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/lessons-from-building-claude-code-how-we-use-skills" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Claude Code</span>
+            <span class="article-date">June 3, 2026</span>
+            
+          </div>
+          <h1 class="article-title">构建 Claude Code 的经验：我们如何使用 Skills</h1>
+          <a href="/posts/lessons-from-building-claude-code-how-we-use-skills/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>Skills 已经成为 Claude Code 中使用最广泛的扩展机制之一。它灵活、易于创建，也易于分发。</p><p>但这种灵活性也让人难以判断怎样用才最有效。什么样的 Skills 值得去做？Skill 应该如何组织结构？什么时候适合分享给他人？</p><p>在 Anthropic，我们大规模地在 Claude Code 中使用 Skills，目前处于活跃使用状态的就有数百个。以下是我们利用 Skills 加速开发的经验总结。</p><h2>什么是 Skills？</h2><p>Skills 是由指令、脚本和资源组成的文件夹，智能体可以发现并使用它们，从而更准确、更高效地完成任务。本文假设读者已了解 Skills 的基础知识；如果你是新手，建议先学习我们在 Skilljar 上的<a href="https://anthropic.skilljar.com/introduction-to-agent-skills">智能体 Skills 入门课程</a>。</p><p>我们经常听到一个关于 Skills 的误解：它们“只是一些 markdown 文件”。实际上，Skills 是文件夹，可以包含脚本、素材、数据等，智能体能够发现、探索并操作这些内容。&nbsp;</p><p>在 Claude Code 中，Skills 还拥有<a href="https://code.claude.com/docs/en/skills#frontmatter-reference">丰富多样的配置选项</a>，包括注册动态 hooks。</p><p>我们发现，Claude Code 中最有效的一些 Skills，正是充分利用了这些配置选项和文件夹结构的那些。 </p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/lessons-from-building-claude-code-how-we-use-skills" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

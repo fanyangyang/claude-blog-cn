@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anthropic 业务拓展团队如何用 Claude 大规模运营入站与出站业务 — Claude Blog 中文翻译</title>
+  <meta name="description" content="Anthropic 业务拓展团队如何用 Claude 大规模运营入站与出站业务">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/how-anthropics-business-development-team-uses-claude-to-run-inbound-and-outbound-at-scale" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Enterprise AI</span>
+            <span class="article-date">August 7, 2026</span>
+            
+          </div>
+          <h1 class="article-title">Anthropic 业务拓展团队如何用 Claude 大规模运营入站与出站业务</h1>
+          <a href="/posts/how-anthropics-business-development-team-uses-claude-to-run-inbound-and-outbound-at-scale/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>在我业务拓展职业生涯的早期，客户经理会递给我列着数百个客户账号的清单，我不得不逐一调研每家公司、找到合适的联系人、四处搜罗邮箱、再起草外联邮件。入站（inbound）方向的工作流同样靠手工、同样耗时。&nbsp;</p><p>去年夏天加入 Anthropic 后，我接手了管理公司销售邮箱的职责。我每天要花大约 5 个小时手工回复潜在客户的入站咨询，其中很多是关于我们产品的相同或相似问题，这还不算管理我自己的客户盘子。&nbsp;</p><p>如今，这些工作中的很大一部分已经配置为 <a href="https://support.claude.com/en/articles/13345190-get-started-with-claude-cowork" target="_blank">Claude Cowork</a> 中的 Skills 和定时任务。个性化的客户邮件会以草稿形式准备好，由我审阅、修改后再发送。我的外联工作也从详尽的调研开始，而我再也不用花几个小时去整理。&nbsp;</p><p>结果就是，我和同事们花在手工重复劳动上的时间更少，花在真正重要的事情——帮助客户——上的时间更多了。&nbsp;</p><p>下面是 Claude Cowork 如何在 Anthropic 提升业务拓展职能，让我们能把更多时间投入战略性工作、理解客户的问题，并帮助客户了解 Claude 如何解决这些问题。</p><h2><strong>把行政性和可复用的任务自动化</strong></h2><p>业务拓展代表（BDR）处于销售流程的最前端，负责甄别入站需求并为公司构建外呼（outbound）商机管线。在 Anthropic，这些动作如今都会先经过 Claude Cowork。</p><p>我们入站体系的一个基础构件，是一份文档，其中汇总了我在销售邮箱里最常收到的问题，以及我们对这些问题的最佳回答。这份文档充当我们的销售知识库，Claude 在起草任何对外回复之前都会先阅读它。这份文档本身也是 Claude 帮我创建的（我只需把它指向相关的信息来源），现在它还会通过标记可能过时的信息，来持续校验内容是否最新，供用户确认。&nbsp;</p><p>基于这份文档构建的最重的工作流，是一个每小时运行一次的收件箱技能：它扫描代表的收件箱，找出每一条需要回复的会话，并起草回复，供代表阅读、编辑和发送。这个技能由一个简短的系统提示词、作为上下文的知识库，以及每位代表的写作风格画像组成（我们每个人也都会用一个语音技能，通读自己写过的文档、消息和邮件来生成这个画像）。</p><figure style="max-width:2720pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a769d842080f00d799fb656_07-skills-panel.png" loading="lazy"></div><figcaption><em>收件箱技能运行在一个简短的系统提示词之上，以团队的销售知识库作为产品事实的来源，并为每位代表配备定制的语音画像。</em></figcaption></figure><figure style="max-width:2720pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a766c160d2ae2a65100738d_06-customer-email-drafter.png" loading="lazy"></div><figcaption><em>收件箱技能扫描代表的收件箱，留下待审阅的回复草稿。本预览中的所有信息均已匿名化处理。</em></figcaption></figure><p>我还依赖两个较轻量的技能来分担行政工作。每位 BDR 都深知客户放鸽子、潜客失联的痛。为此，我构建了一个技能，监视 Gmail 和 Google Calendar，在这些情况发生时通知我，好让我迅速跟进。&nbsp;</p><p>另一个技能通过我们的 CRM 连接器扫描所有新线索，并起草个性化的首次触达。它全天按计划运行，确保不让线索干等。</p><p>我们还有一个技能负责保持 Salesforce 的时效性：它读取我们关于商机阶段的内部指引，并将其与 Gmail 和 Gong 中的实际情况进行比对。如果我们已经与客户见过面、进入了价格讨论，商机或许就该推进一个阶段。Claude 在提出每项 Salesforce 更新时会附上依据，然后等待批准。当我编辑或否决一项提议时，它会记录原因，避免重蹈覆辙。</p><figure style="max-width:3150pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a7a595ba53cbb60ea8f0055_pipeline-scanner-demo-run.png" loading="lazy"></div><figcaption><em>管线扫描技能提出 Salesforce 更新，交由代表审批。图中为演示数据，所有信息均已匿名化处理。</em></figcaption></figure><h2><strong>优化外呼与营收相关工作</strong></h2><p>平均而言，我任一时点都要负责上百个客户账号。我能覆盖所有这些账号，靠的是一个在夜间作为定时任务运行的技能。它在我整个客户盘子里做勘探，观察每个账号的现状，比如：我们在和谁对接、他们目前如何使用 Claude、哪些信号值得留意。为此，Claude 会连接 Salesforce、Apollo 和 Common Room 等销售工具、Gong 以及我们的数据仓库，开展深度研究，并对照我们团队整理的外呼指引和 ICP（理想客户画像）标准加以验证。&nbsp;</p><p>技能中的这些组成部分为 Claude 增添了上下文，让它工作起来更像 Anthropic 的一位 BDR。第二天早上，我打开 Claude Cowork，每个账号都已备好一份简报、一个评分和一套外呼打法。&nbsp;</p><p>随着每位 BDR 都能对 Claude 的结果给出反馈并回写到技能中，这个工作流会随时间推移越来越有用。该技能还保留着一份小型的记忆文件和台账，避免重复或多余的工作。</p><p>我们会把这些研究用在后续沟通中，因此外联更有针对性，与客户交谈时，我们对他们的业务了然于心，也贴近他们的问题，足以展开更深入的战略性讨论。&nbsp;</p><p>探索电话（discovery call）是我们正在借助 Claude 改进的外呼环节之一。我们用一个技能将 Gong 的通话记录对照我们的探索电话 playbook 进行评估，为每通电话生成一份记分卡，附上基于对话内容的具体反馈。反馈内容包括：做得最好的三件事、最需要改进的三个方面、按我们的标准给出的明确的通过或不通过评分，以及下一步最值得练习的一件事。</p><figure style="max-width:2720pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a76a1686073481f44901a90_02-bdr-call-coach.png" loading="lazy"></div><figcaption><em>通话教练技能为我们的探索电话提供记分卡，并给出具体的改进建议。图中为演示数据，所有信息均已匿名化处理。</em></figcaption></figure><h2><strong>简化临时请求</strong></h2><p>BDR 团队经常收到临时性请求，而 Claude 让我们能够以更具战略性的方式与客户经理（AE）协作。如果某位 AE 想了解一个头部客户的使用趋势，我们只需一个提示词，就能提供一份清晰易读、描述详尽的仪表盘，突出相关趋势。</p><figure style="max-width:2720pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a76a1c80fce7dcd2bc87af1_01-spend-trends.png" loading="lazy"></div><figcaption><em>&nbsp;为目标客户生成的支出分析报告。</em></figcaption></figure><p>与 Claude 协作做数据分析和报告，同样适用于外呼工作。我最喜欢的工作流之一是运行“未被发掘的使用”提示。它会考察某位 AE 的全部客户盘子，在账号层面找出那些我们尚无销售商机、但已存在使用信号的客户。这往往是一个绝佳信号，提示我们该开始接触客户，与他们合作优化使用体验。&nbsp;</p><figure style="max-width:2720pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a76a2045602baca070bfcb8_05-undiscovered-usage.png" loading="lazy"></div><figcaption><em>对一位 AE 的客户盘子做一次以产品为切入的扫描，返回所有已在使用该产品但没有对应商机的账号。图中为演示数据，所有信息均已匿名化或修改处理。</em></figcaption></figure><p>我们也用 Claude 做活动外联。最近，我的一位 AE 提到我们即将举办一场 <a href="https://www.anthropic.com/webinars/claude-code-for-data-engineering" target="_blank">Claude Code for Data Engineering</a> 网络研讨会，问我能否在他的客户盘子里找出可能有兴趣参加的账号。我并没有现成的技能，但对于这类请求，一个提示词就够了。Claude 检查了整个盘子的使用数据和 CRM 历史记录，按我们的 ICP 给每个账号打分，并标记出最合适的对象和值得邀请的联系人。</p><figure style="max-width:3150pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a7a59ce7be09b7abd674db9_river-email-drafts.png" loading="lazy"></div><figcaption><em>在受邀为一场网络研讨会寻找合适账号时，Claude 扫描客户盘子，并按团队的理想客户画像为每个账号打分。</em></figcaption></figure><p>这些 Skills、定时任务，以及我们精心整理的上下文结合在一起，把 Claude 变成了一位全天候待命的业务拓展搭档。&nbsp;</p><blockquote>支撑业务拓展报告的同一套受治理基础，在“Anthropic 如何借助 Claude 实现<a href="https://claude.com/blog/how-anthropic-enables-self-service-data-analytics-with-claude">自助式数据分析</a>”一文中有详细描述。</blockquote><h2><strong>给业务拓展团队的 Claude Cowork 入门建议</strong></h2><p>以下是我们给准备上手 Claude Cowork 的业务拓展团队的一些提示：&nbsp;</p><ul role="list"><li><strong>先建知识库，再建工作流。</strong>把团队反复回答的问题及其最佳回答收集到一份对外可用的文档中。你不必逐字手写：让 Claude 参照你们的相关产品文档和团队频道，由它来搭建第一版。</li><li><strong>给 Claude 提供你们团队工作方式的示例。</strong>Claude 是依据你提供的上下文起草内容的。对于外呼，这可以包括行之有效的消息示例和你们的理想客户画像。每位代表还可以让 Claude 学习自己的写作风格，让草稿读起来就像本人写的。</li><li><strong>每次发送都保留一个人把关。</strong>Claude 可以生成草稿，但我们仍会亲自阅读、编辑并发送。</li><li><strong>在团队内共享 Skills。</strong>我们团队把最常用的 Skills 放在一个共享插件中，一旦确认某项技能已成为代表日常工作的固定组成部分，就把它提升到那里。</li><li><strong>把 Skills 写得足够通用，以适应整个团队的工作方式。</strong>每位代表的客群、客户盘子和工作流各不相同，所以我们让共享技能保持足够的通用性，而不是局限于某个人的习惯。</li><li><strong>把反馈写回 Skills。</strong>当你驳回一个建议或修改一份草稿时，让 Claude 把原因记录到技能中，避免再犯同样的错误。</li></ul><p>我最好的建议？直接开始尝试。你给它的上下文和工具越多，能完成的事情就越多。&nbsp;</p><p><em>欢迎观看 John 在我们的 </em><a href="https://www.anthropic.com/webinars/claude-for-business-development-representatives" target="_blank"><em>Claude Cowork for Business Development Representatives</em></a><em> 网络研讨会中演示这些 Skills。</em></p><p><em>立即开始使用</em><a href="https://claude.com/product/cowork"><em> Claude Cowork</em></a><em>。</em></p><p><em>本文中的所有 UI 界面均使用合成数据展示，不代表任何真实公司或个人。</em></p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/how-anthropics-business-development-team-uses-claude-to-run-inbound-and-outbound-at-scale" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

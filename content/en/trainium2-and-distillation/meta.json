@@ -1,0 +1,17 @@
+{
+  "slug": "trainium2-and-distillation",
+  "title": "Claude 3.5 Haiku on AWS Trainium2 and model distillation in Amazon Bedrock",
+  "date": "December 3, 2024",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/trainium2-and-distillation",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/trainium2-and-distillation.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.788Z",
+  "translatedTitle": "AWS Trainium2 上的 Claude 3.5 Haiku 与 Amazon Bedrock 中的模型蒸馏",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:44:54.905Z",
+  "translateLang": "zh-CN"
+}

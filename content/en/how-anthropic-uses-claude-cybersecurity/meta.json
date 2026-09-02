@@ -1,0 +1,17 @@
+{
+  "slug": "how-anthropic-uses-claude-cybersecurity",
+  "title": "How Anthropic's cybersecurity team built a threat detection platform with Claude Code",
+  "date": "May 12, 2026",
+  "category": "Claude Code",
+  "url": "https://claude.com/blog/how-anthropic-uses-claude-cybersecurity",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/how-anthropic-uses-claude-cybersecurity.svg",
+  "illustrationBg": "Mineral",
+  "fetchedAt": "2026-09-02T03:50:17.788Z",
+  "translatedTitle": "Anthropic 网络安全团队如何用 Claude Code 打造威胁检测平台",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:22:36.115Z",
+  "translateLang": "zh-CN"
+}

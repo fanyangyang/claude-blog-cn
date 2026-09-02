@@ -1,0 +1,17 @@
+{
+  "slug": "carta-healthcare-clinical-abstractor",
+  "title": "How Carta Healthcare gets AI to reason like a clinical abstractor",
+  "date": "April 8, 2026",
+  "category": "Enterprise AI",
+  "url": "https://claude.com/blog/carta-healthcare-clinical-abstractor",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/carta-healthcare-clinical-abstractor.svg",
+  "illustrationBg": "Mineral",
+  "fetchedAt": "2026-09-02T03:50:17.784Z",
+  "translatedTitle": "Carta Healthcare 如何让 AI 像临床抽象员一样推理",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:48:07Z",
+  "translateLang": "zh-CN"
+}

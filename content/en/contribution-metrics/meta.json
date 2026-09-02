@@ -1,0 +1,17 @@
+{
+  "slug": "contribution-metrics",
+  "title": "Understand Claude Code’s impact with contribution metrics",
+  "date": "January 29, 2026",
+  "category": "Claude Code",
+  "url": "https://claude.com/blog/contribution-metrics",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/contribution-metrics.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.788Z",
+  "translatedTitle": "用贡献指标了解 Claude Code 的影响",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:22:24.000Z",
+  "translateLang": "zh-CN"
+}

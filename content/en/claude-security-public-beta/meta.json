@@ -1,0 +1,17 @@
+{
+  "slug": "claude-security-public-beta",
+  "title": "Claude Security is now in public beta",
+  "date": "April 30, 2026",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/claude-security-public-beta",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/claude-security-public-beta.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.776Z",
+  "translatedTitle": "Claude Security 现已开启公开测试",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:20:29.710Z",
+  "translateLang": "zh-CN"
+}

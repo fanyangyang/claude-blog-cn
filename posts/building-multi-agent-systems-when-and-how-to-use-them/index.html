@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>构建多智能体系统：何时使用以及如何使用 — Claude Blog 中文翻译</title>
+  <meta name="description" content="构建多智能体系统：何时使用以及如何使用">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/building-multi-agent-systems-when-and-how-to-use-them" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Agents</span>
+            <span class="article-date">January 23, 2026</span>
+            
+          </div>
+          <h1 class="article-title">构建多智能体系统：何时使用以及如何使用</h1>
+          <a href="/posts/building-multi-agent-systems-when-and-how-to-use-them/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><h2>什么是多智能体系统？</h2><p>多智能体系统是一种由多个 LLM 实例运行、各自拥有独立对话上下文并通过代码进行协调的架构。每个智能体负责任务的一个特定切片——例如，一个子智能体负责调研，而协调者负责规划——这样可以保护上下文、实现并行工作，并提供单个智能体无法维持的专业化能力。</p><p>存在多种协调模式（智能体集群、基于能力的系统、消息总线架构等），但本文聚焦于“协调者-子智能体”模式：一种由主智能体派生并管理专门子智能体来处理特定子任务的分层模型。这种模式提供了直观的协调模型，是刚接触多智能体系统的团队的良好起点。我们将在下一篇文章中详细探讨其他模式。</p><p>如今，多智能体系统常常被用在单智能体其实表现更好的场景，不过随着模型能力的提升，这种权衡也在不断变化。在 Anthropic，我们见过团队花数月构建精巧的多智能体架构，最后却发现对单个智能体改进提示词就能取得相同的结果。</p><p>在构建多智能体系统并与在生产环境中部署它们的团队合作之后，我们总结出多智能体稳定优于单智能体的三种情形：上下文污染导致性能下降时、任务可以并行运行时、以及专业化能改善工具选择或任务聚焦时。在这些情形之外，协调成本通常大于收益。<br>在这篇文章中，我们分享如何识别单智能体的极限、找出多智能体系统大放异彩的三种场景，并避开常见的实施错误。&nbsp;</p><h2>为什么应该从单智能体开始</h2><p>一个设计良好、配备合适工具的单智能体，能完成的事情远超许多开发者的预期。</p><p>多智能体系统会引入额外开销。每增加一个智能体，就意味着多一个潜在故障点、多一套需要维护的提示词、多一个意外行为的来源。&nbsp;</p><p>我们观察到有团队构建了精巧的多智能体系统，分别设置规划、执行、审查和迭代的智能体，结果却发现每次交接都在丢失上下文，协调消耗的 token 比执行还多。在我们的测试中，完成同等任务，多智能体实现的 token 消耗通常是单智能体方案的 3-10 倍。这种开销来自跨智能体复制上下文、智能体之间的协调消息，以及为交接而做的结果汇总。</p><h2>多智能体系统的决策框架</h2><p>多智能体架构的价值，体现在它们能解决单智能体无法突破的特定约束。这意味着多智能体架构应当留给那些收益明确、足以抵偿额外成本的场合。&nbsp;托管基础设施也可以替你处理这些工作（参见 <a href="https://claude.com/blog/new-in-claude-managed-agents">Claude Managed Agents 中的多智能体编排</a>）。</p><p>以下模式是我们持续观察到正回报的情形。</p><h3>上下文保护</h3><p>大语言模型的上下文窗口是有限的，且随着上下文增长，回答质量可能下降。当一个智能体的上下文中积累了与后续子任务无关的先前子任务信息时，就会发生上下文污染。子智能体提供了隔离：每个子智能体都在自己干净的、专注于特定任务的上下文中运行。</p><p>设想一个客服智能体，它需要在诊断技术问题的同时检索订单历史。如果每次订单查询都会往上下文里塞几千个 token，它推理技术问题的能力就会退化。</p><p>‍</p><p><strong>单智能体方案：</strong></p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-javascript" style="white-space:pre-wrap"><span style="color:#abe338"><span># Single agent accumulates everything </span><span style="color:#dcc6e0">in</span><span> context
+</span></span><span style="color:#abe338">conversation_history = [
+</span><span style="color:#abe338"><span>    {</span><span style="color:#abe338">"role"</span><span>: </span><span style="color:#abe338">"user"</span><span>, </span><span style="color:#abe338">"content"</span><span>: </span><span style="color:#abe338">"My order #12345 isn't working"</span><span>},
+</span></span><span style="color:#abe338"><span>    {</span><span style="color:#abe338">"role"</span><span>: </span><span style="color:#abe338">"assistant"</span><span>, </span><span style="color:#abe338">"content"</span><span>: </span><span style="color:#abe338">"Let me check your order..."</span><span>},
+</span></span><span style="color:#abe338"><span>    # Tool result adds </span><span style="color:#f5ab35">2000</span><span>+ tokens </span><span style="color:#dcc6e0">of</span><span> order history
+</span></span><span style="color:#abe338"><span>    {</span><span style="color:#abe338">"role"</span><span>: </span><span style="color:#abe338">"user"</span><span>, </span><span style="color:#abe338">"content"</span><span>: </span><span style="color:#abe338">"... (order details, past purchases, shipping info) ..."</span><span>},
+</span></span><span style="color:#abe338"><span>    {</span><span style="color:#abe338">"role"</span><span>: </span><span style="color:#abe338">"assistant"</span><span>, </span><span style="color:#abe338">"content"</span><span>: </span><span style="color:#abe338">"Now let me diagnose the technical issue..."</span><span>},
+</span></span><span style="color:#abe338"><span>    # Context is now polluted </span><span style="color:#dcc6e0">with</span><span> order details the agent doesn</span><span style="color:#abe338">'t need
+</span></span><span style="color:#abe338">]
+</span><span style="color:#abe338"></span></code></pre><p>这个智能体必须一边推理技术问题，一边在上下文里维护 2000 多个 token 的无关订单历史，注意力被稀释，回答质量随之下降。</p><p>‍</p><p><strong>多智能体方案：</strong></p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-javascript" style="white-space:pre-wrap"><span style="color:#abe338"><span style="color:#dcc6e0">from</span><span> anthropic </span><span style="color:#dcc6e0">import</span><span> Anthropic
+</span></span><span style="color:#abe338">
+</span><span style="color:#abe338">client = Anthropic()
+</span><span style="color:#abe338">
+</span><span style="color:#abe338"><span></span><span class="hljs-class" style="color:#dcc6e0">class</span><span class="hljs-class"> </span><span class="hljs-class" style="color:#00e0e0">OrderLookupAgent</span><span class="hljs-class">:
+</span></span><span style="color:#abe338"><span class="hljs-class">    </span><span class="hljs-class" style="color:#00e0e0">def</span><span class="hljs-class"> </span><span class="hljs-class" style="color:#00e0e0">lookup_order</span><span class="hljs-class">(</span><span class="hljs-class" style="color:#00e0e0">self</span><span class="hljs-class">, </span><span class="hljs-class" style="color:#00e0e0">order_id</span><span class="hljs-class">: </span><span class="hljs-class" style="color:#00e0e0">str</span><span class="hljs-class">) -&gt; </span><span class="hljs-class" style="color:#00e0e0">dict</span><span class="hljs-class">:
+</span></span><span style="color:#abe338"><span class="hljs-class">        # </span><span class="hljs-class" style="color:#00e0e0">Separate</span><span class="hljs-class"> </span><span class="hljs-class" style="color:#00e0e0">agent</span><span class="hljs-class"> </span><span class="hljs-class" style="color:#00e0e0">with</span><span class="hljs-class"> </span><span class="hljs-class" style="color:#00e0e0">its</span><span class="hljs-class"> </span><span class="hljs-class" style="color:#00e0e0">own</span><span class="hljs-class"> </span><span class="hljs-class" style="color:#00e0e0">context</span><span class="hljs-class">
+</span></span><span style="color:#abe338"><span class="hljs-class">        </span><span class="hljs-class" style="color:#00e0e0">messages</span><span class="hljs-class"> </span><span>= [
+</span></span><span style="color:#abe338"><span>            {</span><span style="color:#abe338">"role"</span><span>: </span><span style="color:#abe338">"user"</span><span>, </span><span style="color:#abe338">"content"</span><span>: f</span><span style="color:#abe338">"Get essential details for order {order_id}"</span><span>}
+</span></span><span style="color:#abe338">        ]
+</span><span style="color:#abe338">        response = client.messages.create(
+</span><span style="color:#abe338"><span>            model=</span><span style="color:#abe338">"claude-sonnet-4-5"</span><span>,
+</span></span><span style="color:#abe338"><span>            max_tokens=</span><span style="color:#f5ab35">1024</span><span>,
+</span></span><span style="color:#abe338">            messages=messages,
+</span><span style="color:#abe338">            tools=[get_order_details_tool]
+</span><span style="color:#abe338">        )
+</span><span style="color:#abe338">        # Returns only essential information
+</span><span style="color:#abe338"><span>        </span><span style="color:#dcc6e0">return</span><span> extract_summary(response)
+</span></span><span style="color:#abe338">
+</span><span style="color:#abe338"><span></span><span class="hljs-class" style="color:#dcc6e0">class</span><span class="hljs-class"> </span><span class="hljs-class" style="color:#00e0e0">SupportAgent</span><span class="hljs-class">:
+</span></span><span style="color:#abe338"><span class="hljs-class">    </span><span class="hljs-class" style="color:#00e0e0">def</span><span class="hljs-class"> </span><span class="hljs-class" style="color:#00e0e0">handle_issue</span><span class="hljs-class">(</span><span class="hljs-class" style="color:#00e0e0">self</span><span class="hljs-class">, </span><span class="hljs-class" style="color:#00e0e0">user_message</span><span class="hljs-class">: </span><span class="hljs-class" style="color:#00e0e0">str</span><span class="hljs-class">):
+</span></span><span style="color:#abe338"><span class="hljs-class">        </span><span class="hljs-class" style="color:#00e0e0">if</span><span class="hljs-class"> </span><span class="hljs-class" style="color:#00e0e0">needs_order_info</span><span class="hljs-class">(</span><span class="hljs-class" style="color:#00e0e0">user_message</span><span class="hljs-class">):
+</span></span><span style="color:#abe338"><span class="hljs-class">            </span><span class="hljs-class" style="color:#00e0e0">order_id</span><span class="hljs-class"> </span><span>= extract_order_id(user_message)
+</span></span><span style="color:#abe338"><span>            # Get only what</span><span style="color:#abe338">'s needed, not full history
+</span></span><span style="color:#abe338">            order_summary = OrderLookupAgent().lookup_order(order_id)
+</span><span style="color:#abe338">            # Inject compact summary, not full context
+</span><span style="color:#abe338"><span style="color:#abe338">            context = f"Order {order_id}: {order_summary['</span><span>status</span><span style="color:#abe338">']}, purchased {order_summary['</span><span>date</span><span style="color:#abe338">']}"
+</span></span><span style="color:#abe338">        
+</span><span style="color:#abe338">        # Main agent context stays clean
+</span><span style="color:#abe338">        messages = [
+</span><span style="color:#abe338">            {"role": "user", "content": f"{context}\n\nUser issue: {user_message}"}
+</span><span style="color:#abe338">        ]
+</span><span style="color:#abe338">        response = client.messages.create(
+</span><span style="color:#abe338">            model="claude-sonnet-4-5",
+</span><span style="color:#abe338">            max_tokens=2048,
+</span><span style="color:#abe338">            messages=messages
+</span><span style="color:#abe338">        )
+</span><span style="color:#abe338">        return response
+</span><span style="color:#abe338"></span></code></pre><p>订单查询智能体处理完整的订单历史并提取摘要。主智能体只接收它真正需要的 50-100 个 token，上下文保持聚焦。</p><p>当子任务产生大量上下文（超过 1000 个 token）但其中大部分信息与主任务无关、子任务定义清晰且对要提取哪些信息有明确标准、以及查找或检索类操作需要先过滤再使用时，上下文隔离的效果最好。</p><h3>并行化</h3><p>并行运行多个智能体，可以让你探索比单个智能体所能覆盖的更大的搜索空间。这一模式在搜索和研究类任务中尤其有价值。</p><p>Anthropic 的研究团队在<a href="https://www.anthropic.com/engineering/multi-agent-research-system">我们如何构建多智能体研究系统</a>一文中记录了这一点。主智能体分析查询，然后派生多个子智能体并行调查不同的侧面。每个子智能体独立搜索，然后返回提炼后的发现。多智能体搜索通过在更大的信息空间中探索，相比单智能体方案展现出显著的准确性提升。</p><p>其核心实现是把问题分解为相互独立的侧面，并发运行子智能体，然后汇总结果。</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-javascript" style="white-space:pre-wrap"><span><span style="color:#dcc6e0">import</span><span> asyncio
+</span></span><span><span></span><span style="color:#dcc6e0">from</span><span> anthropic </span><span style="color:#dcc6e0">import</span><span> AsyncAnthropic
+</span></span><span>
+</span><span>client = AsyncAnthropic()
+</span><span>
+</span><span><span></span><span style="color:#dcc6e0">async</span><span> def research_topic(query: str) -&gt; dict:
+</span></span><span>    # Lead agent breaks query into research facets
+</span><span><span>    facets = </span><span style="color:#dcc6e0">await</span><span> lead_agent.decompose_query(query)
+</span></span><span>    
+</span><span><span>    # Spawn subagents to research each facet </span><span style="color:#dcc6e0">in</span><span> parallel
+</span></span><span>    tasks = [
+</span><span>        research_subagent(facet) 
+</span><span><span>        </span><span style="color:#dcc6e0">for</span><span> facet </span><span style="color:#dcc6e0">in</span><span> facets
+</span></span><span>    ]
+</span><span><span>    results = </span><span style="color:#dcc6e0">await</span><span> asyncio.gather(*tasks)
+</span></span><span>    
+</span><span>    # Lead agent synthesizes findings
+</span><span><span>    </span><span style="color:#dcc6e0">return</span><span> </span><span style="color:#dcc6e0">await</span><span> lead_agent.synthesize(results)
+</span></span><span>
+</span><span><span></span><span style="color:#dcc6e0">async</span><span> def research_subagent(facet: str) -&gt; dict:
+</span></span><span><span>    </span><span style="color:#abe338">""</span><span style="color:#abe338">"Each subagent has its own context window"</span><span style="color:#abe338">""</span><span>
+</span></span><span>    messages = [
+</span><span><span>        {</span><span style="color:#abe338">"role"</span><span>: </span><span style="color:#abe338">"user"</span><span>, </span><span style="color:#abe338">"content"</span><span>: f</span><span style="color:#abe338">"Research: {facet}"</span><span>}
+</span></span><span>    ]
+</span><span><span>    response = </span><span style="color:#dcc6e0">await</span><span> client.messages.create(
+</span></span><span><span>        model=</span><span style="color:#abe338">"claude-sonnet-4-5"</span><span>,
+</span></span><span><span>        max_tokens=</span><span style="color:#f5ab35">4096</span><span>,
+</span></span><span>        messages=messages,
+</span><span>        tools=[web_search, read_document]
+</span><span>    )
+</span><span><span>    </span><span style="color:#dcc6e0">return</span><span> extract_findings(response)</span></span></code></pre><p>覆盖面的提升是有代价的。完成同等任务，多智能体系统通常消耗单智能体方案 3 到 10 倍的 token。原因在于：每个智能体都需要自己的上下文，智能体之间必须交换消息来协调，结果在智能体之间传递时必须做汇总。虽然并行可以相比顺序执行减少总执行时间，但由于总计算量的激增，多智能体系统的整体耗时往往比单智能体系统更长。</p><p>并行化的主要收益是彻底性，而非速度。当你需要在庞大的信息空间中搜索，或调查一个复杂问题的诸多角度时，并行智能体可以覆盖比在上下文限制内工作的单个智能体更大的范围。代价是更高的 token 消耗和常常更长的总执行时间，换来的是更全面的结果。</p><h3>专业化</h3><p>不同的任务有时需要不同的工具集、系统提示词或领域专长。与其让单个智能体访问几十个工具，不如让多个专门化的智能体各自配备与其职责匹配的聚焦工具集，这样反而能提升可靠性。</p><h4><strong>工具集专业化</strong></h4><p>当一个智能体可用的工具太多时，性能会受损。以下三个信号说明工具专业化会有帮助：</p><ol role="list"><li><strong>数量。</strong>工具太多（通常 20 个以上）的智能体难以选出合适的那一个。</li><li><strong>领域混淆。</strong>当工具横跨多个不相关的领域（数据库操作、API 调用、文件系统操作）时，智能体会搞不清某个任务适用哪个领域。</li><li><strong>性能退化。</strong>新增工具反而降低了既有任务的表现，说明智能体管理工具的能力已达上限。</li></ol><h4><strong>系统提示词专业化</strong></h4><p>不同的任务有时需要不同的人设、约束或指令，而这些组合在一起会互相冲突。客服智能体需要共情和耐心；代码审查智能体需要精确和挑剔。合规检查智能体需要严格照章办事；头脑风暴智能体需要创造性上的灵活。当单个智能体必须在相互冲突的行为模式之间切换时，拆分为各自配备定制系统提示词的专门化智能体，会产出更稳定一致的结果。</p><p>每个专门化智能体的表现取决于它的指令——能改善单个智能体输出的那些<a href="https://claude.com/blog/best-practices-for-prompt-engineering">提示词工程最佳实践</a>，同样适用于每个子智能体的系统提示词。</p><h4><strong>领域专长专业化</strong></h4><p>有些任务需要深度领域上下文，而把这些全部塞给一个通用智能体会使其不堪重负。法律分析智能体可能需要关于判例法和监管框架的大量背景；医学研究智能体可能需要临床试验方法论的专业知识。与其把所有领域上下文装进单个智能体，不如让专门化的智能体各自携带与其具体职责相关的聚焦专长。</p><p><strong>示例：多平台集成。</strong>设想一个集成系统，智能体需要横跨 CRM、营销自动化和消息平台工作。每个平台有 10-15 个相关 API 端点。拥有 40 多个工具的单个智能体常常选不对工具，把各平台的相似操作混为一谈。拆分为配备聚焦工具集和定制提示词的专门化智能体，就能解决选择错误的问题。</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-javascript" style="white-space:pre-wrap"><span><span style="color:#dcc6e0">from</span><span> anthropic </span><span style="color:#dcc6e0">import</span><span> Anthropic
+</span></span><span>
+</span><span>client = Anthropic()
+</span><span>
+</span><span><span># Specialized agents </span><span style="color:#dcc6e0">with</span><span> focused toolsets and tailored prompts
+</span></span><span><span></span><span class="hljs-class" style="color:#dcc6e0">class</span><span class="hljs-class"> </span><span class="hljs-class" style="color:#00e0e0">CRMAgent</span><span class="hljs-class">:
+</span></span><span><span class="hljs-class">    """</span><span class="hljs-class" style="color:#00e0e0">Handles</span><span class="hljs-class"> </span><span class="hljs-class" style="color:#00e0e0">customer</span><span class="hljs-class"> </span><span class="hljs-class" style="color:#00e0e0">relationship</span><span class="hljs-class"> </span><span class="hljs-class" style="color:#00e0e0">management</span><span class="hljs-class"> </span><span class="hljs-class" style="color:#00e0e0">operations</span><span class="hljs-class">"""
+</span></span><span><span class="hljs-class">    </span><span class="hljs-class" style="color:#00e0e0">system_prompt</span><span class="hljs-class"> </span><span>= </span><span style="color:#abe338">""</span><span style="color:#abe338">"You are a CRM specialist. You manage contacts, 
+</span></span><span>    opportunities, and account records. Always verify record ownership 
+</span><span><span style="color:#abe338">    before updates and maintain data integrity across related records."</span><span style="color:#abe338">""</span><span>
+</span></span><span>    tools = [
+</span><span>        crm_get_contacts,
+</span><span>        crm_create_opportunity,
+</span><span><span>        # </span><span style="color:#f5ab35">8</span><span>-</span><span style="color:#f5ab35">10</span><span> CRM-specific tools
+</span></span><span>    ]
+</span><span>
+</span><span><span></span><span class="hljs-class" style="color:#dcc6e0">class</span><span class="hljs-class"> </span><span class="hljs-class" style="color:#00e0e0">MarketingAgent</span><span class="hljs-class">:
+</span></span><span><span class="hljs-class">    """</span><span class="hljs-class" style="color:#00e0e0">Handles</span><span class="hljs-class"> </span><span class="hljs-class" style="color:#00e0e0">marketing</span><span class="hljs-class"> </span><span class="hljs-class" style="color:#00e0e0">automation</span><span class="hljs-class"> </span><span class="hljs-class" style="color:#00e0e0">operations</span><span class="hljs-class">"""
+</span></span><span><span class="hljs-class">    </span><span class="hljs-class" style="color:#00e0e0">system_prompt</span><span class="hljs-class"> </span><span>= </span><span style="color:#abe338">""</span><span style="color:#abe338">"You are a marketing automation specialist. You 
+</span></span><span>    manage campaigns, lead scoring, and email sequences. Prioritize 
+</span><span><span style="color:#abe338">    data hygiene and respect contact preferences."</span><span style="color:#abe338">""</span><span>
+</span></span><span>    tools = [
+</span><span>        marketing_get_campaigns,
+</span><span>        marketing_create_lead,
+</span><span><span>        # </span><span style="color:#f5ab35">8</span><span>-</span><span style="color:#f5ab35">10</span><span> marketing-specific tools
+</span></span><span>    ]
+</span><span>
+</span><span><span></span><span class="hljs-class" style="color:#dcc6e0">class</span><span class="hljs-class"> </span><span class="hljs-class" style="color:#00e0e0">OrchestratorAgent</span><span class="hljs-class">:
+</span></span><span><span class="hljs-class">    """</span><span class="hljs-class" style="color:#00e0e0">Routes</span><span class="hljs-class"> </span><span class="hljs-class" style="color:#00e0e0">requests</span><span class="hljs-class"> </span><span class="hljs-class" style="color:#00e0e0">to</span><span class="hljs-class"> </span><span class="hljs-class" style="color:#00e0e0">specialized</span><span class="hljs-class"> </span><span class="hljs-class" style="color:#00e0e0">agents</span><span class="hljs-class">"""
+</span></span><span><span class="hljs-class">    </span><span class="hljs-class" style="color:#00e0e0">def</span><span class="hljs-class"> </span><span class="hljs-class" style="color:#00e0e0">execute</span><span class="hljs-class">(</span><span class="hljs-class" style="color:#00e0e0">self</span><span class="hljs-class">, </span><span class="hljs-class" style="color:#00e0e0">user_request</span><span class="hljs-class">: </span><span class="hljs-class" style="color:#00e0e0">str</span><span class="hljs-class">):
+</span></span><span><span class="hljs-class">        </span><span class="hljs-class" style="color:#00e0e0">response</span><span class="hljs-class"> </span><span>= client.messages.create(
+</span></span><span><span>            model=</span><span style="color:#abe338">"claude-sonnet-4-5"</span><span>,
+</span></span><span><span>            max_tokens=</span><span style="color:#f5ab35">1024</span><span>,
+</span></span><span><span>            system=</span><span style="color:#abe338">""</span><span style="color:#abe338">"You coordinate platform integrations. Route requests to the appropriate specialist:
+</span></span><span>- CRM: Contact records, opportunities, accounts, sales pipeline
+</span><span>- Marketing: Campaigns, lead nurturing, email sequences, scoring
+</span><span><span style="color:#abe338">- Messaging: Notifications, alerts, team communication"</span><span style="color:#abe338">""</span><span>,
+</span></span><span>            messages=[
+</span><span><span>                {</span><span style="color:#abe338">"role"</span><span>: </span><span style="color:#abe338">"user"</span><span>, </span><span style="color:#abe338">"content"</span><span>: user_request}
+</span></span><span>            ],
+</span><span>            tools=[delegate_to_crm, delegate_to_marketing, delegate_to_messaging]
+</span><span>        )
+</span><span><span>        </span><span style="color:#dcc6e0">return</span><span> response
+</span></span><span></span></code></pre><p>这一模式映射了高效的专业协作：工具与角色匹配的专家之间的协作，比试图在所有领域维持专长的通才更有效。但专业化也引入了路由复杂度。协调者必须正确分类请求并委派给正确的智能体，路由错误会导致糟糕的结果。维护多个专门化智能体也增加了提示词维护的开销。当领域可以清晰切分且路由决策毫不含糊时，专业化效果最好。</p><h2>何时该走出单智能体架构</h2><p>除了上述通用框架，还有一些具体信号表明单智能体模式已经不够用了：</p><p><strong>逼近上下文限制。</strong>如果一个智能体经常使用大量上下文且性能在退化，上下文压力可能就是瓶颈。值得注意的是，上下文管理方面的最新进展（<a href="https://platform.claude.com/cookbook/tool-use-automatic-context-compaction" target="_blank">如上下文压缩</a>）正在削弱这一限制，让单个智能体能在长得多的时间跨度上维持有效记忆。</p><p><strong>管理大量工具。</strong>当一个智能体拥有 15-20 个以上的工具时，模型要耗费大量上下文和注意力来理解自己的选项。在采用多智能体架构之前，不妨先考虑使用 <a href="https://docs.anthropic.com/en/docs/agents-and-tools/tool-use/tool-search-tool" target="_blank">Tool Search Tool</a>，它让 Claude 按需动态发现工具，而不是预先加载全部定义。这可以在提升工具选择准确率的同时<a href="https://www.anthropic.com/engineering/advanced-tool-use" target="_blank">将 token 消耗降低多达 85%</a>。</p><p><strong>可并行的子任务。</strong>当任务自然分解为相互独立的部分（跨多个来源的调研、针对多个组件的测试）时，并行的子智能体能带来可观的加速。</p><p>随着模型进步，这些阈值会发生变化。当前的界限是实践参考，而非根本性约束。</p><h2>以上下文为中心的任务分解</h2><p>采用多智能体架构时，最重要的设计决策是如何在智能体之间划分工作。我们观察到团队经常在这个选择上犯错，导致协调开销抵消了多智能体设计的收益。</p><p>关键在于分解工作时采用<strong>以上下文为中心</strong>的视角，而不是以问题为中心的视角。</p><p><strong>以问题为中心的分解（常常适得其反）。</strong>按工作类型划分（一个智能体写功能、另一个写测试、第三个审查代码）会带来持续的协调开销。每次交接都在丢失上下文。写测试的智能体不了解某些实现决策背后的原因，审查代码的智能体则缺乏探索和迭代的过程背景。</p><p><strong>以上下文为中心的分解（通常有效）。</strong>按上下文边界划分意味着，负责某个功能的智能体也应负责它的测试，因为它已经具备了必要的上下文。只有当上下文能被真正隔离时，才应该拆分工作。</p><p>这一原则来自对多智能体系统失败模式的观察。当智能体按问题类型拆分时，它们会陷入“传话游戏”，信息来回传递，每次交接都在降低保真度。在一个按软件开发角色（规划者、实现者、测试者、审查者）专门化智能体的实验中，子智能体花在协调上的 token 比实际工作还多。</p><p><strong>有效的分解边界包括：</strong></p><ul role="list"><li><strong>相互独立的研究路径。</strong>调查“亚洲市场趋势”与“欧洲市场趋势”可以并行推进，无需共享上下文。</li><li><strong>接口清晰的独立组件。</strong>有了定义明确的 API 契约，前端和后端的工作可以并行。</li><li><strong>黑盒验证。</strong>只需要运行测试并报告结果的验证者，不需要实现上下文。</li></ul><p><strong>有问题的分解边界包括：</strong></p><ul role="list"><li><strong>同一工作的顺序阶段。</strong>同一功能的规划、实现和测试共享太多上下文。</li><li><strong>紧耦合的组件。</strong>需要频繁来回沟通的组件应放在同一个智能体里。</li><li><strong>需要共享状态的工作。</strong>需要频繁同步认知的智能体应当待在一起。</li></ul><h2>验证子智能体模式</h2><p>一个在各领域都稳定有效的多智能体模式是<strong>验证子智能体</strong>。这是一个专职智能体，它唯一的职责就是测试或验证主智能体的工作。</p><p>值得指出的是，能力更强的协调者模型（如 Claude Opus 4.5）越来越能直接评估子智能体的工作，而无需单独的验证步骤。不过，在使用能力较弱的协调者、验证需要专门工具、或者你希望在工作流中强制设置显式验证检查点时，验证子智能体依然很有价值。</p><p>验证子智能体之所以有效，是因为它绕开了传话游戏问题。验证本质上需要的上下文转移极少，因此验证者可以对系统做黑盒测试，而不需要了解它是如何被构建出来的全部历史。</p><h3>实现一个多智能体系统</h3><p>主智能体完成一个工作单元。在继续之前，它派生一个验证子智能体，把待验证的产物、清晰的成功标准和执行验证所需的工具交给它。</p><p>验证者不需要理解产物为什么被建成这样。它只需要判定产物是否满足指定的标准。</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-javascript" style="white-space:pre-wrap"><span><span style="color:#dcc6e0">from</span><span> anthropic </span><span style="color:#dcc6e0">import</span><span> Anthropic
+</span></span><span>
+</span><span>client = Anthropic()
+</span><span>
+</span><span><span></span><span class="hljs-class" style="color:#dcc6e0">class</span><span class="hljs-class"> </span><span class="hljs-class" style="color:#00e0e0">CodingAgent</span><span class="hljs-class">:
+</span></span><span><span class="hljs-class">    </span><span class="hljs-class" style="color:#00e0e0">def</span><span class="hljs-class"> </span><span class="hljs-class" style="color:#00e0e0">implement_feature</span><span class="hljs-class">(</span><span class="hljs-class" style="color:#00e0e0">self</span><span class="hljs-class">, </span><span class="hljs-class" style="color:#00e0e0">requirements</span><span class="hljs-class">: </span><span class="hljs-class" style="color:#00e0e0">str</span><span class="hljs-class">) -&gt; </span><span class="hljs-class" style="color:#00e0e0">dict</span><span class="hljs-class">:
+</span></span><span><span class="hljs-class">        """</span><span class="hljs-class" style="color:#00e0e0">Main</span><span class="hljs-class"> </span><span class="hljs-class" style="color:#00e0e0">agent</span><span class="hljs-class"> </span><span class="hljs-class" style="color:#00e0e0">implements</span><span class="hljs-class"> </span><span class="hljs-class" style="color:#00e0e0">the</span><span class="hljs-class"> </span><span class="hljs-class" style="color:#00e0e0">feature</span><span class="hljs-class">"""
+</span></span><span><span class="hljs-class">        </span><span class="hljs-class" style="color:#00e0e0">messages</span><span class="hljs-class"> </span><span>= [
+</span></span><span><span>            {</span><span style="color:#abe338">"role"</span><span>: </span><span style="color:#abe338">"user"</span><span>, </span><span style="color:#abe338">"content"</span><span>: f</span><span style="color:#abe338">"Implement: {requirements}"</span><span>}
+</span></span><span>        ]
+</span><span>        response = client.messages.create(
+</span><span><span>            model=</span><span style="color:#abe338">"claude-sonnet-4-5"</span><span>,
+</span></span><span><span>            max_tokens=</span><span style="color:#f5ab35">4096</span><span>,
+</span></span><span>            messages=messages,
+</span><span>            tools=[read_file, write_file, list_directory]
+</span><span>        )
+</span><span><span>        </span><span style="color:#dcc6e0">return</span><span> {
+</span></span><span><span>            </span><span style="color:#abe338">"code"</span><span>: response.content,
+</span></span><span><span>            </span><span style="color:#abe338">"files_changed"</span><span>: extract_files(response)
+</span></span><span>        }
+</span><span>
+</span><span><span></span><span class="hljs-class" style="color:#dcc6e0">class</span><span class="hljs-class"> </span><span class="hljs-class" style="color:#00e0e0">VerificationAgent</span><span class="hljs-class">:
+</span></span><span><span class="hljs-class">    </span><span class="hljs-class" style="color:#00e0e0">def</span><span class="hljs-class"> </span><span class="hljs-class" style="color:#00e0e0">verify_implementation</span><span class="hljs-class">(</span><span class="hljs-class" style="color:#00e0e0">self</span><span class="hljs-class">, </span><span class="hljs-class" style="color:#00e0e0">requirements</span><span class="hljs-class">: </span><span class="hljs-class" style="color:#00e0e0">str</span><span class="hljs-class">, </span><span class="hljs-class" style="color:#00e0e0">files_changed</span><span class="hljs-class">: </span><span class="hljs-class" style="color:#00e0e0">list</span><span class="hljs-class">) -&gt; </span><span class="hljs-class" style="color:#00e0e0">dict</span><span class="hljs-class">:
+</span></span><span><span class="hljs-class">        """</span><span class="hljs-class" style="color:#00e0e0">Separate</span><span class="hljs-class"> </span><span class="hljs-class" style="color:#00e0e0">agent</span><span class="hljs-class"> </span><span class="hljs-class" style="color:#00e0e0">verifies</span><span class="hljs-class"> </span><span class="hljs-class" style="color:#00e0e0">the</span><span class="hljs-class"> </span><span class="hljs-class" style="color:#00e0e0">work</span><span class="hljs-class">"""
+</span></span><span><span class="hljs-class">        </span><span class="hljs-class" style="color:#00e0e0">messages</span><span class="hljs-class"> </span><span>= [
+</span></span><span><span>            {</span><span style="color:#abe338">"role"</span><span>: </span><span style="color:#abe338">"user"</span><span>, </span><span style="color:#abe338">"content"</span><span>: f</span><span style="color:#abe338">""</span><span style="color:#abe338">"
+</span></span><span>Requirements: {requirements}
+</span><span>Files changed: {files_changed}
+</span><span>
+</span><span>Run the test suite and verify:
+</span><span>1. All existing tests pass
+</span><span>2. New functionality works as specified
+</span><span>3. No obvious errors or security issues
+</span><span>
+</span><span>You MUST run the complete test suite before marking as passed.
+</span><span>Do not mark as passing after only running a few tests.
+</span><span>Run: pytest --verbose
+</span><span>Only mark as PASSED if ALL tests pass with no failures.
+</span><span><span style="color:#abe338">"</span><span style="color:#abe338">""</span><span>}
+</span></span><span>        ]
+</span><span>        response = client.messages.create(
+</span><span><span>            model=</span><span style="color:#abe338">"claude-sonnet-4-5"</span><span>,
+</span></span><span><span>            max_tokens=</span><span style="color:#f5ab35">4096</span><span>,
+</span></span><span>            messages=messages,
+</span><span>            tools=[run_tests, execute_code, read_file]
+</span><span>        )
+</span><span><span>        </span><span style="color:#dcc6e0">return</span><span> {
+</span></span><span><span>            </span><span style="color:#abe338">"passed"</span><span>: extract_pass_fail(response),
+</span></span><span><span>            </span><span style="color:#abe338">"issues"</span><span>: extract_issues(response)
+</span></span><span>        }
+</span><span>
+</span><span><span>def implement_with_verification(requirements: str, </span><span class="hljs-attr">max_attempts</span><span>: int = </span><span style="color:#f5ab35">3</span><span>):
+</span></span><span><span>    </span><span style="color:#dcc6e0">for</span><span> attempt </span><span style="color:#dcc6e0">in</span><span> range(max_attempts):
+</span></span><span>        result = CodingAgent().implement_feature(requirements)
+</span><span>        verification = VerificationAgent().verify_implementation(
+</span><span>            requirements,
+</span><span><span>            result[</span><span style="color:#abe338">'files_changed'</span><span>]
+</span></span><span>        )
+</span><span>        
+</span><span><span>        </span><span style="color:#dcc6e0">if</span><span> verification[</span><span style="color:#abe338">'passed'</span><span>]:
+</span></span><span><span>            </span><span style="color:#dcc6e0">return</span><span> result
+</span></span><span>        
+</span><span><span>        requirements += f</span><span style="color:#abe338">"\n\nPrevious attempt failed: {verification['issues']}"</span><span>
+</span></span><span>    
+</span><span><span>    raise Exception(f</span><span style="color:#abe338">"Failed verification after {max_attempts} attempts"</span><span>)</span></span></code></pre><h3>多智能体系统的应用</h3><p>验证子智能体适用于：</p><ul role="list"><li><strong>质量保障。</strong>运行测试套件、对代码做 lint、按 schema 校验输出。</li><li><strong>合规检查。</strong>核验文档是否满足政策要求、按规则检查输出。</li><li><strong>输出校验。</strong>在交付前确认生成的内容符合规格。</li><li><strong>事实核查。</strong>由单独的智能体验证生成内容中的论断或引用。</li></ul><h3>“过早胜利”问题</h3><p>验证子智能体最显著的失败模式，是没有经过彻底测试就把输出标记为通过。验证者跑一两个测试，看到通过了，就宣布大功告成。</p><p>缓解策略包括：</p><ul role="list"><li><strong>具体的标准。</strong>明确要求“运行完整测试套件并报告所有失败”，而不是“确保它能用”。</li><li><strong>全面的检查。</strong>要求验证者测试多个场景和边界情况。</li><li><strong>反向测试。</strong>指示验证者尝试应当失败的输入，并确认它们确实失败。</li><li><strong>明确的指令。</strong>“在标记为通过之前，你必须运行完整测试套件”这样的指令必不可少。如果没有对全面验证的显式要求，验证智能体会走捷径。</li></ul><h2>在单智能体与多智能体系统之间做选择</h2><p>多智能体系统很强大，但并非放之四海而皆准。在引入多个协调智能体的复杂度之前，请先确认：</p><ol role="list"><li><strong>确实存在多智能体才能解决的约束</strong>，例如上下文限制、并行化机会或专业化需求。</li><li><strong>分解遵循上下文，而非问题类型。</strong>按工作需要什么上下文来分组，而不是按工作的种类。</li><li><strong>存在清晰的验证点</strong>，让子智能体无需完整上下文即可验证工作成果。</li></ol><p>我们的建议？从可行的最简单方案开始，只有在有证据支持时才增加复杂度。</p><p><em>本文是多智能体系统系列文章的第一篇。关于单智能体模式，请阅读</em><a href="https://www.anthropic.com/engineering/building-effective-agents"><em>Building effective agents</em></a><em>。关于上下文管理策略，请阅读</em><a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"><em>Effective context engineering for AI agents</em></a><em>。关于我们如何构建多智能体研究系统的深入介绍，请阅读</em><a href="https://www.anthropic.com/engineering/multi-agent-research-system"><em>How we built our multi-agent research system</em></a><em>。</em></p><h2>致谢</h2><p>作者 Cara Phillips，感谢 Paul Chen、Andy Schumeister、Brad Abrams 和 Theo Chu 的贡献。</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/building-multi-agent-systems-when-and-how-to-use-them" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

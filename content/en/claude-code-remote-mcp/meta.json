@@ -1,0 +1,17 @@
+{
+  "slug": "claude-code-remote-mcp",
+  "title": "Remote MCP support in Claude Code",
+  "date": "June 18, 2025",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/claude-code-remote-mcp",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/claude-code-remote-mcp.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.789Z",
+  "translatedTitle": "Claude Code 支持远程 MCP 服务器",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:44:54.905Z",
+  "translateLang": "zh-CN"
+}

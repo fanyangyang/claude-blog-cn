@@ -1,9 +1,17 @@
 {
   "slug": "claude-managed-agents-updates",
   "title": "New in Claude Managed Agents: self-hosted sandboxes and MCP tunnels",
-  "date": "Unknown",
+  "date": "May 19, 2026",
   "category": "Product announcements",
   "url": "https://claude.com/blog/claude-managed-agents-updates",
   "fetchedAt": "2026-09-01T22:57:57.119Z",
-  "translated": false
+  "translated": true,
+  "inHero": true,
+  "heroIndex": 4,
+  "inGrid": true,
+  "illustration": "assets/illustrations/claude-managed-agents-updates.svg",
+  "illustrationBg": "Clay",
+  "translatedTitle": "Claude Managed Agents 新功能：自托管沙箱与 MCP tunnels",
+  "translatedAt": "2026-09-02T05:14:34.865Z",
+  "translateLang": "zh-CN"
 }

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude Code 中的 Agent View（智能体视图） — Claude Blog 中文翻译</title>
+  <meta name="description" content="Claude Code 中的 Agent View（智能体视图）">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/agent-view-in-claude-code" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Product announcements</span>
+            <span class="article-date">May 11, 2026</span>
+            
+          </div>
+          <h1 class="article-title">Claude Code 中的 Agent View（智能体视图）</h1>
+          <a href="/posts/agent-view-in-claude-code/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>今天我们推出 Claude Code 中的 agent view（智能体视图）：一个统一管理所有 Claude Code 会话的地方。&nbsp;</p><p>以前并行运行多个智能体时，你可能要同时打理多个终端标签页、一个 tmux 网格，还要在脑子里记着一长串接下来要处理的事项。</p><p>有了 Claude Code 的 agent view，你可以启动新的智能体、把它们转入后台，只在 Claude 需要你时才介入。一眼就能看到哪些智能体在等你回复、哪些还在工作、哪些已经完成，从而轻松地同时调度多个智能体。</p><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/-INveHwbRz4" title="Introducing agent view in Claude Code" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><h2>工作原理</h2><p>Agent view 改进了在 CLI 中可视化查看和操作 Claude Code 会话的体验。</p><h3>一览全局</h3><p>在任意会话中按左方向键，或在终端中运行 <code>claude agents</code>，即可打开 agent view。每一行都会显示该会话、它是否需要你的输入、最近一次回复的内容，以及你上次与它交互的时间。</p><figure style="max-width:1673pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a02147d18cd3a9a9fe18c4f_aef149a9.png" loading="lazy"></div></figure><h3>不离开界面即可查看和回复</h3><p>选中一个会话即可预览最近一轮对话。如果某个会话正在等待决策，你可以就地作答，会话随即继续运行。按回车键可以直接附到某个会话上，查看完整的对话记录。</p><figure style="max-width:1676pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a02147d18cd3a9a9fe18c52_57c35e02.png" loading="lazy"></div></figure><h3>一切皆可转入后台</h3><p>最后，你可以用 <code>/bg</code> 把任意现有会话加入 agent view，或者用 <code>claude --bg [task]</code> 直接在后台启动一个全新会话，完全跳过前台。</p><h2>开发者如何使用 agent view</h2><p>我们从早期用户那里观察到几种典型用法：</p><ul role="list"><li><strong>扩展并发会话数量：</strong>同时派发多个想法，每个都可以搭配一个 skill，回来时看到的就是一列待审阅的 pull request。</li><li><strong>管理长时间运行的智能体：</strong>PR 看护、仪表盘更新等循环任务会直接在列表中显示下一次运行时间。</li><li><strong>在不同会话之间穿梭：</strong>当你在某个会话中途，按左方向键，发起一个相关任务或快速查询一下代码库，再按右方向键回到原来的工作。答案出来时，预览界面会直接显示。</li><li><strong>查看成果：</strong>每行的状态指示加上预览中的标题，让你一眼扫出哪些会话产出了 PR。</li></ul><h2>开始使用</h2><p>Agent view 现以 Research Preview 形式在 Pro、Max、Team、Enterprise 和 Claude API 计划中提供。运行 <code>claude agents</code> 即可选择启用。常规速率限制适用。更多信息请参阅<a href="https://code.claude.com/docs/en/agent-view">文档</a>。</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/agent-view-in-claude-code" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

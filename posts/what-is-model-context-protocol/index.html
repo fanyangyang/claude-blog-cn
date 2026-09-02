@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>什么是 Model Context Protocol？将 AI 连接到你的世界 — Claude Blog 中文翻译</title>
+  <meta name="description" content="什么是 Model Context Protocol？将 AI 连接到你的世界">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/what-is-model-context-protocol" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Agents</span>
+            <span class="article-date">October 31, 2025</span>
+            
+          </div>
+          <h1 class="article-title">什么是 Model Context Protocol？将 AI 连接到你的世界</h1>
+          <a href="/posts/what-is-model-context-protocol/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>AI 模型的表现好坏，取决于提供给它的上下文。像 <a href="https://claude.ai">Claude</a> 这样的 AI 助手可以回答问题、完成种类惊人的任务，但如果无法访问所需的数据或工具，它们能为你做的就很有限。通常你的解决办法是在不同标签页之间复制粘贴上下文——无论是在 Google Drive 中编辑文档、在 Slack 中回复话题，还是在 IDE 中更新代码。这个过程缓慢、手动，还有遗漏重要上下文的风险。</p><p><strong>Model Context Protocol（MCP，模型上下文协议）</strong>提供了一种开放的解决方案，并已在所有 AI 应用和助手中广泛可用。在本文中，你将了解 MCP 是什么、它如何工作、为什么重要，以及它适合谁。你会看到 MCP 的实际应用示例，并理解如何从今天开始使用或基于 MCP 进行构建。</p><h2>什么是 Model Context Protocol（MCP）？</h2><p><strong>Model Context Protocol</strong> 是一个开放标准，定义了 LLM 与外部系统通信的方式。</p><p>可以把 MCP 理解为<strong>「LLM 的 USB-C」</strong>。正如 USB-C 为你的手机、笔记本和其他设备提供了一种通用接口，MCP 为 LLM 连接外部系统提供了一种通用格式。在 USB-C 出现之前，每种电子设备都有自己的数据线：iPhone 用 Lightning，Android 用 micro-USB，相机用专有接口。随着越来越多的设备采用 USB-C，整个生态系统的连接变得无缝。</p><p>MCP 为 AI 集成带来了同样的简洁。在 MCP 出现之前，每个应用和数据库都需要定制代码才能与 LLM 连接。Google Drive 需要一套集成，Slack 需要另一套，Figma 又需要一套。现在，MCP 提供了单一、标准化的格式，把这些工具连接到 Claude 及其他 AI 应用。</p><figure style="max-width:2880pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68f64b7d51a1d57549b3ad8e_What%20is%20MCP_%20Final%402x.png" loading="lazy"></div></figure><h2>MCP 从何而来？</h2><p>MCP 诞生于 Anthropic，由 David Soria Parra 和 Justin Spahr-Summers 创建。这个想法源于 David 的一个烦恼：他要在 Claude Desktop 和他的集成开发环境（IDE）之间不断复制代码。意识到这是一个典型的 M×N 问题——多个应用需要多个集成——David 向 Justin 提议构建一个协议来解决它。他们基于广受欢迎的 Language Server Protocol 设计了 MCP，并于 2024 年 11 月在 Anthropic 的支持下开源，以确保整个 AI 生态系统都能从中受益。</p><h2>MCP 如何工作？</h2><p>MCP 采用双侧架构。像 Claude 这样的 AI 智能体和聊天机器人创建 <strong>MCP Client</strong>，从而连接到 Notion、Canva、Figma 等应用；而这些应用通过 <strong>MCP Server</strong> 把自己的工具和数据开放出来。</p><p>通过构建 <strong>MCP Client</strong>，AI 智能体和聊天机器人可以访问社区构建的数千个 MCP Server，从而拥有一条直接的路径来扩展自身能力。智能体还可以通过 <a href="https://claude.com/blog/claude-managed-agents-updates">MCP 隧道</a>访问防火墙后面的 MCP 服务器。通过构建 <strong>MCP Server</strong>，公司和开发者可以让自己的产品直接为 AI 所用，开辟一条提供价值的新途径。</p><p>由于 MCP 是开源的，任何人都可以构建 MCP Server 或 Client。</p><h2>MCP 为什么重要？</h2><p>MCP 让 LLM 得以超越聊天、执行现实世界的任务：阅读一封邮件往来并回复、访问代码库并部署更新，或者审阅一份设计简报并生成初稿。该协议为 LLM 连接外部系统、工具和应用以访问数据、执行操作奠定了基础。这带来了：</p><h3>AI 的通用兼容性</h3><p><strong>AI 助手可以访问数千种工具</strong>——一旦某个 AI 助手实现了 MCP（通过 MCP client），它就能立即连接到数千个兼容 MCP 的应用，从专业编码工具到企业工作流平台，无需为每一个单独构建定制集成。</p><p><strong>工具和应用一次性连接到所有 AI 助手</strong>——Notion、Figma、Asana 等公司只需构建一个 MCP 服务器，即可与任何兼容（即实现了 MCP client）的 AI 助手配合。开发者只需构建一个集成，就能覆盖所有 AI 连接。</p><h3>开放、AI 原生的生态系统</h3><p><strong>任何人都可以构建和分享</strong>——作为开放标准，开发者或公司发布的 MCP 服务器与任何 MCP client 兼容。这种开放性造就了一个由数千个社区构建的服务器组成的繁荣生态系统，加速了面向 AI 助手的工具和应用普及。</p><p><strong>让软件从设计上就可被 AI 访问</strong>——传统软件是为使用 Web 界面的人类构建的。MCP 提供了一个专为 AI 交互设计的并行接口，让应用真正成为 AI 原生。这意味着 AI 模型与人们已经在使用的工具之间，会有更好、更可靠的集成。</p><h3>智能体的基础协议</h3><p>MCP 为 AI 智能体构建了访问任意数量服务和工具的基础设施，实现真正的端到端任务自动化。随着越来越多的应用采用该协议，AI 智能体独立处理复杂多步骤工作流的愿景正变得越来越切实可行。</p><h2>MCP 适合谁？</h2><p>开发者获得一种标准化的方式：只需构建一次集成，即可与任何兼容的 AI 配合工作。企业可以获得安全、由 IT 部门管控、且能在整个组织内规模化扩展的 AI 连接。消费者则可以即时把自己喜欢的工具连接到 AI，无需任何技术知识。</p><h3>面向开发者：一个标准连接 AI 与应用</h3><p>开发者只需遵循单一标准，就能将外部产品连接到你的 AI 应用和智能体。这简化了构建集成的过程，增加了可连接产品的数量，也提升了整个生态系统中连接的质量和安全性。</p><p>要构建一个连接众多应用的智能体？还是要构建一个被众多智能体连接的应用？MCP 让你通过精简的集成接入一个兼容工具的生态系统。</p><h3>面向企业：覆盖整个组织的安全、可扩展 AI 连接</h3><p>企业可以更有效地推动 AI 工具和应用的内部采用，因为 MCP 简化了将你的系统连接到 AI 的过程。这有助于让 AI 在组织内部实现更紧密的连接，扩展它对员工的能力和用处。</p><h3>面向消费者：即时访问你喜欢的工具</h3><p>MCP 为终端用户在他们喜爱的 AI 助手与工作工具之间提供了无缝连接。它让任务自动化更容易，也免去了跨标签页复制粘贴的麻烦。简而言之，MCP 让 AI 更好地访问和连接你的世界。</p><p>在 <a href="https://claude.ai">Claude</a> 中，你可以即时连接到被称为 <a href="https://claude.com/partners/mcp"><strong>Connectors（连接器）</strong></a> 的 MCP Server。这为你提供了一种直接的方式，把 Claude 连接到你常用的工作应用。</p><h2>Connectors（MCP）实战</h2><p>当你看到 MCP 与你已在使用的工具结合时，它的真正价值就会显现。以下是一些在 Claude 中由 MCP 驱动的集成示例，它们被称为 <strong>Connectors</strong>：</p><h3>在 Claude 中使用 Canva</h3><p>Canva Connector 让 Claude 可以直接在 Canva 中生成新设计。借助 MCP，Claude 能够连接 Canva 提供的工具，在画布上生成设计。</p><figure style="width:100%;max-width:100%;padding-bottom:56.206088992974244%" class="w-richtext-align-center w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/wXC2u36w2Rc" title="Move from content to polished design with Canva + Claude" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><h3>在 Claude 中使用 Notion 和 Linear</h3><p>借助 Notion 和 Linear Connectors，Claude 可以访问你在 Notion 中的页面，并用它们来更新 Linear 中的工单。MCP 在这里实现了从非结构化上下文到独立项目管理系统中有序工单的无缝转换。</p><figure style="width:100%;max-width:100%;padding-bottom:56.206088992974244%" class="w-richtext-align-center w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/xBV60h9_lbw" title="Ship faster with real context from Linear, Notion, and Claude" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><h3>在 Claude Code 中使用 Figma</h3><p>Figma Connector 让 Claude 可以访问 Figma 中的设计。这使得 Claude Code 能够根据 Figma 中创建的设计，生成网站、应用或用户界面的可运行原型。</p><figure style="width:100%;max-width:100%;padding-bottom:56.206088992974244%" class="w-richtext-align-center w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/dcKXca3Bs2o" title="Turn designs into code with Claude Code + Figma" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><h3>可用的 Claude Connectors</h3><p>Claude Connectors 包括以下集成：</p><ul role="list"><li><strong>Notion</strong>：工作区文档</li><li><strong>Linear</strong>：问题跟踪</li><li><strong>Stripe</strong>：支付数据</li><li><strong>Canva</strong> 和 <strong>Figma</strong>：设计辅助</li><li><strong>Hubspot</strong>：CRM 任务自动化</li><li><strong>Sentry</strong>：错误跟踪</li><li>……以及更多</li></ul><p>每个 Connector 只需几秒钟即可完成配置，成为 Claude 工作上下文的一部分。在 Claude 之外，<a href="https://modelcontextprotocol.io">开源的 MCP Registry</a> 上还有一个庞大的 MCP 服务器生态。</p><figure style="max-width:3840pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e948c50eec666207cdd811_2.png" loading="lazy"></div></figure><h2>开始探索 MCP</h2><p>根据你的需求，有两条路径可选。</p><h3>Claude 中的 Connectors</h3><p><a href="https://claude.com/partners/mcp">Connectors</a> 是预先构建好的，可让 Claude 即时访问工具、数据库和应用，为你带来一组全新能力。打开 <a href="https://claude.ai/directory">Claude</a>，浏览可用的 connectors，点击即可添加。</p><h3>构建自定义 MCP 连接</h3><p>MCP 是开源的，这意味着任何人都可以采用 MCP 将 AI 连接到应用。<a href="https://modelcontextprotocol.io">Model Context Protocol 文档</a>详细介绍了如何基于 MCP 进行构建。</p><h2>入门</h2><p>如果你想体验 MCP，可以先浏览找一个 Claude Connector，立即在 Claude 中用起来。</p><p>如果现有的 MCP 服务器不能满足需求，自己动手创建一个需要一些工作量，但如果你会 TypeScript 或 Python，其实并不复杂。<a href="https://modelcontextprotocol.io/quickstart">Model Context Protocol 快速入门</a>提供了可以直接修改使用的可运行示例。</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/what-is-model-context-protocol" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

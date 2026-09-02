@@ -1,0 +1,17 @@
+{
+  "slug": "building-with-claude-managed-agents",
+  "title": "The evolution of agentic surfaces: building with Claude Managed Agents",
+  "date": "June 10, 2026",
+  "category": "Agents",
+  "url": "https://claude.com/blog/building-with-claude-managed-agents",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/building-with-claude-managed-agents.svg",
+  "illustrationBg": "Olive",
+  "fetchedAt": "2026-09-02T03:50:17.791Z",
+  "translatedTitle": "智能体界面的演进：使用 Claude Managed Agents 构建生产级智能体",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:24:57Z",
+  "translateLang": "zh-CN"
+}

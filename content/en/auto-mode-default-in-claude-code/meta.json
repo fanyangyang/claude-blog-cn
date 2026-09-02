@@ -1,0 +1,17 @@
+{
+  "slug": "auto-mode-default-in-claude-code",
+  "title": "Auto mode is now the default in Claude Code for Pro, Max, and Team plans",
+  "date": "August 7, 2026",
+  "category": "Claude Code",
+  "url": "https://claude.com/blog/auto-mode-default-in-claude-code",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/auto-mode-default-in-claude-code.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.776Z",
+  "translatedTitle": "自动模式现已成为 Claude Code Pro、Max 和 Team 计划的默认设置",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:30:13.000Z",
+  "translateLang": "zh-CN"
+}

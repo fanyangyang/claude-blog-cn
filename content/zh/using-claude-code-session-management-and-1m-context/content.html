@@ -1,0 +1,40 @@
+<div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>我们发布了 <strong><code>/usage</code></strong>，一个新的斜杠命令，帮助你了解自己在 Claude Code 中的使用情况。这个功能的诞生源于与客户的多次交流。&nbsp;</p><p>在这些沟通中反复出现的一个话题是：用户管理会话的方式千差万别，尤其是在 Claude Code 新近升级到 100 万上下文之后。</p><p>你是只开一两个会话一直挂在终端里，还是每条提示词都开个新会话？你什么时候用 <a href="https://platform.claude.com/docs/en/build-with-claude/compaction" target="_blank">compact</a>、回退（rewind）或 <a href="https://code.claude.com/docs/en/sub-agents" target="_blank">subagent</a>？什么会导致一次糟糕的压缩或糟糕的会话？</p><p>这里的细节多得惊人，而这些细节实实在在地决定了你使用 <a href="https://claude.com/product/claude-code" target="_blank">Claude Code</a> 的体验，而且几乎全部源于<a href="https://code.claude.com/docs/en/how-claude-code-works" target="_blank">管理你的上下文窗口</a>。</p><h2><strong>上下文、压缩与上下文腐朽速览</strong></h2><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:1440px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="1440px"><div><img alt="__wf_reserved_inherit" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69e02238a3e7e9532cb643de_image6.png" width="auto" height="auto" loading="lazy"></div></figure><p>上下文窗口是模型在生成下一条回复时能一次性"看到"的全部内容。它包括系统提示词、到目前为止的对话、每一次工具调用及其输出，以及所有已读取的文件。Claude Code 拥有一百万 token 的上下文窗口。</p><p>遗憾的是，使用上下文会轻微影响性能，这种现象常被称为"上下文腐朽"（context rot）。上下文腐朽指的是：随着上下文增长，模型性能会下降，因为注意力被摊薄到更多 token 上，而较早的、已不相关的内容会开始干扰当前任务。</p><p>上下文窗口是硬性上限，所以当你接近上下文窗口的尽头时，你一直在做的任务会被自动总结成一段更短的描述，模型随后在新的上下文窗口中继续工作。我们称之为压缩（compaction）。你也可以自己触发压缩。</p><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:1440px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="1440px"><div><img alt="__wf_reserved_inherit" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69e02297f13357d9b32d8312_image5.png" width="auto" height="auto" loading="lazy"></div></figure><h2><strong>每一轮都是一个分叉点</strong></h2><p>假设你刚让 Claude 做完一件事——此时上下文里已经有一些信息（工具调用、工具输出、你的指示），而下一步怎么做，你拥有的选项多得惊人：</p><ul><li><strong>继续</strong>——在同一会话中发送下一条消息</li><li><strong><code>/rewind</code>（连按两次 esc）</strong>——跳回之前的某条消息，从那里重新来过</li><li><strong><code>/clear</code></strong>——开一个新会话，通常附上你从刚才的收获中提炼出的简报</li><li><strong>压缩</strong>——总结当前会话，然后在摘要的基础上继续</li><li><strong>Subagent</strong>——把下一块工作委托给一个拥有干净上下文的 agent，只把它的结果拉回来</li></ul><p>虽然最自然的做法是直接继续，但另外四个选项都是为帮你管理上下文而存在的。</p><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:1999px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="1999px"><div><img alt="__wf_reserved_inherit" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69e022cf45e7f9c9d025756d_image3.png" width="auto" height="auto" loading="lazy"></div></figure><h2><strong>什么时候该开新会话</strong></h2><p>什么时候保持一个长会话，什么时候另起一个？我们的经验法则是：开始新任务时，也应该开始新会话。</p><p>100 万的上下文窗口意味着你现在可以更可靠地完成更长的任务，比如从零构建一个全栈应用，但上下文腐朽仍可能发生。&nbsp;</p><p>有时你会做一些相关联的任务，其中部分上下文仍然必要，但并非总是如此。例如，为你刚实现的功能编写文档。虽然你可以开个新会话，但那样 Claude 就得重新读一遍你刚实现的那些文件，反而更慢也更贵。</p><h2><strong>用回退代替纠正</strong></h2><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:1440px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="1440px"><div><img alt="__wf_reserved_inherit" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69e0234c97977d4944bea810_image4.png" width="auto" height="auto" loading="lazy"></div></figure><p>在 Claude Code 中，连按两次 Esc（或运行 <code>/rewind</code>）可以让你跳回之前任意一条消息并从那里重新提示。该节点之后的消息会从上下文中丢弃。&nbsp;</p><p>回退往往是比"口头纠正"更好的做法。例如，Claude 读了五个文件，尝试了一种方案，行不通。你的直觉可能是输入"这不行，改试 X"。但更好的做法可能是回退到刚读完文件之后，带着你学到的东西重新提示："别用方案 A，foo 模块没有暴露那个接口——直接上 B。"&nbsp;</p><p>你也可以使用<em>"从这里开始总结"</em>或 <code>/rewind</code> 斜杠命令，让 Claude 总结它的经验教训并生成一份交接信息——有点像未来的 Claude（试过某方案失败了）给上一版 Claude 留的话。</p><h2><strong>压缩还是另起全新会话</strong></h2><p>会话一旦变长，你有两种办法甩掉多余的上下文：<code>/compact</code> 或 <code>/clear</code>（重新开始）。它们感觉相似，行为却大不相同。</p><p><strong>压缩</strong>是让模型总结到目前为止的对话，然后用摘要替换历史。它有信息损耗，但你无需亲自动笔，而且 Claude 或许会把重要的经验教训和文件收录得更全面。你也可以通过传入指令来引导它（<code>/compact focus on the auth refactor, drop the test debugging</code>）。</p><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:1440px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="1440px"><div><img alt="__wf_reserved_inherit" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69e02427049669efd6bb7604_image1.png" width="auto" height="auto" loading="lazy"></div></figure><p>使用 <code>/clear</code><strong><code> </code></strong>时，由<em>你</em>写下重要的内容（"我们在重构认证中间件，约束是 X，关键文件是 A 和 B，方案 Y 已被排除"），然后干干净净地开始。这更费工夫，但留下的上下文正是你判断为相关的内容。&nbsp;</p><h2><strong>什么会导致糟糕的自动压缩？</strong></h2><p>如果你经常运行长会话，可能已经注意到某些时刻压缩效果特别差。我们发现，糟糕的压缩往往发生在模型无法预判你工作方向的时候。&nbsp;</p><p>在上面的例子中，自动压缩在一场漫长的调试会话后触发，把调查过程做了总结，而你的下一条消息是"现在修复我们刚才在 bar.ts 里看到的另一个警告"。&nbsp;</p><p>但由于整个会话都聚焦在调试上，那个警告可能已经在摘要中被丢掉了。</p><p>这尤其棘手，因为受上下文腐朽影响，模型在压缩时正处于智能的最低点。&nbsp;有了 100 万上下文，你就有更充裕的时间带着对接下来要做什么的描述去主动 /compact。&nbsp;</p><h2><strong>Subagent 与干净的上下文窗口</strong></h2><p><a href="https://claude.com/blog/subagents-in-claude-code" target="_blank">Subagent</a> 在你预知某块工作会产生大量后续不再需要的中间输出时，往往很好用。</p><p>当 Claude 通过 Agent 工具生成一个 subagent 时，这个 subagent 会获得自己全新的上下文窗口。它想干多少活都行，最后把结果综合好，只有最终报告会回到父级那里。</p><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:1440px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="1440px"><div><img alt="__wf_reserved_inherit" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69e0241044643c5402b312a9_image2.png" width="auto" height="auto" loading="lazy"></div></figure><p>我们在 Anthropic 内部常用的判断标准是：<em>我之后还需要这些工具输出本身，还是只要结论？</em>&nbsp;</p><p>虽然 Claude Code 会自动调用 subagent，但你可能需要明确让它这么做。例如，你可以告诉它：</p><ul><li>"生成一个 subagent，根据以下规格文件验证这项工作的结果"</li><li>"派一个 subagent 通读另一个代码库，总结它是如何实现认证流程的，然后你自己照着同样的方式实现"</li><li>"派一个 subagent 根据我的 git 改动为这个功能编写文档"</li></ul><p><strong>融会贯通</strong></p><p>为了帮助你选择该用哪个上下文管理功能，我们整理了下面这张表格，列出常见情形、该用哪个工具，以及原因。&nbsp;</p><div data-rt-embed-type="true"><figure>
+  <div role="region" tabindex="0">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">情形</th>
+          <th scope="col">建议使用</th>
+          <th scope="col">原因</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>同一任务，上下文仍然相关</td>
+          <td>继续</td>
+          <td>窗口里的所有内容都还承重；别为重建它们买单。</td>
+        </tr>
+        <tr>
+          <td>Claude 走错了方向</td>
+          <td>回退（<kbd>连按两次 Esc</kbd>）</td>
+          <td>保留有用的文件读取，丢掉失败的尝试，带着学到的经验重新提示。</td>
+        </tr>
+        <tr>
+          <td>任务进行中，但会话被过时的调试/探索内容撑得臃肿</td>
+          <td><code>/compact &lt;hint&gt;</code></td>
+          <td>省事；由 Claude 决定哪些重要。需要时可用指令引导。</td>
+        </tr>
+        <tr>
+          <td>开始一个真正的新任务</td>
+          <td><code>/clear</code></td>
+          <td>零腐朽；哪些内容带入新会话完全由你掌控。</td>
+        </tr>
+        <tr>
+          <td>下一步会产生大量你只需要结论的输出（代码库搜索、验证、写文档）</td>
+          <td>Subagent</td>
+          <td>中间的工具噪音留在子 agent 的上下文里；只有结果会返回。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</figure></div><p>期待看到你构建的作品。&nbsp;</p><p>‍</p><p><em>立即开始使用 </em><a href="https://claude.com/product/claude-code"><em>Claude Code</em></a><em>。</em></p><p><strong><em>关于作者：</em></strong><em>Thariq Shihipar 是 Anthropic 的技术团队成员，从事 Claude Code 的开发工作。</em></p><p>‍</p></div>

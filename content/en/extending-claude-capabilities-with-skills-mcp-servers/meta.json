@@ -1,0 +1,17 @@
+{
+  "slug": "extending-claude-capabilities-with-skills-mcp-servers",
+  "title": "Extending Claude’s capabilities with skills and MCP servers",
+  "date": "December 19, 2025",
+  "category": "Agents",
+  "url": "https://claude.com/blog/extending-claude-capabilities-with-skills-mcp-servers",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/extending-claude-capabilities-with-skills-mcp-servers.svg",
+  "illustrationBg": "Sky",
+  "fetchedAt": "2026-09-02T03:50:17.788Z",
+  "translatedTitle": "用 Skills 和 MCP 服务器扩展 Claude 的能力",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:54:25.809Z",
+  "translateLang": "zh-CN"
+}

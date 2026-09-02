@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>skill-creator 再升级：测试、度量与打磨 Agent Skills — Claude Blog 中文翻译</title>
+  <meta name="description" content="skill-creator 再升级：测试、度量与打磨 Agent Skills">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/improving-skill-creator-test-measure-and-refine-agent-skills" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Claude Code</span>
+            <span class="article-date">March 3, 2026</span>
+            
+          </div>
+          <h1 class="article-title">skill-creator 再升级：测试、度量与打磨 Agent Skills</h1>
+          <a href="/posts/improving-skill-creator-test-measure-and-refine-agent-skills/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>Skill-creator 现在可以帮助你编写 evals、运行基准测试，并<strong><em> </em></strong>让你的 skills 在模型演进的同时持续正常工作。这些更新现已在 Claude.ai 和 Cowork 中上线，也可以作为 <a href="https://github.com/anthropics/claude-plugins-official/tree/main/plugins/skill-creator">Claude Code 插件</a>获取，或从<a href="https://github.com/anthropics/skills/tree/main/skills/skill-creator">我们的仓库</a>中下载。</p><p>自去年十月<a href="https://claude.com/blog/skills" target="_blank">发布 Agent Skills</a> 以来，我们注意到大多数作者是领域专家而非工程师。他们熟悉自己的工作流，却没有工具来判断：一个 skill 换了新模型是否仍然有效、是否会在该触发的时候触发、修改之后是否真的有改进。</p><p>今天我们宣布的 skill-creator 增强，旨在帮助作者更有信心地构建 skill。我们把软件开发中的一些严谨方法（测试、基准评测、迭代改进）引入 skill 编写过程，而且不需要任何人写代码。</p><h2><strong>两种 skill</strong></h2><p>Skills 通常分为两类：</p><p><strong>能力增强（capability uplift）</strong>类 skill 帮助 Claude 做基础模型做不了、或做不稳定的事情。我们的<a href="https://github.com/anthropics/skills/tree/main/skills" target="_blank">文档创建 skills</a> 就是典型例子。它们编码了能产出比单纯提示更好的结果的技术与模式。</p><p><strong>偏好编码（encoded preference）</strong>类 skill 记录的是 Claude 本来就能完成每个环节的工作流，只是 skill 按照你们团队的流程把这些环节串起来。例如：一个按既定标准走完 NDA 审查流程的 skill，或者一个用来自各个 MCP 的数据起草周报的 skill。</p><p>这一区分很重要，因为这两类 skill 需要测试的理由不同：</p><ul role="list"><li>能力增强类 skill 可能随着模型进步而变得不再必要。Evals 会告诉你这一刻何时到来。</li><li>偏好编码类 skill 更耐用，但它的价值取决于对你们真实工作流的还原度。Evals 负责验证这种还原度。</li></ul><p>无论哪种情况，测试都能把一个<em>看起来</em>能用的 skill，变成一个你<em>确知</em>能用的 skill。</p><h2><strong>用 evals 测试并改进 skills</strong></h2><p>Skill-creator 现在可以帮助你编写 evals——也就是检查 Claude 是否按你的预期处理给定提示的测试。如果你写过软件测试，这一切会很熟悉：定义若干测试提示（需要时附上文件）、描述什么样算好的输出，skill-creator 就会告诉你这个 skill 是否站得住脚。</p><p>以我们的 PDF skill 为例，它以前处理不可填写的表单很吃力。Claude 必须在没有预定义字段指引的情况下，把文本放到精确的坐标上。Evals 定位了这个失败场景，我们随后发布了修复：将定位锚定到提取出的文本坐标上。</p><figure style="max-width:1920pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69a237b02128b691d9e8b2af_skillscreator-PDFevals-1920x840-v1.png" loading="lazy"></div></figure><p>Evals 的用处很多，其中两个重要的是：捕捉质量回退，以及理解模型进步到了什么程度。</p><p>第一，<strong>捕捉质量回退。</strong>随着模型及其周边基础设施的演进，上个月还工作良好的 skill，今天的表现可能就不同了。针对新模型运行 evals，能在问题影响团队工作之前给出早期信号。</p><p>第二，<strong>知道通用模型能力何时已经超越你的 skill。</strong>这主要适用于能力增强类 skill。如果基础模型在<em>不加载</em> skill 的情况下也能通过你的 evals，这就是一个信号：skill 里的技巧可能已被模型吸收为默认行为。skill 没有坏，只是不再必要了。</p><p>我们还加入了<strong>基准测试模式（benchmark mode）</strong>，用你的 evals 运行一次标准化评估。你可以在模型更新后运行，也可以在迭代 skill 本身时运行。它会跟踪 eval 通过率、耗时和 token 用量。</p><figure style="max-width:1920pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69a237f15fbc61e1ccd00a0a_skillscreator-benchmarkmode-1920x1080-v1.png" loading="lazy"></div></figure><p>你的 evals 和结果都归你所有。可以把它们存储在本地、接入看板，或者接入 CI 系统。</p><h2><strong>多 agent 支持：更快、更一致的评估</strong></h2><p>串行运行 evals 可能很慢，而且累积的上下文可能在多轮测试之间相互渗透。Skill-creator 现在可以通过<strong>多 agent 支持</strong>启动独立的 agent 并行运行 evals——每个都在干净的上下文中运行，并拥有自己的 token 和耗时指标。结果更快，也没有交叉污染。</p><p>我们还加入了用于 A/B 对比的<strong>对比 agent（comparator agents）</strong>：两个 skill 版本对比，或者 skill 与无 skill 对比。它们在不知道哪个是哪个的情况下评判输出，这样你就能判断一个改动是否真的有帮助。</p><figure style="max-width:1920pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69a74e0afa8435f070120ed9_skillscreator-AB-testing-1920x1080-v1.png" loading="lazy"></div></figure><h2><strong>让 skills 在正确的时机触发</strong></h2><p>Evals 衡量输出质量，但前提是你的 skill 得在该触发的时候触发。随着 skill 数量增长，描述的精确度变得至关重要：太宽泛会误触发，太狭窄又永远不触发。Skill-creator 现在可以帮助你调优描述，让触发更可靠——它会结合示例提示分析你当前的描述，并给出能同时减少误报和漏报的修改建议。</p><p>我们在自己的文档创建 skills 上运行了这一功能，6 个公开 skills 中有 5 个的触发表现得到改善。</p><figure style="max-width:1920pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69a74e1f72940942cb534904_skillscreator-skill-description-optimization-results.png" loading="lazy"></div></figure><h2><strong>展望未来</strong></h2><p>随着模型进步，"skill"与"规格说明"之间的界限可能会变得模糊。今天，一个 SKILL.md 文件本质上是一份实现方案，提供详细指令告诉 Claude<em>如何</em>做一件事。随着时间推移，用自然语言描述 skill <em>应该做什么</em>可能就足够了，剩下的交给模型自己去想。</p><p>我们今天发布的 eval 框架正是朝这个方向迈出的一步。Evals 已经在描述"做什么"。终有一天，那段描述本身可能就是 skill。</p><h2>开始使用</h2><p>所有 skill-creator 更新现已在 Claude.ai 和 Cowork 上提供。让 Claude 使用 skill-creator 即可开始。</p><p>Claude Code 用户可以安装<a href="https://github.com/anthropics/claude-plugins-official/tree/main/plugins/skill-creator">插件</a>，或从我们的<a href="https://github.com/anthropics/skills/tree/main/skills/skill-creator">仓库</a>下载。</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/improving-skill-creator-test-measure-and-refine-agent-skills" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

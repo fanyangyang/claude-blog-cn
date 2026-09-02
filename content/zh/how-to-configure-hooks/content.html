@@ -1,0 +1,220 @@
+<div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>即便是最顺畅的 <a href="https://www.claude.com/product/claude-code" target="_blank">Claude Code</a> 工作流，也会随时间积累摩擦点。Claude 每次写完文件，你都要手动运行 <a target="_blank" href="https://prettier.io/">Prettier</a>。每次运行 npm test，都会弹出同样的权限确认。每个会话都从往第一条消息里粘贴同样的项目背景样板开始。</p><p>好消息是：<a target="_blank" href="https://code.claude.com/docs/en/hooks-guide">Hooks</a> 可以消除这些摩擦点。它们相当于你可以配置的触发器，在特定操作之前或之后自动触发，让你把自定义逻辑、脚本和命令直接注入 Claude 的运行过程。</p><p>本文面向已熟悉 Claude Code 基础用法的开发者，讲解高级配置。读完本文，你将了解八种 hook 类型、各自的使用时机、配置方法，以及出问题时如何调试。</p><p>我们开始吧。</p><h2><strong>什么是 hook？</strong></h2><p>Hook 是你创建的自定义 shell 命令，会在 Claude Code 会话中出现目标事件时自动执行，例如 Claude 即将写入文件，或你提交提示词时。Hook 的用途极其广泛：在操作执行前拦截、注入智能体上下文、自动审批，或在操作发生前阻断它。</p><p>Hook 在你的设置文件中通过 JSON 结构配置，包含事件名称、匹配器（matcher，用于筛选哪些工具触发该 hook）以及要运行的命令。它们在你的本地环境中以你的用户权限执行，通过 stdin 接收触发事件的信息，并通过退出码和 stdout 回传结果。这让你无需修改工具本身，就能精确控制 Claude Code 的行为。</p><h2><strong>为什么在 Claude Code 中使用 hooks？</strong></h2><p>Hooks 解决三类问题。</p><p>第一，<strong>它们消除重复的手动步骤</strong>。不必在每次文件变更后手动运行格式化工具，PostToolUse hook 会自动完成。不必第一百次批准 npm test，PermissionRequest hook 会自动放行。</p><p>第二，<strong>hooks 自动执行项目专属规则</strong>。你可以在危险命令执行前阻断它、在写入前校验文件路径、确保命名规范得到遵守。这些护栏每次都会生效，而不是仅在你记得检查时才有效。</p><p>第三，<strong>hooks 无需人工即可注入动态上下文。</strong>SessionStart hook 可以把当前的 git 状态和 TODO 清单喂给 Claude。UserPromptSubmit hook 可以把冲刺优先级附加到每个请求上。你不必重复交代，Claude 也始终掌握最新信息。</p><h2><strong>Claude Code 的 hook 类型及使用时机</strong></h2><p>Claude Code 提供八种 hook 事件，覆盖会话的完整生命周期——从启动、工具执行到结束。每种 hook 在特定时刻触发，让你精确控制自动化的运行时机。选择哪种 hook，取决于你想达成什么目标。</p><p><strong>Hooks 速览</strong></p><div class="w-embed"><figure>
+  <div role="region" tabindex="0">
+    <table>
+      <thead>
+        <tr>
+          <th>Hook</th>
+          <th>触发时机</th>
+          <th>常见用途</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>PreToolUse</td>
+          <td>工具执行之前</td>
+          <td>阻断危险命令、校验文件路径、自动批准安全操作</td>
+        </tr>
+        <tr>
+          <td>PermissionRequest</td>
+          <td>权限对话框弹出之前</td>
+          <td>自动批准测试命令、阻止访问敏感文件</td>
+        </tr>
+        <tr>
+          <td>PostToolUse</td>
+          <td>工具完成之后</td>
+          <td>运行格式化工具、触发 linter、记录文件变更</td>
+        </tr>
+        <tr>
+          <td>PreCompact</td>
+          <td>上下文压缩之前</td>
+          <td>备份会话记录、保留重要决策</td>
+        </tr>
+        <tr>
+          <td>SessionStart</td>
+          <td>会话开始或恢复时</td>
+          <td>注入 git 状态、加载 TODO 清单、设置环境上下文</td>
+        </tr>
+        <tr>
+          <td>Stop</td>
+          <td>Claude 完成响应时</td>
+          <td>验证任务完成情况、运行测试、生成摘要</td>
+        </tr>
+        <tr>
+          <td>SubagentStop</td>
+          <td>子智能体完成时</td>
+          <td>校验子智能体输出、触发后续操作</td>
+        </tr>
+        <tr>
+          <td>UserPromptSubmit</td>
+          <td>你提交提示词时</td>
+          <td>注入冲刺上下文、校验请求、添加动态上下文</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <figcaption>You can remove this line if a caption isn't needed</figcaption>
+</figure></div><h3><strong>PreToolUse</strong></h3><p>这是最常用的 hook，在 Claude 选定要使用的工具之后、工具实际执行之前触发。你的脚本可以检查计划执行的操作，然后批准、阻断、请求用户确认或修改参数，并可用匹配器筛选哪些工具触发该 hook。</p><p>这个 PreToolUse hook 示例会在文件写入执行前进行评估。Claude 会依据指定标准审查计划操作，并根据其中的提示词逻辑决定批准、阻断或标记疑虑。</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-json" style="white-space:pre-wrap"><span><span>{
+</span></span><span><span>  </span><span class="hljs-attr">"hooks"</span><span>: {
+</span></span><span><span>    </span><span class="hljs-attr">"PreToolUse"</span><span>: [
+</span></span><span>      {
+</span></span><span><span>        </span><span class="hljs-attr">"matcher"</span><span>: </span><span style="color:#008000">"Write"</span><span>,
+</span></span><span><span>        </span><span class="hljs-attr">"hooks"</span><span>: [
+</span></span><span>          {
+</span></span><span><span>            </span><span class="hljs-attr">"type"</span><span>: </span><span style="color:#008000">"command"</span><span>,
+</span></span><span><span>            </span><span class="hljs-attr">"command"</span><span>: </span><span style="color:#008000">"/path/to/validate-file-path.sh"</span><span>
+</span></span><span>          }
+</span></span><span>        ]
+</span></span><span>      }
+</span></span><span>    ]
+</span></span><span>  }
+</span></span><span>}</span></code></pre><p>何时使用 PreToolUse：</p><ul role="list"><li>阻断 rm -rf 或强制推送等危险 Bash 命令</li><li>自动批准安全、重复的操作，减少确认疲劳</li><li>写入前校验文件路径，防止意外覆盖</li><li>修改工具输入，注入项目专属默认值</li></ul><h3><strong>PermissionRequest</strong></h3><p>当 Claude 本应弹出权限对话框时，此 hook 触发。它会在你看到确认提示之前拦截这一刻，让你的脚本决定是允许、拒绝，还是仍然询问用户。</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-json" style="white-space:pre-wrap"><span><span>{
+</span></span><span><span>  </span><span class="hljs-attr">"hooks"</span><span>: {
+</span></span><span><span>    </span><span class="hljs-attr">"PermissionRequest"</span><span>: [
+</span></span><span>      {
+</span></span><span><span>        </span><span class="hljs-attr">"matcher"</span><span>: </span><span style="color:#008000">"Bash(npm test*)"</span><span>,
+</span></span><span><span>        </span><span class="hljs-attr">"hooks"</span><span>: [
+</span></span><span>          {
+</span></span><span><span>            </span><span class="hljs-attr">"type"</span><span>: </span><span style="color:#008000">"command"</span><span>,
+</span></span><span><span>            </span><span class="hljs-attr">"command"</span><span>: </span><span style="color:#008000">"/path/to/validate-test-command.sh"</span><span>
+</span></span><span>          }
+</span></span><span>        ]
+</span></span><span>      }
+</span></span><span>    ]
+</span></span><span>  }
+</span></span><span>}</span></code></pre><p>这个示例会自动批准任何以 npm test 开头的 Bash 命令。匹配器模式可以包含参数，以实现更精细的控制。</p><p>何时使用 PermissionRequest：</p><ul role="list"><li>自动批准你每个会话要运行几十次的测试命令</li><li>阻止对生产配置文件的写入</li><li>允许对特定目录的读取操作免于确认</li><li>拒绝任何匹配危险模式的命令</li></ul><h3><strong>PostToolUse</strong></h3><p>在工具成功完成后立即触发。你的脚本会收到关于发生了什么的信息（包括工具输出），并可用匹配器筛选哪些工具触发它。</p><p>这个 PostToolUse 示例会对 Claude 写入或编辑的任何文件运行 Prettier。匹配器中的管道语法表示它对 Write 和 Edit 两种工具都生效。</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-json" style="white-space:pre-wrap"><span><span>{
+</span></span><span><span>  </span><span class="hljs-attr">"hooks"</span><span>: {
+</span></span><span><span>    </span><span class="hljs-attr">"PostToolUse"</span><span>: [
+</span></span><span>      {
+</span></span><span><span>        </span><span class="hljs-attr">"matcher"</span><span>: </span><span style="color:#008000">"Write|Edit"</span><span>,
+</span></span><span><span>        </span><span class="hljs-attr">"hooks"</span><span>: [
+</span></span><span>          {
+</span></span><span><span>            </span><span class="hljs-attr">"type"</span><span>: </span><span style="color:#008000">"command"</span><span>,
+</span></span><span><span>            </span><span class="hljs-attr">"command"</span><span>: </span><span style="color:#008000">"prettier --write \"$CLAUDE_TOOL_INPUT_FILE_PATH\""</span><span>
+</span></span><span>          }
+</span></span><span>        ]
+</span></span><span>      }
+</span></span><span>    ]
+</span></span><span>  }
+</span></span><span>}</span></code></pre><p>何时使用 PostToolUse：</p><ul role="list"><li>在每次文件写入后运行 Prettier、Black 或 gofmt 以强制格式化</li><li>将所有文件修改记录到审计日志</li><li>代码变更后触发 linter 并显示警告</li><li>特定操作完成时发送通知</li></ul><h3><strong>PreCompact</strong></h3><p>在 Claude 压缩对话上下文以释放空间之前触发。压缩会对对话的较早部分做摘要，这意味着一些细节会丢失。这个 hook 让你有机会在丢失前保留信息。</p><p>这个 PreCompact 示例会在自动压缩前备份会话记录。匹配器可以设为 "auto" 或 "manual"，以便区分自动压缩和用户触发的压缩事件。</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-json" style="white-space:pre-wrap"><span><span>{
+</span></span><span><span>  </span><span class="hljs-attr">"hooks"</span><span>: {
+</span></span><span><span>    </span><span class="hljs-attr">"PreCompact"</span><span>: [
+</span></span><span>      {
+</span></span><span><span>        </span><span class="hljs-attr">"matcher"</span><span>: </span><span style="color:#008000">"auto"</span><span>,
+</span></span><span><span>        </span><span class="hljs-attr">"hooks"</span><span>: [
+</span></span><span>          {
+</span></span><span><span>            </span><span class="hljs-attr">"type"</span><span>: </span><span style="color:#008000">"command"</span><span>,
+</span></span><span><span>            </span><span class="hljs-attr">"command"</span><span>: </span><span style="color:#008000">"/path/to/backup-transcript.sh"</span><span>
+</span></span><span>          }
+</span></span><span>        ]
+</span></span><span>      }
+</span></span><span>    ]
+</span></span><span>  }
+</span></span><span>}</span></code></pre><p>何时使用 PreCompact：</p><ul role="list"><li>在摘要化之前把完整会话记录备份到文件</li><li>提取并保存重要决策或代码片段</li><li>记录会话里程碑，便于日后回顾</li></ul><h3><strong>SessionStart</strong></h3><p>当 Claude Code 启动新会话或恢复既有会话时触发。你的脚本输出的任何内容都会被加入对话上下文，因此 Claude 一开始就带着这些信息。</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-json" style="white-space:pre-wrap"><span><span>{
+</span></span><span><span>  </span><span class="hljs-attr">"hooks"</span><span>: {
+</span></span><span><span>    </span><span class="hljs-attr">"SessionStart"</span><span>: [
+</span></span><span>      {
+</span></span><span><span>        </span><span class="hljs-attr">"hooks"</span><span>: [
+</span></span><span>          {
+</span></span><span><span>            </span><span class="hljs-attr">"type"</span><span>: </span><span style="color:#008000">"command"</span><span>,
+</span></span><span><span>            </span><span class="hljs-attr">"command"</span><span>: </span><span style="color:#008000">"git status --short &amp;&amp; echo '---' &amp;&amp; cat TODO.md"</span><span>
+</span></span><span>          }
+</span></span><span>        ]
+</span></span><span>      }
+</span></span><span>    ]
+</span></span><span>  }
+</span></span><span>}</span></code></pre><p>每个会话开始时，Claude 都知道你当前的 git 状态和 TODO 清单。stdout 会自动成为上下文。</p><p>何时使用 SessionStart：</p><ul role="list"><li>把当前 git 分支和最近的提交喂给 Claude</li><li>加载 TODO 清单或冲刺待办的内容</li><li>注入环境特定的配置信息</li></ul><h3><strong>Stop</strong></h3><p>当 Claude 完成响应、本应等待你下一次输入时触发。你的脚本可以检查 Claude 产出了什么，判断任务是否真正完成。</p><p>脚本可以返回带 "continue": true 的 JSON 让 Claude 继续工作，这在多步骤工作流中很有用：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-json" style="white-space:pre-wrap"><span><span>{
+</span></span><span><span>  </span><span class="hljs-attr">"hooks"</span><span>: {
+</span></span><span><span>    </span><span class="hljs-attr">"Stop"</span><span>: [
+</span></span><span>      {
+</span></span><span><span>        </span><span class="hljs-attr">"hooks"</span><span>: [
+</span></span><span>          {
+</span></span><span><span>            </span><span class="hljs-attr">"type"</span><span>: </span><span style="color:#008000">"prompt"</span><span>,
+</span></span><span><span>            </span><span class="hljs-attr">"prompt"</span><span>: </span><span style="color:#008000">"Review whether the task is complete. If all requirements are met, respond with 'complete'. If work remains, respond with 'continue' and specify what still needs to be done."</span><span>
+</span></span><span>          }
+</span></span><span>        ]
+</span></span><span>      }
+</span></span><span>    ]
+</span></span><span>  }
+</span></span><span>}</span></code></pre><p>何时使用 Stop：</p><ul role="list"><li>强制 Claude 继续工作，直到清单上所有事项完成</li><li>在判定任务完成前验证测试通过</li><li>在会话结束时触发摘要生成</li><li>在停止前检查生成的代码能否编译</li></ul><h3><strong>SubagentStop</strong></h3><p>每当通过 Task 工具创建的子智能体完成时触发。工作方式与 Stop 相同，但专门在子智能体（而非主智能体）完成其操作时触发。SubagentStop 的配置与 Stop hook 的结构一致：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-json" style="white-space:pre-wrap"><span><span>{
+</span></span><span><span>  </span><span class="hljs-attr">"hooks"</span><span>: {
+</span></span><span><span>    </span><span class="hljs-attr">"SubagentStop"</span><span>: [
+</span></span><span>      {
+</span></span><span><span>        </span><span class="hljs-attr">"hooks"</span><span>: [
+</span></span><span>          {
+</span></span><span><span>            </span><span class="hljs-attr">"type"</span><span>: </span><span style="color:#008000">"prompt"</span><span>,
+</span></span><span><span>            </span><span class="hljs-attr">"prompt"</span><span>: </span><span style="color:#008000">"Evaluate the subagent's output. Verify the task was completed correctly and the results meet quality standards. If the output is satisfactory, respond with 'accept'. If issues exist, respond with 'reject' and explain what needs to be fixed."</span><span>
+</span></span><span>          }
+</span></span><span>        ]
+</span></span><span>      }
+</span></span><span>          ]
+</span></span><span>  }
+</span></span><span>}
+</span></span><span></span></code></pre><p>何时使用 SubagentStop：</p><ul role="list"><li>校验子智能体的输出是否达到质量标准</li><li>根据子智能体的结果触发后续操作</li><li>记录子智能体活动，用于调试或审计</li></ul><h3><strong>UserPromptSubmit</strong></h3><p>当你提交提示词时、Claude 处理之前触发。你的脚本通过 stdout 输出的任何内容都会随提示词一起加入 Claude 的上下文，这使得 UserPromptSubmit 非常适合动态注入希望 Claude 考虑的信息。</p><p>在这个示例中，每次你提交提示词，Claude 都会收到你冲刺上下文文件的内容。这让你无需反复重申，Claude 也始终了解当前优先级。</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-json" style="white-space:pre-wrap"><span><span>{
+</span></span><span><span>  </span><span class="hljs-attr">"hooks"</span><span>: {
+</span></span><span><span>    </span><span class="hljs-attr">"UserPromptSubmit"</span><span>: [
+</span></span><span>      {
+</span></span><span><span>        </span><span class="hljs-attr">"hooks"</span><span>: [
+</span></span><span>          {
+</span></span><span><span>            </span><span class="hljs-attr">"type"</span><span>: </span><span style="color:#008000">"command"</span><span>,
+</span></span><span><span>            </span><span class="hljs-attr">"command"</span><span>: </span><span style="color:#008000">"cat ./current-sprint-context.md"</span><span>
+</span></span><span>          }
+</span></span><span>        ]
+</span></span><span>      }
+</span></span><span>    ]
+</span></span><span>  }
+</span></span><span>}</span></code></pre><p>何时使用 UserPromptSubmit：</p><ul role="list"><li>随每个提示词注入当前冲刺上下文或项目优先级</li><li>在提示词到达 Claude 之前进行校验</li><li>根据内容阻断某些类型的请求</li><li>添加动态上下文，如最近的错误日志或测试结果</li></ul><h2><strong>配置与文件位置</strong></h2><p>Hooks 存放在三个层级的 JSON 设置文件中。项目级 hooks 位于仓库中的 .claude/settings.json，可与团队共享。用户级 hooks 位于 ~/.claude/settings.json，适用于你的所有项目。本地项目 hooks 位于 .claude/settings.local.json，用于存放你不想提交到仓库的个人配置。</p><p>项目级设置优先于用户级设置。此外还有企业托管的政策设置，供组织统一管控。完整细节请参阅 Claude Code 的设置说明。</p><p><strong>小贴士：</strong>你也是在这个文件中为 Claude 的操作设置细粒度权限的，可分别在项目、用户或本地层级设置。例如，你可以明确允许 Claude 读取某个目录下的所有文件，免去每次确认；或禁止对敏感文件的任何修改。</p><h2><strong>匹配器（matcher）语法</strong></h2><p>匹配器用于筛选哪些工具可以触发你的 hook。它们只适用于 PreToolUse、PostToolUse 和 PermissionRequest hooks。</p><p>简单字符串匹配的行为和预期完全一致："Write" 只匹配 Write 工具。</p><p>例如：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-json" style="white-space:pre-wrap"><span><span>{
+</span></span><span><span>  </span><span class="hljs-attr">"hooks"</span><span>: {
+</span></span><span><span>    </span><span class="hljs-attr">"PreToolUse"</span><span>: [
+</span></span><span>      {
+</span></span><span><span>        </span><span class="hljs-attr">"matcher"</span><span>: </span><span style="color:#008000">"Write"</span><span>,
+</span></span><span><span>        </span><span class="hljs-attr">"hooks"</span><span>: [
+</span></span><span>          {
+</span></span><span><span>            </span><span class="hljs-attr">"type"</span><span>: </span><span style="color:#008000">"command"</span><span>,
+</span></span><span><span>            </span><span class="hljs-attr">"command"</span><span>: </span><span style="color:#008000">"your-command-here"</span><span>
+</span></span><span>          }
+</span></span><span>        ]
+</span></span><span>      }
+</span></span><span>    ]
+</span></span><span>  }
+</span></span><span>}</span></code></pre><p>管道语法可以匹配多个工具："Write|Edit" 对两者都生效；通配符则匹配一切："*" 或空字符串匹配所有工具。</p><p><strong>注意：</strong>匹配器区分大小写，因此 "bash" 不会匹配到 Bash 工具。</p><p>如需更精细的控制，"Bash(npm test*)" 这样的参数模式可以匹配特定命令参数。MCP 工具的模式遵循 "mcp__memory__.*" 这样的格式，用于 Model Context Protocol 工具。</p><h2><strong>输入、输出与结构化响应</strong></h2><h3><strong>Hooks 收到什么</strong></h3><p>所有 hooks 都通过 stdin 接收 JSON，其中包含会话信息和事件专属数据。常见字段包括：session_id、transcript_path、cwd、permission_mode 和 hook_event_name。</p><p>此外，与工具相关的 hooks 还会收到 tool_name 和 tool_input。这些数据让你的脚本能够就如何响应做出有依据的决策。</p><h3><strong>Hooks 如何响应</strong></h3><p>退出码决定基本结果。退出码 0 表示成功，stdout 会被当作 JSON 处理或加入上下文。退出码 2 表示阻断性错误：stderr 成为错误消息，操作被阻止。</p><p>其他退出码表示非阻断性错误，stderr 会在详细模式（verbose mode）下显示。</p><p>除了退出码，hooks 还可以返回结构化 JSON 以获得更多控制。字段包括：decision（approve、block、allow 或 deny）、reason（展示给 Claude 的解释）、continue（供 Stop hooks 强制继续）和 updatedInput（在执行前修改工具参数）。</p><h2><strong>环境与执行</strong></h2><p>Hooks 可以访问环境变量，包括：表示项目根目录路径的 CLAUDE_PROJECT_DIR、在网页环境中为 true 的 CLAUDE_CODE_REMOTE，以及供 SessionStart hooks 持久化变量的 CLAUDE_ENV_FILE。你的 shell 中的标准环境变量同样可以访问。</p><p>还有一点值得注意：Hooks 默认有 60 秒超时，可按每个 hook 单独配置。当多个 hooks 匹配同一事件时，它们会并行运行。相同的命令会被自动去重。</p><h2><strong>安全注意事项</strong></h2><p>Hooks 会以你的用户权限执行任意 shell 命令。Claude Code 内置了一道防线：对 hook 配置文件的直接修改必须先在 /hooks 菜单中经过审查才能生效。这可以防止恶意代码悄悄向你的配置中添加 hooks。</p><p>不过，一旦你配置并批准了 hooks，它们就会以你的权限级别执行。</p><p><strong>小贴士：</strong>在任何环境中运行命令之前，都要考虑风险。如果你打算通过 hooks 运行命令，请遵循良好实践，例如：校验并清理来自 stdin 的输入、给 shell 变量加引号以防注入、为脚本使用绝对路径，以及避免处理 .env 或凭据等敏感文件。</p><h2><strong>调试与测试</strong></h2><p>Claude Code 会把所有内容记录到会话记录（transcript）文件中，无需任何配置即可查看工具调用和响应。每个 hook 都会收到一个 transcript_path 字段，指向包含完整会话历史的 JSONL 文件。你可以用 SessionStart hook 记录每份会话记录的存放位置：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-json" style="white-space:pre-wrap"><span><span>{
+</span></span><span><span>  </span><span class="hljs-attr">"hooks"</span><span>: {
+</span></span><span><span>    </span><span class="hljs-attr">"SessionStart"</span><span>: [
+</span></span><span>      {
+</span></span><span><span>        </span><span class="hljs-attr">"hooks"</span><span>: [
+</span></span><span>          {
+</span></span><span><span>            </span><span class="hljs-attr">"type"</span><span>: </span><span style="color:#008000">"command"</span><span>,
+</span></span><span><span>            </span><span class="hljs-attr">"command"</span><span>: </span><span style="color:#008000">"jq -r '\"Session: \" + .transcript_path' &gt;&gt; ~/.claude/sessions.log"</span><span>
+</span></span><span>          }
+</span></span><span>        ]
+</span></span><span>      }
+</span></span><span>    ]
+</span></span><span>  }
+</span></span><span>}</span></code></pre><p>然后追踪该记录文件，实时观察 Claude 的工作：<code>tail -f /path/to/transcript.jsonl | jq</code>。</p><h3><strong>针对 hook 的调试</strong></h3><p>针对 hook 本身的调试，可以在 hook 脚本中添加日志。会话记录文件会显示 Claude 做了什么，但不会显示你的 hook 为什么批准或阻断了某项操作。</p><p>只需稍加努力，你就可以写一个小的 bash 脚本来包装你的工具，并记录额外信息。例如 log-wrapper.sh：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span style="color:#aa5d00">#!/bin/bash</span><span>
+</span></span><span>LOG=~/.claude/hooks.log
+</span></span><span>INPUT=$(cat)
+</span></span><span>
+</span></span><span><span>TOOL=$(</span><span style="color:#aa5d00">echo</span><span> </span><span style="color:#008000">"</span><span style="color:#d91e18">$INPUT</span><span style="color:#008000">"</span><span> |
+</span></span><span><span> jq -r </span><span style="color:#008000">'.tool_name // "n/a"'</span><span>)
+</span></span><span><span>EVENT=$(</span><span style="color:#aa5d00">echo</span><span> </span><span style="color:#008000">"</span><span style="color:#d91e18">$INPUT</span><span style="color:#008000">"</span><span> | jq -r </span><span style="color:#008000">'.hook_event_name // "n/a"'</span><span>)
+</span></span><span>
+</span></span><span><span></span><span style="color:#aa5d00">echo</span><span> </span><span style="color:#008000">"=== </span><span class="hljs-subst" style="color:#008000">$(date)</span><span style="color:#008000"> | </span><span style="color:#d91e18">$EVENT</span><span style="color:#008000"> | </span><span style="color:#d91e18">$TOOL</span><span style="color:#008000"> ==="</span><span> &gt;&gt; </span><span style="color:#008000">"</span><span style="color:#d91e18">$LOG</span><span style="color:#008000">"</span><span>
+</span></span><span>
+</span></span><span><span></span><span style="color:#aa5d00">echo</span><span> </span><span style="color:#008000">"</span><span style="color:#d91e18">$INPUT</span><span style="color:#008000">"</span><span> | </span><span style="color:#008000">"</span><span style="color:#d91e18">$1</span><span style="color:#008000">"</span><span>
+</span></span><span>CODE=$?
+</span></span><span>
+</span></span><span><span></span><span style="color:#aa5d00">echo</span><span> </span><span style="color:#008000">"Exit: </span><span style="color:#d91e18">$CODE</span><span style="color:#008000">"</span><span> &gt;&gt; </span><span style="color:#008000">"</span><span style="color:#d91e18">$LOG</span><span style="color:#008000">"</span><span>
+</span></span><span><span></span><span style="color:#aa5d00">exit</span><span> </span><span style="color:#d91e18">$CODE</span></span></code></pre><p>这个小小的包装脚本会把 stdin 捕获到变量中，记录时间戳和工具名，然后把输入通过管道传给你真正的工具。</p><p>写好 log-wrapper.sh 之后，你只需把它加在 hook 中工具调用的前面：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-json" style="white-space:pre-wrap"><span><span>{
+</span></span><span><span>  </span><span class="hljs-attr">"hooks"</span><span>: {
+</span></span><span><span>    </span><span class="hljs-attr">"PreToolUse"</span><span>: [
+</span></span><span>      {
+</span></span><span><span>        </span><span class="hljs-attr">"matcher"</span><span>: </span><span style="color:#008000">"Bash"</span><span>,
+</span></span><span><span>        </span><span class="hljs-attr">"hooks"</span><span>: [
+</span></span><span>          {
+</span></span><span><span>            </span><span class="hljs-attr">"type"</span><span>: </span><span style="color:#008000">"command"</span><span>,
+</span></span><span><span>            </span><span class="hljs-attr">"command"</span><span>: </span><span style="color:#008000">"log-wrapper.sh your-tool-command.py"</span><span>
+</span></span><span>          }
+</span></span><span>        ]
+</span></span><span>      }
+</span></span><span>    ]
+</span></span><span>  }
+</span></span><span>}</span></code></pre><p><strong>小贴士：</strong>更多调试技巧，请查阅 Claude Code 调试文档。</p><h2><strong>构建你自己的 hooks</strong></h2><p>从一个能解决工作流中真实摩擦点的简单 hook 开始。PostToolUse 格式化 hook 是不错的选择，因为反馈即时可见。跑通之后，再根据你的心得逐步扩展。</p><p>完整的参考文档（包括所有可用字段和高级模式），请查阅官方 hooks 文档。</p><p>Hooks 让你能够把 Claude Code 塑造成贴合你工作流的形态，而不是让工作流去迁就工具。在配置 hooks 上投入的时间，每个会话都会给你回报。</p><p><em>立即开始使用 hooks，定制你的 </em><a target="_blank" href="https://www.claude.com/product/claude-code"><em>Claude Code</em></a><em> 工作流。</em></p></div>

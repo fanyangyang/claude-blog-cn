@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>面向企业各部门团队的 Cowork 与 plugins — Claude Blog 中文翻译</title>
+  <meta name="description" content="面向企业各部门团队的 Cowork 与 plugins">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/cowork-plugins-across-enterprise" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Agents</span>
+            <span class="article-date">February 24, 2026</span>
+            
+          </div>
+          <h1 class="article-title">面向企业各部门团队的 Cowork 与 plugins</h1>
+          <a href="/posts/cowork-plugins-across-enterprise/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>今天我们推出 Cowork 和 plugins 的更新<strong> </strong>，帮助企业按照自己的工作方式定制 Claude。Plugins 能把 Claude 变成服务于每个角色、每个部门的专门 agent。现在，你还可以构建私有市场（marketplace），在组织内部分发这些 plugins。</p><p>本次发布还让 plugins 更容易构建和定制，赋予管理员对市场和连接器更多的控制权，并针对更广泛的岗位职能新增了 plugins 和连接器。Claude 现在还可以跨 Excel 和 PowerPoint 协调工作，端到端地完成任务并在应用之间传递上下文。</p><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/v5IOHK5xFlc" title="Cowork and Plugins: Helping enterprises move faster" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><h6>‍</h6><h6><em>Silvern Capital 是一家虚构的公司。演示中的大多数团队在 Cowork 中工作，法务团队则在使用 Thomson Reuters CoCounsel Legal——一个基于 Claude Agent SDK 从零重新打造的专用法律 agent。</em></h6><h2>升级 plugin 体验</h2><p>今天我们发布了一套更新，让在组织内创建、使用和管理 plugins 变得更加容易。</p><p>管理员现在可以基于入门模板设置 plugins，也可以从零构建，Claude 会通过提问引导你完成设置，让 skills、命令和连接器（MCP）贴合你公司的需求。这一切都收纳在一个名为"Customize"的全新统一菜单中，它把 plugins、skills 和连接器整合在一起，管理员可以在一处查看和管理所有内容。</p><figure style="max-width:2560pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/699cdb3778de7aaeb213b113_Customize%20(1).png" loading="lazy"></div></figure><p>连接器体验也经过全面改造：目录更完善、管理员控制更精简，把连接器打包进 plugins 的管理也更轻松。管理员还可以更好地控制团队能访问哪些 plugins，包括组织专属市场、以私有 GitHub 仓库作为插件来源（私有 beta）、按用户开通以及自动安装。</p><p>在用户一侧，斜杠命令现在以结构化表单的形式启动，像"生成报告"或"仪表盘"这样的工作流，用起来就像填写一份简报一样直观。Cowork 现在也全面支持公司品牌定制，包括专为你的组织重新设计的首页体验。</p><figure style="max-width:2560pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/699cdb4f81e69eef7fe2ee35_Elicitation%20(1).png" loading="lazy"></div></figure><p>此外，我们正在加入 <a href="https://claude.com/docs/cowork/monitoring#monitoring">OpenTelemetry</a> 支持，让管理员能够跟踪团队的使用情况、成本和工具活动。</p><h2>新的连接器与 plugins</h2><p>Cowork 在接入你已在使用的工具后，最能发挥处理复杂任务的实力。连接器让 Claude 更贴近你的工作所在地——帮你在工具之间跑得更快，而不是取代你依赖的专业能力或软件。</p><p>来自主流企业软件提供商的新连接器现已可用，包括 Google Workspace（<a href="https://claude.com/connectors/google-calendar">日历</a>、<a href="https://claude.com/connectors/google-drive">Drive</a>、<a href="https://claude.com/connectors/gmail">Gmail</a>）、<a href="https://claude.com/connectors/docusign">Docusign</a>、<a href="https://claude.com/connectors/apollo">Apollo</a>、<a href="https://claude.com/connectors/clay">Clay</a>、<a href="https://claude.com/connectors/outreach">Outreach</a>、<a href="https://claude.com/connectors/similarweb">Similarweb</a>、<a href="https://claude.com/connectors/msci">MSCI</a>、<a href="https://claude.com/connectors/legalzoom">LegalZoom</a>、<a href="https://claude.com/connectors/factset">FactSet</a>、<a href="https://claude.com/connectors/wordpress-com">WordPress</a> 和 <a href="https://claude.com/connectors/harvey">Harvey</a>。此外，<a href="https://claude.com/plugins/slack">Slack by Salesforce</a>、<a href="https://claude.com/plugins/lseg">LSEG</a>、<a href="https://claude.com/plugins/sp-global">S&amp;P Global</a>、<a href="https://claude.com/plugins/apollo">Apollo</a>、<a href="https://claude.com/plugins/common-room">Common Room</a> 以及 Tribe AI（见下文）等公司也为联合客户构建了可供探索的 plugins。</p><p>我们还在扩充预构建插件模板库，让更多知识工作者能在 Cowork 中发现价值。每个模板都与相关领域的从业者共同设计，因此工作流、术语和产出都还原了这类工作实际的完成方式。新的 plugins 包括：</p><ul role="list"><li><a href="https://claude.com/plugins/human-resources"><strong>HR（人力资源）</strong></a>：支持覆盖员工全生命周期的人员运营，从起草录用通知、制定入职计划，到撰写绩效评估、开展薪酬分析。</li><li><a href="https://claude.com/plugins/design"><strong>Design（设计）</strong></a>：加速设计工作流，包括生成评审框架、撰写 UX 文案、执行无障碍审查、搭建用户研究计划。</li><li><a href="https://claude.com/plugins/engineering"><strong>Engineering（工程）</strong></a>：梳理日常工程工作流，如撰写站会摘要、协调事件响应、构建部署检查清单、起草复盘报告。</li><li><a href="https://claude.com/plugins/operations"><strong>Operations（运营）</strong></a>：管理核心业务运营，包括流程文档、供应商评估、变更请求跟踪和操作手册（runbook）创建。</li><li><a href="https://claude.com/plugins/brand-voice"><strong>Brand voice（品牌语调）</strong></a><strong>（由 Tribe AI 出品）</strong>：分析你现有的文档、营销材料和对话，把品牌的语调提炼成清晰、可执行的标准。</li><li><a href="https://claude.com/plugins/financial-analysis"><strong>Financial analysis（金融分析）</strong></a>：支持每位金融分析师都需要的基础工作流，从市场与竞争研究到财务建模，再到 PowerPoint 模板创建和质量检查。</li><li><a href="https://claude.com/plugins/investment-banking"><strong>Investment banking（投资银行）</strong></a>：加速交易工作流，包括审阅交易文件、构建可比公司分析、准备路演材料。</li><li><a href="https://claude.com/plugins/equity-research"><strong>Equity research（股票研究）</strong></a>：梳理研究工作流，如解析财报电话会议纪要、用新指引更新财务模型、起草研究简报。</li><li><a href="https://claude.com/plugins/private-equity"><strong>Private equity（私募股权）</strong></a>：支持项目寻源和尽职调查，包括审阅大量文档集、提取标准化财务数据、对情景建模，并按投资标准为机会打分。</li><li><a href="https://claude.com/plugins/wealth-management"><strong>Wealth management（财富管理）</strong></a>：帮助理财顾问分析投资组合、识别偏离度和税务敞口，并大规模生成再平衡建议。</li></ul><p>Plugins 是归你所有的、简单且可移植的文件系统。它们可以在 Cowork 和任何基于 Claude Agent SDK 构建的产品上运行，让跨团队、与行业专家共建私有插件市场变得轻而易举。</p><blockquote>"三股浪潮重塑了专业工作：生产力工具、云与搜索，以及现在的 agentic AI。PwC 正在与 Anthropic 合作，把企业级 agent 带入 CFO 的办公室——让每位团队成员都拥有工具，去做更具雄心的工作、做出更好的决策，并以从前不可能的方式推动业务增长，从而使财务团队成为更具战略价值、更重要的职能部门。"——Sanjay Subramanian，PwC Anthropic 联盟负责人</blockquote><blockquote>"两年来，市场一直在把 AI agent 吹得天花乱坠，仿佛它们会是围绕特定、离散工作流全天候工作的数字员工。而 Anthropic 做出来的东西要好得多。"——Mark Hines，Blank Metal COO</blockquote><h2>跨应用工作</h2><p>Claude 现在还可以跨 Excel 和 PowerPoint 端到端地处理多步骤任务。Claude 可以在两个 Office 加载项之间使用并传递上下文，这让给 Claude 指派更大的项目成为可能，比如在 Excel 中完成一项分析，再把它变成 PowerPoint 里的演示文稿。这是一项早期 research preview，指向的是让 Claude 像我们一样跨应用工作。</p><h2>开始使用</h2><p>所有面向用户体验的 plugin 更新已对所有 Cowork 用户开放。Team 和 Enterprise 管理员可以使用公司品牌定制、按用户开通和 MCP 控制功能。</p><p>Claude 跨 Excel 和 PowerPoint 工作的能力现以 research preview 形式，面向 Mac 和 Windows 的所有付费计划开放。下载 <a href="https://claude.com/claude-in-excel">Claude in Excel</a> 和 <a href="https://claude.com/claude-in-powerpoint">Claude in PowerPoint</a> 加载项即可开始。</p><p>要进一步了解面向金融服务的 Cowork 和 plugins，请参阅我们的<a href="https://claude.com/blog/cowork-plugins-finance">配套博客文章</a>。</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/cowork-plugins-across-enterprise" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

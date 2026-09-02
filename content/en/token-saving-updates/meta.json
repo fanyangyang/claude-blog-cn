@@ -1,0 +1,17 @@
+{
+  "slug": "token-saving-updates",
+  "title": "Token-saving updates on the Anthropic API",
+  "date": "March 13, 2025",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/token-saving-updates",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/token-saving-updates.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.788Z",
+  "translatedTitle": "Anthropic API 上的 token 节省更新",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:44:54.905Z",
+  "translateLang": "zh-CN"
+}

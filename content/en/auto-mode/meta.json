@@ -1,0 +1,17 @@
+{
+  "slug": "auto-mode",
+  "title": "Auto mode for Claude Code",
+  "date": "March 24, 2026",
+  "category": "Claude Code",
+  "url": "https://claude.com/blog/auto-mode",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/auto-mode.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.784Z",
+  "translatedTitle": "Claude Code 的 Auto mode（自动模式）",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:08:08.000Z",
+  "translateLang": "zh-CN"
+}

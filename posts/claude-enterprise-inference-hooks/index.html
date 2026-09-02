@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>推理钩子：Claude Enterprise 的内联数据防泄漏 — Claude Blog 中文翻译</title>
+  <meta name="description" content="推理钩子：Claude Enterprise 的内联数据防泄漏">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/claude-enterprise-inference-hooks" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Enterprise AI</span>
+            <span class="article-date">August 5, 2026</span>
+            
+          </div>
+          <h1 class="article-title">推理钩子：Claude Enterprise 的内联数据防泄漏</h1>
+          <a href="/posts/claude-enterprise-inference-hooks/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><figure style="max-width:960pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a737642f52b1b4fc4aaec1a_260805-PromptHooks-Blog-960x540-ZT-v008.gif" loading="lazy"></div></figure><p>推理钩子（Inference hooks）让你的合规团队能够在每个提示词和工具调用响应到达 Claude 之前对其进行检查和策略执行——覆盖 Claude Enterprise 的各个产品界面，包括聊天、Claude Code、Claude Cowork 等。由你的 DLP 服务器决定拦截还是放行，Claude 会实时执行该决定，在未经批准的内容到达 Claude 之前将其拦截。</p><p>安全团队要求所有员工可能传输敏感数据的通道都必须经过其团队控制的检查点。在此之前，原生内联执行仅限于 Claude Code 的客户端钩子（hooks）。推理钩子弥补了这一缺口，以单一执行层覆盖所有 Claude Enterprise 产品界面，无需为每个产品单独集成或部署智能体。&nbsp;</p><h2>推理钩子如何工作</h2><figure style="max-width:3840pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a7362314ccf1158f2bffe5f_Claude-blog-prompt-hooks-DLP%20(1).png" loading="lazy"></div></figure><p>当组织开启推理钩子后，每个推理请求都会通过经过签名的 WebSocket 连接路由到一台安全服务器。在模型开始生成之前，Claude 会将提示词及其上下文发送到你的服务器。你的服务器返回裁决结果——允许或拒绝——Claude 只有在收到结果后才会继续。同样的检查也会作用于工具调用：当 Claude 调用某个工具时（包括通过 MCP、Skills 和插件连接的工具），工具的响应会在返回给模型之前先接受检查。</p><p>各团队已经在实际运用这种实时检查。“推理钩子增加了一个检查点，可以在模型看到内容之前实时检查流向 Claude 的数据，”Bandwidth 的信息安全副总裁 Andrew Grimmett 表示。“这让我们能够在不放弃控制权的情况下，更安全、更快速地推进 AI 应用。”</p><h2>推理钩子的使用方式</h2><p>将你现有的 DLP 体系扩展到 Claude。推理钩子采用开放的、基于 webhook 的协议，并发布了正式的数据模式（schema）。这使得部署非常简单——只需将它指向你的其他工具已经在上报的同一台服务器，包括 Netskope、Palo Alto Networks、Proofpoint、Zscaler，或你自建的 AI 安全服务器。</p><p>通过一套配置覆盖聊天、Claude Code、Cowork 以及其他 Claude Enterprise 产品。在组织层面开启一次推理钩子，它就会应用于所有 Claude Enterprise 产品界面，包括通过 MCP 连接器、Skills 和插件发起的工具调用。</p><p>借助影子模式（始终允许）、基于角色的豁免和按百分比的灰度发布来简化上线过程。你可以自定义失败策略容忍度、超时等设置，以匹配你组织的风险偏好。</p><h2>开始使用</h2><p>推理钩子目前以测试版形式向 Claude Enterprise 客户提供。请阅读<a href="https://platform.claude.com/docs/en/manage-claude/inference-hooks">文档</a>，配置你组织的 DLP 服务器，并开始在 Claude Enterprise 的各个产品界面上执行策略。</p><p>对于安全厂商而言，推理钩子基于带有公开文档化模式的 webhook 协议构建，因此你可以构建集成，Claude Enterprise 客户就可以将其组织指向你的平台。</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/claude-enterprise-inference-hooks" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

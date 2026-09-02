@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude 现在可以使用工具了 — Claude Blog 中文翻译</title>
+  <meta name="description" content="Claude 现在可以使用工具了">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/tool-use-ga" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Product announcements</span>
+            <span class="article-date">May 30, 2024</span>
+            
+          </div>
+          <h1 class="article-title">Claude 现在可以使用工具了</h1>
+          <a href="/posts/tool-use-ga/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>工具使用（tool use）功能让 Claude 能够与外部工具和 API 交互，现已在 Anthropic Messages API、Amazon Bedrock 和 Google Cloud 的 Vertex AI 上面向整个 Claude 3 模型家族正式发布（GA）。借助工具使用，Claude 可以执行任务、操作数据，并提供更动态——也更准确——的回复。</p><h2>工具使用</h2><p>为 Claude 定义一组工具，并用自然语言描述你的请求。Claude 会选择合适的工具来完成任务，并在适当的时候执行相应操作：</p><ul role="list"><li><strong>从非结构化文本中提取结构化数据</strong>：从发票中提取姓名、日期和金额，减少手动录入。</li><li><strong>将自然语言请求转换为结构化 API 调用</strong>：让团队通过简单指令即可自助完成常见操作（如"取消订阅"）。</li><li><strong>通过搜索数据库或调用 Web API 回答问题</strong>：在客服聊天机器人中为客户的咨询提供即时、准确的回复。</li><li><strong>通过软件 API 自动化简单任务</strong>：在数据录入或文件管理中节省时间、减少错误。</li><li><strong>编排多个快速的 Claude 子代理（subagent）处理细粒度任务</strong>：根据与会者的空闲时间自动找到最佳会议时间。</li></ul><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/b77htH1eX-s" title="Claude 3 工具使用：客户支持" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><h2>更佳的开发者体验</h2><p>为了让开发者更轻松地将 Claude 3 模型的智能与工具结合，我们还内置了多项功能，帮助开发者进一步定制终端用户体验。</p><ul role="list"><li><strong>支持流式传输的工具使用缩短等待时间，带来更投入的交互</strong>：流式传输让客服聊天机器人等应用可以实时响应，对话更流畅、更自然。</li><li><strong>强制工具使用让开发者可以指定 Claude 的工具选择</strong>：开发者可以指定 Claude 应使用哪些工具，或者把选择权交给 Claude，帮助构建更有针对性、更高效的应用。</li><li><strong>工具同样支持图像</strong>：<strong> </strong>Claude 可以在实时应用中结合图像输入。</li></ul><p>在测试阶段，许多开发者使用 Opus 构建面向用户的复杂助手。为了进一步增强这一体验，Opus 现在会在输出中包含 &lt;thinking&gt; 标签，让 Claude 的推理过程更清晰，也简化了开发者的调试工作。我们的 Claude 3 模型目前尚不支持并行工具调用。</p><h2>客户聚焦：StudyFetch</h2><p>AI 原生学习平台 <a href="https://www.claude.com/customers/studyfetch" target="_blank">StudyFetch</a> 利用 Claude 的工具使用能力驱动其个性化 AI 导师 Spark.E。通过集成追踪学生进度、浏览课程资料和授课内容、创建交互式用户界面的工具，StudyFetch 为全球学生打造了更具吸引力的学习环境。</p><p>"带工具使用的 Claude 准确且经济，现在驱动着我们的实时语音 AI 辅导课程。短短几天时间，我们就在平台中集成了工具，"StudyFetch 首席技术官兼联合创始人 Ryan Trattner 表示。"因此，我们的 AI 导师 Spark.E 能以 Agent 方式行动——展示交互式 UI、结合上下文追踪学生进度、浏览讲课内容和学习资料。自部署带工具使用的 Claude 以来，我们观察到人类正面反馈提升了 42%。"</p><h2>客户聚焦：Intuned</h2><p>浏览器自动化平台 Intuned 使用 Claude 为其云平台中的数据提取提供支持。借助 AI 驱动的数据提取，Intuned 得以大幅改善开发者构建和执行更可靠浏览器自动化的体验。</p><p>"带工具使用的 Claude 3 Haiku 对我们来说是一个颠覆性改变。在接入该模型并运行基准测试后，我们意识到其质量、速度和价格的组合无可匹敌，"Intuned 联合创始人 Faisal Ilaiwi 表示。"Haiku 正在帮我们把客户的数据提取任务扩展到一个全新的水平。"</p><h2>客户聚焦：Hebbia</h2><p><a href="https://www.claude.com/customers/hebbia" target="_blank">Hebbia</a> 正在为领先的金融和法律服务机构打造 AI 知识工作者。他们使用 Claude 3 Haiku 为多个复杂的客户多步骤工作流提供支持。</p><p>"我们利用 Claude 3 Haiku 生成实时建议、自动撰写提示词，并从长文档中提取关键元数据，"Hebbia 产品经理 Divya Mehta 分享道。"Claude 3 Haiku 的工具使用功能为我们的平台解锁了新的能力和速度，可以实时生成可靠的提示词和建议。"</p><h2>开始使用</h2><p>你今天就可以在 Anthropic Messages API、Amazon Bedrock 和 Google Cloud 的 Vertex AI 上开始使用工具使用功能。想了解更多，请查阅我们的<a href="https://docs.anthropic.com/en/docs/tool-use" target="_blank">文档</a>、<a href="https://github.com/anthropics/courses/tree/master/tool_use" target="_blank">工具使用教程</a>，以及<a href="https://platform.claude.com/cookbook/tool-use-calculator-tool" target="_blank">关于工具使用的 Anthropic Cookbook</a>。</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/tool-use-ga" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

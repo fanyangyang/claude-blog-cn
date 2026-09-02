@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kepler 如何用 Claude 为金融服务构建可验证的 AI — Claude Blog 中文翻译</title>
+  <meta name="description" content="Kepler 如何用 Claude 为金融服务构建可验证的 AI">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/how-kepler-built-verifiable-ai-for-financial-services-with-claude" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Enterprise AI</span>
+            <span class="article-date">April 30, 2026</span>
+            
+          </div>
+          <h1 class="article-title">Kepler 如何用 Claude 为金融服务构建可验证的 AI</h1>
+          <a href="/posts/how-kepler-built-verifiable-ai-for-financial-services-with-claude/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p><em>在"初创公司如何用 Claude 构建"（How startups build with Claude）系列中，我们聚焦初创公司如何用 AI 变革各自所在的行业。本文分享 Kepler 如何为金融服务领域的 AI 构建信任与验证层。</em></p><div class="w-embed"><figure>
+  <div role="region" tabindex="0">
+    <table>
+      <thead>
+        <tr>
+          <th colspan="2">一分钟速览</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>名称</td>
+          <td>Kepler</td>
+        </tr>
+        <tr>
+          <td>成立时间</td>
+          <td>2025 年</td>
+        </tr>
+        <tr>
+          <td>创始人</td>
+          <td>Vinoo Ganesh（CEO）和 John McRaven（CTO）</td>
+        </tr>
+        <tr>
+          <td>技术栈</td>
+          <td>AWS、Rust、Python、容器编排</td>
+        </tr>
+        <tr>
+          <td>增长</td>
+          <td>不到三个月，已索引 2600 万+ 份 SEC 文件、5000 万+ 份公开文档、100 万+ 份私有文档，覆盖 27 个全球市场的 14000+ 家公司。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</figure></div><p>金融公司在严格监管的环境中运营，报告必须可审计、可问责。监管申报、交易路演或研究报告中的每一个数字，都要能对照原始文件进行验证。</p><p>金融行业传统依赖的工具可以拉取数据，但验证环节依然离不开分析师。分析系统无法理解一个自由表述的问题、把它拆解成步骤，也无法推断出某个指标需要跨特定财年期间提取三个不同的报表科目。AI 系统能完成这类理解，但它们把理解与计算混在同一步完成，产出的数字由模型生成，而模型是会犯错的。</p><p>Vinoo Ganesh 和 John McRaven 曾在 Palantir 工作多年，为国防、能源和金融公司构建数据系统。那段经历塑造了他们对"答案必须可验证"环境下信任问题的思考。在创立 <a href="https://kepler.ai/" target="_blank">Kepler</a> 之前，他们拜访了 147 家金融机构，包括私募股权、对冲基金和投资银行，几乎在所有地方听到同样的声音：人人都想用 AI 做研究，但没人信得过输出结果。正如一位董事总经理对他们说的："一个我没法审计的东西，让我怎么信任？"</p><p>两人的答案是构建确定性基础设施，作为 AI 的信任与验证层。这套基础设施与作为推理和理解层的 Claude 相结合，驱动着 Kepler Finance：一个面向金融服务业的研究平台，分析师用通俗英语提问，就能得到即时可验证的答案。</p><h2>驾驭长链条多步任务，标记歧义</h2><p>金融分析涉及复杂的多步计算、高密度的数据和语义过载的术语，且对错误零容忍。有鉴于此，Kepler 需要一个能在长计划中不跑偏、并且主动标记歧义的模型。</p><p>举例来说，如果分析师询问某家公司过去八个季度的存货周转天数，模型需要弄清答案需要什么：正确的公式、准确的财年期间，以及任何可能影响数字的重述。&nbsp;</p><p>团队对所有前沿模型做了基准测试。他们发现，在直接了当的查询上，各模型表现不相上下；但面对存在相互依赖的长链条多步计划时，除 Claude 以外的模型都会在第四、五步开始抄近路或丢掉约束条件。"在我们的工作负载上，Claude 是唯一能始终把整个计划握在手里的模型，"Ganesh 说，"其他模型起步强劲，然后到第五步就悄悄丢掉一个约束。"</p><p>最鲜明的差异在于各模型如何处理不确定性、如何让人类保持在决策环中。比如在某个术语可能有两种含义的情形下，大多数模型会选定一种含义继续往下走，而 Claude 会停下来，请分析师定夺。"这种行为比任何基准分数都重要，"Ganesh 说，"金融分析中早期的一个错误假设，会毁掉下游的一切。"</p><h2>围绕 Claude 精心工程化上下文</h2><p>Kepler 团队发现，当任务被精确定义、辅以结构化的领域知识和定义、并对"哪些该自行解决、哪些该上报"划出硬边界时，Claude 的表现会更好。"在金融领域，模型不能是系统的全部。我们把它当作流水线中的一个环节，这一环节的职责就是让模型恰好得到它在这一步成功所需的东西，"McRaven 说。"提示词工程优化的是一次调用，而内容工程优化的是围绕它的整个系统。"</p><p>团队构建了可供 Claude 调用的确定性执行环境，用于每一个需要被证明正确的操作，比如计算一个比率或解析一个财年期间。他们开发了专有的本体（ontology），把金融概念映射到精确的定义和公式，并可按用途定制。安全和访问控制限制在每一步都强制执行，约束每个用户可以从哪些数据源取数。在此基础上，他们还为流水线中最常见的工作流构建了可复用、可定制的 skills，例如复杂资本结构下的企业价值计算（如处理优先股、可转债和少数股东权益），以及跨报告期变动的分部收入瀑布对账。这些 skills 在确定性与非确定性阶段之间协调，且设计为幂等：相同的输入永远产生相同的输出。</p><p>接着，他们把工作流拆解成多阶段流水线，把不同的 Claude 模型匹配到不同阶段：Opus 4.7 负责意图拆解、歧义消解、生成结构化执行计划等复杂推理，Sonnet 4.6 负责任务约束更强、吞吐要求更高的阶段。他们还训练了自己的专用召回模型（一些以 Claude 为基座，一些为 Kepler 自有），在把财务报表科目映射到标准化分类代码这类任务上达到 94% 的准确率，而其他模型只有 38-46%。&nbsp;</p><p>团队在上生产之前，会用数千个用例测试每一次提示词修改、模型升级和上下文调整。他们建立了自动化评估流水线，在每个阶段把 Claude 的输出与已知正确答案比对，同时检查结构化计划和最终计算结果。测试失败时，他们能追溯问题出在 Claude 的推理、提供的上下文，还是下游执行。每当 Anthropic 发布新版本模型，Kepler 会在几小时内完成基准测试，清楚知道哪些阶段改善、哪些退化、哪些需要调整提示词。</p><h2>与 Claude 一起扩展</h2><p>Kepler Finance 已索引超过 2600 万份 SEC 文件（覆盖 14000+ 家公司）、5000 万+ 份公开文档和 100 万+ 份私有文档，横跨 27 个全球市场。Claude 让这一体量的非结构化数据变得可用：它能针对整个语料库解读问题，并调和不同公司、不同时期之间的术语差异。随后 Kepler 的检索层从经过验证的 SEC 文件中提取数字、计算结果，并把结果组装进交易台的 Excel 模板——分析师只需一次点击，就能把每个数字追溯到源文件中被高亮的确切科目行。&nbsp;</p><p>Claude 的推理与 Kepler 的确定性基础设施相分离，让一个小团队能够做到这种规模。Claude 承担理解层的工作——否则需要许多领域专长的 NLP 工程师——Kepler 的基础设施负责其余一切。原本要大团队花数月才能发布的新能力，如今几周就能建成，因为架构是模块化的：团队可以只改进某一阶段的推理，而不动流水线的其他部分。</p><p>由于金融机构在合作之前就要求合规基础设施，Kepler 从一开始就建立了完整的审计日志、相互隔离的客户环境、端到端的数据溯源，已通过 SOC 2 Type II 认证，ISO 27001 认证也在进行中。</p><p>Kepler 的平台在设计上是与领域无关的。团队刻意从金融入手，因为这是对 AI 最严苛的环境之一：数据密集、术语语义过载、计算复杂、对错误零容忍。为经受住这种审视而构建的架构，适用于任何专业人士需要从海量文档中获得可验证答案的场景。从把临床试验数据与治疗方案相互核对的医疗提供商，到在数十年判例中追溯先例的法务团队，模式始终如一：Claude 负责对问题进行推理，基础设施保证答案可靠。&nbsp;</p><p>"Kepler Finance 是我们的第一款产品，"Ganesh 说，"但不会是最后一款。"</p><div class="w-embed"><figure>
+  <div role="region" tabindex="0">
+    <table>
+      <thead>
+        <tr>
+          <th colspan="2">Kepler 团队的最佳实践</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>给 Claude 分配合适的职责</td>
+          <td>检索是查询引擎的活，计算是公式引擎的活。让 Claude 去做理解、拆解和推理。</td>
+        </tr>
+        <tr>
+          <td>按阶段匹配模型</td>
+          <td>复杂推理用 Opus，约束强、高吞吐的任务用 Sonnet。所有环节都跑在同一个模型上，要么牺牲质量、要么浪费成本。</td>
+        </tr>
+        <tr>
+          <td>先投入评估，再打磨提示词</td>
+          <td>建立自动化流水线，在每个阶段把 Claude 的输出与已知正确答案比对。每个阶段独立测试，整条流水线端到端测试。在金融领域，一次无声的退化就意味着永远失去一个客户。</td>
+        </tr>
+        <tr>
+          <td>从第一天起为溯源而构建</td>
+          <td>专业人士受过验证一切的训练。溯源必须塑造整个系统的设计，而不是最后再补上。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</figure></div><p><strong>在 </strong><a href="https://platform.claude.com/"><strong>Claude Platform</strong></a><strong> 上构建你的初创公司。</strong></p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/how-kepler-built-verifiable-ai-for-financial-services-with-claude" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

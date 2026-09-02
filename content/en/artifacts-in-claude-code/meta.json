@@ -1,9 +1,17 @@
 {
   "slug": "artifacts-in-claude-code",
   "title": "Claude Code now supports artifacts",
-  "date": "Unknown",
+  "date": "June 18, 2026",
   "category": "Product announcements",
   "url": "https://claude.com/blog/artifacts-in-claude-code",
   "fetchedAt": "2026-09-01T22:57:53.189Z",
-  "translated": false
+  "translated": true,
+  "translatedTitle": "Claude Code 现已支持 artifacts",
+  "translatedAt": "2026-09-02T05:12:42.000Z",
+  "translateLang": "zh-CN",
+  "inHero": true,
+  "heroIndex": 2,
+  "inGrid": true,
+  "illustration": "assets/illustrations/artifacts-in-claude-code.svg",
+  "illustrationBg": "Clay"
 }

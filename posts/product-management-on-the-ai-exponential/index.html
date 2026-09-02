@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 指数曲线上的产品管理 — Claude Blog 中文翻译</title>
+  <meta name="description" content="AI 指数曲线上的产品管理">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/product-management-on-the-ai-exponential" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Claude Code</span>
+            <span class="article-date">March 19, 2026</span>
+            
+          </div>
+          <h1 class="article-title">AI 指数曲线上的产品管理</h1>
+          <a href="/posts/product-management-on-the-ai-exponential/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>自 2024 年 10 月 <a href="https://www.anthropic.com/news/3-5-models-and-computer-use" target="_blank">Claude Sonnet 3.5 (new)</a> 发布以来，我养成了一个习惯：每出一个新模型，就让 Claude Code（当时还是内部工具）给 Excalidraw 添加一个表格工具。每一次新模型，Claude 都能往前多走一点，但仍然会失败。</p><p>然后，随着 2025 年 6 月 <a href="https://www.anthropic.com/news/claude-4" target="_blank">Opus 4</a> 的发布，Claude 开始偶尔能成功完成，足以让我们把这项练习做成 Claude 4 模型发布时的一个<a href="https://www.youtube.com/live/EvtPBaaykdo?t=3478s" target="_blank">预录演示</a>，展示最新模型已经能实现什么。</p><p>不到一年之后，<a href="https://www.anthropic.com/news/claude-opus-4-6" target="_blank">Opus 4.6</a> 已经能可靠地一次性完成 Excalidraw 的功能需求，让我们有信心在数千名专业开发者面前现场演示。</p><p>模型进步的速度在不断拓展可能的边界。传统产品管理的方法论建立在一个假设之上：项目开始时技术上的可能性，大致等于项目结束时的可能性。产品经理会在前期收集足够的信息，对未来的做出有把握的判断，然后按照既定计划执行数月。</p><p>指数级改进的模型打破了这个假设。你当初围绕其设计的那些约束，可能在项目中途就消失了。你脚下的地面正在不断抬升，团队需要围绕这一现实重新组织。新的 AI 产品管理节奏是：快速实验、持续发布，并在有效的方向上加倍投入。</p><p>毫不意外，作为 Anthropic 的产品经理，我最常被问到的问题之一就是：我们的角色正在如何变化。以下是我的一些心得。</p><h2>我与 Claude Code 的产品管理之路</h2><p>我的职业生涯始于 Scale AI、Dagster 等初创公司的产品工程师，后来成为风险投资人——在那个岗位上我依然会写代码，把工作中繁琐的部分自动化，比如扫描 X 上新公司的官宣，或者检测开源项目是否正在积攒势头。</p><p>2024 年 8 月，我加入 Anthropic，成为 Research PM 团队的产品经理。这个团队连接着我们的研究团队与真实世界的客户，致力于交付更好的模型。当年秋天 Claude Code 在内部开放后，我用它来加速工作中比较手工的部分，包括构建 Streamlit 应用来分析大规模用户反馈，以及运行 evals 帮公司寻找值得信任的新基准。低门槛的开发方式也意味着我可以探索远超日常职责的内容，比如创建 RL 环境来更好地理解训练。</p><p>这些项目花费了数百小时的 Claude Code 提示（由 Sonnet 3.5 (new) 驱动），但没有一行代码是我手写的。</p><h2>设计新的产品管理工作流</h2><figure style="max-width:2880pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69bc295c981804a6cc75ded9_fig1-claude-code-pm-playbook-on-the-ai-exponential-v4%402x.png" loading="lazy"></div><figcaption>Claude Code 和 Cowork 等工具正在模糊产品开发生命周期中不同角色之间的界限。</figcaption></figure><p>Claude Code 并不是我工作流中唯一的工具。随着时间推移，我在三款产品之间形成了自然的分工：聊天协作者（<a href="http://claude.ai" target="_blank">Claude.ai</a>）、agentic 编码工具（Claude Code），以及知识工作工具（<a href="https://www.anthropic.com/webinars/future-of-ai-at-work-introducing-cowork" target="_blank">Cowork</a>）。</p><p><strong>Claude.ai</strong> 是我把 Claude 当作思维伙伴来交流的地方，不需要它执行具体操作。我会在这里讨论策略文档的思路、请教如何处理棘手的局面，以及快速获得答案。</p><p><strong>Claude Code</strong> 是我构建原型、evals 和脚本的地方，其中很多都会调用 Claude API。当产出物是代码时，我就用它。</p><p><strong>Cowork</strong> 承担我其余的所有工作：把收件箱清零、跟踪并执行待办清单、制作幻灯片、通过搜索 Slack 理解一项决策的来龙去脉，以及预订出差行程。</p><p>我也和业内许多产品经理聊过，他们找到了各自版本的这种工作流：</p><blockquote><em>"Claude 抬高了优秀产品团队能构建的上限，也大幅缩短了从想法到原型的距离。以前，要让客户看到实实在在的东西，需要数周的开发。现在我会先在 Claude Cowork 里开工，从 Slack、代码库和文档中拉取上下文，然后转到 Claude Code，几个小时后就有可以演示的东西。优秀的产品团队一直都在用真实客户检验想法，这个本能没有变。变的是我们能真正推入这个循环的高质量想法多了多少。"——Bihan Jiang，Decagon 产品总监</em></blockquote><blockquote><em>"对我来说，在 AI 原生的世界里做产品经理，既是创造性的，也是学术性的。每一次新模型发布都会改变可能的边界。在构建 Datadog 的 Bits AI SRE agent 时，我们通过对真实生产事故的离线评估来研究它的优势与失败模式。我们还设计了紧密的反馈回路，打磨 UX 让 agent 的短板暴露出来，再把这些洞察转化为产品改进。从这个意义上说，产品经理的手艺已经从'预先定义确定性'转变为'加速发现'。"——Kai Xin Tai，Datadog 高级产品经理</em></blockquote><p>如今做产品经理最令人兴奋的一点是：这些工作流在不断演进，带给我们越来越强的杠杆。</p><h2>拥抱 AI 的指数曲线</h2><figure style="max-width:2454pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69bc2f892ac8ae5b32d2ac32_Screenshot%202026-03-19%20at%201.16.39%E2%80%AFPM.png" loading="lazy"></div><figcaption><em>METR. (2026, March). Task-Completion Time Horizons of Frontier AI Models. </em><a href="https://metr.org/time-horizons/"><em>https://metr.org/time-horizons/</em></a></figcaption></figure><p>METR <a href="https://metr.org/time-horizons/" target="_blank">发现</a>，Opus 4.6 有一半的概率能完成人类需要近 12 小时才能完成的软件任务。而我们刚开始构建 Claude Code 时，Sonnet 3.5 (new) 还是最前沿的模型，METR 测得它能完成的任务大约需要人类 21 分钟。也就是说，16 个月里出现了约 41 倍的跃升。</p><p>Claude Code 团队也在不断演进，以跟上模型进步的速度。我们的角色正在彼此融合：设计师发布代码，工程师做产品决策，产品经理构建原型和 evals。这之所以行得通，是因为清晰的战略和目标让每个人都能自主排列优先级。产品经理的职责，是在模型快速进步带来的模糊性中创造清晰度，推动团队对可能性想得更大，并为更快发布扫清道路。</p><p>以下是我们拥抱的四个转变：</p><p><strong>用短冲刺做规划</strong></p><p>传统产品经理的思路把探索视为路线图锁定之前的事情：你做调研、写 PRD，然后交给工程团队去实现。</p><p>我们不搞长期路线图，而是鼓励团队里的每个人（工程师、产品经理、设计师）去做"支线任务"（side quest）。支线任务是你 official 路线图之外自主开展的短期实验——花一个下午做一个想法的原型、测试一个你以为遥不可及的能力，或者只是看看把模型逼到超出预期时会发生什么。</p><p>Anthropic 一些最受欢迎的功能——<a href="https://claude.com/product/claude-code" target="_blank">桌面版 Claude Code</a>、<a href="https://platform.claude.com/docs/en/agent-sdk/user-input" target="_blank">AskUserQuestion 工具</a>和 <a href="https://platform.claude.com/docs/en/agent-sdk/todo-tracking" target="_blank">todo 清单</a>——就是这样诞生的。</p><p><strong>用演示和 evals 取代文档</strong></p><p>我们团队在很大程度上用"原型优先"取代了"文档优先"。我们不再开传统的站会，而是分享新想法的演示。内部用户试用之后，真正有使用热情的会被打磨并向更广泛的范围推广。因为一个下午就能做出原型，押错方向的代价很低。</p><p>例如，当 Noah 把他的 <a href="https://code.claude.com/docs/en/plugins" target="_blank">plugins</a> 规范交给 Claude Code 时，返回的原型已经接近可上线状态。这个原型锚定了团队最终发布的形态，因为它让团队快速验证了 UX。</p><p>一个小技巧：写完规范后，把它发给 Claude Code，看看它能不能直接做出来。哪怕是一个粗糙的原型，也会改变讨论的方式。</p><p>除了演示，evals 也能让抽象的产品变得具体。例如，对于 <a href="https://code.claude.com/docs/en/agent-teams" target="_blank">agent teams</a>（让用户协调多个 Claude Code 实例协同工作），Conner 手工设计了一组 evals，用来理解 agent teams 什么时候好用、什么时候不行、该修什么。度量一个功能是否真正在工作，会让改进它变得更容易。</p><p><strong>用新模型重新审视已有功能</strong></p><p>现在，你发布了一个功能，然后更好的模型出来了，你的功能可能变得远比从前强大。每一次模型发布，都是在隐性地提醒你回头看看已经构建的东西。</p><p>抓住这些时机的最好办法，就是成为每日活跃用户，并刻意让它做一些你以为可能太难的事。有时它真的能做到，这就是一个信号：产品需要跟上。</p><p><a href="https://code.claude.com/docs/en/chrome" target="_blank">Claude Code with Chrome</a> 就是这么来的。我们注意到用户用 Claude Code 构建 Web 应用后，会手动切换到 Chrome 里的 Claude 去测试它，在这两个工具之间手动提示、复制粘贴指令。这种做法已经足够好用，让我们意识到它应该成为一个内置功能。如果用户在想办法拼凑某种用法，那就是可以吸收进产品的脚手架。</p><p>在为这些想法做原型时，永远把能力放在第一位，宁可多用 token 也不要省。过早压缩 token 成本、结果发布一个能力大打折扣的版本，是非常常见的错误。等更便宜的模型能力追上来，成本总能降下去；但你首先得知道这个功能到底可不可行。</p><p><strong>做简单的事</strong></p><p>在 Anthropic，每个团队都有一条指导原则：做那件行得通的简单的事。</p><p>如果你的产品巧妙地绕过了某个模型局限，那么当下一代模型发布时，这个变通方案就成了不必要的复杂度。这正是"做简单的事"的意义所在：实现越简单，新能力到来时就越容易接入。</p><p>最初在 Claude Code 中上线 todo 清单时，模型不能可靠地在完成任务后勾选对应条目。于是我们每隔几条消息就注入一次系统提醒，定期提示 agent 更新自己的 todo 清单。它确实管用，但这是个 hack。到了下一代模型，这个行为自然而然就有了，我们便把提醒完全移除。这个模式我们反复见到：我们的系统提示词和工具描述曾经过度设计以弥补模型的局限，而随着每一次模型升级，我们都能削减提示，其中 Opus 4.6 削减了 20%。</p><h2>展望未来</h2><figure style="width:100%;max-width:100%;padding-bottom:56.206088992974244%" class="w-richtext-align-center w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/91AJ0cpgLlQ" title="How Anthropic uses Claude in Product Management" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><p>许多产品经理习惯了牢牢掌控完整的产品体验，但 AI 逼你学会放手，才能跑得快。这种掌控本能，正是 AI 产品管理要求你最先戒掉的东西。</p><p>尤其是在构建 AI 产品时，感觉就像在冲浪，最重要的事情是留在浪上。作为一个完美主义者，这是我最难适应的转变。但产品经理的角色，如今就是识别出那几条真正不可妥协的原则，其余的都放手。</p><p>这些转变的净效果是：产品团队能明显更快地前进。当产品经理可以在一个下午从想法走到可运行的原型，"我们要不要试试……"与"来，试试这个"之间的差距就几乎消失了。</p><p>在 Anthropic，正在用 Claude 改造工作流的不只是产品经理。我们的数据科学、<a href="https://www.anthropic.com/webinars/claude-code-financial-services" target="_blank">财务</a>、市场、<a href="https://www.youtube.com/watch?v=tJP6SKfo49c" target="_blank">法务</a>和<a href="https://www.youtube.com/watch?v=vLIDHi-1PVU" target="_blank">设计团队</a>都主动用起了这些工具。整个组织以同样的速度前进，而不是在交接中彼此等待。</p><p>现在，产品经理的角色是同时跟踪两件事：AI 如何改变你的工作方式，以及它如何改变你产品中可能的边界。把这两件事做好，当表格工具终于跑通时，你就不会再感到意外——因为你就是那个预见到它会来的人。</p><p><em>开始用 </em><a href="https://claude.com/product/claude-code" target="_blank"><em>Claude Code</em></a><em>打造更好的产品。</em></p><p><strong><em>致谢：</em></strong><em>本文由 Anthropic Claude Code 产品负责人 Cat Wu 撰写。你可以在 </em><a href="https://x.com/_catwu"><em>X</em></a><em> 和 </em><a href="https://www.linkedin.com/in/cat-wu/"><em>LinkedIn</em></a><em> 上找到她。她感谢 Bihan Jiang 和 Kai Xin Tai 对本文的贡献。</em></p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/product-management-on-the-ai-exponential" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,9 +1,17 @@
 {
   "slug": "cowork-built-in-browser",
-  "title": "Claude Cowork gets a built-in browser: nothing to install",
+  "title": "Claude gets its own browser in Cowork",
   "date": "August 26, 2026",
   "category": "Product announcements",
   "url": "https://claude.com/blog/cowork-built-in-browser",
   "fetchedAt": "2026-09-01T11:10:22.881Z",
-  "translated": false
+  "translated": true,
+  "inHero": true,
+  "heroIndex": 1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/cowork-built-in-browser.svg",
+  "illustrationBg": "Clay",
+  "translatedTitle": "Claude Cowork 内置浏览器：无需安装",
+  "translatedAt": "2026-09-01T11:19:19.936Z",
+  "translateLang": "zh"
 }

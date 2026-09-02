@@ -1,0 +1,17 @@
+{
+  "slug": "using-claude-md-files",
+  "title": "Using CLAUDE.md files: Customizing Claude Code for your codebase",
+  "date": "November 25, 2025",
+  "category": "Claude Code",
+  "url": "https://claude.com/blog/using-claude-md-files",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/using-claude-md-files.svg",
+  "illustrationBg": "Heather",
+  "fetchedAt": "2026-09-02T03:50:17.789Z",
+  "translatedTitle": "使用 CLAUDE.md 文件：为你的代码库定制 Claude Code",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:54:25.809Z",
+  "translateLang": "zh-CN"
+}

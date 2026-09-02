@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>像 agent 一样去看：我们在 Claude Code 中如何设计工具 — Claude Blog 中文翻译</title>
+  <meta name="description" content="像 agent 一样去看：我们在 Claude Code 中如何设计工具">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/seeing-like-an-agent" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Claude Code</span>
+            <span class="article-date">April 10, 2026</span>
+            
+          </div>
+          <h1 class="article-title">像 agent 一样去看：我们在 Claude Code 中如何设计工具</h1>
+          <a href="/posts/seeing-like-an-agent/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>构建 agent harness 最难的部分之一，就是为它构造工具。</p><p>Claude 完全通过<a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview">工具调用</a>来行动，但在 Claude API 中有多种构建工具的方式，可以使用 <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/bash-tool">bash</a>、<a href="https://code.claude.com/docs/en/skills">skills</a> 和<a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool">代码执行</a>等原语。（你可以在 <a href="https://x.com/RLanceMartin/status/2027450018513490419">@RLanceMartin 的新文章</a>中阅读更多关于 Claude API 程序化工具调用的内容。）</p><p>那么你该如何为 agent 设计工具？是给它一个像 bash 或代码执行这样的通用工具，还是五十个专用工具、每个用例一个？<br></p><p>要把自己放进模型的心智里，不妨想象你拿到一道很难的数学题。你会想要什么工具来解决它？这取决于你自己的能力！</p><p>纸笔是最低配置，但你会被手算限制住。计算器更好，但更高级的功能你得会用。最快最强的选项是计算机，但你得知道怎么用它来编写并执行代码。</p><p>这是设计 agent 的一个有用框架：你要给它与其自身能力相匹配的工具。但你怎么知道那些能力是什么？靠留心观察、阅读它的输出、做实验。你要学会像 agent 一样去看。</p><p>如果你在构建 agent，你会遇到我们曾面临的同样问题：什么时候加一个工具、什么时候减一个，以及如何区分。下面是我们在构建 Claude Code 过程中给出的答案，包括我们一开始走错的地方。</p><h2>用 AskUserQuestion 工具改进信息征集</h2><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:1199px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="1199px"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69d919d46e9dceaa0cf307d9_b089e3d3.png" width="auto" height="auto" loading="auto"></div></figure><p>构建 AskUserQuestion 工具时，我们的目标是提升 Claude 提问的能力（通常称为 elicitation，信息征集）。</p><p>虽然 Claude 可以直接用纯文本提问，但我们发现回答这些问题往往让人觉得费时得没必要。怎样才能降低这种摩擦、增加用户与 Claude 之间的沟通带宽？</p><h3>尝试 1：修改 ExitPlanTool</h3><p>我们试的第一种办法是给 ExitPlanTool 加一个参数，让计划旁边附带一组问题。这是最容易实现的改法，但它让 Claude 感到困惑，因为我们是在同时要它给出计划、又要它提出关于计划的问题。如果用户的回答与计划内容冲突怎么办？Claude 是否需要调用两次 ExitPlanTool？我们清楚这条路走不通，于是推倒重来。（关于我们为什么做 ExitPlanTool，可以阅读<a href="https://x.com/trq212/status/2024574133011673516">我们关于提示词缓存的文章</a>。）</p><h3>尝试 2：改变输出格式</h3><p>接下来，我们尝试修改 Claude 的输出指令，让它用一种略微改造过的 markdown 格式来提问。比如，我们让它输出一组带括号备选项的要点式问题，然后我们把它解析并渲染成给用户看的 UI。</p><p>Claude 通常能产出这种格式，但并不可靠。它会多写几句、漏掉选项，或者干脆丢掉这个结构。继续换下一种。<br></p><h3>尝试 3：AskUserQuestion 工具</h3><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:1200px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="1200px"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69d919d46e9dceaa0cf307dc_208fceac.png" width="auto" height="auto" loading="auto"></div></figure><p>最终，我们的方案是创建一个 Claude 可以随时调用的工具，但在计划模式（plan mode）下会特别提示它去调用。工具触发时，我们会弹出一个模态框展示这些问题，并阻塞 agent 循环，直到用户作答。</p><p>这个工具让我们能要求 Claude 输出结构化内容，也帮我们确保 Claude 给用户提供多个选项。它还给用户留下了组合使用它的空间，比如在 <a href="https://platform.claude.com/docs/en/agent-sdk/overview">Agent SDK</a> 中调用，或在 skills 里引用它。</p><p>最重要的是，Claude 似乎乐于调用这个工具，而且我们发现它的输出效果很好。毕竟，再精心设计的工具，如果 Claude 不理解怎么调用，也没用。</p><p>这就是 Claude Code 中信息征集的最终形态吗？我们对此存疑。随着 Claude 能力增强，服务于它的工具也必须演进。下一节展示的案例，正是一个曾经有用、后来却开始碍事的工具。</p><h3>随能力更新：tasks 与 todos</h3><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:1200px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="1200px"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69d919d46e9dceaa0cf307df_9f83e911.png" width="auto" height="auto" loading="auto"></div></figure><p>Claude Code 刚发布时，我们意识到模型需要一个<a href="https://platform.claude.com/docs/en/agent-sdk/todo-tracking">待办清单</a>来保持正轨。待办可以在开始时写好，随着模型推进逐项勾掉。为此我们给 Claude 提供了 TodoWrite 工具，用来创建或更新待办并展示给用户。</p><p>但即便如此，我们还是经常看到 Claude 忘记自己要做什么。为应对这个问题，我们每 5 轮插入一条系统提醒，提示 Claude 别忘了目标。</p><p>随着模型进步，它们开始觉得待办清单是一种束缚。不断收到待办清单的提醒，让 Claude 以为自己必须严格照单执行，而不是在意识到需要调整方向时修改清单。我们还发现 Opus 4.5 使用 subagent 的能力强了很多，但多个 subagent 怎么在同一份待办清单上协作？</p><p>看到这些，我们用 <a href="https://x.com/trq212/status/2014480496013803643">Task 工具</a>取代了 TodoWrite。待办关注的是让模型保持正轨，而任务帮助的是 agent 之间相互沟通。任务可以包含依赖关系、在多个 subagent 之间共享更新，模型也可以修改和删除它们。</p><p>随着模型能力提升，你的模型曾经需要的工具现在可能反而在束缚它。不断重新审视以往关于"需要哪些工具"的假设非常重要。这也是为什么最好只支持一小组能力画像相近的模型。</p><h2>设计搜索界面</h2><p>我们构建的影响最深远的工具，是那些让 Claude 自己找到上下文的工具。</p><p>Claude Code 最初内部发布时，我们用的是 RAG：一个向量数据库预先给代码库建索引，harness 在每次回复前检索相关片段交给 Claude。RAG 强大且快速，但它需要索引和配置，在各种环境里都可能出问题。最重要的是，这些上下文是被<em>塞给</em>Claude 的，而不是 Claude 自己找到的。</p><p>不过，既然 Claude 能在互联网上搜索，为什么不能搜索你的代码库？给 Claude 一个 Grep 工具，我们就能让它自己搜索文件、自己构建上下文。</p><p>随着 Claude 越来越聪明，在拥有合适工具的前提下，它构建上下文的能力越来越强。&nbsp;</p><p>当我们推出 <a href="https://agentskills.io/home">Agent Skills</a> 时，我们把渐进式披露（progressive disclosure）的理念正式化了——允许 agent 通过探索渐进地发现相关上下文。</p><p>Claude 现在可以读取 skill 文件，而这些文件又可以引用其他文件，供模型递归地阅读。实际上，skills 的一个常见用途就是给 Claude 增加更多搜索能力，比如教它如何调用某个 API 或查询某个数据库。</p><p>一年之间，Claude 从基本不会自己构建上下文，进化到能跨多个文件层级做嵌套搜索、找到它需要的精确上下文。</p><p>渐进式披露如今已是我们在不新增工具的前提下增加新功能的常用手法。下一节我们解释原因。</p><h2>渐进式披露：Claude Code Guide agent</h2><p>Claude Code 目前有约 20 个工具，我们团队经常重新审视：要让 Claude 发挥最大效力，是否真的全都需要。新增一个工具的门槛很高，因为这会让模型又多一个需要斟酌的选项。</p><p>比如我们注意到，Claude 对如何使用 Claude Code 本身了解得不够。如果你问它怎么添加 MCP、某个斜杠命令是干什么的，它答不上来。</p><p>我们本可以把所有这些信息放进系统提示词，但考虑到用户很少问到，那只会加重上下文腐朽，还会干扰 Claude Code 的主业：写代码。</p><p>我们转而尝试渐进式披露：给 Claude 一个文档链接，需要时加载并搜索。这可行，但 Claude 会把大段文档拉进上下文，只为找到用户一句话就能得到的答案。</p><p>于是我们构建了 Claude Code Guide——一个每当用户询问 Claude Code 自身相关问题时就被调用的 subagent。这个 subagent 在自己的上下文里搜索文档，按照关于如何搜索、提取什么的详细指令执行，最后只交回答案。主 agent 的上下文保持干净。</p><p>虽然这不是完美方案（当你问 Claude 如何配置它自己时，它仍可能犯迷糊），但我们做到了在不新增工具的情况下扩展 Claude 的行动空间。</p><h3>像 agent 一样去看，是一门艺术而非科学</h3><p>为模型设计工具，既是科学，同样是艺术。它在很大程度上取决于你用的模型、agent 的目标以及它运行的环境。</p><p>我们最好的建议是？勤做实验，细读输出，大胆尝试新东西。而最重要的，是试着像 agent 一样去看。</p><p>‍</p><p><em>立即开始使用 </em><a href="https://claude.com/product/claude-code"><em>Claude Code</em></a><em>。</em></p><p><strong><em>关于作者：</em></strong><em>Thariq Shihipar 是 Anthropic 的技术团队成员，从事 Claude Code 的开发工作。</em></p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/seeing-like-an-agent" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

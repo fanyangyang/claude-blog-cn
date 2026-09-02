@@ -1,0 +1,17 @@
+{
+  "slug": "message-batches-api",
+  "title": "Introducing the Message Batches API",
+  "date": "October 8, 2024",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/message-batches-api",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/message-batches-api.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.789Z",
+  "translatedTitle": "Message Batches API 介绍",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:39:32.652Z",
+  "translateLang": "zh-CN"
+}

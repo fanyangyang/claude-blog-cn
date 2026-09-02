@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>为桌面端 Claude Code 带来自动化预览、审查与合并 — Claude Blog 中文翻译</title>
+  <meta name="description" content="为桌面端 Claude Code 带来自动化预览、审查与合并">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/preview-review-and-merge-with-claude-code" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Claude Code</span>
+            <span class="article-date">February 20, 2026</span>
+            
+          </div>
+          <h1 class="article-title">为桌面端 Claude Code 带来自动化预览、审查与合并</h1>
+          <a href="/posts/preview-review-and-merge-with-claude-code/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>今天，我们发布了一系列 Claude Code 改进：预览运行中的应用、自动审查代码、自动修复并合并 PR，以及在桌面端、移动端和 CLI 之间无缝切换。这些更新共同帮你减少围绕代码的琐碎劳动，把更多时间花在你真正享受的部分。</p><h2><strong>写代码，即刻看到它运行</strong></h2><p>Claude Code 桌面端现在可以启动开发服务器，并直接在桌面界面中预览你正在运行的应用。Claude 会查看 Web 应用界面、读取控制台日志、捕获错误并持续迭代，你不必再切换到浏览器，手动向 Claude 描述你看到的内容。你还可以在预览中选中界面元素，把反馈直接传给 Claude 继续迭代。</p><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/UCD7Hnx_THQ" title="Preview your running app in Claude Code on desktop" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><h2><strong>推送之前先审查代码</strong></h2><p>当改动看起来没问题后，可以使用全新的“Review code”按钮让 Claude 进行审查。Claude 会检查你的本地 diff，并直接在桌面端的 diff 视图中留下评论，突出 Bug、提出建议、就地指出潜在问题。&nbsp;</p><p>在代码离开你的机器之前，你就有了一双“第二只眼”来发现明显问题，还可以让 Claude 处理这些行内评论并修改代码。</p><figure style="max-width:2400px" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6998ab6c581b7e1365118a98_Code%20Review.png" loading="lazy"></div></figure><h2><strong>不离开应用就能盯住 PR</strong></h2><p>对于托管在 GitHub 上的代码，你还可以直接在桌面应用中监控 Pull Request 的状态。在你开启一个 PR 之后，Claude Code 会通过底层的 GitHub CLI 跟踪其状态，包括 CI 检查的通过与失败。</p><p>你还可以开启自动修复（auto-fix），让 Claude 自动尝试修复它检测到的任何 CI 失败。如果开启了自动合并（auto-merge），Claude 还会在所有检查通过后尝试合并 PR。&nbsp;</p><p>你可以在一个 Claude Code 会话中处理某个任务并开启 PR，然后接着去做新任务。后台的 Claude Code 会持续监控原任务的 PR，并尝试修复 CI 失败，这样等你切回那个任务时，PR 已经可以合并（或已被自动合并）。</p><figure style="max-width:2400px" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6998ab7b361d36cb996e0cc8_CI%20Monitoring.png" loading="lazy"></div></figure><h2><strong>从上次中断的地方继续</strong></h2><p>会话现在可以跟着你走。当你在 CLI 中启动 Claude Code 会话后，运行 /desktop 即可把完整会话上下文带入桌面应用。</p><p>你也可以使用“Continue with Claude Code on the web”按钮，把本地桌面应用的会话迁移到云端。在桌面应用上开始一个任务，然后通过 Claude 移动应用在网页端或手机上继续处理。</p><h2><strong>开始使用</strong></h2><p>这些更新现已面向所有用户开放。更新或下载<a href="https://claude.com/download">Claude Code 桌面端</a>即可开始。详细信息请查阅<a href="https://code.claude.com/docs/en/desktop">文档</a>。</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/preview-review-and-merge-with-claude-code" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

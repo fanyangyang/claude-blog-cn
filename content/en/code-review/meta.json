@@ -1,0 +1,17 @@
+{
+  "slug": "code-review",
+  "title": "Bringing Code Review to Claude Code",
+  "date": "March 9, 2026",
+  "category": "Claude Code",
+  "url": "https://claude.com/blog/code-review",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/code-review.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.788Z",
+  "translatedTitle": "为 Claude Code 带来 Code Review",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:14:11.000Z",
+  "translateLang": "zh-CN"
+}

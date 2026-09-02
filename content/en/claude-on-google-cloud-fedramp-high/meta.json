@@ -1,0 +1,17 @@
+{
+  "slug": "claude-on-google-cloud-fedramp-high",
+  "title": "Claude on Google Cloud’s Vertex AI: FedRAMP High and IL2 Authorized",
+  "date": "April 2, 2025",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/claude-on-google-cloud-fedramp-high",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/claude-on-google-cloud-fedramp-high.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.788Z",
+  "translatedTitle": "Google Cloud Vertex AI 上的 Claude：获得 FedRAMP High 与 IL2 授权",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:44:54.905Z",
+  "translateLang": "zh-CN"
+}

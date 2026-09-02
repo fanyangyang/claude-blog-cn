@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude Tag 现在能读懂更多对话语境 — Claude Blog 中文翻译</title>
+  <meta name="description" content="Claude Tag 现在能读懂更多对话语境">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/claude-tag-now-reads-even-more-of-the-room" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Product announcements</span>
+            <span class="article-date">August 13, 2026</span>
+            
+          </div>
+          <h1 class="article-title">Claude Tag 现在能读懂更多对话语境</h1>
+          <a href="/posts/claude-tag-now-reads-even-more-of-the-room/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>借助 Claude Tag，你可以把 Claude 添加到 Slack 频道中，让它与你的团队并肩工作。当你 @ 提及 Claude 时它会响应，当它认为自己能帮上忙时也会主动响应。</p><p>此前，Claude 一次只能看到<strong>一条消息</strong>，因此它决定是否主动行动时，依据的只是眼前这条消息，而不是周围的更广泛语境。</p><p>现在，Claude 会利用<strong>整个频道的上下文</strong>、它的记忆以及你给它设定的常驻指令，来判断何时参与对话。</p><p>由此，Claude 判断何时应该主动响应、何时不该响应的准确率提升了约 30%。</p><p>本次更新目前不产生额外费用。虽然持有更多上下文确实会增加 Claude Tag 的用量，但 Claude Tag 额外持有的上下文不计入任何计划的用量或消费限额。</p><h2>从被动的响应者到主动的参与者</h2><p>此前，由一个轻量级分类器决定 Claude 何时行动。它单独审视每条新消息，做出一次非是即否的判断。&nbsp;</p><p>举个例子：两位工程师从两头追踪同一个 Bug。谁都没有一小时的空闲去深挖，而且谁的消息都没有提出任何请求。</p><figure class="w-richtext-align-center w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a7dc1a48865d9839cc4fea6_9120db7b.png" loading="lazy"></div><figcaption>Priya 有一个猜想，Devon 有证据。两条消息都不是发给 Claude 的，也都没有提出请求。</figcaption></figure><p>如果一条一条单独看，这两条消息都不是给 Claude 的，所以分类器两次都正确地按兵不动。但放在一起看，一件显而易见的工作就摆在那里：一位工程师有猜想，另一位有证据，而谁都没有时间去验证。&nbsp;</p><p>移除分类器后，Claude 会利用整个频道的上下文，从四种行动中选择其一：&nbsp;</p><ul role="list"><li><strong>直接在频道内回复</strong>，当答案简短、可验证，且是频道还不知道的内容时。</li><li><strong>在话题串（thread）中开展更深入的工作</strong>，当某条消息值得投入真正的时间时。</li><li><strong>把消息归入正在进行的工作</strong>，当它能为 Claude 已开启的工作流添砖加瓦时。</li><li><strong>保持沉默</strong>，当确实无需行动时。</li></ul><p>下面是同一段对话在 Claude Tag 借助额外上下文后的表现。即使没有被 @ 提及，Claude 也选择了第二种行动。它看到 Priya 的猜想和 Devon 的证据，开了一个话题串并让调查先行展开，还把两位工程师都拉了进来。它的行动不会超出你配置的权限、工具和范围边界。</p><figure class="w-richtext-align-center w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a7dc1a48865d9839cc4fead_96b287d1.png" loading="lazy"></div></figure><p>同一个话题串，两分钟后。Claude 把两条消息放在一起阅读，然后开始了工作。没有任何 @ 提及。</p><p>这些对话彼此之间并不是相互隔绝的。所以当 Devon 发布进展时，它会落入正确的工作流。当两项调查最终发现是同一个 Bug 时，这个关联也会被建立起来。</p><figure class="w-richtext-align-center w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a7dc1a48865d9839cc4fea9_dcb183e0.png" loading="lazy"></div></figure><p>Claude 现在会查看所有消息以理解频道的完整上下文，从而更准确地判断是否应该在没有被提示的情况下参与对话。</p><h2>Claude 如何决定何时不开口</h2><p>一个烦人的智能体比一个没用的智能体更糟糕。我们打造 Claude Tag 的原则是只在有用时才开口，而在大多数频道的多数消息上，这意味着保持沉默。</p><p>我们的做法是依据一套评分标准，对 Claude 在各个频道中的选择进行逐项打分，标准基于这些原则：评论有多大用处、Claude 对回答有多大把握，以及是否有更合适的人来回应。&nbsp;</p><p>Claude 也知道何时该收起注意力，就像人们使用 Slack 的方式一样。它会密切关注少数几个频道，对其他频道则少加留意，直到有人 @ 它。在某个频道里，如果一条接一条消息都让 Claude 得出“没什么可补充的”结论，它就会进入休眠。一个 @ 提及能立刻把它唤醒。</p><p>你还可以用日常语言来引导它的响应行为：“除非有人 @ 你，否则在这里永远不要回复”，或者“只要是关于部署管线的话题，尽管大胆参与。”</p><p>&nbsp;如果你更希望 Claude 在某个频道中只在被 @ 时才说话，<a href="https://claude.com/docs/claude-tag/users/when-claude-responds#turn-automatic-replies-on-or-off">任何成员都可以关闭“自动回复”</a>。&nbsp;</p><h2>首次响应更快了</h2><p>额外的上下文也让 Claude 的响应更加迅速。它会在几秒内先确认收到你的消息，而不是在启动时默默无声。工作本身所需的时间一如既往；消失的是那个你无法判断它是否听到你的沉默的第一分钟。</p><h2>今日上线</h2><p>本次更新现已在 Claude Tag 全面上线，面向 Claude Teams 和 Enterprise 客户。你可以从<a href="https://claude.ai/admin-settings/claude-tag">这里</a>开始使用。Claude 如今是一位更高效的协作者：它能跟上对话，自己决定何时行动，也知道何时退到一旁。&nbsp;</p><p>把 Claude 加进一个频道，看看它能为你们的对话带来什么。进一步了解 <a href="https://claude.com/product/tag">Claude Tag</a>。</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/claude-tag-now-reads-even-more-of-the-room" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

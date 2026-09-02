@@ -1,0 +1,17 @@
+{
+  "slug": "run-claude-code-sessions-on-your-own-compute",
+  "title": "Run Claude Code sessions on your own compute",
+  "date": "August 6, 2026",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/run-claude-code-sessions-on-your-own-compute",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/run-claude-code-sessions-on-your-own-compute.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.776Z",
+  "translatedTitle": "在你自己的算力上运行 Claude Code 会话",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:30:13.000Z",
+  "translateLang": "zh-CN"
+}

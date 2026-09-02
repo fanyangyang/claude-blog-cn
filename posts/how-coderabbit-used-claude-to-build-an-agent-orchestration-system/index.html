@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CodeRabbit 如何用 Claude 构建一套 agent 编排系统 — Claude Blog 中文翻译</title>
+  <meta name="description" content="CodeRabbit 如何用 Claude 构建一套 agent 编排系统">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/how-coderabbit-used-claude-to-build-an-agent-orchestration-system" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Claude Code</span>
+            <span class="article-date">May 27, 2026</span>
+            
+          </div>
+          <h1 class="article-title">CodeRabbit 如何用 Claude 构建一套 agent 编排系统</h1>
+          <a href="/posts/how-coderabbit-used-claude-to-build-an-agent-orchestration-system/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p><em>在</em> <strong><em>How startups build with Claude</em></strong><em>系列文章中</em>，我们关注创业公司如何用 AI 变革各自的行业。本文将分享 CodeRabbit 如何构建一个在 AI 生成代码之前先进行规划的 agent 编排层。</p><div class="w-embed"><figure>
+  <div role="region" tabindex="0">
+    <table>
+      <thead>
+        <tr>
+          <th colspan="2">快速了解</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>公司名称</td>
+          <td>CodeRabbit</td>
+        </tr>
+        <tr>
+          <td>成立时间</td>
+          <td>2023 年</td>
+        </tr>
+        <tr>
+          <td>创始人</td>
+          <td>Harjot Gill，CEO</td>
+        </tr>
+        <tr>
+          <td>技术栈</td>
+          <td>Claude Platform、Claude Code</td>
+        </tr>
+        <tr>
+          <td>规模</td>
+          <td>每周为 15,000 多家客户审查 200 万个 PR</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</figure></div><p>AI 编程工具大幅缩短了从想法到可用原型的时间。而 AI 代码审查平台 CodeRabbit 注意到，随着产出速度的提升，另一种趋势也在同步攀升：代码能编译、能通过测试，却没有实现团队真正想构建的东西。&nbsp;</p><p>CodeRabbit 负责 AI 的副总裁 David Loker 认为，问题的根源在模型的上游。有经验的开发者往往默认编程 agent 拥有和自己一样的上下文，因此不会把那些在自己看来显而易见的需求写下来。于是编程 agent 只好用它认为合理的猜测来填补空白。</p><p>为了弥合这一差距，CodeRabbit 使用 Claude 设计并构建了一套 agent 编排系统，在任何代码生成之前先运行一个结构化的规划阶段。团队的核心理念是：规划的质量决定产出的质量；代码生成越便宜，方向走偏的代价就越昂贵。</p><h2><strong>填补 AI 编程中的隐性知识鸿沟</strong></h2><p>CodeRabbit 团队在研究其客户群中的 AI 生成 PR 时发现，最常见的失败模式是：代码能编译、能通过测试，却依然没有解决它本要解决的问题。</p><p>“随着开发经验的积累，我们会把知识内化，”Loker 说。“这些东西都在我们脑子里，我们以为其他开发者也都知道。然后我们又把这种假设套在了 AI 系统上，以为它也能隐式地理解。我们甚至没有意识到自己正在做这些假设。”</p><p>模糊的提示词迫使底层系统用它认为合理的猜测来填补空白，而这种猜测往往偏离开发者的本意。&nbsp;</p><p>Loker 举了一个自己的例子。在一个副业项目中构建记忆系统时，他与一个编程 agent 迭代了几个小时，直到一切都能跑通。当他问 agent 这个系统怎么用的时候，使用说明却告诉他需要传入一个用户 token——可整个项目里根本没有登录页面。他确实说明过系统需要用户，但从未说过用户需要一种登录方式。agent 填补了这块空白，而数小时的工作最终产出了一个“没有前门”的产品。</p><p>“实际发生的情况是，你在上面继续堆叠大量功能，很久之后才发现问题所在，”Loker 说。“在 AI 工作流中，过晚的验证可能代价非常高。”</p><h2><strong>在 AI 编写解决方案之前运行的编排层</strong></h2><p>CodeRabbit 的应对方案，是在代码生成之前插入一个规划系统。它协调多个 Claude 模型分析需求、暴露隐含假设，然后产出一份结构化的执行计划，明确应该构建什么、需要满足哪些约束。</p><p>“这个规划系统并不是要取代 Claude Code 的 Plan Mode，”Loker 说。“它是一个发生在 Claude Code 之前的更高层编排，目的是把 Claude Code 引向一个非常精准、正确的方向——所有需要显式说明的东西都被显式化，我们也清楚所有正在做出的假设。”</p><p>它的产出是一份协作式的产品需求文档（PRD）：一份基于完整上下文创建、由团队各相关方验证、并在实现开始前经过审阅的计划。Claude Code 接手这份计划后，会据此生成一份细粒度的实现方案。这份计划成为一个共享产物，记录了“决定了什么”以及“为什么”，不仅帮助团队避免返工、在事后验证产出是否符合最初意图，还能用来帮助新工程师快速上手。</p><h2><strong>在 Claude 模型家族中进行路由</strong></h2><p>CodeRabbit 将不同模型层级与任务复杂度相匹配，以优化成本和延迟。Opus 驱动编排循环，以及理解问题、设定总体方向这类更高层次的策略性工作；Sonnet 接过它的输出，将其编排为结构化的规划步骤；Haiku 负责范围明确的窄任务，比如上下文蒸馏和针对性的工具调用——这类问题足够具体，较小的模型也能给出很好的回答。</p><p>“如果 Haiku 在某个任务上做得和 Sonnet 一样好，我们就用 Haiku，”Loker 说。“如果评估体系告诉我们，给 Opus 更大的发挥空间能提升计划质量，我们就给它更大的空间。我们不靠猜。”</p><h2><strong>为计划质量构建评估体系</strong></h2><p>CodeRabbit 在代码审查方面已有一套成熟的评估系统，但在评估规划产出方面是空白。构建这套基础设施本身就成了一个独立项目。</p><p>这套系统从人工调优的示例和人工检查起步。团队开发了一个 LLM 评审器库，对计划质量的各个维度进行打分。由于计划最终会产出代码，团队还可以衡量生成的代码是否能用、是否包含多余的范围、以及花了多少 token 才达到目标。对同一任务分别在有规划步骤和无规划步骤两种情况下运行，让他们得以单独衡量规划本身的价值。</p><p>“我们一开始并不知道计划应该细化到什么程度才合适，”Loker 说。过于细碎的计划在代码库一有变动时就会过时；而过于高层的计划又给 agent 留下了用假设填补空白的空间——那恰恰是规划层本来要解决的问题。找到合适的抽象层级靠的是反复迭代，而这正是评估体系使之成为可能。</p><h2><strong>在任何代码写下之前拦截错误</strong></h2><p>在 AI 原生的编程工作流中，许多过去要到代码审查阶段才会暴露的决策，如今被提前到了规划层。在代码生成开始之前，先构建一份团队可以审阅并达成一致的计划，能够在早期就捕获错误。</p><p>“我们基于 Claude 生态系统构建的，是一套团队级的规划系统，”Loker 说。“计划本身就成了一道质量关卡。只要能在一开始就确保计划的质量足够好，下游的收益会非常显著——最终你得到的代码会好得多。”</p><div class="w-embed"><figure>
+  <div role="region" tabindex="0">
+    <table>
+      <thead>
+        <tr>
+          <th colspan="2">来自 CodeRabbit 团队的最佳实践</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>你真正想达成的结果是什么，如何衡量？</td>
+          <td>不仅要在给 AI 的规格说明中做到显式，还要定义你期望的 MPP（maximum possible product，最大可能产品）是什么。</td>
+        </tr>
+        <tr>
+          <td>哪些假设仍然是隐性的？</td>
+          <td>问 Claude：还缺少什么？计划中有没有哪些部分是以隐含假设而非显式规格的形式出现的？</td>
+        </tr>
+        <tr>
+          <td>哪些工作流或边界情况容易被忽略？</td>
+          <td>让 Claude 帮你找出你可能没有考虑到的环节或情形。</td>
+        </tr>
+        <tr>
+          <td>在正式上线前，如何知道产出符合最初意图？</td>
+          <td>建立工作记录：一份被保存和复用的规划产物编年史。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</figure></div><p><strong>在 </strong><a href="https://platform.claude.com/login?returnTo=%2F%3F" target="_blank"><strong>Claude Platform</strong></a><strong> 上构建你的创业公司。</strong></p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/how-coderabbit-used-claude-to-build-an-agent-orchestration-system" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>在前沿工作：为什么 Base44 把最具挑战性的工程任务托付给 Claude Fable 5 — Claude Blog 中文翻译</title>
+  <meta name="description" content="在前沿工作：为什么 Base44 把最具挑战性的工程任务托付给 Claude Fable 5">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/working-at-the-frontier-why-base44-trusts-claude-fable-5-with-their-most-challenging-engineering-work" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Enterprise AI</span>
+            <span class="article-date">July 15, 2026</span>
+            
+          </div>
+          <h1 class="article-title">在前沿工作：为什么 Base44 把最具挑战性的工程任务托付给 Claude Fable 5</h1>
+          <a href="/posts/working-at-the-frontier-why-base44-trusts-claude-fable-5-with-their-most-challenging-engineering-work/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/K14-tbSfqqw" title="Working at the Frontier: Base44" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><p>Base44 是一个 vibe-coding（氛围编程）平台，任何人无论技术能力如何，都可以用它构建全栈应用和网站。它的客户既包括没有任何开发人员的小企业，也包括用它来构建完整 SaaS 产品的公司。</p><p>Yoav Orlev 是 Base44 的第一名员工，如今负责产品。他说，工作中最令人满足的部分之一，就是看到小企业用这个平台完成那些他们原本没有时间、预算或专业知识去做的事情，无论是搭建数字店面，还是为餐厅员工排班的应用。他所在团队的使命，是在不断拓展产品能力的同时，保持它对每个人都足够易用。</p><p>Base44 的产品和工程团队一直进展迅速，尤其是在发布中小规模的功能时。但对于平台核心的任何改动——那些牵涉多个相互依赖部分的改动——过去只能交给最资深的工程师。</p><p>其中一个瓶颈是 Base44 的系统提示词及其数百种排列组合：用户是在创建第一个应用还是第五个、是免费用户还是付费订阅者，以及所构建应用的类别和功能，都会影响提示词的形态。另一个瓶颈是原生移动端基础设施的改动，只有具备移动端专业知识的工程师才能胜任。</p><p>Orlev 认为，自 2025 年初 Base44 上线以来一直驱动其应用生成引擎的早期 Claude 模型，还无法被托付这类工作。例如，当模型在某个报错上卡住时，它会一直盯着眼前那一处死磕，而不是意识到修复方案很可能已经存在于代码的其他地方，然后去搜索它。</p><p>"下一步该做什么是一个关键决策，而大多数时候，（早期）模型采取的是一种我会称之为天真的做法，"他说。</p><p>Orlev 表示，Claude Fable 5 是团队测试过的第一个能够像真正理解软件构建方式那样进行推理的模型。</p><h2>把最复杂的产品和工程任务托付给 Fable 5</h2><p>Base44 会对每一个新的 Claude 模型进行覆盖不同应用类型的评估，衡量延迟、成本和构建错误。团队还会进行诸如构建 Minecraft 克隆版之类的测试，观察模型如何处理游戏物理和机制。</p><p>Claude Fable 5 有两点表现尤为突出：它用少得多的轮次就完成了任务；而且从第一条提示词开始，它就能构建出更完整的应用，连早期模型常常跳过的边界情况也一并涵盖。</p><p>于是，团队把一项以前只留给最资深工程师的任务交给了它：重构 Base44 的系统提示词。经过大约一小时的来回问答后，Claude Fable 5 独立运行了四个小时，交出了团队所需成果的 90% 到 95%。借助 A/B 测试基础设施，团队当天下午就完成了这些改动的度量和上线。而在 Claude Fable 5 工作期间，它甚至指出了 Base44 自身评估体系中的一个缺口：团队没有测试缓存命中情况——尽管提示词的改动可能破坏缓存，而在数百万用户的规模下，这会推高成本。模型发现了一个盲点并予以修正。</p><p>有一次，Claude Fable 5 在修改 Base44 应用内 agent 背后的 harness 时被卡住，它推断同样的问题很可能已在代码库的其他地方被解决过，于是前去调查那部分代码，最终带着修复方案回来了。"这种'这个问题很可能在别处已经被解决过，所以我应该去那里调查'的推理方式，我们在其他模型中并不常见，"Orlev 说。</p><p>Orlev 把与 Claude Fable 5 协作比作与一位资深工程师共事。初级工程师需要你写清每一个步骤并不断检查，而资深工程师只需要你交代目标和背后的原因。</p><p>这类工作也超出了工程团队的范围。当一位产品经理希望把原生移动应用构建引入 Base44 时，他把这个任务交给了 Claude Fable 5，大约两个半小时后，就得到了一个可运行的环境，完成了团队进入生产环境所需工作的约 90%。</p><p>在 Claude Fable 5 出现之前，这类工作必须等待 Base44 最顶尖的三位工程师或某位专家腾出时间。现在，模型负责执行任务，Orlev 的团队则负责审查、测试，并在上线前批准代码。</p><figure class="w-richtext-align-center w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a57c73e324085779c230b3d_000262380003_VS_R1.jpeg" loading="lazy"></div><figcaption>Claude Fable 5 让 Base44 的产品、工程和设计团队有信心去构建其 Sugeragents 平台中更具雄心的部分。</figcaption></figure><h2>下一步</h2><p>随着 Claude 模型能力的提升，Base44 团队对这个平台的目标也在水涨船高。团队的目标是把 Base44 从一个构建应用的工具，升级为一个还能帮助人们管理和壮大其构建成果的工具。现已公开的 Base44 Superagents 可以围绕这些应用运行工作流。</p><p>由于确信可以把复杂任务托付给 Fable 5，Orlev 如今鼓励产品经理和设计师去开发平台中那些他们以前因担心搞坏而不敢触碰的部分。</p><p>"Fable 让我们有信心在业务上做出更大胆的举动，"Orlev 说。"它正把产品带到一个全新的领域，带来我们以前可以说是害怕尝试的可能性。"</p><p><strong><em>开始使用 </em></strong><a href="https://www.anthropic.com/claude/fable" target="_blank"><strong><em>Claude Fable 5</em></strong></a><strong><em>。</em></strong></p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/working-at-the-frontier-why-base44-trusts-claude-fable-5-with-their-most-challenging-engineering-work" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

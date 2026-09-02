@@ -1,0 +1,17 @@
+{
+  "slug": "tool-use-ga",
+  "title": "Claude can now use tools",
+  "date": "May 30, 2024",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/tool-use-ga",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/tool-use-ga.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.792Z",
+  "translatedTitle": "Claude 现在可以使用工具了",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:39:32.652Z",
+  "translateLang": "zh-CN"
+}

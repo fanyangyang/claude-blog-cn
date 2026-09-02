@@ -1,0 +1,17 @@
+{
+  "slug": "workspaces",
+  "title": "Workspaces in the Anthropic API Console",
+  "date": "September 10, 2024",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/workspaces",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/workspaces.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.789Z",
+  "translatedTitle": "Anthropic API Console 中的 Workspaces",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:39:32.652Z",
+  "translateLang": "zh-CN"
+}

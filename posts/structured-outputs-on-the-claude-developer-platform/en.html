@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Structured outputs on the Claude Developer Platform — Claude Blog CN</title>
+  <meta name="description" content="Structured outputs on the Claude Developer Platform">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="/posts/structured-outputs-on-the-claude-developer-platform/" class="nav-link">中文版 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Product announcements</span>
+            <span class="article-date">November 14, 2025</span>
+            <span class="lang-badge-large">EN</span>
+          </div>
+          <h1 class="article-title">Structured outputs on the Claude Developer Platform</h1>
+          <a href="/posts/structured-outputs-on-the-claude-developer-platform/" class="lang-toggle">阅读中文翻译 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p><strong><em>Update:</em></strong><em> Now generally available (GA) natively on the Claude Developer Platform and in Amazon Bedrock for Claude Sonnet 4.5, Opus 4.5, and Haiku 4.5. GA adds support for more complex schemas.&nbsp;(Feb 4, 2026)</em></p><p><strong><em>Update:</em></strong><em> Now available on Claude Haiku 4.5—supported on the Claude Developer Platform, natively and in Microsoft Foundry. (Dec 4, 2025)</em></p><p>The Claude Developer Platform now supports structured outputs for Claude Sonnet 4.5 and Opus 4.1. Available in public beta, this feature ensures API responses always match your specified JSON schemas or tool definitions.</p><p>With structured outputs, developers can eliminate schema-related parsing errors and failed tool calls by ensuring that Claude's responses conform to a defined schema—whether you're extracting data from images, orchestrating agents, or integrating with external APIs.</p><h3>Building reliable applications</h3><p>For developers building applications and agents in production, a single error in data formatting can cause cascading failures. Structured outputs solves this by guaranteeing your response matches the exact structure you define, without any impact to model performance. This makes Claude dependable for applications and agents where accuracy is critical, including:</p><ul role="list"><li><strong>Data extraction </strong>when downstream systems rely on error-free, consistent formats.</li><li><strong>Multi-agent architectures </strong>where consistent communication between agents is critical for a performant, stable experience.</li><li><strong>Complex search tools </strong>where multiple search fields must be filled in accurately and conform to specific patterns.</li></ul><p>Structured outputs can be used two ways: with JSON or tools. When used with JSON, you provide your schema definition in the API request. For tools, you define your tool specifications, and Claude's output conforms to those tool definitions automatically.</p><p>The end result is a reliable output, reduced retries, and a simplified codebase that no longer needs failover logic or complex error handling.</p><h3>Customer Spotlight: OpenRouter</h3><p>OpenRouter provides 4M+ developers access to all major AI models through a single, unified interface.</p><p>"Structured outputs have become a really valuable part of the agentic AI stack. Agents constantly ingest and produce structured data, so Anthropic’s structured outputs close a real gap for developers. Agent workflows run reliably, every time, and teams can focus on their customers rather than debugging tool calls,” said Chris Clark, COO, OpenRouter.</p><h3>Getting started</h3><p>Structured outputs is now available in public beta for Sonnet 4.5 and Opus 4.1 on the Claude Developer Platform, with support for Haiku 4.5 coming soon. Explore our <a target="_blank" href="https://docs.claude.com/en/docs/build-with-claude/structured-outputs">documentation</a> for supported JSON schema types, implementation examples, and best practices.</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/structured-outputs-on-the-claude-developer-platform" target="_blank">View original</a></p>
+          <p><a href="/">← Back to home</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>Content from <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · Translation by AI</p>
+    </div>
+  </footer>
+
+</body>
+</html>

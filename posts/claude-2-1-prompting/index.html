@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude 2.1 的长上下文提示技巧 — Claude Blog 中文翻译</title>
+  <meta name="description" content="Claude 2.1 的长上下文提示技巧">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/claude-2-1-prompting" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Product announcements</span>
+            <span class="article-date">December 6, 2023</span>
+            
+          </div>
+          <h1 class="article-title">Claude 2.1 的长上下文提示技巧</h1>
+          <a href="/posts/claude-2-1-prompting/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><figure style="max-width:1712px" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e95d96768ee92f5653fb3a_e2a549048da628777be5ab3b1e48a1a528c4f029-1712x1508.png"></div><figcaption>Claude 2.1 在其完整的 200K token 上下文窗口中检索单个句子的表现。该实验使用了一种提示技巧来引导 Claude 回忆最相关的句子。</figcaption></figure><ul role="list"><li><strong>Claude 2.1 在其 200,000 token 的上下文窗口内能够很好地回忆信息</strong><br></li><li><strong>但模型在基于文档中的单个句子回答问题时可能显得犹豫，尤其当该句子是被注入的或显得突兀时</strong><br></li><li><strong>只需对提示词做一处微小的修改，就能消除这种犹豫，让模型在这类任务上取得出色表现</strong></li></ul><p>我们最近发布了 Claude 2.1，这是我们的尖端模型，提供 200K token 的上下文窗口——相当于约 500 页的信息量。Claude 2.1 擅长在更长的上下文中完成真实的检索任务。<br>Claude 2.1 的训练使用了大量针对长文档任务的反馈数据，这些任务正是我们的用户认为有价值的，例如总结一份 S-1 规模的文档。这些数据包括在真实文档上执行的真实任务，Claude 经过了减少错误、避免表达无依据论断的训练。<br>正是在真实的复杂检索任务上的训练，使 Claude 2.1 的错误回答比 Claude 2.0 减少了 30%，在"错误地声称文档支持某个论断（实际并不支持）"方面的比率也降低了 3-4 倍。<br>此外，Claude 的记忆能力在这些超长上下文中也有所改进：<br></p><figure style="max-width:1597px" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e95d96768ee92f5653fb4c_9c0b9f8de8432b74bb0a9d4b3e2eac9764c619f3-1597x1203.png"></div></figure><h3><strong>调试长上下文回忆</strong></h3><p>Claude 2.1 的 200K token 上下文窗口非常强大，但要用好它也需要一些讲究的提示技巧。<br>最近的一项评估[1]测量了 Claude 2.1 在一篇由<a href="http://www.paulgraham.com/articles.html" target="_blank">Paul Graham 创业文集</a>构成的长文档中回忆单个句子的能力。被嵌入的句子是：<em>"The best thing to do in San Francisco is eat a sandwich and sit in Dolores Park on a sunny day."（在旧金山最棒的事，就是找个晴天买个三明治，坐在多洛雷斯公园里。）</em>模型看到嵌入了这句话的长文档后，被问到：<em>"What is the most fun thing to do in San Francisco?"（在旧金山做什么最好玩？）</em><br>在这项评估中，Claude 2.1 交出了一些负面的结果，它的回答类似于<em>"Unfortunately the essay does not provide a definitive answer about the most fun thing to do in San Francisco."（很遗憾，文章没有就旧金山最好玩的事给出明确答案。）</em>换句话说，Claude 2.1 经常表示文档没有提供足够的上下文来回答问题，而不是去检索被嵌入的那句话。<br>我们在一项内部实验中复现了这一行为：我们取最新的<a href="https://appropriations.house.gov/sites/democrats.appropriations.house.gov/files/FY23%20Summary%20of%20Appropriations%20Provisions.pdf" target="_blank">综合拨款法案</a>（Consolidated Appropriations Act），在中间加入了<em>'Declare May 23rd "National Needle Hunting Day"'</em>（宣布 5 月 23 日为"全国寻针日"）这句话。Claude 检测到了这一内容，但仍不愿声称<em>"National Needle Hunting Day"</em>是一个真实存在的节日：<br></p><figure style="max-width:720px" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e95d96768ee92f5653fb3d_9a0f8b10403011873813543f109f44d80f19ef04-720x320.jpeg"></div></figure><p>Claude 2.1 在多种数据的混合上训练，目的之一就是减少不准确。这包括：如果文档中没有足够的信息支持某个答案，就不要基于该文档回答问题。我们认为，无论是由于通用数据还是旨在减少此类不准确的特定任务数据，模型都不太愿意基于一个嵌在更大上下文中、显得突兀的句子来回答问题。<br>如果我们就长文档中本来就存在的（因而不显得突兀）某个句子提问，Claude 似乎不会表现出同等程度的犹豫。例如，该长文档包含<a href="http://www.paulgraham.com/vw.html" target="_blank">Paul Graham 关于 Viaweb 的文章</a>开头的一句话：<br><em>"A few hours before the Yahoo acquisition was announced in June 1998 I took a snapshot of Viaweb's site."（1998 年 6 月雅虎收购宣布前几个小时，我为 Viaweb 的网站拍了张快照。）</em><br>我们将上下文中各篇文章的顺序随机打乱，使这篇文章出现在 200K 上下文窗口的不同位置，然后问 Claude 2.1：<br><em>"What did the author do a few hours before the Yahoo acquisition was announced?"（在雅虎收购宣布前几个小时，作者做了什么？）</em><br>无论包含答案的那句话位于上下文的什么位置，Claude 都能答对，且完全不需要修改原始实验中使用的提示词格式。因此，我们认为 Claude 2.1 在某个句子看起来与更长的上下文格格不入时会更加不愿作答，而更倾向于声称无法根据给定上下文回答。这种导致犹豫加剧的具体因素，并未被那些针对真实长上下文检索任务的评估所捕捉到。</p><figure style="max-width:1712px" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e95d96768ee92f5653fb46_543843116da2645dd9515c558f0728f169a1558f-1712x1442.png"></div></figure><h3><strong>用提示技巧高效使用 200K token 上下文窗口</strong></h3><p>如果 Claude 不愿回答长上下文检索问题，用户能做什么？我们发现，在 Claude 其实有能力给出答案却犹豫不决的情况下，对提示词做一处微小的修改就会带来截然不同的结果。在内部运行同一项评估时，<strong>只需在提示词中添加一句话，就使 Claude 2.1 在其整个 200K 上下文窗口内几乎达到完全保真</strong>。</p><figure style="max-width:1192px" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e95d96768ee92f5653fb49_b618970eae76cb10520ec5d77d35cfe05a8b5926-1192x564.png"></div></figure><p>我们在 Claude 回复的开头加入<strong><em>"Here is the most relevant sentence in the context:"（以下是上下文中与问题最相关的句子：）</em></strong>这句话后，在同一项评估上取得了显著更好的结果。仅此一句就<strong>将 Claude 2.1 在原始评估中的得分从 27% 提升到了 98%</strong>。<br></p><figure style="max-width:1011px" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e95d96768ee92f5653fb40_d5cb0c6768974185dfe8ca9f34638dfd8a46eac5-1011x1236.png"></div></figure><p>本质上，这个提示引导模型先去寻找相关的句子，从而克服了 Claude 基于单个句子（尤其是长文档中显得突兀的句子）回答问题时的犹豫。<br>这一方法同样能提升 Claude 在回答那些本就属于上下文之内（即不突兀）的单句问题上的表现。为了证明这一点，将修改后的提示应用于前面分享的雅虎/Viaweb 例子时，准确率达到了 90-95%：</p><figure style="max-width:1712px" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e95d96768ee92f5653fb43_8d8a04fc8781e3b554f3e059ff0e1b69145134c0-1712x1442.png"></div></figure><p>我们一直在持续训练 Claude，使其在这类任务上更加校准（calibrated），也感谢社区进行有趣的实验、指出我们可以改进的方向。</p><h3><strong>脚注</strong></h3><ol role="list"><li>Gregory Kamradt, 'Pressure testing Claude-2.1 200K via Needle-in-a-Haystack', November 2023</li></ol></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/claude-2-1-prompting" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

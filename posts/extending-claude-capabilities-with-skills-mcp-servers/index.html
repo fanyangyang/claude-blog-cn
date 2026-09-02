@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>用 Skills 和 MCP 服务器扩展 Claude 的能力 — Claude Blog 中文翻译</title>
+  <meta name="description" content="用 Skills 和 MCP 服务器扩展 Claude 的能力">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/extending-claude-capabilities-with-skills-mcp-servers" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Agents</span>
+            <span class="article-date">December 19, 2025</span>
+            
+          </div>
+          <h1 class="article-title">用 Skills 和 MCP 服务器扩展 Claude 的能力</h1>
+          <a href="/posts/extending-claude-capabilities-with-skills-mcp-servers/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p><strong><em>更新：</em></strong><em>我们已将 </em><a href="https://agentskills.io" target="_blank"><em>Agent Skills</em></a><em>发布为开放标准，以实现跨平台可移植性。（2025 年 12 月 18 日）</em><br>自<a href="https://claude.com/blog/skills" target="_blank">发布 Skills</a> 以来，我们从客户那里听到的最常见的两个问题是："Skills 和 MCP 如何协同工作？什么时候该用哪一个？"</p><p><a href="https://modelcontextprotocol.io/docs/getting-started/intro" target="_blank">Model Context Protocol（MCP）</a>负责将 Claude 连接到第三方工具，而 Skills 则教会 Claude 如何用好这些工具。将两者结合，你就可以构建遵循团队工作流的智能体，而不是那些需要不断纠正的通用流程。</p><p>例如，一个连接到 Notion 的 MCP 可以让 Claude 搜索你的工作区。再加上一个会议准备 Skill，Claude 就知道该从<em>哪些</em>页面获取内容、<em>如何</em>组织准备文档的格式，以及你的团队交付会议纪要<em>遵循什么</em>标准。这个连接因此从"可用"变成了"好用"。</p><p>在本文中，我们将拆解 Skills 与 MCP 之间的关系、如何将两者结合以构建遵循你工作流、产出一致结果的智能体，并通过几个真实案例演示它们在实践中如何配合。</p><h2><strong>理解 Skills 和 MCP</strong></h2><p>假设你走进一家五金店，想修理一个坏掉的柜子。店里应有尽有（木工胶、夹具、替换铰链），但该买哪些材料、怎么用，是另一个问题。</p><p>MCP 就像是获得了店内所有货架的通行权，而 Skills 则像是一位经验丰富的店员。如果你不知道需要哪些材料、也不知道怎么用，再全的库存也帮不上忙。Skill 就像那位热心店员，带你走完整个修理流程，指出正确的耗材，并演示规范的操作手法。</p><p>更具体地说：MCP 服务器让 Claude 能访问你的外部系统、服务和平台，而 Skills 则提供 Claude 有效使用这些连接所需的上下文，教会 Claude 在拥有访问权限之后该做什么。<br>没有 Skills 提供的上下文，Claude 只能猜测你想要什么。有了 Skill，Claude 就可以按照你的既定打法行事。</p><h2><strong>为什么 Skills 和 MCP 是绝配</strong></h2><p>MCP 负责连接：以安全、标准化的方式访问外部系统。无论你要连接 GitHub、Salesforce、Notion，还是自己的内部 API，MCP 服务器都赋予 Claude 触达你的工具和数据的能力。</p><p>Skills 负责专长：把原始的工具访问转化为可靠结果的领域知识和工作流逻辑。一个 Skill 知道何时查询 CRM、在结果中寻找什么、如何格式化输出，以及哪些边界情况需要特殊处理。<br>这种分离让架构保持了可组合性。一个 Skill 可以编排多个 MCP 服务器，而一个 MCP 服务器也可以支撑数十个不同的 Skill。新增一个连接，已有的 Skills 就能将其纳入；优化一个 Skill，它便适用于所有已连接的工具。</p><h4><strong>将 Skills 和 MCP 结合，你会得到：</strong></h4><p><strong>清晰的发现路径</strong>：Claude 不再瞎猜去哪里找。一个会议准备 Skill 可以指定：先看项目页面，再看此前的会议纪要，最后看干系人档案。一个研究 Skill 可以规定：先从共享网盘开始，与 CRM 交叉比对，再用网络搜索补齐缺口。Skill 把"哪类任务该用哪些信息源"这类机构知识沉淀了下来。</p><p><strong>可靠的编排</strong>：多步骤工作流变得可预期。没有 Skill 时，Claude 可能在还没确认信息齐全之前就先拉取数据并排版。Skills 显式定义了执行顺序，因此 Claude 每次都会以相同的方式执行工作流。</p><p><strong>稳定的输出质量</strong>：产出真正符合标准。泛泛而出的结果总需要返工修改。Skills 为你的团队定义了什么叫"完成"：正确的结构、恰当的详略程度、面向受众的正确语气。</p><p>随着时间推移，团队会积累出一系列相互关联的 Skills 和连接，赋予 Claude 在其特定领域的专业能力。</p><p><strong>延伸阅读</strong>：Tim O'Reilly 谈 <a href="https://www.oreilly.com/radar/what-mcp-and-claude-skills-teach-us-about-open-source-for-ai/" target="_blank">MCP 与 Skills 对开源 AI 的启示</a></p><figure style="max-width:2880pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6945b3dfa8f134d0104e4e23_How%20Skills%20and%20MCP%20work%20together%20-%20v3B%402x%20(2).png" loading="lazy"></div><figcaption>Skills 与 MCP 如何协同：MCP 提供工具访问，Skills 提供工作流逻辑。</figcaption></figure><h4><strong>Skills 与 MCP 可能重叠之处</strong>‍</h4><p>MCP 服务器中可能包含指令，形式为工具使用提示和常见任务的提示词。这让工具相关的知识贴近工具本身。不过，这些指令在设计上应保持通用。</p><p>经验法则：MCP 中的指令负责如何正确使用该服务器及其工具；Skill 中的指令负责在特定流程或多服务器工作流中如何使用它们。</p><p>例如，一个 Salesforce MCP 服务器可以规定查询语法和 API 格式。而一个 Skill 则会规定先查哪些记录、如何与 Slack 对话交叉比对近期上下文，以及如何为团队的 pipeline 评审组织输出格式。<br>组合 MCP 服务器与 Skills 时，要当心指令冲突。如果 MCP 服务器要求返回 JSON，而你的 Skill 要求格式化为 markdown 表格，Claude 就只能靠猜。让 MCP 负责连接，让 Skills 负责呈现、顺序和工作流逻辑。</p><p><strong>延伸阅读：</strong>了解 Skills 如何利用<a href="https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills" target="_blank">渐进式披露</a>按需加载上下文，以及如何通过<a href="https://www.anthropic.com/engineering/advanced-tool-use" target="_blank">程序化工具调用</a>高效编排 MCP 工具。</p><h2><strong>Skills 与 MCP 结合使用的真实案例</strong></h2><p>接下来看看 Skills 和 MCP 在真实工作流中如何组合。我们将走两个例子：金融分析师为公司估值拉取实时市场数据，以及项目经理使用 Notion 的 Meeting Intelligence Skill 做会议准备。</p><p>在这两个案例中，MCP 服务器提供了工具的访问能力，而 Skills 定义了用这些工具做什么。</p><h4><strong>金融分析：公司估值自动化 Skill</strong></h4><p><a href="https://www.anthropic.com/news/advancing-claude-for-financial-services" target="_blank">Anthropic 发布了一组预构建 Skills</a>，覆盖常见的金融工作流，其中包括可比公司分析（comparable company analysis）。可比公司分析是一种标准估值方法。做可比公司分析的分析师要花数小时从多个来源拉取财务指标、套用同一套估值方法论，并按合规标准排版输出。这项工作重复、易错，正是那种最能受益于 Skills 与 MCP 协同的工作流。</p><p><strong>Skill</strong>：<a href="https://www.anthropic.com/news/advancing-claude-for-financial-services" target="_blank">可比公司分析</a>自动完成这一估值工作流，从多个数据源拉取数据、统一套用方法论，并按特定标准排版输出。</p><p><strong>MCP 服务器</strong>：连接 S&amp;P Capital IQ、Daloopa 和 Morningstar 获取实时市场数据</p><p><strong>工作流</strong>：</p><ol role="list"><li>Skill 确定要查询哪些数据源（发现）</li><li>MCP 连接拉取实时财务数据</li><li>Skill 套用方法论并排版输出（编排）</li><li>Skill 依据合规要求进行校验（质量）</li></ol><h4><strong>会议准备：Notion 的 Meeting Intelligence Skill</strong></h4><p>会议准备很繁琐。你需要从多个地方拉取上下文——项目文档、此前的会议纪要、干系人信息——然后综合成一份预读材料和一份议程。这类多步骤流程，往往每次都要重新向人解释一遍。</p><p><strong>Skill</strong>：<a href="https://notiondevs.notion.site/notion-skills-for-claude" target="_blank">Meeting Intelligence</a> 定义了要搜索哪些页面、如何组织输出、包含哪些章节</p><p><strong>MCP 服务器</strong>：Notion 连接，可搜索、读取和创建页面</p><p><strong>工作流</strong>：</p><ol role="list"><li>Skill 确定要搜索的相关页面，包括项目、历次会议、干系人信息（发现）</li><li>MCP 连接在 Notion 中检索并获取内容</li><li>Skill 组织两份文档：内部预读材料和对外议程（编排）</li><li>MCP 连接将两份文档保存到 Notion，结构清晰并相互链接</li><li>Skill 确保输出符合格式规范（质量）</li></ol><h2><strong>何时用 Skills，何时用 MCP</strong></h2><p><strong>‍</strong>Skills 和 MCP 解决的是不同的问题，但面对一个具体工作流要选哪个，并不总是一目了然。</p><h4><strong>什么情况用 Skills</strong></h4><p>Skills 用来沉淀那些原本只存在于你脑子里、或者每当新人加入团队就要重新讲一遍的知识。它们最适合：</p><ul role="list"><li><strong>涉及工具的多步骤工作流</strong>：从多个来源拉取内容再生成结构化文档的会议准备</li><li><strong>对一致性要求高的流程</strong>：每次都必须遵循相同方法论的季度财务分析、设有强制检查点的合规审查</li><li><strong>希望沉淀并分享的领域专长</strong>：研究方法论、代码评审标准、写作规范</li><li><strong>希望在人员流动后仍能延续的工作流</strong>：以可复用指令形式沉淀下来的机构知识</li></ul><h4><strong>什么情况用 MCP 服务器</strong></h4><p>MCP 拓展了 Claude 可以访问和使用的范围。当你需要以下能力时，请使用 MCP：</p><ul role="list"><li><strong>实时数据访问</strong>：搜索 Notion 页面、读取 Slack 消息、查询数据库</li><li><strong>在外部系统中执行操作</strong>：创建 GitHub issue、更新项目管理工具、发送通知</li><li><strong>文件操作</strong>：读写 Google Drive、访问本地文件系统</li><li><strong>API 集成</strong>：连接尚无 Claude 原生支持的服务</li></ul><p>如果你要解释的是<em>如何做</em>某件事，那是 Skill。如果你要的是让 Claude <em>访问</em>某个东西，那是 MCP。</p><p>‍</p><h4><strong><em>速查表：Skills 与 MCP 的区别</em></strong></h4><div class="w-embed"><figure>
+  <div role="region" tabindex="0">
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          <th>Skills</th>
+          <th>MCP</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>是什么</b></td>
+          <td>流程性知识</td>
+          <td>工具连接能力</td>
+        </tr>
+        <tr>
+          <td><b>做什么</b></td>
+          <td>教 Claude <i>如何</i>做某件事</td>
+          <td>让 Claude <i>访问</i>某个东西</td>
+        </tr>
+        <tr>
+          <td><b>何时加载</b></td>
+          <td>按需，在相关时加载</td>
+          <td>连接后始终可用</td>
+        </tr>
+        <tr>
+          <td><b>包含内容</b></td>
+          <td>指令、脚本、模板、资源文件</td>
+          <td>工具、资源、提示词</td>
+        </tr>
+        <tr>
+          <td><b>Token 行为</b></td>
+          <td>按需加载，节省上下文</td>
+          <td>定义预先全部加载</td>
+        </tr>
+        <tr>
+          <td><b>最适合</b></td>
+          <td>工作流、规范、方法论</td>
+          <td>数据访问、API 调用、外部操作</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</figure></div><h2><strong>常见问题</strong></h2><h4><strong>Skills 会取代 MCP 吗？</strong></h4><p>不会。Skills 和 MCP 解决不同的问题。MCP 提供与外部工具和数据的连接，Skills 提供如何有效使用这些连接的流程性知识。最强大的工作流往往两者都用。</p><h4><strong>一个 Skill 可以使用多个 MCP 服务器吗？</strong></h4><p>可以。单个 Skill 可以同时协调多个 MCP 服务器。一个技术竞争分析 Skill 可以同时在 Google Drive 中搜索内部研究、从 GitHub 拉取竞争对手的代码仓库，并通过网络搜索收集市场数据。</p><h4><strong>一个 MCP 服务器可以配套多个 Skills 吗？</strong></h4><p>可以。一个 Skill 可以放大单个 MCP 连接的价值。Notion 就展示了这种模式：会议准备、研究、知识沉淀、从规格到实现，各有独立的 Skills——<a href="https://claude.com/connectors/notion" target="_blank">在此</a>查看。</p><h2><strong>开始使用</strong></h2><p>准备好同时用上 Skills <em>和</em> MCP 了吗？按以下步骤开始：</p><p><strong>Skills：</strong></p><ul role="list"><li>在<a href="https://claude.ai" target="_blank"> claude.ai</a> 的 Settings → Capabilities 中启用 Skills</li><li>浏览<a href="https://github.com/anthropics/skills" target="_blank"> Skills 库</a>，查看预构建的示例</li><li>阅读<a href="https://docs.anthropic.com/en/docs/agents-and-tools/agent-skills" target="_blank"> Skills 文档</a></li></ul><p><strong>MCP：</strong></p><ul role="list"><li>为你的工具浏览<a href="https://github.com/modelcontextprotocol/servers" target="_blank"> MCP 服务器</a></li><li>阅读<a href="https://modelcontextprotocol.io/introduction" target="_blank"> MCP 文档</a></li><li>通过<a href="https://modelcontextprotocol.io/quickstart" target="_blank"> MCP 快速入门</a>构建你自己的服务器</li></ul><p><strong>两者结合：</strong></p><ul role="list"><li>连接一个 MCP 服务器，然后添加一个使用它的 Skill</li></ul><h2><strong>相关文章</strong></h2><p>探索更多关于构建 Claude 智能体能力的洞见。</p><ul role="list"><li><a href="https://www.claude.com/blog/skills-explained" target="_blank">Skills 解析：Skills 与提示词、Projects、MCP、子智能体的对比</a></li><li><a href="https://www.claude.com/blog/improving-frontend-design-through-skills" target="_blank">通过 Skills 改进前端设计</a></li><li><a href="https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills" target="_blank">用 Agent Skills 武装智能体应对真实世界</a></li></ul><p>‍</p><p>‍</p><p>‍</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/extending-claude-capabilities-with-skills-mcp-servers" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

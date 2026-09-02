@@ -1,0 +1,17 @@
+{
+  "slug": "cowork-plugins-finance",
+  "title": "Cowork and plugins for finance",
+  "date": "February 24, 2026",
+  "category": "Enterprise AI",
+  "url": "https://claude.com/blog/cowork-plugins-finance",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/cowork-plugins-finance.svg",
+  "illustrationBg": "Olive",
+  "fetchedAt": "2026-09-02T03:50:17.788Z",
+  "translatedTitle": "面向金融的 Cowork 与 plugins",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:18:55.000Z",
+  "translateLang": "zh-CN"
+}

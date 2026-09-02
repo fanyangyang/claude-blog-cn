@@ -1,0 +1,17 @@
+{
+  "slug": "claude-managed-agents",
+  "title": "Claude Managed Agents: get to production 10x faster",
+  "date": "April 8, 2026",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/claude-managed-agents",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/claude-managed-agents.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.784Z",
+  "translatedTitle": "Claude Managed Agents：以 10 倍速度迈向生产环境",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:47:38Z",
+  "translateLang": "zh-CN"
+}

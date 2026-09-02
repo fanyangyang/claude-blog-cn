@@ -5,5 +5,13 @@
   "category": "Product announcements",
   "url": "https://claude.com/blog/bringing-claude-mythos-5-to-more-defenders",
   "fetchedAt": "2026-09-01T11:10:30.681Z",
-  "translated": false
+  "translated": true,
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/bringing-claude-mythos-5-to-more-defenders.svg",
+  "illustrationBg": "Clay",
+  "translatedTitle": "将 Claude Mythos 5 的网络安全能力带给更多防御者",
+  "translatedAt": "2026-09-01T11:19:19.935Z",
+  "translateLang": "zh"
 }

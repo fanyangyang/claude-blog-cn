@@ -1,0 +1,17 @@
+{
+  "slug": "android-app",
+  "title": "Claude Android app",
+  "date": "July 16, 2024",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/android-app",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/android-app.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.789Z",
+  "translatedTitle": "Claude Android 应用",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:39:32.652Z",
+  "translateLang": "zh-CN"
+}

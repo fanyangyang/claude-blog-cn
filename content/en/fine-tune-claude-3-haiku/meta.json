@@ -1,0 +1,17 @@
+{
+  "slug": "fine-tune-claude-3-haiku",
+  "title": "Fine-tune Claude 3 Haiku in Amazon Bedrock",
+  "date": "July 10, 2024",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/fine-tune-claude-3-haiku",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/fine-tune-claude-3-haiku.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.789Z",
+  "translatedTitle": "在 Amazon Bedrock 中微调 Claude 3 Haiku",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:39:32.652Z",
+  "translateLang": "zh-CN"
+}

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>让 Claude Cowork 为企业级使用做好准备 — Claude Blog 中文翻译</title>
+  <meta name="description" content="让 Claude Cowork 为企业级使用做好准备">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/cowork-for-enterprise" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Product announcements</span>
+            <span class="article-date">April 9, 2026</span>
+            
+          </div>
+          <h1 class="article-title">让 Claude Cowork 为企业级使用做好准备</h1>
+          <a href="/posts/cowork-for-enterprise/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>Claude Cowork 现已在所有付费计划上正式全面可用。在各个公司内部，Claude Cowork 已经成为团队运转方式的重要组成部分：处理任务、起草项目交付物、让团队随时掌握最新进展。&nbsp;</p><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/-AkiUPvAqbU" title="Cowork is now generally available" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><p>今天，我们推出一系列组织管控能力，帮助团队在全公司范围内部署 Claude Cowork：面向 Enterprise 的基于角色的访问控制、分组消费限额、扩展的 OpenTelemetry 可观测性，以及供管理员查看 Claude Cowork 采用情况的使用分析。&nbsp;</p><h2>早期信号</h2><p>Claude Code 帮助开发者完成了一次转变——从把问题交给 Claude，到把整个任务交给 Claude。如今我们在整个组织中看到同样的模式在 Claude Cowork 上重演：绝大多数 Claude Cowork 的使用来自工程团队之外。值得注意的是，运营、市场、财务、法务等职能团队交给 Claude 的并不是他们的核心工作，而是围绕最关键任务周边的事务——项目进展更新、协作演示文稿、调研冲刺等等。&nbsp;</p><p>当 Claude Cowork 的早期企业用户看到这一模式在某个团队中显现后，往往希望更广泛地推广开来，随之而来的问题是：谁该获得访问权限、消费如何管理，以及如何掌握各团队的使用情况。</p><h2>面向全组织部署的管控能力</h2><p>要在整个组织中部署具备 Claude Cowork 这种能力的 agent，管理团队需要治理能力和可见性。今天，我们新增了组织所需的更多管控能力：</p><p><strong>基于角色的访问控制。</strong>Claude Enterprise 的管理员现在可以将用户编入分组——手动操作，或通过身份提供商的 SCIM 同步——并为每个分组分配自定义角色，定义其成员可以使用哪些 Claude 能力。可以先为特定团队开启 Claude Cowork，再随着采用的扩大逐步调整。</p><p><strong>分组消费限额。</strong>在管理控制台中为每个团队设置预算。成本可预期，并且可以随着你了解各团队的实际需求灵活调整。</p><p><strong>使用分析。</strong>Claude Cowork 的活动数据现在会出现在管理面板和 Analytics API 中。通过管理面板，管理员可以按不同时间范围追踪 Claude Cowork 的会话数和活跃用户数。Analytics API 则更深入：包括每个用户的 Claude Cowork 活动、skill 与 connector 的调用情况，以及与现有 Chat 和 Claude Code 数据并列的 DAU/WAU/MAU。你可以看到哪些团队在积极采用、哪些工作流正在落地，以及下一步该在哪里投入。</p><p><strong>扩展的 OpenTelemetry 支持。</strong>Claude Cowork 现在会针对工具和 connector 调用、读取或修改的文件、使用的 skills，以及每个 AI 发起的操作是人工批准还是自动批准等事件发出遥测数据。这些事件兼容 Splunk、Cribl 等标准 SIEM 管道，共享的用户账号标识符还支持你将 OTEL 事件与 Compliance API 的记录关联起来。OpenTelemetry 在 Team 和 Enterprise 计划中可用。</p><p><strong>Zoom MCP connector。</strong>Claude Cowork 与团队已有的工具深度集成。今天，Zoom 推出了一个 connector，将会议智能直接带入 Cowork 体验。Zoom connector 提供 AI Companion 的会议摘要和行动项，以及会议转录和智能录制——帮助团队利用 Zoom 上的对话在 Cowork 中创建 agentic 工作流。在 Claude 设置中的 connector 目录里即可添加 Zoom。</p><p><strong>按工具划分的 connector 管控。</strong>管理员现在可以限制每个 MCP connector 在整个组织内可用的操作——例如允许读取但禁用写入操作。权限在组织范围内生效，并在管理控制台中配置。</p><h2>各组织如何使用 Claude Cowork</h2><p><a href="https://claude.com/customers/zapier-cowork-qa">Zapier</a> 将 Cowork 接入了他们的组织数据库、Slack 和 Jira，以挖掘工程瓶颈——得到了一个仪表盘、按团队拆分的分析，以及一份按优先级排序的路线图，产品和设计运营团队随后把这套流程原样搬去自己用。<a href="https://claude.com/customers/jamf">Jamf</a> 把原本七个维度的绩效评估变成了 45 分钟的引导式自评，随后又为供应商评审和事件响应搭建了类似的工作流。风险投资公司 <a href="https://claude.com/customers/airtree">Airtree</a> 搭建了一个董事会材料准备工作流，从被投公司的 Drive、Slack 动态和竞争对手新闻中拉取信息，并与上一轮准备的材料交叉比对。</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/cowork-for-enterprise" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

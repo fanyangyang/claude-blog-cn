@@ -1,0 +1,78 @@
+{
+  "lastFetched": "2026-09-02T02:00:00.000Z",
+  "articles": [
+    {
+      "slug": "how-anthropic-employees-use-claude-tag",
+      "title": "How Anthropic employees use Claude Tag",
+      "date": "August 28, 2026",
+      "category": "Enterprise AI",
+      "url": "https://claude.com/blog/how-anthropic-employees-use-claude-tag",
+      "fetchedAt": "2026-09-01T11:10:15.077Z",
+      "translated": true,
+      "translatedTitle": "Anthropic 员工如何使用 Claude Tag",
+      "inHero": true,
+      "heroIndex": 0,
+      "inGrid": true,
+      "illustration": "assets/illustrations/fixture-1.svg",
+      "illustrationBg": "Clay"
+    },
+    {
+      "slug": "claude-for-teachers-now-available-for-schools-and-districts",
+      "title": "Claude for Teachers, now available for U.S. K-12 schools and districts",
+      "date": "August 28, 2026",
+      "category": "Product announcements",
+      "url": "https://claude.com/blog/claude-for-teachers-now-available-for-schools-and-districts",
+      "fetchedAt": "2026-09-01T11:10:17.013Z",
+      "translated": true,
+      "translatedTitle": "Claude for Teachers 现已面向美国 K-12 学校和学区开放",
+      "inHero": true,
+      "heroIndex": 1,
+      "inGrid": true,
+      "illustration": "assets/illustrations/fixture-2.svg",
+      "illustrationBg": "Sky"
+    },
+    {
+      "slug": "how-warp-builds-self-improving-agents-on-claude",
+      "title": "How Warp builds self-improving agents on Claude",
+      "date": "August 26, 2026",
+      "category": "Agents",
+      "url": "https://claude.com/blog/how-warp-builds-self-improving-agents-on-claude",
+      "fetchedAt": "2026-09-01T11:10:18.987Z",
+      "translated": true,
+      "translatedTitle": "Warp 如何在 Claude 上构建自改进代理",
+      "inHero": true,
+      "heroIndex": 2,
+      "inGrid": false,
+      "illustration": "assets/illustrations/fixture-3.svg",
+      "illustrationBg": "Plum"
+    },
+    {
+      "slug": "claude-in-chrome-generally-available",
+      "title": "Claude in Chrome is generally available",
+      "date": "August 26, 2026",
+      "category": "Product announcements",
+      "url": "https://claude.com/blog/claude-in-chrome-generally-available",
+      "fetchedAt": "2026-09-01T11:10:20.934Z",
+      "translated": true,
+      "translatedTitle": "Claude in Chrome 现已正式发布",
+      "inHero": true,
+      "heroIndex": 3,
+      "inGrid": false,
+      "illustration": "assets/illustrations/fixture-4.svg",
+      "illustrationBg": "Peach"
+    },
+    {
+      "slug": "cowork-built-in-browser",
+      "title": "Cowork, built in your browser",
+      "date": "garbage-date-value",
+      "category": "Product announcements",
+      "url": "https://claude.com/blog/cowork-built-in-browser",
+      "fetchedAt": "2026-09-01T11:10:22.500Z",
+      "translated": false,
+      "inHero": false,
+      "inGrid": true,
+      "illustration": "assets/illustrations/fixture-5.svg",
+      "illustrationBg": "Mineral"
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anthropic 如何保障其 AI 原生软件开发生命周期的安全 — Claude Blog 中文翻译</title>
+  <meta name="description" content="Anthropic 如何保障其 AI 原生软件开发生命周期的安全">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/how-anthropic-secures-its-ai-native-software-development-lifecycle" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Claude Code</span>
+            <span class="article-date">July 21, 2026</span>
+            
+          </div>
+          <h1 class="article-title">Anthropic 如何保障其 AI 原生软件开发生命周期的安全</h1>
+          <a href="/posts/how-anthropic-secures-its-ai-native-software-development-lifecycle/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>在 Anthropic，代码量和部署速度都已呈指数级增长。我们的软件工程师现在平均每季度交付的代码量是 2021 至 2025 年期间的 8 倍。</p><p>我们的审查、监控和其他安全流程也必须随这种节奏同步扩展，否则就会成为瓶颈的根源（<a href="https://en.wikipedia.org/wiki/Amdahl%27s_law">阿姆达尔定律</a>）。</p><p>我们的软件开发流程也发生了翻天覆地的变化。Claude 已从编码助手演变为主要的创作者和审查者。如今合入我们代码库的代码中，约 80% 由 <a href="https://www.anthropic.com/institute/recursive-self-improvement">Claude 编写</a>。</p><p>超过一半的代码由我们的内部版 <a href="https://www.anthropic.com/news/introducing-claude-tag">Claude Tag</a> 合并，而人类工程师则专注于把控方向、设定意图，并对最终批准负责。</p><p>这意味着我们的安全团队必须防御一个急速扩张的攻击面，并加固一个以非确定性、持续演化的智能体为核心的软件生命周期。在本文中，我将介绍保障软件开发生命周期（SDLC）安全的策略。</p><p><em>（本文可与我们近期发布的 </em><a href="https://claude.com/blog/zero-trust-for-ai-agents"><em>Zero Trust for Agents</em></a><em>（智能体零信任）框架结合阅读；本文中的所有实现都采用了该框架中的安全设计思想。）</em></p><p>我们要防范的威胁非常具体：被攻陷或遭受提示词注入的智能体引入恶意变更；智能体把供应链和依赖投毒当作可信输入吸收进来；以及那些人们熟悉的各类应用漏洞正以更高的频率涌现。下文的每一项控制措施都至少对应其中一种威胁。</p><p>为了在不明显拖慢开发速度的前提下达成目标，我们部署了几项总体策略，包括：</p><ul role="list"><li>安全左移，与代码开发阶段全面整合；</li><li>用严格的访问与身份边界来控制爆炸半径；</li><li>在生产上线前后，结合自动化的确定性审查与智能体审查；</li><li>在杠杆率最高的节点引入人参与环节。</li></ul><p>本文将介绍我们在软件开发生命周期各具体阶段实施的安全流程，以及其背后的核心原则。这些原则更经得起时间考验，因为随着模型能力的演进，安全团队必须不断重新审视、甚至重塑自己的流程。&nbsp;</p><h2><strong>不断演变的软件开发生命周期</strong></h2><figure style="max-width:822pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a5fa5786cc9f557247c1256_9c126d9d.png" loading="lazy"></div></figure><p>我们的开发团队已经<a href="https://claude.com/blog/running-an-ai-native-engineering-org">详细介绍过</a>其软件开发生命周期的变化，这里只做一个简要铺垫，之后再逐个阶段深入。&nbsp;</p><p>概括而言，我们的软件开发生命周期被大幅压缩。它更多由原型和内部试用（dogfooding）驱动，而非冗长的规划周期。想法来自组织的各个角落，传统角色（前端、后端、设计）的边界也变得模糊。审查和批准环节依然有人类参与，但同样由智能体循环来驱动。</p><p>虽然每个阶段都已被 Claude Code 和 Claude Tag 彻底改造和加速，但对来自传统组织的开发者来说，各阶段的名称和用途并不陌生。这些天然的关卡，也被我们用作 AI 原生 SDLC 安全流程的一部分。</p><h2><strong>规划（Plan）</strong></h2><p>我们最早的安全自动化之一，是一个简单的、由 Claude Opus 驱动的 PSR（项目安全审查）Web 应用。它接收项目设计文档，对照 <a href="https://attack.mitre.org/">MITRE ATT&amp;CK 框架</a>进行分析，识别潜在漏洞并给出缓解建议。</p><p>后来我们将其连接到内部知识索引，从而获得覆盖全组织政策、历史决策和相关系统的更深上下文，系统得到了显著增强。&nbsp;</p><figure style="max-width:3608pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a5fa80d84f25c4ed3f5421f_three-steps-diagram.png" loading="lazy"></div><figcaption><em>Anthropic 内部自动化 PSR 的流程。</em></figcaption></figure><p>这让我们能更好地理解潜在风险，同时也能补全 PSR 中缺失的信息。仅这一个实现就为 AppSec 团队节省了大部分时间。当我们确信 Claude 的风险评估足够准确后，便允许团队自行批准项目——前提是 Claude 判定上线风险足够低。</p><p>在这里可以看到 AI 原生 SDLC 带来的第一个关键转变。PSR 最初的设计目的，是在漫长而昂贵的编码过程之前拦截安全问题——在这个阶段发现问题，可以省下数月的返工。&nbsp;</p><p>如今，主要功能的多个原型在几小时内就能做出来，详细的架构审查不再是那么关键的关卡。把 PSR 应用连接到知识索引，可以捕捉到原本可能遗漏的上下文，又不会制造不必要的减速带。而做成 Claude Code skill 之后，Claude 还能进一步向外展开，从上下文所在的任何地方获取补充信息。&nbsp;</p><p><strong>持久原则</strong>：把安全智能体接入组织上下文。当规划周期被压缩后，更有效的做法是让这些智能体去找上下文本来所在的地方——聊天记录、过往审查、代码库——而不是在可能已不再需要的阶段强求详尽的文档。无论如何，智能体都需要代码之外的上下文。</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/how-anthropic-secures-its-ai-native-software-development-lifecycle" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

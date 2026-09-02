@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Centrally manage authorization for MCP connectors — Claude Blog CN</title>
+  <meta name="description" content="Centrally manage authorization for MCP connectors">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="/posts/enterprise-managed-auth/" class="nav-link">中文版 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Enterprise AI</span>
+            <span class="article-date">June 18, 2026</span>
+            <span class="lang-badge-large">EN</span>
+          </div>
+          <h1 class="article-title">Centrally manage authorization for MCP connectors</h1>
+          <a href="/posts/enterprise-managed-auth/" class="lang-toggle">阅读中文翻译 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/5kTDt9ewTwE" title="Enterprise-managed auth for MCP connectors" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><p><strong><em>Update: Enterprise-managed authorization is now generally available and supports Datadog, Notion, and Slack with Exa, Miro, and Zoom coming soon in addition to the existing support for Asana, Atlassian, Canva, Figma, Granola, Linear, and Supabase. (August 24, 2026)</em></strong></p><p>Admins can now provision MCP connectors for their whole organization through their identity provider, starting with Okta. Users get connector access automatically on first login, with authorization configured centrally by their organization.</p><p>Connectors make Claude more useful at work — they give Claude the context it needs from the tools that your teams already use. Until now, turning them on required action at two steps: admins enabled a connector for the organization, and then every individual user authorized it themselves.&nbsp;</p><p>Enterprise-managed authorization streamlines that second step. Admins authorize a connector once, users inherit access through the IdP groups and roles they already have, and the connector is there the first time someone opens Claude. The result is zero-touch connector setup for the end user.</p><p>Enterprise-managed auth is the first implementation of the<a href="https://modelcontextprotocol.io/extensions/auth/enterprise-managed-authorization"> Enterprise-Managed Authorization extension</a> to the Model Context Protocol. It's built on an open standard so any connector can support it — including the custom connectors your own teams build — and they all work the same way for every Claude customer.</p><h3>How it works</h3><p>Connect your identity provider to Claude and choose which MCP connectors to enable for your organization. When an employee logs in, their connectors are already there. Access stays consistent across Claude chat, Claude Code, and Cowork.</p><p>For admins, this folds MCP access management into the same workflow that governs the rest of your stack: provision once, scope by group, manage revocation through the IdP. Because checking access with the IdP is frictionless, admins can shorten access token lifetimes without impacting productivity — so when someone is deprovisioned, their connector access expires fast instead of lingering on an old token. Access runs through the identity provider you already trust, so connectors fall under the same security and access controls as everything else, rather than a separate surface to monitor.</p><p>Admins can also require that a connector only ever connects through the IdP, which keeps work and personal use cleanly separated and prevents someone from accidentally linking a personal account to a work tool.</p><h3>Built with an ecosystem&nbsp;</h3><p>Enterprise-managed authorization works across three groups: the identity providers that govern access, the MCP providers that support the standard, and the Claude customers deploying managed connections across their teams.</p><p><strong>Identity providers.</strong> Okta is supported at launch, with support for additional identity providers coming soon.</p><p><strong>MCP providers.</strong> Asana, Atlassian, Canva, Figma, Granola, Linear, and Supabase support Enterprise-managed auth at launch, with Slack coming soon. </p><p><strong>Claude customers.</strong>&nbsp;Hubspot, Ramp, and Webflow are among the organizations rolling out enterprise-managed auth across their teams.</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/enterprise-managed-auth" target="_blank">View original</a></p>
+          <p><a href="/">← Back to home</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>Content from <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · Translation by AI</p>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>用 Claude Code 自动化安全审查 — Claude Blog 中文翻译</title>
+  <meta name="description" content="用 Claude Code 自动化安全审查">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/automate-security-reviews-with-claude-code" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Product announcements</span>
+            <span class="article-date">August 6, 2025</span>
+            
+          </div>
+          <h1 class="article-title">用 Claude Code 自动化安全审查</h1>
+          <a href="/posts/automate-security-reviews-with-claude-code/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>今天，我们在 Claude Code 中推出自动化安全审查。借助我们的 GitHub Actions 集成和全新的 /security-review 命令，开发者可以轻松让 Claude 识别安全隐患——并接着让它修复这些问题。</p><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/YdiCjgYGKto" title="Automate security reviews with Claude Code" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><p>随着开发者越来越依赖 AI 来更快地发布软件、构建更复杂的系统，保障代码安全变得愈发关键。这些新功能让你能够把安全审查融入现有工作流，在漏洞进入生产环境之前将其捕获。</p><h3>在终端中审查代码漏洞</h3><p>全新的 /security-review 命令让你可以在提交代码之前，从终端随时运行安全分析。在 Claude Code 中运行该命令，Claude 就会搜索你的代码库中的潜在漏洞，并详细解释发现的每个问题。</p><p>该命令使用一个专注安全的专用提示词，检查常见的漏洞模式，包括：</p><ul role="list"><li>SQL 注入风险</li><li>跨站脚本（XSS）漏洞</li><li>身份验证与授权缺陷</li><li>不安全的数据处理</li><li>依赖项漏洞</li></ul><p>在问题被识别后，你还可以让 Claude Code 实现相应的修复。这让安全审查融入你的核心开发循环，在问题最易修复的早期阶段就将其捕获。</p><h3>为新拉取请求自动执行安全审查</h3><p>全新的 Claude Code GitHub Action 将安全审查更进一步，在拉取请求创建时自动对其进行分析。完成配置后，该 Action 会：</p><ul role="list"><li>在新拉取请求创建时自动触发</li><li>审查代码变更中的安全漏洞</li><li>应用可自定义的规则，过滤误报和已知问题</li><li>在 PR 中以行内评论的形式发布发现的隐患，并附上修复建议</li></ul><p>这为整个团队建立了一致的安全审查流程，确保任何代码都经过基线安全审查才能进入生产环境。该 Action 可以与你现有的 CI/CD 流水线集成，并可按团队的安全策略进行定制。</p><figure style="max-width:1920pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="2 screenshots showing vulnerabilities that were caught by Claude Code, leaving comments in GitHub." src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e95d9257ab1dfc1937fcbe_37aa77df52f1a4e8d81f398f48dbb98a5ba1d5ec-1920x1080.png"></div></figure><h3>提升 Anthropic 的产品安全</h3><p>我们自己也在使用这些功能，帮助保障团队发布到生产的代码的安全，其中就包括 Claude Code 本身。自设置该 GitHub Action 以来，它已经在我们自己的代码中发现了安全漏洞，避免其被发布出去。</p><p>例如，上周我们的团队为一个内部工具构建了新功能，该功能需要启动一个仅接受本地连接的本地 HTTP 服务器。GitHub Action 识别出一个可通过 DNS 重绑定（DNS rebinding）利用的远程代码执行漏洞，并在 PR 合并之前就完成了修复。</p><figure style="max-width:1920pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="A GitHub comment showing a remote code execution vulnerability" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e95d9257ab1dfc1937fcc2_a370dba2f6e5095cdbcb23ef878dda4befd61d95-1920x1080.png"></div></figure><p>在另一个案例中，一位工程师构建了一个代理系统，用于安全管理内部凭证。GitHub Action 自动标记出该代理存在 SSRF 攻击漏洞，我们随即修复了这一问题。</p><figure style="max-width:1920pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="A GitHub comment showing a SSRF attack vulnerability" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e95d9257ab1dfc1937fcb8_23dd3b5404c6f7dc812df83a7de95babab286865-1920x1080.png"></div></figure><h3>开始使用</h3><p>这两项功能现已面向所有 Claude Code 用户开放。要开始使用自动化安全审查：</p><ul role="list"><li><strong>关于 /security-review 命令</strong>：只需将 Claude Code 更新到最新版本，然后在项目目录中运行 /security-review。<a target="_blank" href="https://github.com/anthropics/claude-code-security-review/tree/main?tab=readme-ov-file#security-review-slash-command">参阅文档</a>自定义你自己的命令版本</li><li><strong>关于 GitHub Action</strong>：<a target="_blank" href="https://github.com/anthropics/claude-code-security-review">参阅文档</a>获取分步安装和配置说明</li></ul></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/automate-security-reviews-with-claude-code" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

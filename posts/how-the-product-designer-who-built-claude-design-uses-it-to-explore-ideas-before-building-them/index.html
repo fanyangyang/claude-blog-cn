@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude Design 缔造者：一位产品设计师如何在动手构建之前用它探索想法 — Claude Blog 中文翻译</title>
+  <meta name="description" content="Claude Design 缔造者：一位产品设计师如何在动手构建之前用它探索想法">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/how-the-product-designer-who-built-claude-design-uses-it-to-explore-ideas-before-building-them" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Enterprise AI</span>
+            <span class="article-date">July 24, 2026</span>
+            
+          </div>
+          <h1 class="article-title">Claude Design 缔造者：一位产品设计师如何在动手构建之前用它探索想法</h1>
+          <a href="/posts/how-the-product-designer-who-built-claude-design-uses-it-to-explore-ideas-before-building-them/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>2025 年秋天，我还是<a href="https://code.claude.com/docs/en/vs-code" target="_blank"> Claude Code for VS Code</a> 唯一的产品设计师，和两位工程师一起，尝试把 Claude Code 的全部能力重新想象成一个终端之外的友好界面。我们在九月底<a href="https://www.anthropic.com/news/enabling-claude-code-to-work-more-autonomously" target="_blank">发布了 beta 版</a>，十一月 <a href="https://www.anthropic.com/news/claude-opus-4-5" target="_blank">Opus 4.5 到来</a>，Claude Code 团队开始快速而激进地迭代。工程师们的产出比以前多得多，而我仍在以一贯的速度交付。我需要找到一种方法赶上来。</p><p>Claude Code 运行在终端里，一切都是文本，我的第一次尝试也是按这个思路来的：我把输出复制给 Claude，附上截图，然后问："这是我们想加的功能，你来设计一下？"效果并不好。此后大约一个月，我把它当作一个副业项目，不断寻找改进 Claude 设计产出的方法。</p><h2><strong>给 Claude 一个 HTML 游乐场</strong></h2><p>最终我偶然找到了答案：Claude 特别擅长 HTML。我们通常把 HTML 看作网页的格式，但它也是一种丰富的、可交互的视觉媒介：幻灯片、视频文件或 PDF 里能做出来的任何东西，都能在网页里实现。于是我改为让 Claude 生成 HTML，并给它做了一个分栏界面——左边聊天，右边实时看到输出。</p><p>这很有用，但产品设计取决于你对自己所做产品和品牌知识的运用，所以下一步我花了一段时间，把 Anthropic 品牌的精髓（我们产品使用的字体、颜色、素材和原则）提炼成提示词。这样，当我在工具里输入提示词时，产出就会符合 Anthropic 的品牌规范。</p><p>我把这一切做成了一个小型内部原型并分享给了团队。产品设计师们立刻用它来制作可交互原型。在传统设计工具里做一个可点击的流程原型，意味着要模拟出每个页面的每种状态，再手动把它们连起来。而在这里，你把素材交给 Claude，说：把它做出来。它交付的每个 artifact 都带有链接，可以像分享文档一样分享。</p><h2><strong>Claude Design 如何成为一种视觉创作媒介</strong></h2><p>我第一次意识到 Claude Design 的吸引力，是在一次<a href="https://www.anthropic.com/news/introducing-anthropic-labs" target="_blank"> Anthropic Labs</a> 团队外出活动的创意提案会上：在场的每个人都用它快速拼出幻灯片，常常是在会议进行中、轮到自己演示之前赶出来。那次会说服了 Labs 团队投入人力，Claude Design 也从副业项目变成了正式项目。</p><p>我们不再把它描述为产品模型图工具。Claude Design 变成了一个可以产出任何视觉沟通内容的工具：幻灯片、落地页、可打印成 PDF 的一页纸文档、邮件、动画、社交媒体上分享的视觉素材。我把它理解为比产品设计"高一层"的东西：你与 Claude 协作的视觉作品，其核心使命是沟通和构思。&nbsp;</p><p>随着模型的视觉能力越来越强，Claude Design 能做的工作范围和质量也在提升。我们最新的 Opus 级模型 <a href="https://www.anthropic.com/news/claude-opus-5" target="_blank">Claude Opus 5</a> 在阅读图表、示意图和截图方面比之前的 Opus 模型更强，与 Claude Design 搭配用于制作拿得出手的演示文稿和备忘录时非常强大。</p><h2><strong>Claude Design 不适合做什么</strong></h2><p>Claude Design 没有图像模型，也不是为图像生成而构建的，所以它并不适合做 logo 设计——尽管这拦不住人们去尝试。更好的做法是把已有的 logo 和素材带进来。产品的其他部分也是同样的逻辑：Claude 负责生成各种选项和起点，让你不必盯着空白画布发呆，然后你来挑选单独看不错的方案，或者把多个版本组合起来。&nbsp;</p><p>如果你要发布生产环境的软件，请继续用 Claude Code。Claude Code 负责写代码；Claude Design 负责设计工作中的其他部分：早期构思、协作，或者在任何人投入开发之前为某个方向争取认同。两者可以来回配合：你可以把在 Claude Code 里起步的原型同步到 Claude Design，在画布上迭代编辑；也可以把准备开始构建的原型从 Claude Design 移交给 Claude Code。随着模型越来越擅长构建生产软件，最重要的工作会越来越前移：想出好点子，让所有人达成一致，并在想法尚早时收集反馈。&nbsp;</p><h2><strong>我如何在日常工作中使用 Claude Design</strong></h2><p>我每天都在用 Claude Design 处理那些最日常的设计工作：为早期想法画线框图，或者生成 15 个版本的流程来收集同事反馈。以下是我自己工作中的一些近期例子：</p><ul role="list"><li><strong>Claude Design 的开场动画。</strong>注册 Claude Design 时播放的那段动画就是用这个工具本身做的，但不是直接做的：我不是动画师，所以我先让 Claude Design 给我做了一个定制视频编辑器，再用那个编辑器做出了这段动画。</li></ul><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/rhKYDg9FLeA" title="Meet Claude Design Intro Video" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><ul role="list"><li><strong>一个地铁到站时间应用</strong>，带有可调节的动画控制项，用来精确调校运动的物理效果。&nbsp;</li></ul><figure style="padding-bottom:75%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/bR8FyicJynE" title="subway times app recording" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><ul role="list"><li><strong>Instagram 风格的颜色控制。</strong>我让 Claude 为应用提供了滑块和预设来调整配色方案，而不必用文字描述颜色。&nbsp;</li></ul><figure style="padding-bottom:75%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/4_mkm1-4F6c" title="IG style editing of ui theme" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><ul role="list"><li><strong>Claude Design 自身的重设计。</strong>我和两位同事 Helen 与 Andrew 一直在工具内部反复打磨编辑器的新设计。我们不会把现在这样直接发布出去，但这是我们探索产品未来形态的方式。</li></ul><figure style="padding-bottom:75%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/cWztXGcbGMk" title="Claude Design redesign" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><h2><strong>使用 Claude Design 的最佳实践</strong></h2><ol role="list"><li><strong>先想清楚，再下提示词。</strong>要让产出符合你的设想，最好也最高效的方式就是提前告诉 Claude 你需要什么。我在设计之前会花大量时间写提示词。有时我会用 Claude Design 的语音按钮口述；有时窝在沙发里用手机备忘录打字，或者在散步时录一段语音，之后把转写文本粘贴进来。无论你偏好哪种沟通方式，关键是离开电脑时就想清楚要什么，这样你坐下来时，Claude 就能精确执行你的构想。</li><li><strong>告诉 Claude 它应该长什么样。</strong>如果不加引导，Claude 会挑一个它偏爱的美学风格。<a href="https://www.newyorker.com/the-ai-design-aesthetic-thats-taking-over-the-internet" target="_blank">你八成也认得出来。</a>要避免这一点，可以指定字体和颜色，提供一组图片作为情绪板寻找灵感，或者让 Claude 头脑风暴出几组字体与配色方案，来回比较直到某个组合感觉对了。&nbsp;</li><li><strong>把重复性工作变成设计系统。</strong>上传你的品牌文件和素材——logo、幻灯片、截图、字体规范，以及任何你会反复使用的东西，Claude 会分析它们并<a href="https://support.claude.com/en/articles/14604397-set-up-your-design-system-in-claude-design" target="_blank">生成一套设计系统</a>。这样，之后你做的每个 artifact 都从你既定的选择出发，而不是一张白纸。</li><li><strong>要十个方案，然后混搭。</strong>其中大多数不会好，没关系，总有一两个不错。然后说："我喜欢方案 B，再加一点方案 D。给我五个把这两者揉在一起的变体。"&nbsp;</li><li><strong>画下你描述不出来的东西。</strong>如果你脑子里有个布局却说不出口，就画在纸上拍照上传。</li><li><strong>指哪儿说哪儿。</strong>与其写一段话来指明你说的是哪个元素，不如点中它直接开口说。你需要先在设备上开启听写功能，然后选择"评论"（comment）并点进评论框，你说的话就会像打字一样出现在评论框里。</li><li><strong>不需要高保真时，先做线框图。</strong>要线框图要快得多，还能让 Claude 专注于设计的上层结构而非视觉效果。这是快速尝试多种不同想法的好办法。</li><li><strong>最后一公里手动来。</strong>收尾的细节用直接编辑工具（调整位置、删除、编辑文字、缩放、改颜色）来完成，而不要靠提示词。直接编辑不消耗 token，而且调整尺寸和对齐这类小改动，肉眼看着调本来就更好。</li><li><strong>把真实上下文交给 Claude。</strong>如果你在为现有应用或网站设计功能，连接 GitHub：Claude 会抓取你的组件和现有页面作为起点，多试几次之后，它能以相当高的保真度复现你现有的设计。当设计依赖外部信息时，Claude Design 里也可以使用网络搜索和 MCP 连接。</li><li><strong>和 Claude 并行工作。</strong>不必等 Claude 交付完整结果后再提出新的改动或任务。你可以一次排队发送多条消息，或者在 Claude 还在处理上一轮时继续说下去。</li></ol><h2><strong>让它活起来</strong></h2><p>有一场 Bret Victor 的演讲，每位设计师都应该在某个时刻看一看，叫<a href="https://vimeo.com/64895205" target="_blank"> Stop Drawing Dead Fish</a>（别再画死鱼了）。简介里有一句话："我们画下的一切，默认都应该是活的。"</p><p>我鼓励设计师们——无论用 Claude Design 还是其他任何工具——思考如何让自己的作品活起来。我最喜欢的 Claude Design 作品，恰恰是那些装不进现有品类的东西：带交互模拟的文档、会跟你对话的幻灯片、同时也是视频的示意图、自身就是编辑器的设计。代码，尤其是 HTML，是一种惊人的创意媒介，而设计师终于可以比较轻松地用它创作了。</p><p>Claude Design 能长成今天的样子，是因为 Anthropic 的人们不断找到我从未预想的用途；它目前在 Claude Pro、Max、Team 和 Enterprise 计划上以 beta 形式提供。<a href="https://claude.com/product/design" target="_blank">试一试</a>，把它带到我们还没想到的地方去吧。</p><p><em>本文作者 Nate Parrott 是 Anthropic 的产品设计师，文中表达了他个人对 Claude Design 的看法、使用方式和心得建议。</em></p><p>‍</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/how-the-product-designer-who-built-claude-design-uses-it-to-explore-ideas-before-building-them" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

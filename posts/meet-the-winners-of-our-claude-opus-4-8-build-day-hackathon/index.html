@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>认识 Claude Opus 4.8 Build Day 黑客马拉松的获胜者 — Claude Blog 中文翻译</title>
+  <meta name="description" content="认识 Claude Opus 4.8 Build Day 黑客马拉松的获胜者">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/meet-the-winners-of-our-claude-opus-4-8-build-day-hackathon" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Claude Code</span>
+            <span class="article-date">June 17, 2026</span>
+            
+          </div>
+          <h1 class="article-title">认识 Claude Opus 4.8 Build Day 黑客马拉松的获胜者</h1>
+          <a href="/posts/meet-the-winners-of-our-claude-opus-4-8-build-day-hackathon/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>6 月 13 日，我们把 300 多位创始人和开发者请到旧金山，参加一场为期 12 小时、以 Claude Opus 4.8 为主题的黑客马拉松。超过 1500 人报名，310 人入围参赛，许多人从世界各地远道而来，每人手握 500 美元的额度，只有一天时间把一个想法变成可运行的 demo。</p><p>我们与三支获胜团队聊了聊他们构建了什么，以及他们如何借助 Claude 完成这一切。</p><p>祝贺获奖者和所有参与者。希望他们的项目也能给你带来一些灵感。</p><h2>第一名：<a href="https://tekton-build.vercel.app/" target="_blank">Tekton</a>，Holly Tang 和 Austin Burgess</h2><figure style="max-width:4029pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a32e20130b0c237d85e1c09_Claude_Build_Day_258_compressed.jpg" loading="lazy"></div><figcaption><em>Holly Tang 和 Austin Burgess 构建了 Tekton，一个让唐代建筑重获新生的 3D 重建平台，每个构件都可追溯至其历史来源。</em></figcaption></figure><p>当一座历史木结构建筑毁于大火，数百年的匠心营造可能随之化为乌有。Tekton 将这些建筑在 3D 中重建，并将每一个构件都追溯到有据可查的来源。</p><figure style="padding-bottom:75%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/7UgtfcKL0Zg" title="Claude Opus 4.8 Build Day: Tekton" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><p>给定一座历史建筑，Claude 会对其展开调研，汇集图纸、施工文档、照片和示意图，然后在 339 个渐进的施工阶段中组装出 3D 模型。当你点击模型中的任一构件，Tekton 会展示这个细节出自何处、为何安放在此。团队称之为“证据链”，从原始材料一直贯通到经过验证的模型。他们为学术验证、修复工作和文化保护而构建它，从唐代建筑和巴黎圣母院的塔尖起步。</p><p>验证环节完全运行在 Opus 4.8 上。独立的校验子智能体在隔离的上下文窗口中为每次重建打分，自我修正循环则反复复核构件的安放位置，直到全部 20 项测试通过。每次构建都会对照史料及其引文来衡量，因此最终模型遵循的是这座结构最初建造时有据可查的规则。</p><p>Holly Tang 和 Austin Burgess 一个月前在一场 Code with Claude 活动的咖啡队伍中相识。设计师 Holly 一直在帮 Austin 打理他的初创公司 <a href="https://joinpearl.co/" target="_blank">Pearl</a>。“我很爱看纪录片，每次看到美丽的建筑毁于大火都特别难过，”Holly 说。她曾独立做过一次单个建筑的重建原型；Austin 的贡献是把它扩展成可以对任何建筑端到端运行的系统。</p><p>为了构建 Tekton，两人分阶段推进：先让圣母院塔尖实现大规模渲染，再补充更精细的细节，然后向结构其余部分扩展。大教堂尚未全部完成，时间就用完了。即便如此，仍有多位黑客马拉松的参与者前来询问，或主动提出帮忙提高精度。Holly 和 Austin 希望将 Tekton 开源，让博物馆、历史学者、非营利组织和政府都能在此基础上继续构建。</p><p><strong>给其他开发者的建议：</strong>动手之前，先规划好整个项目。</p><p>“我们做了一份完整的 PRD，还有一个大约 50 张卡片的 Notion 看板，每个具体任务一张，”Austin 说。“就像是在说：这是从头到尾的完整项目，每一步我们想要的就是这些。”计划敲定后，他把构建工作拆分成多个独立的工作流并行推进。</p><p><a href="https://github.com/tangxiya-star/Tekton" target="_blank">Tekton on GitHub</a></p><h2>第二名：<a href="https://simfrancisco.org/" target="_blank">Sim Francisco</a>，Tanmayi Priya Dasari 和 Tejas Prabhune</h2><figure style="max-width:2970pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a32e670a9a0ae0844278fec_Claude_Build_Day_280_cropped_native.jpg" loading="lazy"></div><figcaption><em>Tanmayi Priya Dasari 和 Tejas Prabhune 构建了 Sim Francisco，一个以人口普查数据为种子的旧金山人口数字孪生，几秒钟内就能对这座合成城市做民意调查，并预测现实世界的结果。</em></figcaption></figure><p>Sim Francisco 是一个可运行的旧金山人口模型。它拥有 1 万名基于美国人口普查数据生成的合成居民，每个人都有自己的人口统计特征、个人经历和世界观，他们被安放在城市地图上，并对新闻实时做出反应。</p><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/WUSLZ_cEqnc" title="Claude Opus 4.8 Build Day: Sim Francisco" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><p>向这座城市提出一个问题，它就会逐街区对整个合成选民群体做民调。在知识截止日期为 2023 年 10 月的模型上，它预测 2024 年总统大选民主党得票率为 81.3%，实际为 83.8%；预测旧金山 2024 年 3 月的 Prop A 提案支持率为 70%，实际为 70.38%。它对 Kalshi、Polymarket 等预测市场的追踪误差保持在几个百分点之内。*&nbsp;</p><p>Opus 4.8 编写了全部前端和后端，并对后端行为进行了端到端的验证。为了验证模型的工作，团队让 Claude 与一个校验者和一个对抗性智能体协作，构建出一个能够复现这座城市真实人口分布的后端。</p><p>Tanmayi Priya Dasari 和 Tejas Prabhune 是 UC Berkeley 电气工程与计算机科学专业的学生，通过校内的机器学习社团相识。对 Tejas 来说，Sim Francisco 同时也是他正在创立的 post-training 公司的一项试验，他在探索模拟人设能否在长周期任务上保持足够一致，从而用于训练模型。&nbsp;</p><p><strong>给其他开发者的建议：</strong>不要满足于第一个可行的方案，尤其是当它很昂贵的时候。</p><p>团队的第一版为 1 万名居民分别发起一次推理调用，成本不菲。“随着迭代，Claude 运行了一个它自己发明的演化式聚类算法，”Tejas 说，把居民归并为大约 300 个代表性人设。分组后的版本在 Kalshi、Polymarket 和历史结果上保持了同等精度，推理成本却降至原来的 1/10 到 1/100。</p><p><a href="https://github.com/tejasprabhune/simfrancisco" target="_blank"><em>Sim Francisco on GitHub</em></a></p><h2><strong>第三名：</strong><a href="https://www.luminal.com/realtime-edit-demo" target="_blank"><strong>Custom Universe</strong></a><strong>，Jake Stevens 和 Mauricio Pereira</strong></h2><figure style="max-width:4016pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a32eb3be6cc4dc20abf6ba5_Claude_Build_Day_241_compressed.jpg" loading="lazy"></div><figcaption><em>Jake Stevens 和 Mauricio Pereira 构建了 Custom Universe，一个实时引擎，能把一张手机照片变成完全可编辑的逼真 3D 场景。</em></figcaption></figure><p>用手机拍下一把椅子，Custom Universe 就能把它变成一个 3D 物体，你可以把它放进场景、用一句文字提示重新定义风格、随意移动，渲染画面实时更新。</p><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/6erI1uxx2eo" title="Claude Opus 4.8 Build Day: Custom Universe" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><p>该项目面向机器人实验室，它们需要海量合成数据来训练执行特定任务、适应特定环境的机器人。实验室可以扫描工厂车间里的一台机器，把它放进场景，然后生成数据，为这个具体环境微调一个机器人模型。通常，搭建这类环境意味着聘请物理学家和工程师来处理物理和碰撞几何。Custom Universe 让你只需拖拽物体来布置场景，团队还计划加入精确定位功能，比如把一个物体在厨房台面上挪动 30 厘米。</p><p>Opus 4.8 端到端地构建了整个项目，并在黑客马拉松全程操控运行该模型的远程 NVIDIA H100。团队还用 Claude 研究哪些模型能产生正确的输出，并构建了把手机扫描物体（通过 Apple 的 RealityKit 捕捉）导入 Web 应用的流水线。</p><p>Jake Stevens 和 Mauricio Pereira 在活动现场相识。Jake 是罗切斯特理工（RIT）计算机视觉专业毕业生，经营着致力于加速 AI 模型的初创公司 <a href="https://www.luminal.com/" target="_blank">Luminal</a>；这个场景构建器起初是他一直想尝试的副项目。Mauricio 是 MIT 机器人专业毕业生，经营 <a href="https://www.coatrobotics.com/" target="_blank">Coat Robotics</a>，他带来了自己切身体会的问题：机器人领域仍然缺乏训练数据，而构建合成环境非常困难。Custom Universe 依赖开源模型和算法，可免费使用；团队表示用户可以在自己的 GPU 上运行它。</p><p><strong>给其他开发者的建议：</strong>让 Claude 帮你选工具，而不只是写代码。</p><p>“很多迭代其实是在看哪个模型能给出正确的输出，所以我们让 Claude 做了大量调研，”Mauricio 说。团队还把不熟悉的技术交给 Claude 去集成。“比如 Apple RealityKit，比如怎么确保人们能把扫描好的物体上传到我们的网站。我们就跟 Claude 说：把这个加进流水线。”</p><p><a href="https://github.com/jss8649/image-edit-realtime-hackathon" target="_blank"><em>Custom Universe on GitHub</em></a></p><p><a href="http://claude.com/community" target="_blank"><em>了解</em></a><em>我们的 Claude Community 计划，包括聚会、黑客马拉松等。</em></p><p><em>*Sim Francisco 是一个独立的黑客马拉松项目，以预测选举结果作为示例。这并不代表 Anthropic 认可将 AI 模拟的选举预测作为一个使用场景。</em></p><p>‍</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/meet-the-winners-of-our-claude-opus-4-8-build-day-hackathon" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

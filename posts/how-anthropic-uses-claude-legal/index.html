@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anthropic 法务团队如何用 Claude 把审核时间从数天缩短到数小时 — Claude Blog 中文翻译</title>
+  <meta name="description" content="Anthropic 法务团队如何用 Claude 把审核时间从数天缩短到数小时">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/how-anthropic-uses-claude-legal" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Enterprise AI</span>
+            <span class="article-date">December 8, 2025</span>
+            
+          </div>
+          <h1 class="article-title">Anthropic 法务团队如何用 Claude 把审核时间从数天缩短到数小时</h1>
+          <a href="/posts/how-anthropic-uses-claude-legal/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>在 Anthropic，Mark Pike 的办公桌上摆着一台滑稽又复古的公用电话，仿佛来自另一个年代。拿一枚"法务挑战币"敲一下它——没错，真的可以——电话就会响起来。一个 AI 机器人接听，弄清你的需求，然后把你转接到合适的律师。</p><p>Mark 造了它。而他并不会写代码。</p><p>"我不觉得我做的事是在学编程，"Anthropic 的产品律师 Mark 说。"我是和 Claude 合作完成某些涉及编程的项目，但写代码的不是我。我只是特别擅长排查问题。"</p><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/tJP6SKfo49c" title="How Anthropic uses Claude in Legal" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><h2><strong>问题：被事务性工作淹没</strong></h2><p>在使用 Claude 之前，Mark 的一天和其他任何公司法务都一样：回复合规文件和客户问卷，起草和更新服务条款与隐私政策，在产品上线前的几小时里审阅博客文章和邮件文案。</p><p>"在使用 Claude 之前，我有大量战术性的琐碎工作，"Mark 说。"那些我会拖到一天快结束才做的事，因为我知道会花很多时间，但它们用的并不是我大脑里最好的部分。"</p><p>流程总是一成不变：Slack 上收到一条消息或一封邮件，打开 Google 文档，读一遍，插入批注，回复客户告知需要修改什么，然后再来回两三轮才能把事情敲定。</p><p>Anthropic 的法务团队决定改变这一局面。他们走进会议室，在白板上列出自己的痛点：什么在消耗我们的精力？什么让人觉得重复？什么在阻碍我们做有影响力的工作？</p><p>清单很长。营销审核动辄拖延数天。合同红线修订要耗费数小时的人工比对。隐私影响评估内容大同小异，格式却每次都要从头重建。甚至还有实体邮件的分拣。</p><p>"我们的目标是让法务团队从'唱反调的部门'变成跨职能的思考伙伴，"Mark 解释道。"当法务团队对 AI 感到兴奋时，我们就不再是全面推广的阻碍。其他团队看到我们在做什么，就会意识到他们也能做到。"</p><h2><strong>解决方案：四个投入使用的workflow</strong></h2><p>经过数月的反复试验，法务团队最大的几个痛点已经演变成了可复用的工作流。</p><h3><strong>营销审核工作流</strong></h3><figure style="max-width:1600pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6933cb87c77bc5806f6cce36_f995b27a.png" loading="lazy"></div><figcaption>法务团队的营销材料自审工具让市场（go-to-market）员工在提交法务终审之前先自行审核内容。</figcaption></figure><p>这个问题对任何支持营销的法务团队都不陌生：博客文章的临时审核，交付时间却极其紧迫。</p><p>Mark 和团队构建的解决方案是一个固定在 Slack 中的自助审核工具。营销人员粘贴内容，Claude 使用一个"Skill"（包含法务团队历史指导意见和审核框架的文件）对其进行分析。该工具会识别诸如肖像权隐患、夸大宣传、统计数据准确性等问题，并按低、中、高风险分级标记。它还会在营销人员提交工单之前就给出修改建议。</p><p>"它会标出类似'嘿，你有权使用这个 logo 吗？这个统计数据准确吗？这个商标需要加上符号'的问题，"Mark 解释说。"处理完这些之后，再在法务队列里提交工单。"</p><p>当内容正式提交审核时，会被分流给合适的律师，并附上预先标记好的问题。自从在审核队列中启用该工具以来，周转时间从两到三天缩短到了 24 小时。</p><p>"我仍然会读那篇博客文章，仍然在审核这些工作，"Mark 指出。"但这个工具帮我们大幅提升了速度。"</p><h3><strong>合同红线修订工具</strong></h3><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/LpGpwhORWr0?start=67" title="Claude works with you on slides, spreadsheets, and contract redlines" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><p>比对合同版本、拟写备选条款，都是耗时的工作。</p><p>Claude 现在可以在 Google Docs、Office 365 等工具中比对文档版本、高亮变更，并依据商业打法手册推荐措辞。团队成员摸索出了让 Claude 直接在 Google Docs 内工作的方法，以批注形式实时给出修改建议。审阅合同的人可以直接在文档中提问："嘿 Claude，你觉得这个措辞能满足我们的需求吗？"并立即获得反馈。</p><p>"合同红线修订是所有人对 AI 最期待的应用场景，"Mark 说。"而 Claude 确实非常擅长——它为我们省去了数小时的人工比对。"</p><p>Mark 和同事们还编写 <a href="https://www.claude.com/blog/skills">Skills</a>——即存储在文件中、Claude 会视任务需要读取的专用指令和最佳实践——以进一步简化对 NDA、第三方供应商协议等特定类型文档的审核。</p><h3><strong>外部商业活动审查</strong></h3><figure style="max-width:1524pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6933cb87c77bc5806f6cce33_d4c84677.jpeg" loading="lazy"></div><figcaption>法务团队的外部商业活动申请表加快了 Anthropic 员工利益冲突审查的评估流程。</figcaption></figure><p>在 Anthropic，如果员工想提供咨询服务或加入非营利组织董事会，需要填写一份表单以排除利益冲突。此前，雇佣律师们要花大量时间做常规的利益冲突表单审查。</p><p>如今由 Claude 驱动的工作流让员工填写包含部门、上级和拟议活动描述的表单。Claude 依据利益冲突（COI）政策框架分析提交内容，并通过 Slack 向律师发送审批建议。</p><p>"以前你得和员工来回沟通几轮，弄清细节和可能存在的冲突。有了这个工作流，Claude 阅读表单，需要时索取更多信息，然后给出建议结论，"Mark 解释道。"然后它会带着建议进入我们的审批队列。"</p><h3><strong>隐私影响评估（PIA）</strong></h3><p>从零起草隐私影响评估单调乏味，即便它们的内容模式相似。团队现在使用<a href="https://modelcontextprotocol.io/" target="_blank"> MCP（Model Context Protocol）</a>服务器将 Claude 连接到存放既往 PIA 的 Google Drive 文件夹，并用一个 Skill 指导 Claude 掌握格式与关注要点。</p><p>比如，律师可以要求 Claude 基于一个装着既往 PIA 的文件夹撰写一份新的 PIA。</p><p>"Claude 特别擅长读懂那批上下文，并利用那个 Skill 创建新模板，帮我省下时间继续推进别的工作，"Mark 说。</p><h2><strong>在法律工作中使用 Claude 的最佳实践</strong></h2><p>Mark 的经验为正在采用 AI 的律师和法务从业者提供了实用指南。</p><p><strong>从痛点出发，而不是从技术出发</strong></p><p>问问自己：我们手头最繁重的工作是什么？什么在消耗我们的精力？什么让人觉得重复？"不要从'AI 能做什么'开始，"Mark 建议。"要从'我们希望哪些事根本不用做'开始。"</p><p><strong>用自然语言描述你的需求</strong></p><p>"我第一次见到 Claude Code 时，感觉它像《黑客帝国》里的东西，"Mark 回忆道。"一行行代码滚过屏幕，乍一看令人生畏。但接着我只是敲了一句平常的话，描述我想要什么。然后它就做到了。"</p><p><strong>内置人类监督</strong></p><p>AI 仍然可能产生幻觉。务必核验引文和输出。把 AI 用于初筛、分流和起草，而不是最终裁决。Mark 的工作流会把结果路由给律师审批，而不是绕过他们。"我们知道 AI 系统仍可能出现幻觉，我们要确保核验并检查引文，确保 AI 没有凭空捏造。"</p><p><strong>用 Skills 保持一致性和文风</strong></p><p><a href="https://www.anthropic.com/news/skills" target="_blank">Skills</a> 是包含指令、脚本和资源的文件，Claude 会在与任务相关时动态加载。它们把专业能力打包成可复用的工作流，让 Claude 更擅长专项任务。</p><p>Mark 以两种方式使用 Skills。第一是保持工作流一致：他的营销审核 Skill 内含法务团队的指导意见，帮助 Claude 识别问题，并在营销人员提交法务之前指导他们如何修正。</p><p>第二是文风和写作习惯：Mark 让 Claude 分析了他近期的十份备忘录，学习他的格式偏好，以及他在产品法律简报中通常会包含的内容。现在他可以把产品路线图上传到一个 Claude 项目中，调用他的 Skill，得到一份以他的文风写就的初稿。</p><p>不同的 Skills 服务于不同的专业方向：雇佣、商务、隐私、公司事务。一个 Skill 可以教 Claude 像雇佣律师那样写作，或按产品律师的方式编排备忘录。</p><p><strong>借助 MCP 连接你的知识源。</strong></p><p>MCP 让你把其他系统的信息引入 Claude。Anthropic 法务团队用 MCP 将 Claude 连接到 Google Drive、JIRA 工单、Slack 消息和 Google 日历。把这些信息汇入，意味着在恰当的时机呈现恰当的上下文。</p><h2><strong>更大的图景</strong></h2><p>Mark 设想了这样一个未来：新入职的律师通过提示词库和 Skills 继承团队积累的知识。新人不必翻阅旧备忘录来学习机构的行文风格，只需调用一个 Skill，就能让 Claude 像团队的产品律师那样写作，或按公司事务组的偏好编排董事会会议纪要。</p><p>"我们不是在取代律师，"他说。"我们是在拓展可能性的边界。我们在用他们所需的技能和工具武装他们，让他们完成最好的工作。"</p><p><em>立即开始使用 </em><a href="https://www.claude.com/pricing/enterprise" target="_blank"><em>Claude for Enterprise</em></a><em>。敬请关注"Anthropic 如何使用 Claude"系列的更多故事。</em></p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/how-anthropic-uses-claude-legal" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "slug": "building-agents-that-reach-production-systems-with-mcp",
+  "title": "Building agents that reach production systems with MCP",
+  "date": "April 22, 2026",
+  "category": "Agents",
+  "url": "https://claude.com/blog/building-agents-that-reach-production-systems-with-mcp",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/building-agents-that-reach-production-systems-with-mcp.svg",
+  "illustrationBg": "Heather",
+  "fetchedAt": "2026-09-02T03:50:17.780Z",
+  "translatedTitle": "用 MCP 构建能触达生产系统的 agent",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:32:12.000Z",
+  "translateLang": "zh-CN"
+}

@@ -1,0 +1,17 @@
+{
+  "slug": "claude-platform-on-aws",
+  "title": "Introducing the Claude Platform on AWS",
+  "date": "May 11, 2026",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/claude-platform-on-aws",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/claude-platform-on-aws.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.788Z",
+  "translatedTitle": "推出 Claude Platform on AWS",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:19:19.723Z",
+  "translateLang": "zh-CN"
+}

@@ -1,0 +1,17 @@
+{
+  "slug": "claude-enterprise-inference-hooks",
+  "title": "Inference hooks: inline data loss prevention for Claude Enterprise",
+  "date": "August 5, 2026",
+  "category": "Enterprise AI",
+  "url": "https://claude.com/blog/claude-enterprise-inference-hooks",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/claude-enterprise-inference-hooks.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.776Z",
+  "translatedTitle": "推理钩子：Claude Enterprise 的内联数据防泄漏",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:30:13.000Z",
+  "translateLang": "zh-CN"
+}

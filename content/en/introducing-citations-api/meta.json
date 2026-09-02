@@ -1,0 +1,17 @@
+{
+  "slug": "introducing-citations-api",
+  "title": "Introducing Citations on the Anthropic API",
+  "date": "June 23, 2025",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/introducing-citations-api",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/introducing-citations-api.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.789Z",
+  "translatedTitle": "Anthropic API 上的 Citations 引用功能正式发布",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:44:54.905Z",
+  "translateLang": "zh-CN"
+}

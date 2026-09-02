@@ -2,8 +2,16 @@
   "slug": "computer-use-skills-api-files-api",
   "title": "Build production agents with computer use, the Skills API, and the Files API",
   "date": "August 20, 2026",
-  "category": "Enterprise AI",
+  "category": "Product announcements",
   "url": "https://claude.com/blog/computer-use-skills-api-files-api",
   "fetchedAt": "2026-09-01T11:10:40.489Z",
-  "translated": false
+  "translated": true,
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/computer-use-skills-api-files-api.svg",
+  "illustrationBg": "Clay",
+  "translatedTitle": "使用 Computer use、Skills API 和 Files API 构建生产级智能体",
+  "translatedAt": "2026-09-02T05:12:35.000Z",
+  "translateLang": "zh-CN"
 }

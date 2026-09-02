@@ -2,8 +2,16 @@
   "slug": "anthropics-approach-to-teaching-and-learning-ai",
   "title": "Anthropic’s approach to teaching and learning AI",
   "date": "August 20, 2026",
-  "category": "Enterprise AI",
+  "category": "Product announcements",
   "url": "https://claude.com/blog/anthropics-approach-to-teaching-and-learning-ai",
   "fetchedAt": "2026-09-01T11:10:34.611Z",
-  "translated": false
+  "translated": true,
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/anthropics-approach-to-teaching-and-learning-ai.svg",
+  "illustrationBg": "Cactus",
+  "translatedTitle": "Anthropic 的 AI 教学与学习方法",
+  "translatedAt": "2026-09-02T05:12:35.000Z",
+  "translateLang": "zh-CN"
 }

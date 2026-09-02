@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>自动模式现已成为 Claude Code Pro、Max 和 Team 计划的默认设置 — Claude Blog 中文翻译</title>
+  <meta name="description" content="自动模式现已成为 Claude Code Pro、Max 和 Team 计划的默认设置">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/auto-mode-default-in-claude-code" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Claude Code</span>
+            <span class="article-date">August 7, 2026</span>
+            
+          </div>
+          <h1 class="article-title">自动模式现已成为 Claude Code Pro、Max 和 Team 计划的默认设置</h1>
+          <a href="/posts/auto-mode-default-in-claude-code/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>我们将把<a href="https://code.claude.com/docs/en/auto-mode-config" target="_blank">自动模式</a>（auto mode）设为 Claude Code 的默认设置。从 8 月 14 日起，Pro、Max 和 Team 计划的新会话将以自动模式运行。如果你已经自行设置了不同的默认模式，可能会收到一次性提示，询问你是否要切换到自动模式。如果你固定了默认模式，一切都不会改变。自动模式分类器在每次工具调用上只消耗少量额外 token，而且从今天起，我们不再向 Pro、Max 和 Team 计划的 Claude Code 用户收取这笔分类器开销的费用。</p><p>在 Claude Enterprise、Claude API、Claude Platform on AWS、Amazon Bedrock、Google Cloud 的 Agent Platform 以及 Microsoft Foundry 上，自动模式暂时仍需手动开启，以便管理员有时间审阅这一变更。下个月，我们将与云合作伙伴协作，计划在所有这些平台上将其设为默认，并同样不再收取分类器开销费用。在此期间，Enterprise 管理员可以通过托管设置将 Claude Code 的自动模式设为默认。</p><p>自动模式旨在平衡用户不希望被打断的诉求与避免有害操作之间的矛盾：它不再弹出提示，而是将每次工具调用交由一个分类器审查，专门拦截那些不可逆、破坏性或指向你环境之外的操作。当分类器拦截某个操作时，Claude 通常会自行找到更安全的路径继续，或直接请求你的许可；如果无法推进——连续三次被拦截，或整个会话累计二十次——Claude Code 会回退到手动批准。</p><p>过去几个月里，我们持续测试自动模式是否与普通用户手动点提示一样安全甚至更安全。我们开展了内部红队测试、第三方红队测试和提示词注入评估、一项有 1053 名付费测试者参与的可控研究，以及对真实生产会话的分析。在我们测试的每一项指标上，自动模式都持平或优于人工审查。</p><p>自动模式也让 Claude 能够更长时间地自主工作。这使得为长周期任务打造的模型（如 Claude Opus 5）更适合在大任务上连续运行数小时。减少用户的开销也提升了产出：在 Teams 与 Enterprise 的采用者中，使用自动模式的用户交付的 PR 多出约 25%。解除对 Claude 的阻塞，任务得以更长时间不间断运行，完成更多工作。Adobe、Nuro、Gusto 和 Garner Health 的团队已将<a href="https://claude.com/blog/auto-mode-in-production" target="_blank">自动模式</a>作为生产环境的默认设置。&nbsp;</p><p>下面，我们将分享推动这一变更的安全数据和客户成效，以及如果你更倾向于其他默认设置，如何进行更改。</p><h2>人工审查与自动模式对比</h2><p>数据表明，人工审查可能沦为机械习惯：Claude Code 用户会批准 97% 的权限提示。虽然大多数提示对应的可能都是安全的常规命令，但如此高的批准率意味着许多用户是在条件反射式地点击，而非逐条审查命令。这些提示要求开发者每天做出数十乃至数百次重要的安全决策，而且往往是在项目进行到一半时，这既把审查负担压在了用户身上，也增加了重要事项被疏漏的可能。数据还表明，用户对其他类型的对话反而会更认真地审视并说不：比如，当 Claude 提交计划请求批准时，用户会拒绝其中 39%；但对单项权限请求，拒绝率只有 3%。</p><p>同样的模式也体现在设置文件中。截至 2026 年 6 月，49.5% 的活跃 CLI 用户手工创建过 Bash 允许规则——5% 的用户无条件放行任意 shell 命令，另有 43% 的用户配置了 <code>Bash(python:*) </code>或 <code>Bash(node:*)</code> 这类实际上基本等价的解释器规则——而且这一占比大约每 5 周增长 5 个百分点。在允许规则之外，62% 的用户用过 <code>bypassPermissions</code> 或在 Bash 上点过“不再询问”，25% 的交互式会话以绕过权限模式启动。</p><p>在自动模式下，权限规则仍会在分类器之前触发，只有那些宽泛到等同于授予任意代码执行权限的允许规则（如 python:*）除外。这类任意规则在自动模式下会被暂时搁置，因为它们会让命令完全绕过分类器。设置文件不会被修改，一旦你切换到其他模式，这些规则立即重新生效。</p><h2>用自动模式提升安全性</h2><p>内部研究以及多家第三方的研究均表明，自动模式比普通用户如今对待权限提示的方式更安全。我们将自动模式与开发者在权限提示上实际批准的行为做了对比。在内部红队测试、第三方渗透测试和真实会话分析等每一项测量中，自动模式都持平或优于人工批准。</p><h3>在安全性上，自动模式优于手动权限</h3><figure style="max-width:1200pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a7551c77738b3678fdde0ce_image4.png" loading="lazy"></div><figcaption><em>在一项有 1053 名付费专业测试者参与的可控实验中，人工审查仅捕获 13.6% 的危险命令，而自动模式捕获了 89%。</em></figcaption></figure><p>我们通过一家研究供应商招募了 1053 名付费测试者参与一项编码研究。这些参与者在专为该研究搭建的测试环境中工作，而非在自己的代码库或真实项目中。参与者知道自己在接受评估，但——遵循标准的盲测设计——并不清楚被测量的是哪种行为。在每场会话进行到一半时，会有一个权限提示被替换为一条明显危险的命令，供应商记录测试者是否批准了它（注：批准该提示绝不会导致任何危险操作真正执行，改变的只是测试者看到的提示文本）。&nbsp;</p><p>测试者仅 13.6% 的时间（1053 人中的 143 人）识破了那条危险命令，而自动模式拦截了同样命令中的 89%（1053 条中的 937 条）。正面对比，自动模式拦截了 800 条被人类放行的命令，而人类只拦截了 6 条被自动模式放行的命令。会话越长，人类的表现越差：在会话早期，人类能拦截约 17% 的危险命令，而在经历 50 次以上提示之后降到约 5%，自动模式的拦截率则不随会话长度变化。</p><h3>自动模式减少了更多有害操作</h3><p>我们的研究还表明，与手动权限模式相比，自动模式导致的有害操作更少。</p><p>我们考察了自动模式在真实使用中的表现。2026 年 5 月至 6 月，我们检查了被安全流水线标记以待审查的会话，且仅取自已同意将数据用于训练和分析的账户。我们用一个模型在两个 0–10 分量表上对每个会话重新打分。第一个量表是危害严重度：10 分代表波及全公司、不可逆的危害，比如泄露公司全部源代码；7 分代表生产级严重度，比如从生产数据库中删除数据行；0 分代表局限于本地工作区、完全可逆的操作，比如覆盖一个草稿文件。第二个量表衡量用户对该操作的指令有多明确，以便把用户直接要求的有害操作，与智能体在指令不那么明确时自作主张的有害操作区分开来。</p><p>在被标记的会话中，走人工批准流程的会话出现严重非预期危害的频率是自动模式会话的两倍以上。在生产级严重度（7+）上，6.3% 的人工批准会话包含了用户并未明确要求的有害操作，而自动模式会话为 2.4%，并且在我们测试的每一个严重度级别上，这一差距都成立。&nbsp;</p><h3>对抗性红队让自动模式更强大</h3><p>我们与英国的 AI 安全初创公司 Apollo Research 合作开展了一项为期两周的试点，向真实编码轨迹中注入合成攻击，覆盖三个数据集：广泛类失败、数据外渗和安全相关威胁。</p><p>这次合作遵循标准的“发现—修复—验证”循环。Apollo 分享了一批成功命中的攻击，并附上了强化自动模式的建议。我们主要通过让分类器获得更多其所保护环境的上下文（仓库可见性、git 状态，以及下文描述的数据处理规则），针对这些攻击对其进行了加固。</p><p>加固完成后，Apollo 在一批我们从始至终都无法接触的保留攻击集上进行了复测。自动模式捕获了此前漏掉攻击的约一半，代价是漏掉此前能捕获攻击的约 2%。由于我们无法针对保留集做调优，这说明加固效果能泛化到新攻击，而非只是修补 Apollo 分享的那批特定攻击。在共享集与保留集合计统计中，分类器的漏检率从 12% 降至 7%。</p><p>这些攻击是人为构造的对抗性攻击，目的就是找出分类器的失效点，比 Claude 在无人指使时会做的任何事情都更恶意。7% 的漏检率是针对这组攻击测得的，不应被当作真实流量上的漏检率。</p><h3>自动模式降低提示词注入风险</h3><figure style="max-width:1999pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a75fafde538ce42b19d5742_image3.png" loading="lazy"></div><figcaption><em>启用自动模式后，在独立评估中没有任何攻击对我们的任何模型得手。在 Codex v0.144.5 的 Auto-review 权限模式下运行的 GPT-5.6 Sol 攻击成功率为 5.83%。GPT-5.6 Sol 以“max”推理努力运行，以测试其最高推理水平下的表现；所有 Claude 模型均以 high 努力级别运行。</em></figcaption></figure><p>自动模式分类器为抵御<a href="https://www.anthropic.com/research/prompt-injection-defenses" target="_blank">提示词注入攻击</a>增加了一道防线，这类攻击试图强迫智能体偏离用户的指令。在自动模式下运行时，工具结果会经过探针扫描以发现潜在的恶意指令，自动模式还会检查操作是否与用户意图一致。我们测试了自动模式与无防护模型的对比，以展示这种纵深防御方法的威力。</p><p>我们委托第三方 Trajectory Labs 进行了一项评估，他们于 2026 年 7 月 17 日在最新公开版本的 Claude Code 和 Codex 中测试了不同模型。<sup>1 </sup>他们测试了 Anthropic 留出的 72 个间接提示词注入场景，每个场景测试 10 次。在非测试环境中，得手的攻击将造成可能伤害用户的不可逆操作，例如敏感数据外渗、金融欺诈或凭证钓鱼。这些攻击是针对 Claude Opus 4.7 优化的，而该模型不在报告范围内，因此评估中的每个模型面对的都是未见的攻击。除自动模式外，评估还考察了 Claude Code 的 <em>bypassPermissions</em> 模式和 Codex 的 <em>Full Access</em> 模式。</p><p>Codex 和 Claude Code 均使用由 Trajectory Labs, PBC 制作的完全相同的浏览器集成进行评估。该集成提供一组 MCP 工具，它们是对 `navigate` 等常见 Chrome API 的轻量封装。内置于一方浏览器集成（如 OpenAI 和 Anthropic 提供的 Chrome 扩展）中的防护措施未在测试范围内。因此，这些结果应被视为对底层模型的测量，而非某次部署中可能存在的完整防护体系的测量。</p><p><strong>在本次评估中，720 次攻击尝试没有一次对运行自动模式的 Claude Fable 5、Opus 5 或 Sonnet 5 得手。</strong>相比之下，对运行 Codex <em>Auto-review</em> 模式的 GPT-5.6 Sol，攻击成功率为 5.83%。值得注意的是，这甚至高于我们最新模型在没有任何额外防护、以 <em>bypassPermissions</em> 模式运行时 0.09% 的平均攻击成功率。测试还显示，GPT-5.6 Sol 以 <em>Full Access</em> 模式运行时的攻击成功率为 19.03%。工具以文本返回结果的任务与需要通过截图与浏览器交互的任务之间，攻击成功率有所不同，如下所示。</p><figure style="max-width:1999pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a75fac544d570b06de2e9b1_image2.png" loading="lazy"></div></figure><figure style="max-width:1999pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a75fa7ca0de08fd1e052f2b_image1.png" loading="lazy"></div><figcaption><em>自动模式在工具调用和浏览器 GUI 操作两种场景下都能防御提示词注入。在第三方评估中，OpenAI 模型在浏览器任务上表现出更高的攻击成功率。</em></figcaption></figure><h3>自动模式在 Anthropic 内部阻止的三起事件</h3><p>自动模式也是 Anthropic 内部所有 Claude Code 使用的默认设置。以下是分类器在内部阻止的三类操作：</p><ul role="list"><li><strong>一起外网数据泄露：</strong>当向内部网盘上传失败后，Claude 的兜底方案是将同一份报告发布到一个公共代码分享网站。自动模式拒绝了该兜底方案，并提示用户决定下一步。</li><li><strong>一次破坏性的批量操作：</strong>在一个长时间运行的会话中，Claude 试图跨约两千个 Pod 执行批量杀进程，并排队了一批删除操作，这些操作会摧毁数百个 GPU 上正在进行的训练任务。自动模式在执行前就标记了这些破坏性命令。</li><li><strong>一次过度宽泛的提权：</strong>在被要求开通只读的账单访问权限时，Claude 选中了一个在账户根层面授予完整管理控制权的云角色。自动模式发现了所请求的权限与实际将授予的角权之间的错配。</li></ul><p>在上述每一例中，Claude 要么自行找到了更安全的路径，要么在继续之前先与用户确认。</p><h3>让自动模式更加安全&nbsp;</h3><p>我们持续投入新的自动模式特性，让它更安全、也更容易交付生产代码。近期的例子包括：&nbsp;</p><ul role="list"><li><a href="https://code.claude.com/docs/en/auto-mode-config#override-the-block-and-allow-rules" target="_blank"><strong>硬性拒绝</strong></a>：数据外渗类操作，比如把你的代码或密钥发送到外部，属于分类器设计上永不批准的类别。要运行此类操作，你必须退出自动模式或亲自执行命令。硬拒绝规则可通过设置自定义，你可以添加更多即便组织内用户主动要求也绝不允许的规则。</li><li><strong>数据访问与共享规则：</strong>分类器现在携带明确的规则来区分密钥与潜在的敏感/机密信息，以及各自可以在哪里访问和共享。为了让这些规则可执行，它还会在操作运行前检查 git push 或 pull request 的目的地是公开、私有还是受信任的。同一次 push，落在哪里就决定了它是例行操作还是数据外渗：属于团队私有仓库的代码不该出现在公开仓库里，分类器现在正是为标记这类风险而设计的。</li><li><strong>在破坏性 git 操作前检查 git 状态</strong>：在执行可能丢弃未提交工作的命令（如 git reset --hard）之前，分类器会查看仓库当前的 git 状态，让自动模式知道将要被重置的内容。</li><li><strong>提示词注入筛查</strong>：当 Claude 从外部来源（如网页、文件内容或工具输出）拉取内容时，API 侧的探针会检查其中是否存在试图劫持 Claude 行为的企图。当内容看起来像是注入尝试时，会在结果呈现给用户之前先向 Claude 的上下文中加入一条警告。</li></ul><h2>生产环境中的自动模式&nbsp;</h2><p>多个团队已将自动模式作为生产环境的默认设置：</p><ul role="list"><li><strong>Adobe</strong> 的商品化平台团队负责保证 Adobe.com 上 90 多个国家、30 多种语言的价格与促销页面准确且最新。他们构建了一个智能体循环来搭建并验证这些页面，并以自动模式运行，工程师只需审查收到的成品 PR。&nbsp;</li><li><strong>Nuro</strong> 在其研究和工程组织中全面运行自动模式，用它驱动夜间研究智能体对评估指标做爬山优化，并在清晨返回可供审查的成品 PR。</li><li><strong>Gusto</strong> 采用自动模式来终结权限疲劳——正是这种疲劳曾把工程师推向完全绕过权限检查的做法。自 5 月中旬以来，约 10% 的会话包含一次分类器拦截——这证明它在切实发挥作用，同时没有拖慢正常任务。</li><li><strong>Garner Health</strong> 通过托管设置将自动模式推为全部 550 名员工的默认设置，标准化了全公司范围的软件开发生命周期（SDLC），不再依赖手工维护的命令允许清单。</li></ul></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/auto-mode-default-in-claude-code" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

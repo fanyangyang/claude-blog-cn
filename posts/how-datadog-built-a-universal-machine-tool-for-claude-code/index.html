@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Datadog 如何为 Claude Code 打造一把“万能机床” — Claude Blog 中文翻译</title>
+  <meta name="description" content="Datadog 如何为 Claude Code 打造一把“万能机床”">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/how-datadog-built-a-universal-machine-tool-for-claude-code" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Claude Code</span>
+            <span class="article-date">July 21, 2026</span>
+            
+          </div>
+          <h1 class="article-title">Datadog 如何为 Claude Code 打造一把“万能机床”</h1>
+          <a href="/posts/how-datadog-built-a-universal-machine-tool-for-claude-code/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>智能体、机械化与工业化</p><p>Datadog 的所有工程师都在用 AI 编码工具写生产代码，其中至少三分之二由 Claude Code 驱动。借助 Claude Code，他们在自己的软件开发生命周期中形成了四类各具特色的个性化流程：</p><ul role="list"><li><strong>定向修改：</strong>数十个棘手的 bug 修复、性能优化，以及与现有服务的桥接。&nbsp;</li><li><strong>大型重构：</strong>三天内重构一个自研 protobuf 解析器，以及用不到三个月把一个指标控制面从 FoundationDB 迁移到 Postgres。&nbsp;</li><li><strong>替换大型组件：</strong>新的分片算法和自动扩缩容的重新设计。&nbsp;</li><li><strong>构建整套系统</strong>：用 Postgres 替换 MongoDB、BYOC 控制平面，以及从零搭建数据摄取管道。</li></ul><p>然而，随着工作沿着这张地图铺开，他们发现：一个轴线上，生成变得越来越复杂；另一个轴线上，验证变得越来越模糊。&nbsp;</p><h2>心流问题</h2><p>对工程师而言，心流（flow）过去意味着意图与代码之间的直接联系。你理解问题、写代码、测试、审查、发布、运维，如此往复。有了智能体之后，这层抽象正在快速改变。&nbsp;</p><p>"你不再是写代码的人，而是塑造工作的人。你要决定智能体应该看到什么、该有哪些工具、成功是什么样子、失败该如何被发现……这就像所有人都被连升三级变成了管理者，而他们当初选择做工程师，可没打算干这个。"Datadog 工程副总裁 Sesh Nalla 说。</p><p>借助 <a href="https://platform.claude.com/docs/en/managed-agents/overview">Claude Managed Agents</a> 等方案，Datadog 的会话运行时间更长，有时长达数天。每个智能体都会发明自己的工具、自己的胶水代码和自己的约定。这些智能体变得有用得多，但需要人类来弥合智能体执行方式与为人类设计的工具之间的鸿沟。</p><p>机床（machine tool）是制造业中常见的夹具、工装、量具和铣床。它们生产精确、可复用的零件，再由这些零件组装成更大、更复杂的机器——发动机、飞机、核反应堆、登月舱。零件变得可组合、可检查、可替换，正是工业化的突破点。</p><p>Temper 是 Sesh 对 Datadog 尝试的描述——为智能体系统打造一把万能机床。换句话说，就是智能体以安全、精确的方式构建所需之物的最小内核。</p><p>"正是在这个节点，我意识到我们需要一些更结构化的东西。"Sesh 说，"如果智能体将要构建和运营我们系统的大部分、我们数据库的大部分——这些都是关键任务系统——它们就需要有机床概念的等价物。对 Datadog 来说，Temper 就是那把机床。"</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/how-datadog-built-a-universal-machine-tool-for-claude-code" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

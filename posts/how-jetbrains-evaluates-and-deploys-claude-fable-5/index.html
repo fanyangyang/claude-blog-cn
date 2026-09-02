@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>守卫前沿：JetBrains 如何评估和部署 Claude Fable 5 — Claude Blog 中文翻译</title>
+  <meta name="description" content="守卫前沿：JetBrains 如何评估和部署 Claude Fable 5">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/how-jetbrains-evaluates-and-deploys-claude-fable-5" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Enterprise AI</span>
+            <span class="article-date">August 13, 2026</span>
+            
+          </div>
+          <h1 class="article-title">守卫前沿：JetBrains 如何评估和部署 Claude Fable 5</h1>
+          <a href="/posts/how-jetbrains-evaluates-and-deploys-claude-fable-5/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>JetBrains 打造着全球开发者都在使用的工具，从 IntelliJ IDEA、PyCharm 到 Kotlin 编程语言，服务超过 1250 万活跃用户和《财富》全球 100 强中的 88 家。JetBrains 首席技术官 Vladislav Tankov 与 Anthropic 聊了聊他的团队如何评估新模型、何时决定使用 Claude Fable 5，以及在使用前沿模型时如何看待数据留存与安全保障。</p><h2>2026 年，前沿 AI 给 JetBrains 带来了哪些变化？</h2><p>我在 JetBrains 工作了 10 年，我们是最早一批大语言模型厂商的客户。过去一年里，我们从客户和公司内部都不乏 AI 怀疑论者，转变为认识到 AI 已经扎下根来。这是科技行业一次重大而根本性的变化。公司里每一位怀疑者的看法都实实在在改变了。</p><h2>你们如何评估新模型并决定何时使用？</h2><p>我们是一家编码公司，所以有庞大的评估流水线：在私有代码仓库（包括我们的 monorepo）上运行大规模评估集。我们会仔细考察一个模型在真实工作上是否配得上它的基准分数——有些模型针对公开基准测试做了调优，在实际任务上却掉链子。有了私有仓库，验证这一点就容易多了。我们还维护多个排行榜：最佳质量榜、单任务成本最低榜和最快模型榜。虽然 Claude Fable 5 的单 token 价格更高，但在某些情况下，尤其是更复杂、运行时间更长的工作上，它的单任务成本反而更低。</p><h2>在你们的评估中，Claude Fable 5 相比之前的模型表现如何？</h2><p>Claude Fable 5 比之前的模型更准确也更高效。它在我们的评估套件中拿下了最佳的 Python 通过率 44.3%，而 Opus 4.8 为 28.2%，提升了 16 个百分点。在正面对比中，Claude Fable 5 解出了 Opus 4.8 未解出的 18 个 Python 任务，而只输掉了 2 个。它的答案也更可信：当代码运行时，它通过我们测试的频率远高于两个 Opus 模型。这一点很重要，因为能运行但给出错误答案的代码是最难发现的、代价最高的失败。</p><p>效率方面的表现同样值得关注。Claude Fable 5 找到解决方案所需的步骤比 Opus 4.8 少了约 22%，也就是说它能以更少的试错到达可用代码。它还把力气用在了正确的地方。在 Java 任务上，Opus 4.8 反复尝试引入外部资源，而这些资源在我们的环境中几乎从不奏效；Claude Fable 5 则完全跳过了这一步，直接基于眼前的代码工作。整体而言，它展现出更好的工程习惯。</p><h2>你们在什么情况下会选用 Claude Fable 5 而不是其他模型？</h2><p>Opus 被视为可靠的主力：你可以非常确信它能完成任务。而当你真正需要强大的推理能力、几乎需要一位搭档、连你自己都不确定该怎么做的时候，你就会去找 Claude Fable 5。比如，我们的一位技术负责人决定实现一个富文本编辑器组件，这个组件我们多年来尝试过好几次，而 Claude Fable 5 几乎一次就做成了。</p><p>Claude Fable 5 另一个流行的使用场景是长时间运行的智能体编码实验。我们让一个运行 Claude Fable 5 的智能体接收规格说明（以文本和图像形式），让它实现复杂的类 IDE 应用。有意思的是，规格说明本身也可以由智能体基于现有应用生成。把这两者结合起来，我们就能以近乎黑盒的方式，把应用从一个运行时、框架或语言迁移到另一个。</p><h2>面对如今的前沿模型，你们如何看待安全与数据留存？</h2><p>我们并不是一家试图自己打造最安全模型的公司。我们预期 Anthropic 那边做的红队测试和其他安全工作足以让我们相信模型是安全的。然后我们再以系统化的方式部署，在部署环节我们可以保证安全：围绕模型和执行框架搭建基础设施和安全网，而不是去修改模型本身。</p><p>安全也是我们使用 Claude Fable 5 最大的场景之一。我们对自己的产品进行白盒测试以发现漏洞，而且我们的安全团队也在为这样的现实做准备：不仅我们在运行这个模型，公司之外的人也会运行 Claude Fable 5 或同级别的模型，来探测我们所有产品中的漏洞。由于我们服务的客户是受监管行业的大型企业，做好准备对我们很重要。Claude Fable 5 是在助力我们的工作，而不是成为阻碍。</p><p>所以这是一种微妙的平衡：你这边的分类器越不激进，别人在我们产品中找到的漏洞就越多——包括那些谁都不知道的漏洞。</p><p>而且这不是秘密：我们更希望零数据留存。但我不认为还有其他办法能让你们了解模型被问了什么、分类器可能在哪里出了错。只要审查仅限于调查被标记的最严重案例，我就可以接受。我认为这是换取前沿智能的一个公平交易，它让我的团队能够发挥出最佳水平。</p><h2>JetBrains 的 AI 路线图上接下来是什么？</h2><p>我们预计各大模型厂商构建的底层模型会持续变强。现在重要的是一种软件开发驾驶舱：一个智能体与人协作、由人来管理开发过程的空间。&nbsp;</p><p>对 JetBrains 来说，这是一次重大转型。我们看到一个机会：围绕智能体驱动的软件开发全生命周期，打造支撑这一驾驶舱的下一代产品。开发者将借助智能体交付更多更好的代码，非技术角色将在软件创造中扮演更重要的角色，组织也将获得所需的治理能力与清晰的投资回报可见性。</p><p><strong><em>开始使用 </em></strong><a href="https://www.anthropic.com/claude/fable" target="_blank"><strong><em>Claude Fable</em></strong></a><strong><em>。</em></strong></p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/how-jetbrains-evaluates-and-deploys-claude-fable-5" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

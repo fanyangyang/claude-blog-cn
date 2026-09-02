@@ -1,0 +1,17 @@
+{
+  "slug": "whats-new-in-claude-managed-agents",
+  "title": "New in Claude Managed Agents: run agents on a schedule and store environment variables in vaults",
+  "date": "June 9, 2026",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/whats-new-in-claude-managed-agents",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/whats-new-in-claude-managed-agents.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.791Z",
+  "translatedTitle": "Claude Managed Agents 新功能：定时运行智能体并在 Vault 中存储环境变量",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:24:57Z",
+  "translateLang": "zh-CN"
+}

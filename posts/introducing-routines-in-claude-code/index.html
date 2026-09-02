@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude Code 中的 Routines 功能介绍 — Claude Blog 中文翻译</title>
+  <meta name="description" content="Claude Code 中的 Routines 功能介绍">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/introducing-routines-in-claude-code" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Product announcements</span>
+            <span class="article-date">April 14, 2026</span>
+            
+          </div>
+          <h1 class="article-title">Claude Code 中的 Routines 功能介绍</h1>
+          <a href="/posts/introducing-routines-in-claude-code/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>今天，我们以研究预览版的形式在 Claude Code 中推出 Routines（例行任务）。一个 routine 是你只需配置一次的 Claude Code 自动化——包括提示词、仓库和连接器——之后可以按计划运行、由 API 调用触发或响应事件。Routines 运行在 <a href="https://code.claude.com/docs/en/claude-code-on-the-web">Claude Code 的 Web 基础设施</a>上，因此不依赖你的笔记本电脑是否开着。</p><p>开发者已经在用 Claude Code 自动化软件开发周期，但在此之前，cron 任务、基础设施以及 MCP 服务器之类的额外工具都得自己管理。Routines 自带对你的仓库和<a href="https://claude.com/connectors">连接器</a>的访问能力，所以你可以把自动化打包好，设成按计划运行或按触发器运行。</p><h2>工作原理</h2><figure style="max-width:1600pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69de678887f94fb639698fa7_dd878b86.png" loading="lazy"></div></figure><h3>定时 routine</h3><p>给 Claude Code 一条提示词和一个执行频率（每小时、每晚或每周），它就会按计划运行：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-plaintext" style="white-space:pre-wrap"><span><span>Every night at 2am: pull the top bug from Linear, attempt a fix, and open a draft PR.</span></span></code></pre><p>如果你此前在 CLI 中使用 <a href="https://code.claude.com/docs/en/scheduled-tasks#compare-scheduling-options">/schedule</a>，那些任务现在就是定时 routine。&nbsp;</p><h3>API routine</h3><p>你也可以把 routine 配置为由 API 调用触发。每个 routine 都有自己独立的端点和认证令牌。POST 一条消息，就会返回一个会话 URL。把 Claude Code 接入你的告警系统、部署钩子、内部工具——任何能发 HTTP 请求的地方：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-plaintext" style="white-space:pre-wrap"><span><span>Read the alert payload, find the owning service, and post a triage summary to #oncall with a proposed first step.</span></span></code></pre><p>如果你是在 Claude 平台上构建云端托管的 agent，而不是自动化 Claude Code，那么 <a href="https://claude.com/blog/whats-new-in-claude-managed-agents">Claude Managed Agents 的定时部署</a>可以为你的 agent 提供同样的按计划运行能力。</p><h3>Webhook routine，首先支持 GitHub</h3><p>为 routine 设置订阅，使其在 GitHub 仓库事件发生时自动启动。Claude 会为每一条匹配你过滤条件的 PR 创建新会话并运行你的 routine。</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-plaintext" style="white-space:pre-wrap"><span><span>Please flag PRs that touch the /auth-provider module. Any changes to this module need to be summarized and posted to #auth-changes.</span></span></code></pre><p>Claude 会为每个 PR 开一个会话，并持续把该 PR 的后续更新喂给这个会话，以便它处理评论和 CI 失败之类的后续事项。</p><p>我们计划在未来把基于 webhook 的 routine 扩展到更多事件源。</p><h2>团队都在构建什么</h2><p>在早期创建 routine 的用户中，已经浮现出一些常见模式：</p><h3>定时 routine</h3><ul role="list"><li>待办管理：每晚对新 issue 做分类、打标签、指派，并把摘要发到 Slack</li><li>文档漂移：每周扫描已合并的 PR，标记引用了已变更 API 的文档，并提开更新 PR</li></ul><h3>API routine</h3><ul role="list"><li>部署验证：你的 CD 流水线在每次部署后发请求，Claude 对新构建跑冒烟检查、扫描错误日志中的回归，并向发布频道发布"通过/不通过"结论</li><li>告警分诊：把 Datadog 指向 routine 的端点，Claude 拉取调用链、与近期部署做关联，赶在值班人员点开告警页之前就备好修复草稿</li><li>反馈处理：文档反馈小组件或内部仪表盘把报告发过来，Claude 带着该 issue 的上下文对仓库开启会话并起草改动</li></ul><h3>GitHub routine</h3><ul role="list"><li>库移植：每有一个 PR 合并进 Python SDK，就触发一个 routine 把改动移植到对应的 Go SDK，并开一个配对的 PR</li><li>定制代码审查：PR 打开时，按你们团队自己的安全与性能清单跑一遍，在人工审查者介入前留下行内评论</li></ul><h2>开始使用</h2><p>Routines 从今天起面向已启用 <a href="https://code.claude.com/docs/en/claude-code-on-the-web#who-can-use-claude-code-on-the-web">Claude Code on the web</a> 的 Pro、Max、Team 和 Enterprise 计划的 Claude Code 用户开放。前往 <a href="http://claude.ai/code">claude.ai/code</a> 创建你的第一个 routine，或在 CLI 中输入 /schedule。</p><p>Routines 消耗订阅用量限额的方式与交互式会话相同。此外，routines 还有每日限额：Pro 用户每天最多运行 5 个 routine，Max 用户每天最多 15 个，Team 和 Enterprise 用户每天最多 25 个。超出限额后，你可以通过额外用量（extra usage）运行更多 routine。更多信息请<a href="http://code.claude.com/docs/en/routines">查阅文档</a>。</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/introducing-routines-in-claude-code" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

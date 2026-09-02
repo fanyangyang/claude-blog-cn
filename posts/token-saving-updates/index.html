@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anthropic API 上的 token 节省更新 — Claude Blog 中文翻译</title>
+  <meta name="description" content="Anthropic API 上的 token 节省更新">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/token-saving-updates" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Product announcements</span>
+            <span class="article-date">March 13, 2025</span>
+            
+          </div>
+          <h1 class="article-title">Anthropic API 上的 token 节省更新</h1>
+          <a href="/posts/token-saving-updates/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>我们对 Anthropic API 进行了多项更新，让开发者在使用 Claude 3.7 Sonnet 时显著提升吞吐量并减少 token 消耗。这些更新包括：缓存感知速率限制、更简单的提示词缓存，以及 token 高效的工具使用。</p><p>这些更新组合起来，可以帮助你在现有速率限制内处理更多请求，并以极小的代码改动降低成本。</p><h3>借助提示词缓存提升吞吐量</h3><p><a href="https://www.anthropic.com/news/prompt-caching">提示词缓存（prompt caching）</a>允许开发者在 API 调用之间存储和复用频繁访问的上下文。这让 Claude 能够记住大型文档、指令或示例，而无需在每次请求中重复发送相同信息——对长提示词而言，成本最多可降低 90%，延迟最多可降低 85%。我们为 Claude 3.7 Sonnet 发布了两项提示词缓存改进，二者配合使用可帮助你更高效地扩展规模。</p><h4>缓存感知速率限制</h4><p>对于 Anthropic API 上的 Claude 3.7 Sonnet，提示词缓存读取的 token 不再计入每分钟输入 token（ITPM）限制。这意味着你现在可以优化提示词缓存的使用来提升吞吐量，从现有 ITPM 速率限制中获得更多产出。每分钟输出 token（OTPM）速率限制保持不变。</p><figure style="max-width:3840pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="A bar chart showing additional throughput with cache-aware ITPM." src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e95d976762a4d6d964329a_3dd27bad67e95c1a25c8330f7e8eab21faf2798c-3840x2160.png"></div></figure><p>这让 Claude 3.7 Sonnet 对那些既需要大量上下文又要求高吞吐量的应用尤其强大，例如：</p><ul role="list"><li>需要在上下文中维护大型知识库的文档分析平台</li><li>需要参考大型代码库的编程助手</li><li>利用详细产品文档的客户支持系统</li></ul><p><a href="https://docs.anthropic.com/en/api/rate-limits#rate-limits">缓存感知 ITPM 限制</a>现已在 Anthropic API 上面向 Claude 3.7 Sonnet 开放。</p><h4>更简单的缓存管理</h4><p>我们简化了提示词缓存的使用方式。现在，当你设置缓存断点（cache breakpoint）时，Claude 会自动从你此前缓存的最长前缀中读取。</p><p>你不再需要手动跟踪并指定要使用哪些缓存片段，我们会自动识别并使用最相关的缓存内容。这不仅减轻了你的工作量，还释放了更多可用 token。</p><figure style="max-width:1920pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="A comparison of prompt caching with and without automatic use of the largest cached prefix." src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e95d966762a4d6d9643288_e82adfbb319b8970e1e7aefa2a284f0c201463b4-1920x1054.png"></div></figure><p>该功能现已在 Anthropic API 和 Google Cloud 的 Vertex AI 上可用。请查阅我们的<a target="_blank" href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching">文档</a>了解更多。</p><h3>token 高效的工具使用</h3><p>Claude 此前已具备与外部客户端工具和函数交互的能力。此次更新让你可以为 Claude 配备自己的自定义工具来执行任务——比如从非结构化文本中提取结构化数据，或通过 API 自动化简单任务。Claude 3.7 Sonnet 现已支持以<a target="_blank" href="https://docs.anthropic.com/en/docs/build-with-claude/tool-use/token-efficient-tool-use">token 高效的方式调用工具</a>，输出 token 消耗最多可降低 70%。早期用户的平均降幅为 14%。</p><p>要使用该功能，只需在使用 Claude 3.7 Sonnet 的工具调用请求中添加测试版请求头<strong> </strong><em>token-efficient-tools-2025-02-19</em>。如果你在使用 SDK，请确保使用支持 <em>anthropic.beta.messages</em> 的测试版 SDK。</p><p>token 高效的工具使用目前已在 Anthropic API、Amazon Bedrock 和 Google Cloud 的 Vertex AI 上进入测试阶段。</p><h4>text_editor 工具</h4><p>我们还推出了全新的 <em>text_editor</em> 工具，专为用户与 Claude 协作处理文档的应用场景而设计。借助这个新工具，Claude 可以对源代码、文档或研究报告中的特定文本片段进行精准编辑。这在提升准确性的同时，还降低了 token 消耗和延迟。</p><p>开发者只需在 API 请求中提供该工具并处理工具使用的响应，即可轻松将其集成到自己的应用中。</p><p><em>text_editor</em> 工具现已在 Anthropic API、Amazon Bedrock 和 Google Cloud 的 Vertex AI 上可用。请查阅我们的<a target="_blank" href="https://docs.anthropic.com/en/docs/build-with-claude/tool-use/text-editor-tool">文档</a>快速上手。</p><h3>客户聚焦：Cognition</h3><p>Cognition 等早期用户正在利用这些更新提升 token 效率和回复质量。Cognition 是一家应用型 AI 实验室，也是 Devin 的缔造者——Devin 是一个协作型 AI 队友，帮助有雄心的工程团队取得更大成就。</p><p>"提示词缓存让我们可以提供更多代码库上下文，从而在降低成本和延迟的同时获得更高质量的结果。借助缓存感知的 ITPM 限制，我们正在进一步优化提示词缓存的使用，以提升吞吐量，从现有速率限制中获得更多产出，"Cognition 联合创始人兼 CEO Scott Wu 表示。</p><h3>立即开始</h3><p>这些功能现已面向所有 Anthropic API 客户开放。你可以立即以极小的代码改动启用它们：</p><ol role="list"><li><strong>利用缓存感知速率限制：</strong>在 Claude 3.7 Sonnet 上使用<a target="_blank" href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching">提示词缓存</a>。</li><li><strong>实现 token 高效的工具使用：</strong>在请求中添加测试版请求头 <em>token-efficient-tools-2025-02-19</em>，开始节省 token。</li><li><strong>试用 <em>text_editor</em> 工具：</strong>将其集成到你的应用中，实现更高效的文档编辑工作流。</li></ol></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/token-saving-updates" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

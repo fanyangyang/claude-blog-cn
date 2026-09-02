@@ -1,0 +1,17 @@
+{
+  "slug": "harnessing-claudes-intelligence",
+  "title": "Agent Harness Design: 3 Patterns for Harnessing Claude's Intelligence",
+  "date": "April 2, 2026",
+  "category": "Agents",
+  "url": "https://claude.com/blog/harnessing-claudes-intelligence",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/harnessing-claudes-intelligence.svg",
+  "illustrationBg": "Plum",
+  "fetchedAt": "2026-09-02T03:50:17.784Z",
+  "translatedTitle": "Agent harness 设计：驾驭 Claude 智能的三种模式",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:07:02.000Z",
+  "translateLang": "zh-CN"
+}

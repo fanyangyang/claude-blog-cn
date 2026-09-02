@@ -1,0 +1,17 @@
+{
+  "slug": "common-workflow-patterns-for-ai-agents-and-when-to-use-them",
+  "title": "Common workflow patterns for AI agents—and when to use them",
+  "date": "March 5, 2026",
+  "category": "Agents",
+  "url": "https://claude.com/blog/common-workflow-patterns-for-ai-agents-and-when-to-use-them",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/common-workflow-patterns-for-ai-agents-and-when-to-use-them.svg",
+  "illustrationBg": "Heather",
+  "fetchedAt": "2026-09-02T03:50:17.788Z",
+  "translatedTitle": "AI agent 的常见工作流模式及其适用场景",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:15:21.000Z",
+  "translateLang": "zh-CN"
+}

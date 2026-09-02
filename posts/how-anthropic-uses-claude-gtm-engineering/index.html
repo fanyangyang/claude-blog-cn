@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>一位 Anthropic 销售如何用 Claude Code 重构团队工作流 — Claude Blog 中文翻译</title>
+  <meta name="description" content="一位 Anthropic 销售如何用 Claude Code 重构团队工作流">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/how-anthropic-uses-claude-gtm-engineering" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Claude Code</span>
+            <span class="article-date">June 5, 2026</span>
+            
+          </div>
+          <h1 class="article-title">一位 Anthropic 销售如何用 Claude Code 重构团队工作流</h1>
+          <a href="/posts/how-anthropic-uses-claude-gtm-engineering/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>2024 年加入 Anthropic 之前，Jared Sires 从没写过一行代码。他又何必写呢？他是一名初创公司的客户经理（account executive）。&nbsp;</p><p>和许多高速增长的公司一样，Jared 负责的客户很快增长到六七百家。每天 10 到 15 个客户电话，再加上不断扩大的客户名单，Jared 每天晚上都要坐在办公桌前回复客户邮件，一直到晚上九十点。&nbsp;</p><p>“我的收件箱几乎没法管理了，”他说，“还要在此基础上做外联拓客，你根本不知道该把精力放在哪里。”</p><p>Jared 向 Claude Code 求助。毫无编程经验的他创建了 CLAFTS——<em>Claude Drafts</em> 的缩写：一个运行在 Gmail 内部的应用，利用 Claude API 起草客户邮件的回复。经过多次迭代，Jared 估计 CLAFTS 每天为他节省两到三个小时。第二天早上他在 Slack 里分享了这款工具，24 小时内，销售组织的其他同事就开始使用，效果不相上下。&nbsp;</p><p>这促成了 Jared 在 Anthropic 角色的转变：如今，他是 go-to-market（GTM）团队的产品经理，专门负责发现 Anthropic 销售组织运营中的问题，并构建由 Claude 驱动的解决方案来修复这些问题。在新岗位上，Jared 构建了自动处理客户沟通、在通话前调研客户背景、根据会议记录生成跟进邮件的工具。随后他把这些工具打包成一个插件，放进 <a href="https://claude.com/product/cowork" target="_blank">Claude Cowork</a>，让整个销售团队都能使用。&nbsp;</p><p>他把这次职业转变描述为“我经历过的最令人充满力量的事情”。</p><p>下面来看看 Jared 是如何用 Claude 大规模处理收件箱的、他接下来在做什么，以及 GTM 团队可以从他的方法中借鉴的最佳实践。</p><div class="w-embed w-iframe"><div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:12px;">
+  <iframe src="https://www.youtube.com/embed/n4ZxEznNaIY" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" title="How Anthropic uses Claude in GTM Engineering" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen=""></iframe>
+</div></div><h2><strong>被行政工作淹没的销售代表</strong></h2><p>邮件量并不是 Jared 担任客户经理时面临的唯一挑战。Anthropic 每 24 到 48 小时就会发布一次产品变更，而客户的问题往往聚焦于最新的细节：Batch API 的 SLA、prompt caching 折扣、模型定价、SDK 行为。要回答好这些问题，就意味着要在 Slack、Google Docs、内部知识库和开发者文档之间反复检索——而且日复一日，事实细节每天都略有不同。</p><p>“把技术文档转述给客户相当困难，尤其是在 Anthropic 这样产品迭代极快的地方，”Jared 说。</p><p>他对 Claude 的最初尝试之一范围很窄，但非常实用。借助 Apps Script（Google 的轻量级开发平台）和 Claude，Jared 从内部系统拉取产品使用数据，让 Claude 每天早上按客户增长速度对它们进行排序。&nbsp;</p><p>“Claude 每天会根据客户的使用情况给我一份简报，告诉我该重点关注谁，”他说。手上有 700 家客户，这份每日简报帮他决定了外联时间该花在哪里。</p><h2><strong>开发 CLAFTS</strong></h2><p>更棘手的挑战是 Jared 的收件箱，以及他不得不熬夜回复邮件的漫长时间。&nbsp;</p><p>借助 Claude Code，他开始开发一套用自己的语气起草客户邮件回复的系统。“Claude Code 名字里带着‘code’这个词，一开始让我连启动它都有点发怵，”他说，“但过了一段时间，我就体会到了它的强大——它能连接到我的电脑，回答关于我电脑上文件的问题。”</p><p>CLAFTS 由大约 4,300 行代码构成，几乎全部由 Claude Code 编写。它从共享的 Google Drive 文件夹和其他第三方工具拉取上下文，通过网络搜索引用 Anthropic 的公开文档，并模仿 Jared 的写作风格。当他在一天结束时打开草稿文件夹时，等待审阅的回复已经就绪。</p><p>每当 Anthropic 发布产品变更，文档随之更新，Claude 在下一次起草时就会捕捉到变化。“Claude 能够通过网络搜索从我们的网站上理解最新的文档，并在生成邮件时引用这些材料，”Jared 说，“我不需要把这些全都装在脑子里。”</p><p>Claude 开箱即用的写作风格往往偏长、偏多保留性措辞，于是 Jared 反复打磨系统提示词，直到草稿与自己的写作风格一致。“我大概对着 CLAFTS 的系统提示词迭代了上百次，让它为我生成各种不同风格的文字，”他说。</p><p>接下来，他开发了 CLAFTS Tones 功能，利用模式匹配让草稿在不同关系中模仿他的语气。发给客户、同事和家人的邮件读起来各不相同，草稿会分别适配。</p><p>Jared 用自己的个人邮箱给自己写了一连串火气越来越大的邮件来测试这个功能。Claude 捕捉到了语气，随后却拒绝继续。</p><p>“Claude 开始模仿那种语气，但到某个时刻开始拒绝我，因为它不想给客户生成愤怒的邮件，”他说，“那一刻我就知道 CLAFTS Tones 生效了。”</p><h3><strong>衡量 CLAFTS 的效果</strong></h3><p>CLAFTS 每周为 Jared 节省 10-15 个小时，但他最在意的转变是工作的准确性。Claude 每次起草都会从文档中拉取当前的产品细节，客户得到的回答与最新发布的内容保持一致，而不是取决于 Jared 碰巧记得什么。</p><p>“在 CLAFTS 出现之前，我觉得自己做的行政工作多于真正陪伴客户的时间，”Jared 说，“有了 CLAFTS 之后，我终于能做更多自己真正想做的事——销售。”</p><h2><strong>规模化 Anthropic 的 GTM 工具箱&nbsp;</strong></h2><p>Jared 之外，经常忙到半夜给客户发邮件的 BDR John Albert 也参与了 CLAFTS 的共同开发。业务拓展团队的其他成员在看到队友每天都能省出几个小时后也纷纷加入。此后，推广工作大多由他们自己完成。</p><p>Jared 构建的下一批工具是一组<a href="https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview"> skills</a>，分别安放在他一天日程的两端：每日简报（daily brief）和每日回顾（daily recap）。</p><p>每天早晨，daily brief skill 会读取他的日历，对当天要见的每个人进行网络搜索，并在第一通电话前准备好谈话要点。这个 skill 通过 <a href="https://www.anthropic.com/news/model-context-protocol">MCP 服务器</a>连接 Google Calendar 和 CRM 数据，拉取每位客户的相关信息。</p><p>每天结束时，daily recap skill 则从 Google Docs 和会议记录中提取内容，起草跟进邮件，与 CLAFTS 类似。</p><p>“把这两个组合起来，你就得到了一个由 Claude 管理日常任务的系统，本质上它就成了一个智能体，”他说。&nbsp;</p><p>随着不断尝试 <a href="https://code.claude.com/docs/en/agent-sdk/overview">Agent SDK</a> 和链式工作流——一次 Claude 运行的输出作为下一次的输入——Jared 的工作正进一步向智能体领域推进。</p><p>为了确保他用 Claude Code 构建的工具能在自己支持的更大团队中规模化，他通过 Claude Cowork 发布这些工具，把 skills 和 MCP 连接器打包成一个任何人都能在几分钟内安装的插件。</p><p>Sales 插件上线后的几个月内，Anthropic 销售组织大约 80% 的人都在使用它。剩下的 20% 主要是新员工，Jared 认为这是下一个要攻克的挑战，因为这些 skills 正是为了帮助新人更快上手而构建的。</p><p>在插件出现之前，每位新员工要花数周时间摸索自己的工作流程。现在，新人入职第一天就能安装插件，20 多个 skills 已经接好他们日常使用的工具：Salesforce、Intercom、Gong、Google Calendar、Gmail、Google Drive 和 BigQuery。</p><p>销售团队插件由两个核心 skills 支撑：</p><ol role="list"><li>&nbsp;<code>/customer-context </code>可在约 90 秒内汇总上述所有数据源，生成账户的 360 度全景视图。&nbsp;</li><li><code>/pipeline-management</code> 呈现有流失风险的交易、预测指引和推进建议。</li></ol><p>这个插件还集成了 Cowork 的定时功能，销售代表可以让 skills 自动排队运行。</p><p>“我们的销售人员可以重新专注于有意义的对话，而不必挨个去更新这些不同的应用，”他说。</p><h2><strong>规划下一步&nbsp;</strong></h2><p>工具在演进，Jared 的角色也随之改变。作为一名 GTM 架构师（GTM Architect），他现在会参与和产品工程师的设计讨论，帮助打造 Anthropic 销售团队的新工具。&nbsp;</p><p>“技术门槛逐渐消融，我觉得自己几乎能设计出更多的产品，再让资深工程师帮我实现最后一步，”Jared 说，“我能放大自己的能力，做更多的事情。”</p><p>对于那些想知道自己能否构建类似工具的销售人员，他的建议是：打开 Claude Code，找到一个拖慢自己速度的任务，然后问 Claude 如何为它构建一个解决方案。</p><p>“如果一年前你告诉我，我会在 Anthropic 做负责 go-to-market 的产品经理，我会相当惊讶，”他说，“过去我从来不具备参与这类技术对话的能力。有了 Claude，我能够设计和构建的东西不只改善我自己的日常工作流，也改善了整个团队的。我有了更多空间去做更有创造性和战略性的事情，而且再也回不去了。”</p><p><em>立即开始使用 </em><a href="https://claude.ai/" target="_blank"><em>Claude</em></a><em>。“Anthropic 如何使用 Claude”系列还将带来更多故事，敬请期待。</em></p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/how-anthropic-uses-claude-gtm-engineering" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

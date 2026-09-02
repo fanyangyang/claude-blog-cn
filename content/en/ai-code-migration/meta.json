@@ -1,0 +1,17 @@
+{
+  "slug": "ai-code-migration",
+  "title": "How Anthropic runs large-scale code migrations with Claude Code",
+  "date": "July 16, 2026",
+  "category": "Claude Code",
+  "url": "https://claude.com/blog/ai-code-migration",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/ai-code-migration.svg",
+  "illustrationBg": "Sky",
+  "fetchedAt": "2026-09-02T03:50:17.788Z",
+  "translatedTitle": "Anthropic 如何用 Claude Code 执行大规模代码迁移",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:14:34.101Z",
+  "translateLang": "zh-CN"
+}

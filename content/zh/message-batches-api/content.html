@@ -1,0 +1,71 @@
+<div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p><strong><em>更新：</em></strong><em>Message Batches API 现已在 Anthropic API 上正式发布（GA）。在 Amazon Bedrock 中使用 Claude 的客户可以使用批量推理（batch inference）。批量预测功能也已在 Google Cloud 的 Vertex AI 上进入预览阶段。（2024 年 12 月 17 日）<br><br><br></em>我们推出全新的 <a target="_blank" href="https://docs.anthropic.com/en/docs/build-with-claude/message-batches">Message Batches API</a>——一种强大且经济高效的方式，用于异步处理大批量查询。</p><p>开发者每个批次最多可提交 10,000 条查询。每个批次都会在 24 小时内处理完成，且成本比标准 API 调用低 50%。这让处理对时效性要求不高的任务变得更加高效、更具性价比。</p><p>Batches API 于今日在 Anthropic API 上进入公开测试阶段，支持 Claude 3.5 Sonnet、Claude 3 Opus 和 Claude 3 Haiku。在 Amazon Bedrock 中使用 Claude 的客户可以使用<a target="_blank" href="https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference.html">批量推理</a>。<a target="_blank" href="https://cloud.google.com/vertex-ai/generative-ai/docs/partner-models/use-claude">Google Cloud Vertex AI 上的 Claude</a> 的批处理支持也即将推出。</p><h2>以一半的成本获得高吞吐量</h2><p>开发者经常用 Claude 处理海量数据——从分析客户反馈到翻译语言——这些场景并不需要实时响应。</p><p>你无需管理复杂的队列系统，也不必担心速率限制，只需使用 Batches API 提交最多包含 10,000 条查询的批次，剩下的交由 Anthropic 处理，并享受 50% 的折扣。批次会在 24 小时内处理完成，通常实际耗时更短。其他优势包括：</p><ul role="list"><li><strong>更强的吞吐能力：</strong>享有更高的速率限制，可以处理大得多的请求量，且不影响你的标准 API 速率限制。</li><li><strong>面向大数据的可扩展性：</strong>无需担心基础设施问题，即可应对大规模任务，例如数据集分析、大型数据集分类或大规模模型评估。</li></ul><p>Batches API 为大规模数据处理解锁了新的可能性，而这类工作以前要么不太可行，要么成本过高。例如，分析整个企业文档库（可能涉及数百万个文件），借助我们的批量折扣，在经济上变得更加可行。</p><h2>定价</h2><p>Batches API 让你能够享受基础设施成本节约，输入和输出 token 均享有 50% 折扣。</p><div class="w-embed"><figure>
+  <div role="region" tabindex="0">
+    <table>
+      <tbody>
+        <tr>
+          <td>
+            <strong>Claude 3.5 Sonnet</strong>
+            <ul>
+              <li>我们迄今最智能的模型</li>
+              <li>200K 上下文窗口</li>
+            </ul>
+          </td>
+          <td>
+            <strong>批量输入</strong>
+            <ul>
+              <li>$1.50 / MTok</li>
+            </ul>
+          </td>
+          <td>
+            <strong>批量输出</strong>
+            <ul>
+              <li>$7.50 / MTok</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong>Claude 3 Opus</strong>
+            <ul>
+              <li>面向复杂任务的强大模型</li>
+              <li>200K 上下文窗口</li>
+            </ul>
+          </td>
+          <td>
+            <strong>批量输入</strong>
+            <ul>
+              <li>$7.50 / MTok</li>
+            </ul>
+          </td>
+          <td>
+            <strong>批量输出</strong>
+            <ul>
+              <li>$37.50 / MTok</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong>Claude 3 Haiku</strong>
+            <ul>
+              <li>速度最快、性价比最高的模型</li>
+              <li>200K 上下文窗口</li>
+            </ul>
+          </td>
+          <td>
+            <strong>批量输入</strong>
+            <ul>
+              <li>$0.125 / MTok</li>
+            </ul>
+          </td>
+          <td>
+            <strong>批量输出</strong>
+            <ul>
+              <li>$0.625 / MTok</li>
+            </ul>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</figure></div><h2>客户聚焦：Quora</h2><p><a target="_blank" href="https://cloud.google.com/customers/quora?hl=en">Quora</a> 是一个以用户为基础的问答平台，他们利用 Anthropic 的 Batches API 进行摘要生成和高亮内容提取，以打造面向终端用户的新功能。</p><p>"Anthropic 的 Batches API 既节省了成本，又降低了运行大量无需实时处理的查询的复杂度，"Quora 产品经理 Andy Edmonds 表示。"提交一个批次，然后在 24 小时内下载结果，这非常方便，不用为了得到同样的结果而去应付大量并行实时查询的复杂性。这让我们的工程师有时间为更有意思的问题工作。"</p><h2>开始使用</h2><p>要在 Anthropic API 上开始使用公开测试阶段的 Batches API，请查阅我们的<a href="https://docs.anthropic.com/en/docs/build-with-claude/message-batches">文档</a>和<a target="_blank" href="https://docs.anthropic.com/en/docs/build-with-claude/message-batches">定价页面</a>。</p></div>

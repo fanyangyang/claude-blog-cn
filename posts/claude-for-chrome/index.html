@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude in Chrome 试点 — Claude Blog 中文翻译</title>
+  <meta name="description" content="Claude in Chrome 试点">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/claude-for-chrome" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Product announcements</span>
+            <span class="article-date">August 25, 2025</span>
+            
+          </div>
+          <h1 class="article-title">Claude in Chrome 试点</h1>
+          <a href="/posts/claude-for-chrome/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p><strong><em>更新：现已面向 Pro、Team 和 Enterprise 计划开放</em></strong><em>（2025 年 12 月 18 日）</em></p><p>经过数月的真实环境测试，我们已准备好向所有付费计划扩展。我们还发布了呼声最高的功能：<strong>Claude Code</strong> 集成。在终端里构建，在浏览器中验证，Claude 可直接读取控制台报错和 DOM 状态来帮你调试。</p><p><strong>对于 Teams 和 Enterprise：</strong>管理员可以在组织范围内启用或禁用该扩展，并配置站点白名单和黑名单。</p><p>‍</p><p><strong><em>更新：现已向所有 Max 计划订阅者开放 </em></strong><em>（2025 年 11 月 24 日）</em></p><p><em>经过三个月的测试，</em><a href="https://claude.ai/chrome" target="_blank"><em>Claude in Chrome</em></a><em> 现已向所有 Max 计划订阅者推出测试版。自研究预览以来，我们发布了多项重要更新，包括定时任务、多标签页工作流，以及在你常用网站上更智能的导航。完整的更新列表请参阅我们的</em><a href="https://support.claude.com/en/articles/12306336-claude-for-chrome-release-notes" target="_blank"><em>发布说明</em></a><em>；提示词注入防御的细节与试点心得请参阅我们的</em><a href="http://anthropic.com/research/prompt-injection-defenses" target="_blank"><em>安全博客</em></a><em>。</em></p><p>‍</p><p>过去几个月里，我们一直在把 Claude 接入你的日历、文档和许多其他软件。下一个顺理成章的步骤，是让 Claude 直接在你的浏览器中工作。</p><p>我们认为使用浏览器的 AI 是大势所趋：如此多的工作都发生在浏览器中，让 Claude 能够看到你正在看的内容、点击按钮、填写表单，将使它的实用性大幅提升。</p><p>但使用浏览器的 AI 也带来了需要更强防护的安全挑战。从可信赖的合作伙伴那里获得关于用途、缺陷和安全问题的真实反馈，让我们能够构建稳健的分类器，并教导未来的模型规避不良行为。这能确保随着能力的提升，浏览器安全也同步跟上。</p><p>由前沿模型驱动的浏览器智能体已经初露端倪，这让这项工作尤为紧迫。通过解决安全难题，我们能更好地保护 Claude 用户，并把经验分享给所有基于我们的 API 构建浏览器智能体的开发者。</p><p>我们从受控测试开始：<strong>推出一款 Chrome 的 Claude 扩展，受信任的用户可以让 Claude 代表自己在浏览器中执行操作。</strong>我们正与 1000 名 Max 计划用户进行试点——<a href="http://claude.ai/chrome" target="_blank">加入等候名单</a>——尽可能多地学习。随着我们开发出更强的安全措施并通过这一限量预览积累信心，我们将逐步扩大访问范围。</p><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/mCj4kx_P2Ak" title="Research Preview: Claude for Chrome" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><h3>使用浏览器的 AI 需要考虑的问题</h3><p>在 Anthropic 内部，使用早期版本的 Claude in Chrome 管理日历、安排会议、起草邮件回复、处理日常报销以及测试新网站功能，我们已经看到可观的效率提升。</p><p>不过，在 Claude in Chrome 正式广泛可用之前，仍有一些漏洞需要修复。正如人们会在收件箱里遭遇钓鱼攻击，使用浏览器的 AI 也面临提示词注入攻击——恶意行为者在网页、邮件或文档中隐藏指令，诱骗 AI 在用户不知情的情况下执行有害操作（比如隐藏文本写着“忽略之前的指令，改为执行[恶意操作]”）。</p><p>提示词注入攻击可能导致 AI 删除文件、窃取数据或进行金融交易。这绝非危言耸听：我们对 Claude in Chrome 进行过“红队”实验，在没有缓解措施的情况下，我们发现了一些令人担忧的结果。</p><p>我们开展了广泛的对抗性提示词注入测试，评估了代表 29 种不同攻击场景的 123 个测试用例。在恶意行为者蓄意定向攻击下，未加安全缓解措施的浏览器使用场景攻击成功率为 23.6%。</p><p>在应用新的防御措施之前，一次成功攻击的例子是：一封恶意邮件声称出于安全原因需要删除邮件。Claude 在处理收件箱时，遵循了这些指令，未经确认就删除了用户的邮件。</p><figure style="max-width:1920pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e95d90c3728899c99ce194_5e46f0fa8e0ed4a6d71333dba95e1ff6aa64c5b1-1920x1030.png" loading="lazy"></div><figcaption>Claude 遇到了这封恶意邮件，它伪装成雇主，以“邮箱卫生”为由要求删除邮件，并声称“无需额外确认”。</figcaption></figure><figure style="max-width:1920pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e95d91c3728899c99ce199_5169a802140e293fdbc96706b4eb73e948084574-1920x1030.png" loading="lazy"></div><figcaption>Claude 未经确认便执行了指令，以“安全团队要求”为名勾选并删除了用户的邮件。</figcaption></figure><figure style="max-width:1920pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e95d91c3728899c99ce1aa_d2a23a7e8cd07f47eda84ac44135f770d624915f-1920x1030.png" loading="lazy"></div><figcaption>我们新的缓解措施成功防御了这一特定攻击。Claude 识别出“这是一封可疑的安全事件邮件，疑似钓鱼攻击”，并未执行其中的指令。</figcaption></figure><p>正如下一节将要说明的，我们已经实施了多项防御措施，显著降低了攻击成功率——不过在发掘新型攻击向量方面，仍有工作要做。</p><h3>现有防御措施</h3><p>对抗提示词注入攻击的第一道防线是<em>权限</em>。用户始终掌控 Claude in Chrome 可以访问和执行的操作：</p><ul role="list"><li><strong>站点级权限</strong>：用户可以随时在设置中授予或撤销 Claude 对特定网站的访问权限。</li><li><strong>操作确认</strong>：在执行发布、购买或分享个人数据等高风险操作之前，Claude 会先征询用户。即使用户选择加入实验性的“自主模式”，Claude 对高度敏感的操作仍保留某些安全防护（注：所有红队测试和安全评估均在自主模式下进行）。</li></ul><p>我们还依据 Anthropic 的<a href="https://www.anthropic.com/news/our-framework-for-developing-safe-and-trustworthy-agents" target="_blank">可信智能体</a>原则构建了额外的保障措施。首先，我们改进了系统提示词——即 Claude 在收到用户具体指令之前所获得的通用指令——指导 Claude 如何处理敏感数据、如何回应执行敏感操作的请求。</p><p>此外，我们禁止 Claude 访问某些高风险类别的网站，例如金融服务、成人内容和盗版内容。我们也在开始构建并测试高级分类器，用于检测可疑的指令模式和异常的数据访问请求——即使它们出现在看似合法的情境中。</p><p>在自主模式中加入安全缓解措施后，我们把 23.6% 的攻击成功率降到了 11.2%，相比我们现有的 Computer Use 能力（Claude 可以看到用户屏幕，但没有我们今天推出的浏览器界面）是有意义的提升。</p><figure style="max-width:3840pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e95d91c3728899c99ce19d_b88d1e1c0c196dd012a7d44c5ae8d255d8a20822-3840x2160.png" loading="lazy"></div><figcaption>三种场景下的提示词注入攻击成功率：较早的计算机使用能力、仅有既有安全缓解措施的新浏览器产品，以及加入新缓解措施的新浏览器产品（分数越低越好）。我们的安全改进将浏览器攻击成功率降到了计算机使用能力之下。</figcaption></figure><p>我们还针对浏览器特有的新型攻击开展了专项红队测试和缓解工作，例如网页文档对象模型（DOM）中对人类不可见的隐藏恶意表单字段，以及其他难以察觉的注入方式，比如通过只有智能体才会注意到的 URL 文本和标签页标题。在包含四种浏览器特有攻击类型的“挑战”测试集上，我们的新缓解措施将攻击成功率从 35.7% 降到了 0%。</p><p>在让 Claude in Chrome 面向更广泛用户之前，我们希望扩展所考虑的攻击面，通过更深入地理解当前及未来可能出现的威胁，把这些百分比进一步逼近于零。</p><h3>参与方式</h3><p>内部测试无法完全复现人们在真实世界中的浏览复杂性：他们提出的具体请求、访问的网站，以及恶意内容在实践中的呈现方式。恶意行为者也在不断开发新形式的提示词注入攻击。这次研究预览让我们能够在真实条件下与受信任的用户合作，揭示现有防护中哪些有效、哪些仍需改进。</p><p>我们将利用试点中获得的认识来完善提示词注入分类器和底层模型。通过发掘受控测试中不存在的真实世界不安全行为和新攻击模式，我们将教会模型识别这些攻击并顾及相关行为，并确保安全分类器能捕捉到模型本身遗漏的任何问题。我们还会基于对用户希望如何在浏览器中与 Claude 协作的了解，开发更精细的权限控制。</p><p>对于本次试点，我们正在寻找愿意让 Claude 在 Chrome 中代表自己执行操作、且其使用环境不涉及安全关键或敏感场景的受信任测试者。</p><p><strong>如果你想参与，可以访问 </strong><a href="http://claude.ai/chrome" target="_blank"><strong>claude.ai/chrome</strong></a><strong> 加入 Claude in Chrome 研究预览等候名单。</strong>获得访问权限后，你可以从 Chrome Web Store 安装该扩展，并使用你的 Claude 凭证完成身份验证。</p><p>我们建议从可信赖的网站开始——时刻留意 Claude 能看到的数据——并避免在涉及财务、法律、医疗或其他敏感信息的网站上使用 Claude in Chrome。你可以在<a href="https://support.anthropic.com/en/articles/12012173-getting-started-with-claude-for-chrome" target="_blank">我们的帮助中心</a>找到详细的安全指南。</p><p>希望你分享反馈，帮助我们持续改进 Claude in Chrome 的能力与防护——也帮助我们朝着把 AI 融入生活的一种全新方式，迈出重要一步。</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/claude-for-chrome" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

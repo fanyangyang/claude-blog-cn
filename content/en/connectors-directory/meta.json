@@ -1,0 +1,17 @@
+{
+  "slug": "connectors-directory",
+  "title": "Discover tools that work with Claude",
+  "date": "July 14, 2025",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/connectors-directory",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/connectors-directory.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.789Z",
+  "translatedTitle": "发现可与 Claude 协同工作的工具",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:44:54.905Z",
+  "translateLang": "zh-CN"
+}

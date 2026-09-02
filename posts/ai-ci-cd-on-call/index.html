@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude 值班：Claude Tag 如何成为 Anthropic CI/CD 故障的第一响应人 — Claude Blog 中文翻译</title>
+  <meta name="description" content="Claude 值班：Claude Tag 如何成为 Anthropic CI/CD 故障的第一响应人">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/ai-ci-cd-on-call" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Enterprise AI</span>
+            <span class="article-date">August 18, 2026</span>
+            
+          </div>
+          <h1 class="article-title">Claude 值班：Claude Tag 如何成为 Anthropic CI/CD 故障的第一响应人</h1>
+          <a href="/posts/ai-ci-cd-on-call/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p><a href="https://github.com/anthropics/oncall-kit"><em>使用我们的配置工具包搭建你自己的 Claude 值班响应</em></a><em>。</em></p><h2>面向 CI/CD 的 AI 事件响应：Anthropic 的 Claude 值班实践</h2><p>几周前，我正在值班，晚上 10 点同事在 Slack 上给我发来一条消息：一个新服务上大约有 44 个测试没有运行。</p><p>换成过去，我会放下手头的事情，坐到笔记本电脑前，疲惫地叹口气，然后开始长达一个小时排查加修复的过程。但现在，我的工作流程完全不同了：我把 @Claude 拉进来，问它看到了什么。&nbsp;</p><p>在这个案例中，Claude 发现这些测试是在当天早上某个功能开关（feature flag）打开后消失的，并且判断回退该开关是安全的。我请同事回退了这个开关。3 分钟后，Claude 在 Slack 上通知我，确认跳过规则确实已被移除，错误率也回到了基线水平。</p><figure style="max-width:1600pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a85deb08541b5a210e00ef5_cb834739.png" loading="lazy"></div><figcaption>为清晰起见，根据真实交流重新整理。</figcaption></figure><p>过去几个月里，Claude Tag 一直是 Anthropic CI/CD 故障的值班第一响应人。这不仅改善了我们的个人生活，还让每一次 CI 事件都能得到即时的第一响应：在近期所有产出过态势报告的事件中，首份报告都由 Claude 撰写，<strong>通常在 15 分钟内就会发布第一份分析</strong>。</p><p>在这篇文章中，我们将介绍我们构建了什么、它是如何运作的，让你也能自己搭建一套，从此不再害怕轮到自己值班。</p><h2><strong>我们的 Claude 值班配置</strong></h2><p>在进入事件响应流程的每个阶段之前，我会先对我们的配置做一个整体介绍，让你在了解细节之前先有一个全局图景。</p><p>一个值班 agent 需要<strong>记忆</strong>，才能记住已经做过什么；需要<strong>连接与访问权限</strong>，才能调查、理解和行动；需要<strong>日程安排</strong>，才知道何时回到工作岗位；还需要<strong>指令</strong>，才知道该做什么。</p><p><a href="https://claude.com/product/tag">Claude Tag</a> 是我们值班 agent 的骨架。Claude Tag 在值班 Slack 频道中保持记忆，并提供在事件期间逐轮下发指令的界面。Claude 还会对值班频道及其他频道中的事件实时做出反应。例行任务（routine）的调度——也就是 Claude 定期执行的动作——同样在这个频道中通过自然语言提示完成，比如“每周一上午 9:00（美国东部时间）执行 CI 交接”。</p><p><a href="https://claude.com/blog/agent-identity-access-model">Claude Tag 拥有自己的服务账号</a>，并可以访问 Anthropic CI 工程师所需的工具，比如 Datadog 或 Grafana。这由管理员为频道一次性配置完成（<a href="https://claude.com/docs/claude-tag/admins/setup-overview#choose-which-tools-to-connect">配置方法在此</a>）。&nbsp;</p><p>除了值班频道之外，我们还让 Claude 关注其他相关频道（这些频道同样有 Claude Tag 作为成员），以便它获取额外的上下文，比如服务告警、配置变更或 PR 的进展。&nbsp;</p><p>常驻指令以 Skills 的形式存放在 markdown 文件中，提交到 GitHub 仓库里。这样多位团队成员可以共同迭代，我们也能像管理代码一样管理这些指令的变更。其中还包括路由指引、策略，以及作为自我改进循环一部分的经验教训日志等关键信息。&nbsp;</p><p>这套配置只花了我们几个小时，而不是几天。我们在 GitHub 上开源了一个通用的<a href="https://github.com/anthropics/oncall-kit">值班配置工具包</a>，可以帮助你快速搭建一个类似的 agent。它能把你们团队自己的事件历史转化为分诊 playbook，并最终在你的事件频道里留下一个只读的 Claude，负责诊断、上报和持续学习。<a href="https://github.com/anthropics/oncall-kit/blob/main/test-fixtures/RUNBOOK.md">你可以在大约十分钟内看到它针对一个虚构团队的历史运行的全过程</a>。</p><p>用 TL;DR 的方式总结步骤如下：</p><ul role="list"><li>你需要一份 <a href="https://support.claude.com/en/collections/9387370-team-and-enterprise-plans">Claude Team 或 Claude Enterprise</a> 计划</li><li>组织所有者需要通过 Claude Tag 将 Claude 添加到值班 Slack 频道</li><li>组织所有者还需要帮助将值班 Slack 频道中的 Claude 连接到相应的连接器（connector）、GitHub 仓库，并配置 <a href="https://code.claude.com/docs/en/remote-control">Claude Code Remote</a>。</li><li>将 Claude 添加到你的事件频道，并指示它监控事件、立即分诊</li></ul><p>接下来，让我们深入看看在事件的每个环节，这一转变具体是什么样子。</p><h2><strong>检测</strong></h2><p>Claude 不仅改变了你响应事件的方式，也从根本上改变了你检测事件的方式。以前，事件检测存在两大失效模式。&nbsp;</p><p>人类很难始终具备先见之明，设定出阈值完美、无懈可击的规则。当你没有足够的数据来分析流量模式时，这一点尤其困难。</p><p>为了解决这个问题，我们让 Claude 在新服务上线的最初几天分析数据和传入的告警，以建议补充规则，并微调那些过宽或过窄的规则。&nbsp;</p><p>事件检测的第二大失效模式是告警疲劳：逐条检查和甄别每个触发的告警非常枯燥。但 Claude 不会像人类那样感到疲惫。&nbsp;</p><p>Claude 会监控每个告警频道里的所有相关告警，并对照 <a href="https://github.com/anthropics/oncall-kit/blob/main/templates/ONCALL.md">根 oncall.md 文件</a>中的标准来判断：这件事可以等到早上再处理，还是需要立刻电话通知值班人员。举例来说，经过对数据的分析调优后，文件中的一条规则可以是：“如果错误率超过 2% 且持续 5 分钟以上，并且当前不是已知的部署窗口，则电话通知值班人员；否则将其写入 lessons.md。”</p><p>Claude 值班告警流程还有另外两种触发方式：</p><ul role="list"><li>CI 团队的成员可以在值班频道中报告问题，就像开头那个 44 个测试缺失的例子一样；或者&nbsp;&nbsp;</li><li>公司里的任何人都可以通过内部页面发起一个事件。如果它被标记为 CI 基础设施事件，系统会为该事件创建一个 Slack 频道，我们的值班 Claude 会自动接手。</li></ul><figure style="max-width:2048pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a84a163e2030bce8127dd8e_a5e36b9a.png" loading="lazy"></div></figure><p>这里的要点是：告警流程是确定性（deterministic）的，而值班上报则同时包含确定性和 agent 化（agentic）两条路径。&nbsp;</p><h2><strong>分诊&nbsp;</strong></h2><p>让 Claude 过滤告警噪音是一回事，真正的节省来自调查环节。Claude 在事件发生后中位数 14 分钟内就会发布第一份有证据支撑的分析，最快的案例中，它在首份报告里 4 分钟内就指出了根本原因。</p><p>当告警升级为事件后，Claude 往往已经带着一个有证据支撑的假设出现在我们的 Slack 频道里，供我们审阅。Claude Tag 会启动一个<a href="https://claude.com/blog/a-harness-for-every-task-dynamic-workflows-in-claude-code">动态工作流（dynamic workflow）</a>，由一个编排 agent 派生出多个执行子 agent（subagent），分别调查每个依赖项和事实来源。&nbsp;</p><p>对我们来说，这些事实来源包括 Grafana、日志存储、PagerDuty、GitHub、Kubernetes 以及 Slack 事件频道——全部通过 <a href="https://code.claude.com/docs/en/mcp">MCP Connectors</a> 接入。Claude 可以并行追踪多条线索，帮助缩短 MTTR（平均解决时间）。</p><p>执行 agent 将调查结果回报给编排 agent，由后者进行综合，并以一份条理清晰的 SITREP（态势报告）呈现出来。&nbsp;</p><figure style="max-width:1692pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a84a163e2030bce8127ddb7_faae8c5a.png" loading="lazy"></div></figure><p>编排 agent 和执行 agent 并不是在盲目搜索。它们由一个调查 skill 引导，其中包含<a href="https://github.com/anthropics/oncall-kit/tree/main/skills/triage">针对每类 bug 的更详细的参考 markdown 文件</a>。&nbsp;</p><p>举例来说，一个针对影子分叉（shadow divergence）bug 的 617 行调查 skill，完整记录了我在一次典型调查中的每一步操作。我是在某次事件中与 Claude 逐轮协作排查后，让它根据那段经历生成这个文件的。</p><p>lessons.md 也会指导 Claude 的排查。这个 markdown 文件是我们已解决的每个事件的滚动日志：发生了什么、根本原因是什么、如何修复的，以及值得记住的坑。Claude 会自动向其中追加内容。每次新的调查都从阅读这个文件开始，因此 Claude 的第一个假设总是从近期发生过的事情出发。&nbsp;</p><p>如果同一个模式出现足够多次，我们就会把它沉淀进调查 skill 本身。我最喜欢的一条是 Claude 写关于我的记录。我当时没先看指标就直接根据配置文件做了假设，现在 lessons.md 里写着：“先查数据，再做推论。配置告诉你什么可能出问题；指标告诉你什么确实出了问题。”</p><p>即便有这些工具和上下文，Claude 也不总是一次就能做对。人类的直觉和经验依然重要。Claude Tag 让团队可以以多人协作模式排查事件：我们中的任何人都可以实时介入调整调查方向或补充假设，并肩作战。</p><figure style="max-width:1600pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a85df2d22740fdbccb17112_24270a8f.png" loading="lazy"></div><figcaption>为清晰起见，根据真实对话重新整理。</figcaption></figure><h2><strong>解决</strong></h2><p>既然 Claude 能够上报并排查告警，它也能修复问题吗？这个问题的答案因团队而异，下面是我们的做法。</p><p>我们团队的大多数部署都在功能开关的保护下进行。我在 Claude Code 中创建了一个单独的 agent，它持有我的权限，能够在每个功能开关后执行渐进式部署。&nbsp;</p><p>我们发布流程的第一阶段通常由 Claude 负责管理灰度（canary）流量、监控问题，并自动对特定功能开关进行放量或缩量。这部分内容完全可以单独写一篇文章，所以这里不再展开。</p><p>Claude Tag 帮我团队处理的其他解决路径包括：</p><ul role="list"><li>告知我们是否需要对 Kubernetes 集群的某些节点执行排空（drain）或隔离（cordon）；</li><li>在需求激增时给出如何扩容部分基础设施的指引（这种情况很少见，但当 Claude 给出确切的缓解方案时非常有用）；以及最常见的，</li><li>以 PR 的形式给出修复，值班人员可以审阅、合并并部署，从而快速解决问题。</li></ul><h2><strong>验证、沟通与交接</strong></h2><p>Claude 使用与调查时相同的一批 MCP Connectors 和工具来验证修复是否达到预期效果。按照 oncall.md 中的常驻指令，它会将一份事后复盘（post-mortem）写入 lessons.md，并生成交接用的 SITREP。</p><p>为了在多个事件之间传达全貌，我们创建了一个名为 ci-weather 的 agent。它会汇总来自各个事件 Slack 频道的信息、构建指标、合并队列统计和部署延迟，然后以新闻播报的风格把报告发布到一个公司里任何人都能阅读的公开频道。现在，当工程师们想判断是否应该暂缓合并，或者想弄清“CI 到底怎么了”的时候，直接查阅那个频道即可，不用再来找我们。</p><p>坦白说一句：这份报告的格式我们迭代了好几轮。Claude 可以一次性写出一个生成状态报告的 skill，但真正让它可读的是团队特有的品味。这是人与人之间的沟通问题，不是管道工程。</p><figure style="max-width:848pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a84a163e2030bce8127ddb1_c00ab792.png" loading="lazy"></div></figure><p>最后，虽然 Claude 会在 lessons.md 中为自己的保留一份日志，我们每周一也希望为人类生成交接报告。Claude 会产出每日和每周摘要，让团队的一名成员能够无缝接续另一名成员的工作。</p><h2><strong>从监控事件，到监控事件响应系统</strong></h2><p>我们的软件工程师平均每季度的<a href="https://www.anthropic.com/institute/recursive-self-improvement">代码产出量是 2021 至 2025 年期间的 8 倍</a>。虽然我们始终保持很高的质量标准（每个 PR 都有明确的负责人、每次变更都需要审批才能合并、每次变更都经过同一套 CI 关卡），但跟上 agent 化编程节奏的唯一办法，就是 agent 化的 CI。</p><p>Claude 吸收了我工作中枯燥的部分——深夜被打断的骚扰和事件沟通——让我得以专注于那些真正能提升系统可靠性的中长期架构改进。&nbsp;</p><p>我们构建的这套体系最棒的地方在于，它并不显得零散。我们的值班流程仍然在 Slack 里，只是现在 Claude 也加入了频道。</p><p>如何开始：</p><ul role="list"><li>你需要一份 <a href="https://support.claude.com/en/collections/9387370-team-and-enterprise-plans">Claude Team 或 Claude Enterprise</a> 计划</li><li>组织所有者需要通过 Claude Tag 将 Claude 添加到值班 Slack 频道</li><li>组织所有者还需要帮助将值班 Slack 频道中的 Claude 连接到相应的连接器、GitHub 仓库，并配置 <a href="https://code.claude.com/docs/en/remote-control">Claude Code Remote</a>。</li><li>将 Claude 添加到你的事件频道，并指示它监控事件、立即分诊</li></ul><p><a href="https://github.com/anthropics/oncall-kit"><em>使用我们的配置工具包搭建你自己的 Claude 值班响应</em></a><em>。</em></p><p><em>本文由 Anthropic 技术团队成员 Sachin Malhotra 撰写，Anthropic 员工 Michael Segner 亦有贡献。</em></p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/ai-ci-cd-on-call" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

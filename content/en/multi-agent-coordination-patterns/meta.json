@@ -1,0 +1,17 @@
+{
+  "slug": "multi-agent-coordination-patterns",
+  "title": "Multi-agent coordination patterns: Five approaches and when to use them",
+  "date": "April 10, 2026",
+  "category": "Agents",
+  "url": "https://claude.com/blog/multi-agent-coordination-patterns",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/multi-agent-coordination-patterns.svg",
+  "illustrationBg": "Plum",
+  "fetchedAt": "2026-09-02T03:50:17.784Z",
+  "translatedTitle": "多 agent 协调模式：五种方法及其适用场景",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:50:51Z",
+  "translateLang": "zh-CN"
+}

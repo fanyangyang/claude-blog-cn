@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>用 Workload Identity Federation 安全访问 Claude Platform — Claude Blog 中文翻译</title>
+  <meta name="description" content="用 Workload Identity Federation 安全访问 Claude Platform">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/workload-identity-federation" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Product announcements</span>
+            <span class="article-date">June 17, 2026</span>
+            
+          </div>
+          <h1 class="article-title">用 Workload Identity Federation 安全访问 Claude Platform</h1>
+          <a href="/posts/workload-identity-federation/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>Workload Identity Federation（WIF，工作负载身份联合）现已在 Claude Platform 上正式发布。WIF 兼容任何符合 OIDC 规范的身份提供商，覆盖所有 Claude API 端点，包括通过我们的第一方 SDK 和 Claude Code 访问端点的场景。</p><p>有了面向工作负载的 WIF 和面向交互式会话的 <a href="https://platform.claude.com/docs/en/cli-sdks-libraries/cli/quickstart#authentication">ant auth login</a>，开发者在基于 Claude Platform 构建时完全无需接触静态 API 密钥。</p><h2>Workload Identity Federation 的工作原理</h2><p>WIF 用请求时签发的短期、限定范围的凭据取代静态 API 密钥。无论你是运行 GitHub Actions 的两人初创团队，还是拥有精细凭据策略的企业，现在都可以像验证技术栈中其他系统一样，向 Claude Platform 完成身份验证。</p><p>有了 WIF，就不存在需要创建、轮换或可能泄露的静态 Anthropic 凭据。工作负载使用它们已有的身份进行认证：AWS IAM 角色、GCP 或 Kubernetes 服务账号、Azure 托管标识、GitHub Actions 令牌、Okta，或其他符合 OIDC 规范的提供商。</p><p>我们还在 Claude Platform 中引入了服务账号，让每个工作负载都拥有自己的身份、角色和审计轨迹，而不是共享一个 API 密钥。首先，一条联合规则将外部身份绑定到某个服务账号。然后，当工作负载请求访问时，Claude Platform 会验证该工作负载的签名 OIDC 令牌，将其声明与你的联合规则进行匹配，并签发一个受该服务账号角色约束的短期访问令牌。每一次交换和请求都会记录到你的审计日志中对应的服务账号之下。</p><h2>几分钟内配置好你的第一个工作负载</h2><p><a href="https://platform.claude.com/">Claude Console</a> 提供了配置工作负载身份的引导式设置流程。设置过程会验证每一个步骤，并以一条测试命令收尾，确认你的工作负载能够通过认证。</p><figure style="max-width:1067pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a2f08711ad72d3a0d542c25_Screenshot%202026-06-13%20at%209.20.12%E2%80%AFAM.png" loading="lazy"></div></figure><h2>无需静态密钥即可运转整个组织</h2><p>WIF 兼容用于组织管理的 <a href="https://platform.claude.com/docs/en/build-with-claude/administration-api">Admin API</a>。联合规则可以通过细粒度 scope 配置为实现最小权限访问。&nbsp;</p><p>对于大规模运营的组织，联合配置也完全支持编程化操作。全新的 Admin API 端点让你可以创建和更新签发者、服务账号及联合规则。</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/workload-identity-federation" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

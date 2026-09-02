@@ -1,0 +1,17 @@
+{
+  "slug": "seeing-like-an-agent",
+  "title": "Seeing like an agent: how we design tools in Claude Code",
+  "date": "April 10, 2026",
+  "category": "Claude Code",
+  "url": "https://claude.com/blog/seeing-like-an-agent",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/seeing-like-an-agent.svg",
+  "illustrationBg": "Heather",
+  "fetchedAt": "2026-09-02T03:50:17.784Z",
+  "translatedTitle": "像 agent 一样去看：我们在 Claude Code 中如何设计工具",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:32:12.000Z",
+  "translateLang": "zh-CN"
+}

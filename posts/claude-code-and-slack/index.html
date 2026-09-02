@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude Code 与 Slack — Claude Blog 中文翻译</title>
+  <meta name="description" content="Claude Code 与 Slack">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/claude-code-and-slack" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Product announcements</span>
+            <span class="article-date">December 8, 2025</span>
+            
+          </div>
+          <h1 class="article-title">Claude Code 与 Slack</h1>
+          <a href="/posts/claude-code-and-slack/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>今天，我们推出了直接从 Slack 向 Claude Code 委派任务的能力。该功能目前以研究预览版（research preview）的形式进行 Beta 测试，让 Claude 可以轻松地将 Slack 对话中的上下文带入编程会话。</p><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/XpXImenrSPI" title="Claude Code in Slack" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><h2><strong>从讨论到实现</strong></h2><p>工程工作的关键上下文往往存在于 Slack 中，包括 Bug 报告、功能请求和工程讨论。当 Bug 报告出现或队友需要修复代码时，你现在可以在 Slack 中 @Claude，它会利用周围的上下文自动启动一个 Claude Code 会话。适用场景包括：</p><ul role="list"><li><strong>Bug 调查与修复</strong>：让 Claude 在 Bug 被报告后立即调查并修复。</li><li><strong>快速代码评审与修改</strong>：让 Claude 根据团队反馈实现小功能或重构代码。</li><li><strong>协作调试</strong>：当团队讨论提供了关键上下文（如错误复现步骤或用户报告）时，Claude 可以利用这些信息来指导其调试思路。</li></ul><h2><strong>自动将任务路由到 Claude Code</strong></h2><p>此功能是对我们现有的 <a href="https://www.claude.com/blog/claude-and-slack">Slack 版 Claude 应用</a>的扩展，允许 Claude 将任务转发给网页版 Claude Code。当你在 Slack 中 @Claude 时，Claude 会审阅你的消息，判断这是否是一项编程任务。如果是，将自动创建一个新的 Claude Code 会话。你也可以手动告诉 Claude 将请求作为编程任务处理。</p><p>Claude 会从 Slack 中最近的频道和消息串中收集上下文，注入到 Claude Code 会话中。Claude 会根据你在网页版 Claude Code 中已授权的代码仓库，利用这些上下文自动选择在哪个仓库上执行任务。</p><p>随着 Claude Code 会话的推进，Claude 会向你的 Slack 消息串回传状态更新。任务完成后，你会收到一个指向完整会话的链接，可以在其中查看变更，以及一个用于创建 pull request 的直达链接。</p><h2><strong>开始使用</strong></h2><p>要开始使用，请先通过 <a href="https://slack.com/marketplace/A08SF47R6P4">Slack App Marketplace</a> 在你的 Slack 工作区中安装 Claude 应用。安装完成后，使用你的 Claude 账户登录，然后就可以在编程任务中 @Claude。你需要拥有 <a href="https://www.claude.com/blog/claude-code-on-the-web">网页版 Claude Code</a> 的访问权限，Claude 才能路由编程任务。</p><p>访问<a href="https://code.claude.com/docs/en/slack">文档</a>了解更多。</p><p>‍</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/claude-code-and-slack" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

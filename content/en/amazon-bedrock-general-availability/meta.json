@@ -1,0 +1,17 @@
+{
+  "slug": "amazon-bedrock-general-availability",
+  "title": "Claude on Amazon Bedrock now available to every AWS customer",
+  "date": "September 28, 2023",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/amazon-bedrock-general-availability",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/amazon-bedrock-general-availability.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.792Z",
+  "translatedTitle": "Amazon Bedrock 上的 Claude 现已向所有 AWS 客户开放",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:39:32.652Z",
+  "translateLang": "zh-CN"
+}

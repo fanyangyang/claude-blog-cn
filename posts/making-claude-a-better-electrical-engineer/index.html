@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>让 Claude 成为更好的电气工程师 — Claude Blog 中文翻译</title>
+  <meta name="description" content="让 Claude 成为更好的电气工程师">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/making-claude-a-better-electrical-engineer" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Enterprise AI</span>
+            <span class="article-date">December 12, 2025</span>
+            
+          </div>
+          <h1 class="article-title">让 Claude 成为更好的电气工程师</h1>
+          <a href="/posts/making-claude-a-better-electrical-engineer/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p><a href="https://www.diode.computer/" target="_blank">Diode Computers</a> 用 AI 设计和制造定制电路板。Diode 的工具链将电路板设计变成了一个软件问题；正如软件工程师借助 Claude Code 等工具提升效率一样，Diode 正在将同样的技术应用于帮助电气工程师在数小时内设计出可交付制造的电路板。</p><p>Diode 开发并维护着 <a href="https://github.com/diodeinc/pcb/blob/main/docs/pages/spec.mdx" target="_blank">Zener 语言</a>——一种基于 <a href="https://github.com/bazelbuild/starlark" target="_blank">Starlark</a> 构建、用于描述印刷电路板（PCB）原理图的领域特定语言，以及 <a href="https://github.com/diodeinc/pcb?tab=readme-ov-file">pcb</a>——一个使用 Zener 语言在 KiCad 之上提供自动化能力的工具。</p><p>电气工程师的一项重要工作是构建参考设计（reference design）：当设计者想使用某款芯片时，他们需要依赖数百页的文档来了解该芯片正常运行所需的元器件。一款典型的芯片可能需要多达十几个外围器件——电阻、电容、电感等——而关于如何连接它们的结构化信息往往十分稀缺。</p><p>电气工程师们已经在使用 Claude Code，从非结构化的文档中自动生成 Zener 参考设计，然后再进行人工评审。但考虑到这类环境的特殊性——既涉及领域专用工具，又需要深厚的专业知识——Claude 在自动生成参考设计方面的智能体表现，以及对这一特定电气工程任务的整体理解，仍有提升空间。在自动生成参考设计这项任务中，常见的失败模式包括：</p><ul role="list"><li>遗漏数据手册中关于电路应如何配置的细微之处</li><li>误读参考原理图图片</li><li>误解或误用 Zener 语言</li></ul><p>当我们在 Claude 的能力中发现这类需要深厚专业知识的领域特定任务上的短板时，我们可以与该领域的专家合作，教会 Claude 在这些任务上做得更好。这些知识会被编码进公开发布的 Claude 模型中，让所有 Claude 模型的用户受益——无论他们使用的是 Claude Code、<a href="http://claude.ai" target="_blank">claude.ai</a>，还是他们自己构建的 Claude 驱动的系统和应用。</p><figure style="max-width:1999pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/693b774140c56c41b9aa9611_image1.png" loading="lazy"></div><figcaption>一位工程师正在处理在 Claude 协助下设计的印刷电路板的特写。图片来源：Diode Computers。</figcaption></figure><h2>界定问题</h2><p>我们与 Diode 合作开展了一项联合计划，以理解并提升 Claude 自动生成参考设计的能力。在这项智能体任务中，Claude 需要以芯片文档作为输入，并用 Zener 语言为该芯片生成一份完整的参考设计。要正确完成这项任务，Claude 必须通读大量文档，理解密集的技术文字和图表，并编写一个完整可配置的原理图，完整表达该芯片的所有配置和工作模式。在这个智能体设置中，Claude 拥有读写文件和执行 bash 命令的工具，可以访问 Zener 编译器、语言文档和少量示例，除此之外别无其他。</p><p>判断一份参考设计是否正确也并非易事。文档往往对运行所需的精确元器件和参数语焉不详。为解决这一问题，每份参考设计都使用定制的<em>测试台（testbench）</em>进行评分：测试台不使用针对单个元器件是否存在的绝对断言（例如"电源与地之间有一个 20uF 电容"），而是编码更高层级的要求（例如"电源与地之间的总电容至少为 22uF"）。这确保了模型获得的信号既准确又不过于严苛。</p><p>有了这个定义清晰的任务，以及判断任务成败的明确标准，我们与 Diode 合作，在 Sonnet 4.5 及后续 Claude 模型的训练中引入改进，使其更好地自动生成电路板参考设计。</p><h2>基准测试结果</h2><p>为了对 Claude 在该任务上的表现进行基准测试，我们使用一组生成的参考设计，在 Claude Opus 4.1、Claude Sonnet 4 和 Claude Sonnet 4.5 之间进行了盲测对比评估。结果发现，Diode 的电气工程师在 10 次中有 8 次更偏好 Claude Sonnet 4.5 的参考设计。与其他模型相比，Claude Sonnet 4.5 更容易捕捉到文档中的细微差别，也更善于遵循其工具链的约定和语义。</p><figure style="max-width:1484pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/693b7d9fc08424b878617a4a_image2.png" loading="lazy"></div><figcaption>在盲测对比评估中，Diode 的电气工程师更偏好 Sonnet 4.5 的参考设计，胜过 Opus 4（60% 对 40%）和 Sonnet 4（82% 对 18%）。</figcaption></figure><h2>未来方向</h2><p>与 Diode 的这种合作模式，可以推广到任何以智能体方式部署 Claude、且任务具有明确成败标准的行业和领域的公司。Anthropic 在持续改进 Claude，让它在最广泛的领域和行业中成为最好的虚拟协作者。那些需要深厚专业知识、以及领域特定流程、工具和工作流的任务，是与 Anthropic 深入合作的绝佳候选。</p><p>如果你有兴趣与 Anthropic 合作改进未来版本的 Claude，请<a href="https://docs.google.com/forms/d/e/1FAIpQLScs9kVDB_PRyXPueayJ0c4pKUGwFdDwrKlRPsniVXCqw0utQQ/viewform?usp=dialog" target="_blank">填写此表单</a>，我们会与你联系。</p><h2>致谢</h2><p>本文由 Diode Computers 的 Davide Asnaghi 和 Lenny Khazan，以及 Anthropic 的 Connor Jennings、David Hershey 和 Nicholas Marwell 合作撰写。</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/making-claude-a-better-electrical-engineer" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

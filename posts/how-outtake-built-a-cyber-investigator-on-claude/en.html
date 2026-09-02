@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How Outtake built a cyber investigator on Claude — Claude Blog CN</title>
+  <meta name="description" content="How Outtake built a cyber investigator on Claude">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="/posts/how-outtake-built-a-cyber-investigator-on-claude/" class="nav-link">中文版 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Agents</span>
+            <span class="article-date">July 22, 2026</span>
+            <span class="lang-badge-large">EN</span>
+          </div>
+          <h1 class="article-title">How Outtake built a cyber investigator on Claude</h1>
+          <a href="/posts/how-outtake-built-a-cyber-investigator-on-claude/" class="lang-toggle">阅读中文翻译 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p><em>In our series, </em><strong>How startups build with Claude,</strong> we highlight how startups are transforming their industries with AI. In this article, we share how Outtake built an autonomous cyber investigator that detects, investigates, and dismantles digital threats, from cloned login pages to entire adversarial networks.</p><div class="w-embed"><figure>
+  <div role="region" tabindex="0">
+    <table>
+      <thead>
+        <tr>
+          <th colspan="2" scope="colgroup">The quick pitch</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">Name</th>
+          <td>Outtake</td>
+        </tr>
+        <tr>
+          <th scope="row">Founded</th>
+          <td>2023</td>
+        </tr>
+        <tr>
+          <th scope="row">Founders</th>
+          <td>Alex Dhillon (CEO), formerly of Palantir's moonshot team</td>
+        </tr>
+        <tr>
+          <th scope="row">Growth</th>
+          <td>Grew annual recurring revenue 6x and its customer base more than 10x year-over-year, scanning 20M+ potential cyberattacks in 2025 alone.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</figure></div><p>Even with strong safeguards and controls, bad actors can mask their use of AI in seemingly benign purposes that hide their malicious intent. Code generation platforms can create convincing login portals, agentic go-to-market tooling can power the distribution of phishing attacks, and image generation capabilities can spoof identity. Traditional cybersecurity defenses struggle to keep up.</p><p>“If you put on the bad actor's hat, it's actually a great time to be running attacks,” says Alex Dhillon, founder and CEO of AI cybersecurity platform <a href="https://www.outtake.ai/">Outtake</a>. “The average attack is not only executed faster because of AI, but it also captures deeper access due to AI”</p><p>Outtake unifies the full <a href="https://www.outtake.ai/blog/2026-digital-trust-industry-pain-report">digital trust attack chain</a> into a single defense, using fleets of AI agents to autonomously detect, investigate, and dismantle threats aimed at their customers, which include leading AI labs, major hedge funds, and US federal agencies.&nbsp;</p><p>Here’s how the Outtake team recently built the Recon Agent, a long-running autonomous cyber investigator, on Claude using <a href="https://code.claude.com/docs/en/quickstart">Claude Code</a> and the <a href="https://code.claude.com/docs/en/agent-sdk/overview">Agent SDK</a>.</p><h2><strong>Agentic offense needs agentic defense</strong></h2><p>When targeting a company, attackers typically move through the same process: weaponize public data → build impersonations as lures → exploit internal systems. This process has been accelerated by AI.</p><p>Before breaking into anything, they harvest publicly available information about an organization, and its executives and employees.</p><p>They then turn that intelligence into bait, like a fake website with a fraudulent login page, to trick victims into handing over credentials. The access gained from these lures help the attacker get inside the perimeter to reach an organization’s most valuable and sensitive assets.</p><p>&nbsp;<br>This three-part sequence is predictable, but legacy security tooling guards only one slice at a time:</p><ul role="list"><li>Threat intelligence tools monitor the public-data stage,</li><li>Brand protection tools watch for impersonations, and</li><li>Endpoint tools guard the internal systems.&nbsp;</li></ul><p>Outtake’s Recon Agent investigates the full network behind an impersonation. Instead of just taking down a cloned login page, for example, the agent gathers and classifies evidence from the impersonation event.&nbsp;</p><p>It follows those leads to connected infrastructure, like a fake Telegram account that presents itself as “Customer Support,” and maps this adversarial network in a graph. The agent’s final step produces a report explaining the investigation process, a profile of the threat actor, and a reconstructed timeline of what the attacker did.&nbsp;</p><p>To carry out this sophisticated workflow, the Recon Agent can read, write, and run code. It can even interact with malicious login pages directly to see where stolen credentials actually go.&nbsp;</p><p>These investigations can require agents to run autonomously for long periods of time. Agent sessions run a median of 16 minutes, but routinely stretch to an hour and beyond; the longest run thus far lasted two hours of agentic work before returning results.</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/how-outtake-built-a-cyber-investigator-on-claude" target="_blank">View original</a></p>
+          <p><a href="/">← Back to home</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>Content from <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · Translation by AI</p>
+    </div>
+  </footer>
+
+</body>
+</html>

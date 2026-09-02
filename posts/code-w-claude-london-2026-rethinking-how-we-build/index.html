@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Code w/ Claude London 2026：重新思考我们的构建方式 — Claude Blog 中文翻译</title>
+  <meta name="description" content="Code w/ Claude London 2026：重新思考我们的构建方式">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/code-w-claude-london-2026-rethinking-how-we-build" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Product announcements</span>
+            <span class="article-date">May 26, 2026</span>
+            
+          </div>
+          <h1 class="article-title">Code w/ Claude London 2026：重新思考我们的构建方式</h1>
+          <a href="/posts/code-w-claude-london-2026-rethinking-how-we-build/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>本周，我们在伦敦将 <a href="https://claude.com/code-with-claude/london" target="_blank">Code w/ Claude</a> 带到了欧洲。这场活动汇聚了构建者、开发者和创始人，与打造 Claude 的团队一起，进行了为期两天的主题演讲、分论坛和 workshop。</p><figure style="max-width:1999px" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a162288008621ab8a976251_image3.jpg" loading="lazy"></div><figcaption><em>Claude Code 产品负责人 Cat Wu 在会议间隙与参会者交流。&nbsp;</em></figcaption></figure><p>Claude Code 负责人 Boris Cherny 在<a href="https://www.youtube.com/watch?v=6amLO7I9xdg" target="_blank">主题演讲</a>的开头，讲述了他第一次感受到编程“魔力”的时刻。中学时，他编写 TI-83 计算器程序来解数学作业和考试题，还自学 HTML 来让自己的宝可梦卡牌 eBay 商品页面卖得更好。他通过动手折腾来学习，每当程序跑起来，那种感觉都令人兴奋。</p><p>他谈到，在之后的某个阶段，编程变得复杂了。编译器、类型检查器、构建系统——每一层都让“我有一个想法”和“它跑起来了”之间的距离又远了一点。而有了 agent，这段距离正在重新缩短：你描述一个问题，程序就出现了。这就像当年用计算器的感觉，只不过这台“计算器”能写出一个分布式系统。</p><p>从展示如何用 Claude Code <a href="https://claude.com/code-with-claude/session/ldn-beyond-the-basics-with-claude-code" target="_blank">超越基础用法</a>的 workshop，到如何在我们各模型之间优化<a href="https://claude.com/code-with-claude/session/ldn-the-thinking-lever" target="_blank">思考预算和 effort 级别</a>，我们展示了 Anthropic 以及 <a href="https://claude.com/code-with-claude/session/ldn-coding-is-no-longer-the-constraint-scaling-devex-to-teams-and-agents-at-spotify" target="_blank">Spotify</a>、<a href="https://claude.com/code-with-claude/session/ldn-from-one-person-to-80-scaling-a-hypergrowth-engineering-org-with-claude-code" target="_blank">Base44</a>、<a href="https://claude.com/code-with-claude/session/ldn-what-legal-agents-inherit-from-coding-agents-lessons-from-legora" target="_blank">Legora</a> 等客户，如何已经在重新找回这种体验。&nbsp;&nbsp;</p><h2>发布了什么</h2><figure style="max-width:1999px" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1623afcae08af4b3a9de5e_image1.jpg" loading="lazy"></div><figcaption><em>Claude 开发者平台工程负责人 Katelyn Lesse 和产品负责人 Angela Jiang 在 Code w/ Claude London 上演示 Claude Managed Agents 的部分新功能。&nbsp;</em></figcaption></figure><p>在本次大会上我们宣布：Claude Managed Agents 现在可以在你自主控制的沙箱中运行，并连接你的私有 Model Context Protocol（MCP）服务器。如此一来，agent 执行工具的环境及其能访问的服务，都在你企业既定的边界之内运行。这两项<a href="https://claude.com/blog/claude-managed-agents-updates">新能力</a>现已在 Claude Platform 上提供：</p><ul role="list"><li><strong>自托管沙箱</strong>（公开测试版）。工具执行转移到你自行配置的环境中——你自己的基础设施，或 Cloudflare、Daytona、Modal、Vercel 等托管服务商——而负责编排、上下文管理和错误恢复的 agent 循环仍在 Anthropic 的基础设施上运行。你的网络策略、审计日志和安全工具照常生效，文件和代码仓库不会离开你的边界，你还可以为计算密集型工作自行决定计算规格和运行时镜像。</li><li><strong>MCP 隧道</strong>（research preview）<em>。</em>你的 agent 可以访问私有网络内的 MCP 服务器，而无需将其暴露到公网。你只需部署一个轻量级网关，建立一条出站连接：无需入站防火墙规则，没有公网端点，流量端到端加密。MCP 隧道在 Managed Agents 和 Messages API 中均受支持，由组织管理员在 Claude Console 中统一管理。</li></ul><p>包括 Amplitude、Clay 和 Rogo 在内的团队已经在基于自托管沙箱的 Managed Agents 上进行构建。想上手的话，可以查阅<a href="https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes">文档</a>，跟随我们的 <a href="https://github.com/anthropics/claude-cookbooks/tree/main/managed_agents/self_hosted_sandboxes">cookbook</a>，或申请 MCP 隧道的<a href="https://claude.com/form/claude-managed-agents" target="_blank">访问权限</a>。</p><h2>精彩回看</h2><figure style="max-width:1999px" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1623c3214b8b8cf8f378e7_image2.jpg" loading="lazy"></div><figcaption><em>研究产品经理 Lisa Crofoot 在 Code w/ Claude London 主题演讲现场。&nbsp;</em></figcaption></figure><p>如果你错过了直播，可以观看我们的主题演讲和分论坛<a href="https://claude.com/code-with-claude/london" target="_blank">录像</a>。</p><p>Code w/ Claude 的下一站是<a href="https://claude.com/code-with-claude/tokyo" target="_blank">东京</a>（6 月 5 日至 6 日）。第一天所有的主题演讲和分论坛都将进行直播。</p><p><em>请持续关注由这些演讲衍生的技术教程、指南和客户故事。</em></p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/code-w-claude-london-2026-rethinking-how-we-build" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

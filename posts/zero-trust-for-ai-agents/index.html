@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>面向 AI agent 的零信任 — Claude Blog 中文翻译</title>
+  <meta name="description" content="面向 AI agent 的零信任">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/zero-trust-for-ai-agents" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Enterprise AI</span>
+            <span class="article-date">May 27, 2026</span>
+            
+          </div>
+          <h1 class="article-title">面向 AI agent 的零信任</h1>
+          <a href="/posts/zero-trust-for-ai-agents/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>前沿 AI 模型正在把漏洞从被发现到被利用之间的时间窗口，从数月压缩到数小时。采用这些工具的防御者能更快地发现和修复 Bug；而采用这些工具的攻击者，或者干脆等待防御者的补丁并将其逆向为漏洞利用的攻击者，行动也在加速。这并不是对未来的担忧：这些模型已经能够发现传统工具和人工审查多年都漏掉的严重漏洞。</p><p>对于部署 agent 的组织来说，这种加速带来双倍的影响。你的 agent 所运行的基础设施，和你其他资产一样暴露在 AI 加速的攻击之下；而 agent 本身又引入了自主性——它们会自行解读目标、选择工具并执行多步操作。传统的访问控制无法阻止 agent 滥用其合法拥有的权限，而安全监控也必须考虑到那些依靠持久潜伏而非漏洞利用来达成目的的攻击。</p><p><a href="https://en.wikipedia.org/wiki/Zero_trust_architecture">零信任（Zero Trust）</a>——不信任任何东西、验证一切、并假设入侵已经发生——为安全管理者提供了一个经过验证的基础。但这些原则需要针对 agentic 系统进行新的诠释：密码学锚定的身份、按任务细粒度划定的权限、能够抵御投毒攻击的记忆，以及能够与自主化攻击者同速运转的防御运营。</p><p>为了帮助安全和风险管理负责人应对这一转变，我们整理了一套在企业在企业环境中部署自主 AI agent 的实用框架。</p><p>在这份指南中，我们分享了：</p><ul role="list"><li>agentic 系统独有的安全考量，包括工具访问、自主决策、上下文持久化和多 agent 协同</li><li>当前针对 agent 的威胁态势，包括提示词注入、工具投毒、身份与权限滥用、记忆投毒以及供应链攻击</li><li>一个三层零信任框架（基础、进阶、优化），与组织成熟度和风险偏好相对应</li><li>一个八阶段实施工作流，覆盖身份、权限范围划定、沙箱隔离、输入输出控制和记忆防护</li><li>如何让 agentic 安全运营（Agentic SOAR）快到足以与 AI 加速的攻击者抗衡</li><li>医疗、金融、政府等受监管行业的合规对应方案</li></ul><p>最能从容应对这一转变的组织，将是那些基础足够扎实、让 AI 辅助扫描一开始就发现更少 Bug 的组织，以及那些从第一天起就按照“已被入侵”的假设来设计 agent 部署架构的组织。</p><p>点击<a href="https://cdn.prod.website-files.com/6889473510b50328dbb70ae6/6a1611a04085d7cd3dadc924_Claude-eBook-Zero-Trust-for-AI-Agents-05182026.pdf" target="_blank">此处</a>查看。</p><p>立即开始使用 <a href="https://www.anthropic.com/product/security" target="_blank">Claude Security</a>。</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/zero-trust-for-ai-agents" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

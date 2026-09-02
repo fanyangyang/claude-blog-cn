@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>最大化你的 Claude Code 会话价值 — Claude Blog 中文翻译</title>
+  <meta name="description" content="最大化你的 Claude Code 会话价值">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/maximizing-the-value-of-your-claude-code-sessions" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Claude Code</span>
+            <span class="article-date">August 14, 2026</span>
+            
+          </div>
+          <h1 class="article-title">最大化你的 Claude Code 会话价值</h1>
+          <a href="/posts/maximizing-the-value-of-your-claude-code-sessions/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><h2>TL;DR</h2><ul role="list"><li><strong>在任务之间执行 <code>/clear </code>。</strong>这可以避免之前无关的上下文被再次发送给模型，从而降低 token 用量。</li><li><strong>开始之前先设定好模型和努力级别（effort level）。</strong>在对话中途更改其中任何一个都会破坏你的提示词缓存，可能导致 token 成本上升。</li><li><strong>用 @ 提及文件，而不是口头描述文件名。</strong>文件会直接附加到你的消息中，省去一次 Read 调用，也省去 Claude 自己去搜索文件的过程。&nbsp;</li><li><strong>给输出冗长的命令加上静默标志，或在子智能体（subagent）中运行。</strong>命令输出会像文件一样被加入对话，并在会话余下的时间里一直留在那里。</li><li><strong>在新会话中运行一次 </strong><strong><code>/context</code></strong><strong>。</strong>它会显示当前加载了什么（<code>CLAUDE.md</code>、MCP 工具定义等），你可以借此砍掉不需要的内容。</li><li><strong>离开键盘前执行 </strong><strong><code>/compact</code></strong><strong>。</strong>提示词缓存一小时后就会过期，趁缓存还在时压缩对话要便宜得多。</li></ul><h2>把价值最大化</h2><p>直到不久之前，你用来写代码的工具都是一口价（或免费）的。无论那天下午你修复了一个测试还是五十个，编辑器的价格都一样，所以单个任务本身其实并没有自己的价格。&nbsp;</p><p>而像 Claude Code 这样的智能体编码工具改变了这一点。同一个完成的任务，因使用方式不同，成本也可能不同。&nbsp;</p><p>在一种会话里，Claude 读取测试及其覆盖的文件，完成修改，几个回合就结束了。在另一种会话里，它先在代码仓库里到处 grep，在到达同样那两个文件之前顺带读了十几个文件，而且这些回合中的每一个，都会把自早上以来对话里已读过的所有其他内容一并拖上。</p><figure style="max-width:1360px" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a7f1946bc7cd69c4c8919db_be236b0d.png" loading="lazy"></div></figure><p>修复的是同一个问题，但你花掉的 token 数量不同，而且整个过程中模型还不得不惦记着十个它根本不需要的文件。</p><p>高效使用 token 并不意味着总体上用得更少，而是确保你用掉的每一个 token 都花在你真正要求的事情上。</p><p>那么，我们先来看是什么决定了一个 token 的价格，再看是什么决定了一个会话发送多少 token，以及这一切对你如何运营一个会话意味着什么。</p><em></em><h2><strong>什么决定一个 token 的价格</strong></h2><p>你按 token 计费，但你真正支付的是推理：GPU（或 TPU，或模型恰好运行其上的任何硬件）在你的 token 上运行模型所花费的时间。&nbsp;</p><p>有三件事决定一个 token 占用多少这种时间：你运行的是哪个模型、它是输入 token（进入）还是输出 token（产出），以及它是否被缓存。</p><h3>模型</h3><p>更大的模型在输入和输出 token 上都要做更多工作。哪类模型值得用于哪类工作，这本身就是一个独立的话题，我们在<a href="https://claude.com/blog/claude-model-and-effort-level-in-claude-code"><em>在 Claude Code 中选择 Claude 模型与努力级别</em></a>一文中已有讨论。&nbsp;</p><p>对于本文，你只需知道：我们接下来讲到的所有内容都要乘上模型的价格——当问题确实困难或模糊时用大模型，当工作只是常规操作时用小模型。</p><figure style="max-width:1360pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a7f1946bc7cd69c4c8919de_da980737.png" loading="lazy"></div><figcaption><em>曲线仅用于示意，不代表真实的基准测试数据。</em></figcaption></figure></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/maximizing-the-value-of-your-claude-code-sessions" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

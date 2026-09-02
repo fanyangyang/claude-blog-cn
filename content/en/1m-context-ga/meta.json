@@ -1,0 +1,17 @@
+{
+  "slug": "1m-context-ga",
+  "title": "1M context is now generally available for Opus 4.6 and Sonnet 4.6",
+  "date": "March 13, 2026",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/1m-context-ga",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/1m-context-ga.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.784Z",
+  "translatedTitle": "1M 上下文窗口正式发布，适用于 Opus 4.6 和 Sonnet 4.6",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:12:09.000Z",
+  "translateLang": "zh-CN"
+}

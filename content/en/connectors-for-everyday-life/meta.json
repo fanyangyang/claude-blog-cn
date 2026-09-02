@@ -1,9 +1,17 @@
 {
   "slug": "connectors-for-everyday-life",
   "title": "New connectors in Claude for everyday life",
-  "date": "Unknown",
+  "date": "April 23, 2026",
   "category": "Product announcements",
   "url": "https://claude.com/blog/connectors-for-everyday-life",
   "fetchedAt": "2026-09-01T22:58:00.999Z",
-  "translated": false
+  "translated": true,
+  "inHero": true,
+  "heroIndex": 6,
+  "inGrid": true,
+  "illustration": "assets/illustrations/connectors-for-everyday-life.svg",
+  "illustrationBg": "Clay",
+  "translatedTitle": "Claude 新增面向日常生活的连接器",
+  "translatedAt": "2026-09-02T05:14:34.865Z",
+  "translateLang": "zh-CN"
 }

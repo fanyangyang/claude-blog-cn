@@ -1,0 +1,196 @@
+<div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><div class="w-embed"><style>
+  /* Fluid breakout for blog embeds + code blocks */
+  .u-rich-text-blog .w-embed,
+  .u-rich-text-blog pre.w-code-block {
+    --max-w: 860px;
+    --gutter: 24px;
+    --available: calc(100vw - (var(--gutter) * 2));
+    --w: min(var(--max-w), var(--available));
+    width: var(--w);
+    max-width: var(--w);
+    margin-left: calc((640px - var(--w)) / 2);
+    margin-right: calc((640px - var(--w)) / 2);
+    box-sizing: border-box;
+  }
+  @media (max-width: 720px) {
+    .u-rich-text-blog .w-embed,
+    .u-rich-text-blog pre.w-code-block {
+      width: 100%;
+      max-width: 100%;
+      margin-left: 0;
+      margin-right: 0;
+    }
+    /* Constrain the post column to the viewport so nothing overflows the page */
+    .blog_post_layout.u-column-custom,
+    .blog_post_content_wrap,
+    .u-rich-text-blog {
+      max-width: 100% !important;
+      box-sizing: border-box;
+    }
+    html,
+    body {
+      overflow-x: hidden;
+    }
+  }
+  /* Embed inner wrappers: scroll horizontally when content overflows */
+  .u-rich-text-blog .w-embed figure {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+  .u-rich-text-blog .w-embed figure > div {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  /* Tables: ratios on wider screens, natural width + scroll on mobile */
+  .u-rich-text-blog .w-embed table {
+    width: 100% !important;
+    table-layout: fixed !important;
+  }
+  .u-rich-text-blog .w-embed table th:nth-child(1),
+  .u-rich-text-blog .w-embed table td:nth-child(1) {
+    width: 22%;
+  }
+  .u-rich-text-blog .w-embed table th:nth-child(2),
+  .u-rich-text-blog .w-embed table td:nth-child(2) {
+    width: 39%;
+  }
+  .u-rich-text-blog .w-embed table th:nth-child(3),
+  .u-rich-text-blog .w-embed table td:nth-child(3) {
+    width: 39%;
+  }
+  .u-rich-text-blog .w-embed td code,
+  .u-rich-text-blog .w-embed th code {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    white-space: normal;
+  }
+  @media (max-width: 639px) {
+    .u-rich-text-blog .w-embed table {
+      width: auto !important;
+      min-width: 640px !important;
+      table-layout: auto !important;
+    }
+    .u-rich-text-blog .w-embed table th,
+    .u-rich-text-blog .w-embed table td {
+      min-width: 0 !important;
+      width: auto !important;
+    }
+  }
+  /* Code blocks */
+  .u-rich-text-blog pre.w-code-block {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  @media (max-width: 639px) {
+    .u-rich-text-blog pre.w-code-block {
+      font-size: 0.82rem;
+    }
+  }
+</style></div><div class="w-embed"><style>
+  .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) {
+    font-size: var(--_typography---font-size--body-3);
+    line-height: 1.55;
+  }
+  .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) th,
+  .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) td {
+    font-size: var(--_typography---font-size--body-3);
+    line-height: 1.55;
+    padding: 16px 18px;
+    overflow-wrap: anywhere;
+    word-break: normal;
+    hyphens: none;
+    vertical-align: top;
+  }
+  .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) th:nth-child(1),
+  .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) td:nth-child(1) { width: 16%; }
+  .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) th:nth-child(2),
+  .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) td:nth-child(2) { width: 20%; }
+  .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) th:nth-child(3),
+  .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) td:nth-child(3) { width: 24%; }
+  .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) th:nth-child(4),
+  .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) td:nth-child(4) { width: 16%; }
+  .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) th:nth-child(5),
+  .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) td:nth-child(5) { width: 24%; }
+  @media (max-width: 639px) {
+    .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) th,
+    .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) td {
+      padding: 12px 14px;
+      line-height: 1.5;
+    }
+  }
+</style></div><p>Claude 的设计初衷就是顺应你的工作方式，而在 Claude Code 中，你还可以对它进行自定义。</p><p>指导 Claude 行为的方法共有七种：CLAUDE.md 文件、规则（rules）、<a href="https://code.claude.com/docs/en/skills"><strong>技能（skills）</strong></a>、<a href="https://code.claude.com/docs/en/sub-agents"><strong>子智能体（subagents）</strong></a>、<a href="https://code.claude.com/docs/en/hooks-guide"><strong>钩子（hooks）</strong></a>、输出样式（output styles），以及追加系统提示词。</p><p>每种方法各自控制：</p><ul role="list"><li>指令何时被加载到上下文中；&nbsp;</li><li>它能否在长会话中持续存在（压缩行为）；以及&nbsp;</li><li>它拥有多大的约束力。</li></ul><p>下表快速概括了各方法之间的关键差异，本文其余部分则提供更多细节，以及一套判断每条 Claude 指令该放在何处的决策框架。</p><div class="w-embed"><figure>
+  <div role="region" tabindex="0">
+    <table>
+      <thead>
+        <tr>
+          <th>方法</th>
+          <th>加载时机</th>
+          <th>压缩行为</th>
+          <th>上下文开销</th>
+          <th>适用场景</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>CLAUDE.md（根目录）</td>
+          <td>会话开始时；整个会话期间始终留在上下文中</td>
+          <td>会被记忆化。读取一次并在会话中缓存；压缩后清除缓存并重新读取</td>
+          <td>高。无论是否相关，每一行都消耗 token</td>
+          <td>构建命令、目录布局、monorepo 结构、编码规范、团队约定</td>
+        </tr>
+        <tr>
+          <td>CLAUDE.md（子目录）</td>
+          <td>按需加载，即 Claude 读取该子目录下的文件时</td>
+          <td>丢失，直到再次触及该子目录</td>
+          <td>低。只在处理相关子目录时消耗上下文</td>
+          <td>特定子目录的专属规范</td>
+        </tr>
+        <tr>
+          <td>规则（Rules）</td>
+          <td>会话开始时（用户级规则），或仅在触及匹配文件时（路径范围规则）</td>
+          <td>压缩后重新注入</td>
+          <td>中。除非限定路径范围，否则始终生效</td>
+          <td>特定的约束或规范（例如，所有 API 处理器必须用 Zod 校验输入）</td>
+        </tr>
+        <tr>
+          <td>技能（Skills）</td>
+          <td>会话开始时加载名称和描述；完整内容在技能被调用时加载</td>
+          <td>已调用的技能会在共享预算内重新注入；最早的先被丢弃</td>
+          <td>低。完整内容仅在调用时加载；受所有已调用技能共享的 token 预算约束</td>
+          <td>流程性工作流（部署或发布检查清单）</td>
+        </tr>
+        <tr>
+          <td>子智能体（Subagents）</td>
+          <td>会话开始时加载名称、描述和工具列表；内容仅在通过 Agent 工具调用时加载</td>
+          <td>只有最终消息（摘要加元数据）返回主会话</td>
+          <td>低。被调用前对主上下文零开销；在各自隔离的上下文窗口中运行</td>
+          <td>并行执行工作，或那些应当隔离运行、只返回摘要的旁路任务（深度搜索、日志分析、依赖审计）</td>
+        </tr>
+        <tr>
+          <td>钩子（Hooks）</td>
+          <td>在生命周期事件上触发</td>
+          <td>完全绕过压缩</td>
+          <td>低。配置位于主上下文之外；部分输出可能返回（例如阻断性错误）</td>
+          <td>确定性自动化：运行 linter、完成后发 Slack 通知、拦截命令、在 PreCompact 时备份聊天历史</td>
+        </tr>
+        <tr>
+          <td>输出样式（Output styles）</td>
+          <td>会话开始时；注入系统提示词</td>
+          <td>从不被压缩</td>
+          <td>高。占用上下文窗口，但会覆盖默认系统提示词</td>
+          <td>重大的角色转变（代码助手变为通用助手）</td>
+        </tr>
+        <tr>
+          <td>追加系统提示词</td>
+          <td>会话开始时；以 CLI 标志传入</td>
+          <td>从不被压缩；仅对当次调用生效</td>
+          <td>中等。在会话中首次请求后被缓存</td>
+          <td>语气、回复长度、格式偏好</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</figure></div><h2>七种传递指令的方法</h2><p>自定义 Claude Code 行为的方式共有七种：CLAUDE.md 文件用于常驻的项目上下文，规则用于硬性约束，技能用于可复用的流程，子智能体用于委派工作，钩子用于确定性自动化，输出样式和系统提示词追加则用于全局性变更。</p><p>每种方法都在上下文开销与约束力之间做权衡。这些方法影响 Claude 的行为，而另外两个独立的旋钮——<a href="https://claude.com/blog/claude-model-and-effort-level-in-claude-code">你选择的模型和努力级别</a>——则决定它的能力上限和工作投入程度。</p><h3>CLAUDE.md 文件</h3><p>CLAUDE.md 是位于项目根目录的 markdown 文件。它在会话开始时加载进上下文，并在整个会话期间一直留在那里。</p><p>构建命令、目录布局、monorepo 结构、编码规范和团队约定都很适合放在这里。</p><p>它有两种类型，加载方式各不相同：&nbsp;</p><ul role="list"><li><strong>始终加载</strong>：第一类是根目录的 CLAUDE.md 文件，可以放在共享仓库中，也可以本地保存针对某个项目的个人偏好。这些文件都会在会话开始时加载，且在长会话中不会丢失或衰减。当 Claude Code 压缩对话时，会重新读取这些文件。</li><li><strong>按需加载：</strong>位于会话初始化目录之下各子目录中的 CLAUDE.md 文件。例如，<code>app/api/CLAUDE.md</code> 会在 Claude 读取 <code>app/api</code> 下的文件时加载，而不是在会话开始时。它的压缩行为与路径范围规则相同：丢失，直到再次触及该子目录。&nbsp;</li></ul><figure style="max-width:1206pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a340f852d1f938ab8675599_65a737a9.png" loading="lazy"></div><figcaption>当 Claude 读取某个子目录中的文件时，cwd 之下该子目录的所有 CLAUDE.md 文件都会被加载。</figcaption></figure><p>在共享仓库中，CLAUDE.md 会像任何无人维护的配置文件一样不断膨胀：每个团队都在往里追加自己的指令，却没人删除任何内容。其成本会随规模不断累积。</p><p>文件中的每一行都会加载到在这个仓库中工作的每位工程师的每个会话里，无论与其任务是否相关。这既消耗 token，也稀释了对真正重要的指令的遵循度。随着文件增长，应把团队专属的规范移入路径范围规则，把流程移入技能，让它们只在相关时才加载。</p><p><strong>提示：</strong>将 CLAUDE.md 控制在 200 行以内，指定负责人，并像审查代码一样审查对它的修改。内容本身应遵循与任何提示词相同的规则：<a href="https://claude.com/blog/best-practices-for-prompt-engineering">撰写有效的提示词</a>意味着表述明确、解释约束背后的原因，并给出示例。</p><p>可以把这个文件看作给 Claude 的一份代码库概览，或者一个指向其他文件的索引，让 Claude 在需要时自行查阅更多信息。</p><p>在 monorepo 中，为每个团队的目录配置独立的子目录 CLAUDE.md，这样各团队只加载自己的规范；开发者还可以使用 claudeMdExcludes 设置，跳过那些其代码从不涉及的团队的文件。</p><p>对于必须适用于组织中每个仓库的标准——安全策略、合规要求——可以通过 MDM 或配置管理将集中管理的 CLAUDE.md 部署到开发者机器上，且无法被个人设置排除。</p><p>关于设置 CLAUDE.md 的更多内容，参见我们的博客文章<a href="https://claude.com/blog/using-claude-md-files">《CLAUDE.md 文件：为你的代码库定制 Claude Code》</a>。</p></div>

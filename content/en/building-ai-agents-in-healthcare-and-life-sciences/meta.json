@@ -1,0 +1,17 @@
+{
+  "slug": "building-ai-agents-in-healthcare-and-life-sciences",
+  "title": "Building AI agents for healthcare and life sciences",
+  "date": "October 30, 2025",
+  "category": "Agents",
+  "url": "https://claude.com/blog/building-ai-agents-in-healthcare-and-life-sciences",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/building-ai-agents-in-healthcare-and-life-sciences.svg",
+  "illustrationBg": "Cactus",
+  "fetchedAt": "2026-09-02T03:50:17.789Z",
+  "translatedTitle": "在医疗健康与生命科学领域构建 AI 智能体",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:53:33.000Z",
+  "translateLang": "zh-CN"
+}

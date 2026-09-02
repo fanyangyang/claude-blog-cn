@@ -1,9 +1,17 @@
 {
   "slug": "claude-managed-agents-memory",
-  "title": "Memory for Claude Managed Agents: agents that learn across sessions",
-  "date": "Unknown",
+  "title": "Built-in memory for Claude Managed Agents",
+  "date": "April 23, 2026",
   "category": "Product announcements",
   "url": "https://claude.com/blog/claude-managed-agents-memory",
   "fetchedAt": "2026-09-01T22:58:02.943Z",
-  "translated": false
+  "translated": true,
+  "inHero": true,
+  "heroIndex": 7,
+  "inGrid": true,
+  "illustration": "assets/illustrations/claude-managed-agents-memory.svg",
+  "illustrationBg": "Clay",
+  "translatedTitle": "Claude Managed Agents 的内置记忆",
+  "translatedAt": "2026-09-02T05:12:35.000Z",
+  "translateLang": "zh-CN"
 }

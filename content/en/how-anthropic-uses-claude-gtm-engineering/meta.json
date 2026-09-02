@@ -1,0 +1,17 @@
+{
+  "slug": "how-anthropic-uses-claude-gtm-engineering",
+  "title": "How one Anthropic seller rebuilt his team's workflows with Claude Code",
+  "date": "June 5, 2026",
+  "category": "Claude Code",
+  "url": "https://claude.com/blog/how-anthropic-uses-claude-gtm-engineering",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/how-anthropic-uses-claude-gtm-engineering.svg",
+  "illustrationBg": "Plum",
+  "fetchedAt": "2026-09-02T03:50:17.792Z",
+  "translatedTitle": "一位 Anthropic 销售如何用 Claude Code 重构团队工作流",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:24:57Z",
+  "translateLang": "zh-CN"
+}

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>让 Claude 在你的电脑上干活 — Claude Blog 中文翻译</title>
+  <meta name="description" content="让 Claude 在你的电脑上干活">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/dispatch-and-computer-use" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Product announcements</span>
+            <span class="article-date">March 23, 2026</span>
+            
+          </div>
+          <h1 class="article-title">让 Claude 在你的电脑上干活</h1>
+          <a href="/posts/dispatch-and-computer-use/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>现在，你可以在 Claude Cowork 和 Claude Code 中开启让 Claude 使用你的电脑来完成任务的能力。当 Claude 无法使用它所需的工具时，它会通过指点、点击和浏览你屏幕上的内容来亲自完成任务。它可以打开文件、使用浏览器、自动运行开发工具——无需任何配置。</p><p>该功能目前作为 research preview 面向 Claude Pro 和 Max 订阅用户开放。它与 <a href="https://support.claude.com/en/articles/13947068-assign-tasks-to-claude-from-anywhere-in-cowork">Dispatch</a> 配合使用效果尤佳——Dispatch 让你可以通过手机给 Claude 分配任务。</p><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/NAauIR6JFps" title="Put Claude to work on your computer, from anywhere" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><h2>Claude 如何使用你的电脑</h2><p>Claude 会优先选用最精准的工具，首先尝试 Slack 或 Google Calendar 等服务的连接器。当没有可用的连接器时，Claude 可以直接控制你的浏览器、鼠标、键盘和屏幕来完成任务。它会滚动页面、点击打开、按需探索，但始终会先征得你的明确许可。</p><p>我们在构建这一能力时加入了能将风险（包括提示注入）降到最低的保障机制。当 Claude 使用你的电脑时，我们的系统会自动扫描模型内部的激活，以检测此类活动。你还可以随时叫停 Claude，而且 Claude 在访问新的应用之前始终会先请求许可。</p><figure style="max-width:3840pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69c0acb66ca028e43998d824_Cowork-Dispatch-Blog-Permissions.png" loading="lazy"></div></figure><p>与编写代码或处理文本的能力相比，computer use（电脑操作）仍处于早期阶段。Claude 可能会犯错，而且在我们持续改进保障机制的同时，威胁也在不断演变。我们建议从你信任的应用开始，不要用它处理敏感数据。出于这个原因，一些应用默认被排除在外。你可以在<a href="https://support.claude.com/en/articles/14128542">这里</a>了解更多安全最佳实践。</p><h2>随时随地给 Claude 发消息</h2><p>上周我们发布了 <a href="https://support.claude.com/en/articles/13947068-assign-tasks-to-claude-from-anywhere-in-cowork">Dispatch</a>：这是 Claude Cowork 中的一项新功能（现在也可在 Claude Code 中使用），让你可以在手机或电脑上与 Claude 保持一段连续的对话。你可以在手机上给 Claude 布置任务，转而去忙别的事，然后回到电脑前查看完成的工作。</p><figure style="max-width:3840pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69c0acc3f9e37117f1f547a8_Cowork-Dispatch-Blog-Code-Session.png" loading="lazy"></div></figure><p>借助 Dispatch，你可以让 Claude 每天早上自动查看你的邮件、每周拉取一些指标，或者为一份报告或一个 pull request 启动一个 Claude Cowork 或 Claude Code 会话。</p><p>Claude 新的 computer use 能力让 Dispatch 变得更加实用。现在，Claude 可以在你离开时替你使用电脑。例如：在你坐地铁通勤时生成一份早间简报；在你的 IDE 里修改代码、运行测试并提交 PR；或者让你的 3D 打印项目按照最初的计划持续推进。</p><h2>开始使用</h2><p>Claude 在 Claude Cowork 和 Claude Code 中的 computer use 能力目前处于 research preview 阶段。它不会总是完美运行：复杂任务有时需要再试一次，而且通过屏幕操作比使用直接集成要慢。我们之所以提前发布，是想了解它在哪里好用、在哪里还有不足——正如我们当初发布 Claude Cowork 时一样。</p><p>该功能现已面向 Claude Pro 和 Claude Max 订阅用户开放。Computer use 支持 macOS 和 Windows，你需要在桌面应用设置中启用它。你还需要确保桌面应用保持唤醒并处于运行状态。之后，你可以将其与移动应用配对，试着从手机上交接一个任务。</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/dispatch-and-computer-use" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "slug": "claude-powered-artifacts",
+  "title": "Build and share AI-powered apps with Claude",
+  "date": "July 25, 2025",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/claude-powered-artifacts",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/claude-powered-artifacts.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.789Z",
+  "translated": true,
+  "translatedTitle": "用 Claude 构建并分享 AI 驱动的应用",
+  "translatedAt": "2026-09-02T12:42:00.000Z",
+  "translateLang": "zh-CN"
+}

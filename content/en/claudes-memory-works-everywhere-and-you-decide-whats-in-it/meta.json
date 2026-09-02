@@ -5,5 +5,13 @@
   "category": "Product announcements",
   "url": "https://claude.com/blog/claudes-memory-works-everywhere-and-you-decide-whats-in-it",
   "fetchedAt": "2026-09-01T11:10:26.750Z",
-  "translated": false
+  "translated": true,
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/claudes-memory-works-everywhere-and-you-decide-whats-in-it.svg",
+  "illustrationBg": "Peach",
+  "translatedTitle": "Claude 的记忆随处可用，内容由你决定",
+  "translatedAt": "2026-09-02T05:12:35.000Z",
+  "translateLang": "zh-CN"
 }

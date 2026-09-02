@@ -3,16 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Computer Use、Skills API 和 Files API 现已全面可用 — Claude Blog 中文翻译</title>
-  <meta name="description" content="Computer Use、Skills API 和 Files API 现已全面可用">
+  <title>使用 Computer use、Skills API 和 Files API 构建生产级智能体 — Claude Blog 中文翻译</title>
+  <meta name="description" content="使用 Computer use、Skills API 和 Files API 构建生产级智能体">
   <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
 </head>
 <body>
-  <header class="header">
+<header class="header">
     <div class="container">
       <div class="header-inner">
         <a href="/" class="logo">
-          <span class="logo-icon">🦞</span>
           <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
         </a>
         <nav class="nav">
@@ -22,21 +23,20 @@
       </div>
     </div>
   </header>
-
-  <main class="main">
+<main class="main">
     <div class="container article-container">
       <article class="article">
         <header class="article-header">
           <div class="article-meta">
-            <span class="tag">Enterprise AI</span>
+            <span class="tag">Product announcements</span>
             <span class="article-date">August 20, 2026</span>
             
           </div>
-          <h1 class="article-title">Computer Use、Skills API 和 Files API 现已全面可用</h1>
+          <h1 class="article-title">使用 Computer use、Skills API 和 Files API 构建生产级智能体</h1>
           <a href="/posts/computer-use-skills-api-files-api/en.html" class="lang-toggle">阅读英文原文 →</a>
         </header>
         <div class="article-content u-rich-text">
-          <div class="u-rich-text-blog u-margin-trim w-richtext"><p>Computer Use、Skills API 和 Files API 今日在 Claude Platform 上全面可用。Computer Use 还新增了一个浏览器使用工具，适用于在 Web 应用中工作的 AI 代理。</p><h3><strong>在 Claude Platform 上构建 AI 代理</strong></h3><p><strong>Computer Use</strong> 让你可以构建能够操作可见软件的 AI 代理。新的 <strong>浏览器使用工具</strong> 将这一能力扩展到 Web。</p><p><strong>Skills API</strong> 和 <strong>Files API</strong> 让你可以将专业知识和文档赋予代理。技能是一个包含指令、脚本和模板的文件夹，Claude 仅在任务需要时加载。</p><h3><strong>全面可用后的新功能</strong></h3><ul role="list"><li><strong>Computer Use：</strong>更新后的工具让 Claude 每次可执行多个操作。Computer Use 现在也符合 HIPAA 监管工作负载要求。</li><li><strong>浏览器使用工具：</strong>新增工具，使用多操作轮次并增加页面结构。</li><li><strong>Skills API：</strong>更简单的 API，用于上传和管理自己的技能版本。</li><li><strong>Files API：</strong>自动文件过期、5 倍更高的速率限制，以及每个组织 1 TB 的存储空间。</li></ul></div>
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>Computer use、Skills API 和 Files API 今天起在 Claude 平台正式发布（GA）。Computer use 还为在 Web 应用中工作的智能体新增了浏览器使用工具。三者结合，让你可以构建能够操作软件、运用团队专业知识并交付成品文件的智能体。</p><h3><strong>在 Claude 平台上构建智能体</strong></h3><p><strong>Computer use</strong> 让你能够构建可以操作它们“看得见”的软件的智能体。给它一张屏幕截图，智能体就会像坐在键盘前的人一样点击、输入和滚动。这使其能够在那些从未为自动化而设计的应用中工作。全新的<strong>浏览器使用工具（browser use tool）</strong>将这一能力扩展到了 Web。除了截图之外，智能体还能读取页面结构，直接作用于特定字段或按钮，而非屏幕上的某个坐标位置。<br></p><p><strong>Skills API</strong> 和 <strong>Files API</strong> 让你可以把你的专业知识和文档交给智能体。Skill 是一个由指令、脚本和模板组成的文件夹，只有当任务需要时 Claude 才会加载它。通过 <strong>Skills API</strong>，你可以上传自己编写的 Skills 并进行版本管理，然后将其附加到任何请求中。它们在 Claude 的代码执行沙箱中运行，因此无需你自行托管。<strong>Files API</strong> 则是智能体读取和写入文档的存储服务：只需上传一次 PDF 或电子表格，之后的请求中通过 ID 引用它即可，无需重复发送，还可以下载智能体生成的文件。</p><p>假设你要构建一个理赔智能体。它从 Files API 读取受理文档，遵循一个封装了团队申报流程的 Skill，使用浏览器使用工具在保险公司的 Web 门户中完成提交，最后把确认凭证保存为文件。此前已正式发布的代码执行和 Web 搜索能力，也可以接入同一个工作循环。</p><h3><strong>正式发布带来了哪些新特性</strong></h3><ul role="list"><li><strong>Computer use：</strong>更新后的 computer use 工具允许 Claude 每轮执行多个操作，而不是每次模型调用只执行一个，任务因此可以用更少的调用和更短的时间完成。同时，Computer use 现已可在我们的 BAA 协议下用于受 HIPAA 监管的工作负载。&nbsp;</li><li><strong>浏览器使用工具：</strong>今天在 computer use 中全新推出。它同样支持多操作轮次，并新增了页面结构信息，使智能体定位 Web 元素时比仅凭像素更可靠。</li><li><strong>Skills API：</strong>更简洁的 API，用于上传和管理你自己 Skills 的版本。</li><li><strong>Files API：</strong>自动文件过期、5 倍提升的速率限制，以及每个组织 1 TB 的存储空间。</li></ul></div>
         </div>
         <footer class="article-footer">
           <hr>
@@ -46,11 +46,12 @@
       </article>
     </div>
   </main>
-
-  <footer class="footer">
+<footer class="footer">
     <div class="container">
-      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成</p>
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
     </div>
   </footer>
+
 </body>
 </html>

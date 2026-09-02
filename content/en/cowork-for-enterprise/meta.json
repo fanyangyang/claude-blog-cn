@@ -1,0 +1,17 @@
+{
+  "slug": "cowork-for-enterprise",
+  "title": "Making Claude Cowork ready for enterprise",
+  "date": "April 9, 2026",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/cowork-for-enterprise",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/cowork-for-enterprise.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.784Z",
+  "translatedTitle": "让 Claude Cowork 为企业级使用做好准备",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:47:04Z",
+  "translateLang": "zh-CN"
+}

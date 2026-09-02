@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>奋战前沿：乐天如何用 Claude Fable 5 让智能体通宵工作 — Claude Blog 中文翻译</title>
+  <meta name="description" content="奋战前沿：乐天如何用 Claude Fable 5 让智能体通宵工作">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/working-at-the-frontier-rakuten" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Enterprise AI</span>
+            <span class="article-date">July 20, 2026</span>
+            
+          </div>
+          <h1 class="article-title">奋战前沿：乐天如何用 Claude Fable 5 让智能体通宵工作</h1>
+          <a href="/posts/working-at-the-frontier-rakuten/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>作为乐天（Rakuten）AI for Business 事业部总经理，梶祐介（Yusuke Kaji）的职责是"找到变革性创新的种子，并把它们推广到整个公司"。</p><p>Claude 正是其中一颗种子。&nbsp;</p><p>自 2025 年 3 月以来，乐天一直在使用 Claude：用 Claude Code 加速软件开发，在各业务职能部门搭建智能体，并为数百万客户提供 AI 功能。据 Kaji 介绍，乐天之所以选择与 Anthropic 合作，看中的是它的企业级定位、领导力和产品品味。</p><p>历经近十次模型发布，他眼看着可以交给智能体的工作不断加码：先是用 Claude Code<a href="https://claude.com/customers/rakuten">交付生产软件</a>，然后为全公司各团队构建定制化的 <a href="https://claude.com/customers/rakuten-qa">Claude Managed Agents</a>。他把测试新模型比作开启一段"新冒险"。</p><p>"就像优秀的领导者会为下属设定有挑战性的目标一样，我们也会为新的 Claude 准备有挑战性的任务。"他补充道，"也许 Claude 也在推着我们Stretch一下。"</p><p>当他测试 Claude Fable 5 时，他察觉到某种不同。这个模型可以比前代自主运行长得多的时间，并且第一次能在夜里自主检查工作、完成需要细腻判断的任务——而 Kaji 在睡觉。&nbsp;</p><p>正是这种额外的自主性，让乐天敢把更大、运行更久的工作交给智能体，并由此改变他们的工作方式。</p><h3><strong>打造 AI 原生的员工队伍</strong></h3><p>乐天正在围绕 AI 重塑自身，这一工程被称为 AI-nization——一项在全公司范围内把 AI 注入为客户、业务伙伴和员工所做的一切的努力。Claude Managed Agents 推出后，乐天在不到一周内就在产品、销售、营销和财务部门部署了智能体，接入 Slack、Microsoft Teams 和公司自有的任务系统。&nbsp;</p><p>对 Kaji 和他的团队而言，构建智能体的瓶颈过去是谁会写代码；现在则是谁真正理解业务问题。</p><p>"现代公司的组织设计是为了把沟通成本降到最低。"他说，"我相信，当我们与 Claude Code 这类智能体协作、把创新成本也降到最低时——比如让想法极速落地为生产系统——它们的价值才会真正绽放。"给一个有能力的人配上掌握上下文、有品味的智能体，"这能让隐藏的人才释放潜力，把他们的能力放大一百倍"。&nbsp;</p><p>但当智能体在每个职能全天候运转时，一个新的瓶颈浮出水面：人的判断力。乐天的智能体在每个领域关闭问题的速度快了约 10 倍，但整个组织承接的任务量也在持续攀升。增加更多智能体并不能增加判断力。于是智能体跑得越快，组织前进的速度就越取决于人来完成最后一环。</p><h3><strong>让智能体无人值守运行数小时</strong></h3><p>对大多数构建者来说，构建长时间运行的智能体最难之处，在于让它以最少的监督完成任务。把它连接到合适的工具和上下文是一回事，但在 Kaji 的经验里，智能体离开人类介入、自主运转的时长始终有上限。&nbsp;</p><p>在 Claude Fable 5 之前，放一个智能体去跑数小时的任务而无人监督，永远是一场赌博。"如果它第一步选对了路径，一切都好。"Kaji 说，"但如果第一轮就选错了方向，智能体就要花大量时间去纠正路径，甚至根本到不了终点。"对于一个本该跑五个小时或一整天的任务，一个早期的错误假设就可能毁掉整次运行，而唯一的发现方式就是有人盯着。</p><p>这个失败模式的根源是缺乏自我验证。任何模型都可能迈错第一步。早期模型的问题在于，它们不会边干边检查自己的工作，因此一开始走错的那步无人察觉，错误在运行过程中不断累积，几小时后产出一个次优结果。&nbsp;</p><p>Kaji 认为，Claude Fable 5 改变了长达数天的智能体任务的账本，因为它会边干边检查自己的工作，频率远超之前任何模型。&nbsp;</p><p>"我们测试了 Fable，我们非常喜欢它的自我反思和自我验证能力。"Kaji 说，"和之前的模型相比，它能在我凌晨两三点指出错误之前就意识到自己的失误——这样我就能睡个好觉了。"</p><h3><strong>Claude Fable 5 的与众不同之处&nbsp;</strong></h3><p>Kaji 的团队列举了三种让 Claude Fable 5 区别于前代、标志着前沿智能跃升的行为：</p><ul role="list"><li><strong>它会重新检查自己的假设。</strong>当任务状态在中途发生变化时，Fable 5 会察觉，并在行动之前纠正错误的假设，而不是一条道走到黑、几小时后才发现走错了。</li><li><strong>它在每一步都回到第一性原理。</strong>它不需要人提醒，就会对照最初的意图重新校验——这种纠偏过去都是 Kaji 在运行偏离方向时不得不亲自做的。</li><li><strong>它与团队的品味一致。</strong>哪怕给出的指引极少，它在模糊判断上的取舍也与团队合拍。Kaji 为此造了一个词：taste alignment（品味对齐）。"在品味对齐上，Fable 比贵公司之前的任何模型、也比我们用过的任何其他模型都更顺畅。"</li></ul><p>最重要的是，更长的自主性改变了 Kaji 可以委派的工作单元。&nbsp;</p><p>"在 Fable 之前，我们必须把工作拆分成定义清晰的块，智能体才能执行。"他说。现在他可以把一整项任务交出去，并且同时运行多个任务。&nbsp;</p><p>Claude Fable 5 改变了中间发生的事情。它在每一步都反思，抓住早期的不良假设，靠自己找回第一性原理——无需任何人掌舵就重新导航到正确的结果。因为模型能在运行中途自我纠正，签字放行第一次变得可行，Kaji 委派的工作单元也从"任务"变成了"决策"。智能体还能在多次运行之间保留记忆："我们带记忆的智能体会记住以往会话中哪里出了问题，并避免重蹈覆辙。"&nbsp;</p><p>结果就是，任务的绝对数量持续攀升，但真正需要人来处理的任务量保持在一个可以专注应对的水平。他说，不必在运行中途跳出来掌舵，是所有生产力提升中最大的一项——这让他的团队把时间花在只有人才能做的决策上，也让一个 AI 原生组织持续加速，而不是卡在等人纠偏上。</p><h4>在成本与效率之间取得平衡&nbsp;</h4><p>前沿能力有前沿价格，Kaji 毫不讳言：成本决定了他能铺开多广。&nbsp;</p><p>"作为一家大型企业，我们要在智能和成本之间求平衡。"他说。他的团队会同时衡量任务完成率和单任务成本，然后把那些"多出来的能力能改变结果"的工作交给 Fable 5，其余的留给更小的模型。&nbsp;</p><p>在 Kaji 看来，有两点让 Fable 5 的这笔账算得过来：它用更少的 token、更少的弯路完成更多的事，而且需要的人看护更少。</p><h3><strong>下一步</strong></h3><p>Kaji 现在测试的前沿不是个人的速度，而是让智能体去协调人。Claude Code 已经加速了他自己和同事的工作，但任何组织最难的部分都是人与人之间的对齐——把一个人的上下文和品味与另一个人匹配起来。他正在探索"更像管理者那样去协调、去组织"的智能体，留住通常在团队成员之间流失掉的那些微妙细节。</p><p>"我们不把 AI 智能体看作未来的同事或竞争者。它们是我们身边的系统。"他还用 Anthropic 自己的建议来要求 Anthropic：你应该为三个月或六个月之后的模型做构建，而不是眼前这一个。&nbsp;</p><p>"我认为，整个社会还没有为 Claude Fable 5 找到模型与任务的最佳匹配。"他说，"但它已经脱颖而出，是一个跨过了那条线、走到我们世界里来的模型。&nbsp;</p><p><strong><em>开始使用 </em></strong><a href="http://anthropic.com/news/claude-fable-5-mythos-5"><strong><em>Claude Fable 5</em></strong></a><strong><em>。</em></strong></p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/working-at-the-frontier-rakuten" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

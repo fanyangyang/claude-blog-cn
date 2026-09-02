@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Introducing routines in Claude Code — Claude Blog CN</title>
+  <meta name="description" content="Introducing routines in Claude Code">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="/posts/introducing-routines-in-claude-code/" class="nav-link">中文版 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Product announcements</span>
+            <span class="article-date">April 14, 2026</span>
+            <span class="lang-badge-large">EN</span>
+          </div>
+          <h1 class="article-title">Introducing routines in Claude Code</h1>
+          <a href="/posts/introducing-routines-in-claude-code/" class="lang-toggle">阅读中文翻译 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>Today, we're introducing routines in Claude Code in research preview. A routine is a Claude Code automation you configure once — including a prompt, repo, and connectors — and then run on a schedule, from an API call, or in response to an event. Routines run on <a href="https://code.claude.com/docs/en/claude-code-on-the-web">Claude Code’s web infrastructure</a>, so nothing depends on your laptop being open.</p><p>Developers already use Claude Code to automate the software development cycle, but until now, they've managed cron jobs, infrastructure, and additional tooling like MCP servers themselves. Routines ship with access to your repos and your <a href="https://claude.com/connectors">connectors</a>, so you can package up automations and set them to run on a schedule or trigger.</p><h2>How it works</h2><figure style="max-width:1600pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69de678887f94fb639698fa7_dd878b86.png" loading="lazy"></div></figure><h3>Scheduled routines</h3><p>Give Claude Code a prompt and a cadence (hourly, nightly, or weekly) and it runs on that schedule:</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-plaintext" style="white-space:pre-wrap"><span><span>Every night at 2am: pull the top bug from Linear, attempt a fix, and open a draft PR.</span></span></code></pre><p>If you're using <a href="https://code.claude.com/docs/en/scheduled-tasks#compare-scheduling-options">/schedule</a> in the CLI, those tasks are now scheduled routines.&nbsp;</p><h3>API routines</h3><p>You can also configure routines to be triggered by API calls. Every routine gets its own endpoint and auth token. POST a message, get back a session URL. Wire Claude Code into your alerting, your deploy hooks, your internal tools—anywhere you can make an HTTP request:</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-plaintext" style="white-space:pre-wrap"><span><span>Read the alert payload, find the owning service, and post a triage summary to #oncall with a proposed first step.</span></span></code></pre><p>If you're building cloud-hosted agents on the Claude Platform rather than automating Claude Code, <a href="https://claude.com/blog/whats-new-in-claude-managed-agents">scheduled deployments in Claude Managed Agents</a> give your own agents the same run-on-a-schedule behavior.</p><h3>Webhook routines, starting with GitHub</h3><p>Subscribe a routine to automatically kick off in response to GitHub repository events. Claude will create a new session for every PR matching your filters and run your routine.</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-plaintext" style="white-space:pre-wrap"><span><span>Please flag PRs that touch the /auth-provider module. Any changes to this module need to be summarized and posted to #auth-changes.</span></span></code></pre><p>Claude opens one session per PR and will continue to feed updates from that PR to the session, so it can address follow-ups like comments and CI failures.</p><p>We plan to expand webhook-based routines to trigger from more event sources in the future.</p><h2>What teams are building</h2><p>A few common patterns have emerged for early users creating routines:</p><h3>Scheduled routines</h3><ul role="list"><li>Backlog management: triage new issues nightly, label, assign, and post a summary to Slack</li><li>Docs drift: scan merged PRs weekly, flag docs that reference changed APIs, and open update PRs</li></ul><h3>API routines</h3><ul role="list"><li>Deploy verification: your CD pipeline posts after each deploy, Claude runs smoke checks against the new build, scans error logs for regressions, and posts a go/no-go to the release channel</li><li>Alert triage: point Datadog at the routine's endpoint, Claude pulls the trace, correlates it with recent deployments, and has a draft fix waiting before on-call opens the page</li><li>Feedback resolution: a docs feedback widget or internal dashboard posts the report, Claude opens a session against the repo with the issue in context, and drafts the change</li></ul><h3>GitHub routines</h3><ul role="list"><li>Library port: every PR merged to a Python SDK triggers a routine that ports the change to the parallel Go SDK, and opens a matching PR</li><li>Bespoke code review: on PR opened, run your team's own checklist across security and performance, leaving inline comments before a human reviewer looks</li></ul><h2>Getting started</h2><p>Routines are available today for Claude Code users on Pro, Max, Team, and Enterprise plans with <a href="https://code.claude.com/docs/en/claude-code-on-the-web#who-can-use-claude-code-on-the-web">Claude Code on the web</a> enabled. Head to <a href="http://claude.ai/code">claude.ai/code</a> to create your first routine, or type /schedule in the CLI.</p><p>Routines draw down subscription usage limits in the same way as interactive sessions. In addition, routines have daily limits: Pro users can run up to 5 routines per day, Max users can run up to 15 routines per day, and Team and Enterprise users can run up to 25 routines per day. You can run extra routines beyond these limits with extra usage. <a href="http://code.claude.com/docs/en/routines">See the docs</a> for more information.</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/introducing-routines-in-claude-code" target="_blank">View original</a></p>
+          <p><a href="/">← Back to home</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>Content from <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · Translation by AI</p>
+    </div>
+  </footer>
+
+</body>
+</html>

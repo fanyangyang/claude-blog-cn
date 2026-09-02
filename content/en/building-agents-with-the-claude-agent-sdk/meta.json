@@ -1,0 +1,17 @@
+{
+  "slug": "building-agents-with-the-claude-agent-sdk",
+  "title": "Building agents with the Claude Agent SDK",
+  "date": "September 29, 2025",
+  "category": "Claude Code",
+  "url": "https://claude.com/blog/building-agents-with-the-claude-agent-sdk",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/building-agents-with-the-claude-agent-sdk.svg",
+  "illustrationBg": "Cactus",
+  "fetchedAt": "2026-09-02T03:50:17.793Z",
+  "translated": true,
+  "translatedTitle": "用 Claude Agent SDK 构建智能体",
+  "translatedAt": "2026-09-02T12:20:00.000Z",
+  "translateLang": "zh-CN"
+}

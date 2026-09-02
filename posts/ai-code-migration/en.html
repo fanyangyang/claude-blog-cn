@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How Anthropic runs large-scale code migrations with Claude Code — Claude Blog CN</title>
+  <meta name="description" content="How Anthropic runs large-scale code migrations with Claude Code">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="/posts/ai-code-migration/" class="nav-link">中文版 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Claude Code</span>
+            <span class="article-date">July 16, 2026</span>
+            <span class="lang-badge-large">EN</span>
+          </div>
+          <h1 class="article-title">How Anthropic runs large-scale code migrations with Claude Code</h1>
+          <a href="/posts/ai-code-migration/" class="lang-toggle">阅读中文翻译 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>Code migrations, projects that port a production codebase to a new language, were multi-year endeavors until recently.</p><p>In the last month, individual developers at Anthropic migrated 10 code packages consisting of tens to hundreds of thousands of lines of code using Claude Fable 5, Claude Opus 4.8, and <a href="https://claude.com/blog/introducing-dynamic-workflows-in-claude-code">dynamic workflows</a>. In this article we’ll cover two examples along with best practices from these projects.</p><p>Jarred Sumner, co-founder of Bun and Member of Technical Staff at Anthropic, used Claude Code to <a href="https://bun.com/blog/bun-in-rust">migrate Bun from Zig to Rust</a>. A million lines of code were produced in less than two weeks, with 100% of Bun's existing test suite passing in CI before merge. Nineteen regressions surfaced after merge and have all been fixed. The Rust port was shipped inside Claude Code in June.&nbsp;</p><p>Mike Krieger, co-lead of Anthropic Labs, migrated a Python codebase to 165,000 lines of TypeScript over a weekend. This included hundreds of agents, eight phase gates, three adversarial review rounds, and a final parity check that diffed every command's output against the Python original.&nbsp;</p><p>Claude Code’s new capabilities change the math for these long-deferred projects. Below is the six-step process we now use, drawn from what these migrations taught us.</p><p>The core insight is that you don’t fix the code. <strong>You fix the process (loop) that produced the code</strong>.</p><h2>What is an AI code migration?</h2><p>An AI code migration uses AI agents to port a production codebase to a new language or framework. Instead of translating files by hand, engineers write migration rules and verification loops; agents then translate, compile, and test until the new code's behavior matches the original — compressing multi-year projects into weeks.</p><h2><strong>Why and when to migrate languages</strong></h2><p>Before going straight into <em>the how</em>, it’s worth discussing <em>the when</em> and <em>why</em> because the assumptions around these projects have evolved.&nbsp;</p><p>Teams launch migrations because of landscape changes between their initial build and current project. Either a known trade-off has become limiting, a better approach has emerged, or the original ecosystem is shrinking.&nbsp;</p><p>For example, Jarred originally chose Zig because it offered C-level performance with radical simplicity, ideal for a solo founder “writing Bun in 1 year in a cramped Oakland apartment pre-LLM.” This simplicity came with known tradeoffs, <a href="https://bun.com/blog/bun-in-rust#just-be-really-smart-and-don-t-make-mistakes">which he writes about here</a>.&nbsp;</p><p>Fast forward to 2026. Bun's CLI is getting over 10 million monthly downloads and is used extensively within Claude Code. &nbsp;</p><p>As recently as last quarter, those tradeoffs wouldn’t have been enough to justify freezing the roadmap and committing resources to a multi-quarter project. Migrating languages can deliver smaller, faster, and safer systems, but no one wants to pay for them.</p><p>Software engineers have also had to contend with the career risk inherent in these formerly mega-projects. You could maintain two parallel code bases for quarters or years, and if the end result was 90% parity, you had a bigger headache than when you started.</p><p>Now, the worst case scenario is you delete the branch and try again.</p><p>There still needs to be a justifiable business case. While million line migrations no longer cost $3 to $4 million in engineering resources over the course of a four year project, they still cost tens to hundreds of thousands of dollars or more to execute. The Bun migration, for example, consumed 5.9 billion uncached input tokens and 690 million output tokens — around $165,000 at API pricing. The main portion of Mike’s port was 27 million tokens.</p><figure style="max-width:875pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a58f8844b99cec5d277a9ee_27e78c5a.png" loading="lazy"></div><figcaption><em>Jarred’s million-line PR.</em></figcaption></figure><p><strong>However, the migration case no longer needs to be existential. </strong>A year of memory-bug patches in the changelog, or one chronic bottleneck, can now justify it.</p><p>The compile step was the impetus for Mike's project. The internal tool his team works on ships to users as a single binary. Producing that binary with the Python toolchain took roughly eight minutes per platform, totaling a 30-minute wait across the build matrix on every release. After the port, the same compile now takes about two seconds, the binary starts 6x faster, and the team was able to retire a separate deployment pipeline.</p><h2><strong>Why AI changes the code migration math</strong></h2><p>Claude Fable 5 is our most capable, generally available model. Fable and Opus 4.8 are particularly good at delegating, directing, and verifying parallel workstreams with subagents while finding multiple paths towards stated goals.&nbsp;</p><p>Large code migrations are a particularly effective use case for these advanced models because:</p><ul role="list"><li><strong>The work is parallel</strong>. Work can be executed across thousands of independent units such as files and crates, so agents can work at the same time rather than have one waiting on the other.</li><li><strong>Context is clear and comprehensive. </strong>The old code serves as a great spec for the model. It also serves as a core reference to help build the guide for translation agents to follow.</li><li><strong>There is a built-in referee</strong>. Many large codebases will include a test suite that agents can use to verify their work. Agents perform their best when verification is objective, because the model can grind against a ground truth for days without a human arbitrating quality.</li><li><strong>The queue writes itself</strong>. When a compiler or test run fails, that becomes the next item for an agent to fix.</li><li><strong>They require consistency and edge case handling</strong>: The process is built so drift has nowhere to hide: reviewers cite the rule behind every finding, so a violation becomes a queue item instead of a quiet divergence. And when an agent does hit an edge case, the fix becomes a rule every subsequent agent follows.</li></ul><p>As we will see below, both Mike and Jarred used Fable for key steps in their migration process, particularly in <strong>an advisory pattern</strong> that used multiple model classes to optimize token consumption. </p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/ai-code-migration" target="_blank">View original</a></p>
+          <p><a href="/">← Back to home</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>Content from <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · Translation by AI</p>
+    </div>
+  </footer>
+
+</body>
+</html>

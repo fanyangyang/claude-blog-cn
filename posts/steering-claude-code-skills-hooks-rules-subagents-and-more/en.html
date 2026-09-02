@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Steering Claude Code: when to use CLAUDE.md, skills, hooks, and subagents — Claude Blog CN</title>
+  <meta name="description" content="Steering Claude Code: when to use CLAUDE.md, skills, hooks, and subagents">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="/posts/steering-claude-code-skills-hooks-rules-subagents-and-more/" class="nav-link">中文版 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Claude Code</span>
+            <span class="article-date">June 18, 2026</span>
+            <span class="lang-badge-large">EN</span>
+          </div>
+          <h1 class="article-title">Steering Claude Code: when to use CLAUDE.md, skills, hooks, and subagents</h1>
+          <a href="/posts/steering-claude-code-skills-hooks-rules-subagents-and-more/" class="lang-toggle">阅读中文翻译 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><div class="w-embed"><style>
+  /* Fluid breakout for blog embeds + code blocks */
+  .u-rich-text-blog .w-embed,
+  .u-rich-text-blog pre.w-code-block {
+    --max-w: 860px;
+    --gutter: 24px;
+    --available: calc(100vw - (var(--gutter) * 2));
+    --w: min(var(--max-w), var(--available));
+    width: var(--w);
+    max-width: var(--w);
+    margin-left: calc((640px - var(--w)) / 2);
+    margin-right: calc((640px - var(--w)) / 2);
+    box-sizing: border-box;
+  }
+  @media (max-width: 720px) {
+    .u-rich-text-blog .w-embed,
+    .u-rich-text-blog pre.w-code-block {
+      width: 100%;
+      max-width: 100%;
+      margin-left: 0;
+      margin-right: 0;
+    }
+    /* Constrain the post column to the viewport so nothing overflows the page */
+    .blog_post_layout.u-column-custom,
+    .blog_post_content_wrap,
+    .u-rich-text-blog {
+      max-width: 100% !important;
+      box-sizing: border-box;
+    }
+    html,
+    body {
+      overflow-x: hidden;
+    }
+  }
+  /* Embed inner wrappers: scroll horizontally when content overflows */
+  .u-rich-text-blog .w-embed figure {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+  .u-rich-text-blog .w-embed figure > div {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  /* Tables: ratios on wider screens, natural width + scroll on mobile */
+  .u-rich-text-blog .w-embed table {
+    width: 100% !important;
+    table-layout: fixed !important;
+  }
+  .u-rich-text-blog .w-embed table th:nth-child(1),
+  .u-rich-text-blog .w-embed table td:nth-child(1) {
+    width: 22%;
+  }
+  .u-rich-text-blog .w-embed table th:nth-child(2),
+  .u-rich-text-blog .w-embed table td:nth-child(2) {
+    width: 39%;
+  }
+  .u-rich-text-blog .w-embed table th:nth-child(3),
+  .u-rich-text-blog .w-embed table td:nth-child(3) {
+    width: 39%;
+  }
+  .u-rich-text-blog .w-embed td code,
+  .u-rich-text-blog .w-embed th code {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    white-space: normal;
+  }
+  @media (max-width: 639px) {
+    .u-rich-text-blog .w-embed table {
+      width: auto !important;
+      min-width: 640px !important;
+      table-layout: auto !important;
+    }
+    .u-rich-text-blog .w-embed table th,
+    .u-rich-text-blog .w-embed table td {
+      min-width: 0 !important;
+      width: auto !important;
+    }
+  }
+  /* Code blocks */
+  .u-rich-text-blog pre.w-code-block {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  @media (max-width: 639px) {
+    .u-rich-text-blog pre.w-code-block {
+      font-size: 0.82rem;
+    }
+  }
+</style></div><div class="w-embed"><style>
+  .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) {
+    font-size: var(--_typography---font-size--body-3);
+    line-height: 1.55;
+  }
+  .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) th,
+  .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) td {
+    font-size: var(--_typography---font-size--body-3);
+    line-height: 1.55;
+    padding: 16px 18px;
+    overflow-wrap: anywhere;
+    word-break: normal;
+    hyphens: none;
+    vertical-align: top;
+  }
+  .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) th:nth-child(1),
+  .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) td:nth-child(1) { width: 16%; }
+  .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) th:nth-child(2),
+  .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) td:nth-child(2) { width: 20%; }
+  .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) th:nth-child(3),
+  .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) td:nth-child(3) { width: 24%; }
+  .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) th:nth-child(4),
+  .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) td:nth-child(4) { width: 16%; }
+  .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) th:nth-child(5),
+  .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) td:nth-child(5) { width: 24%; }
+  @media (max-width: 639px) {
+    .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) th,
+    .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) td {
+      padding: 12px 14px;
+      line-height: 1.5;
+    }
+  }
+</style></div><p>Claude is built to work the way you work, and in Claude Code you can customize it. </p><p>There are seven methods for instructing Claude's behavior: CLAUDE.md files, rules, <a href="https://code.claude.com/docs/en/skills"><strong>skills</strong></a>, <a href="https://code.claude.com/docs/en/sub-agents"><strong>subagents</strong></a>, <a href="https://code.claude.com/docs/en/hooks-guide"><strong>hooks</strong></a>, output styles, and appending the system prompt.</p><p>Each method controls:</p><ul role="list"><li>When an instruction loads into context;&nbsp;</li><li>Whether it persists through long sessions (compaction behavior); and&nbsp;</li><li>How much authority it carries.</li></ul><p>The table below provides a quick summary of key differences across each method while the post provides additional detail and decision framework for determining where each of your Claude instructions belongs.</p><div class="w-embed"><figure>
+  <div role="region" tabindex="0">
+    <table>
+      <thead>
+        <tr>
+          <th>Method</th>
+          <th>When it's loaded</th>
+          <th>Compaction behavior</th>
+          <th>Context cost</th>
+          <th>When to use</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>CLAUDE.md (root)</td>
+          <td>Session start; stays in context for the entire session</td>
+          <td>Memoized. Read once and cached for the session; cache cleared and re-read after compaction</td>
+          <td>High. Every line costs tokens whether relevant or not</td>
+          <td>Build commands, directory layout, monorepo structure, coding conventions, team norms</td>
+        </tr>
+        <tr>
+          <td>CLAUDE.md (subdirectory)</td>
+          <td>On-demand, when Claude reads a file under that subdirectory</td>
+          <td>Lost until that subdirectory is touched again</td>
+          <td>Low. Only consumes context when the relevant subdirectory is being worked on</td>
+          <td>Conventions specific to a subdirectory</td>
+        </tr>
+        <tr>
+          <td>Rules</td>
+          <td>Session start (user-level rules) or only when matching files are touched (path-scoped)</td>
+          <td>Re-injected on compaction</td>
+          <td>Medium. Always-on unless path-scoped</td>
+          <td>Specific constraints or conventions (e.g., all API handlers must validate input with Zod)</td>
+        </tr>
+        <tr>
+          <td>Skills</td>
+          <td>Name and description at session start; full body loads when the skill is invoked</td>
+          <td>Invoked skills re-injected up to a shared budget; oldest dropped first</td>
+          <td>Low. Full body loads only when invoked; subject to a shared token budget across invoked skills</td>
+          <td>Procedural workflows (deploy or release checklists)</td>
+        </tr>
+        <tr>
+          <td>Subagents</td>
+          <td>Name, description, and tool list at session start; body loads only when called via the Agent tool</td>
+          <td>Only the final message (summary plus metadata) returns to the main session</td>
+          <td>Low. Zero cost in main context until called; runs in its own isolated context window</td>
+          <td>Running work in parallel or side tasks that should run in isolation and return only a summary (deep search, log analysis, dependency audit)</td>
+        </tr>
+        <tr>
+          <td>Hooks</td>
+          <td>Fire on lifecycle events</td>
+          <td>Bypass compaction entirely</td>
+          <td>Low. Configuration lives outside main context; some output may return (e.g., blocking errors)</td>
+          <td>Deterministic automation: run linters, post to Slack on completion, block commands, back up chat history on PreCompact</td>
+        </tr>
+        <tr>
+          <td>Output styles</td>
+          <td>Session start; injected into the system prompt</td>
+          <td>Never compacted</td>
+          <td>High. Occupies context window, but overwrites default system prompt</td>
+          <td>Significant role changes (code assistant to general assistant)</td>
+        </tr>
+        <tr>
+          <td>Appending the system prompt</td>
+          <td>Session start; passed as a CLI flag</td>
+          <td>Never compacted; applies only to that invocation</td>
+          <td>Moderate. Cached after first request in a session</td>
+          <td>Tone, response length, formatting preferences</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</figure></div><h2>The seven methods for delivering instructions</h2><p>There are seven ways to customize Claude Code's behavior: CLAUDE.md files for always-on project context, rules for hard constraints, skills for reusable procedures, subagents for delegated work, hooks for deterministic automation, and output styles or system-prompt appends for global changes. </p><p>Each method trades context cost against authority. These methods influence Claude's behavior while two separate dials, <a href="https://claude.com/blog/claude-model-and-effort-level-in-claude-code">which model and effort level you choose</a>, control how capable it is and how hard it works.</p><h3>CLAUDE.md files</h3><p>CLAUDE.md is a markdown file at the root of your project. It loads into context at session start and stays there for the entire session. </p><p>Build commands, directory layout, monorepo structure, coding conventions, and team norms all fit naturally here.</p><p>There are two types, and they load differently:&nbsp;</p><ul role="list"><li><strong>Always loaded</strong>: The first type is a root CLAUDE.md file, either in a shared repository and/or saved locally for your personal preferences specific to a project. All these files load at session start, and won’t get lost or degraded across long sessions. When Claude Code compacts the conversation, it re-reads these files.</li><li><strong>On-demand: </strong>CLAUDE.md files in subdirectories below the folder where you initialized the session. For example, <code>app/api/CLAUDE.md</code> loads when Claude reads a file under<code> app/api</code>, not at session start. It shares the compaction behavior of path-scoped rules: gone until that subdirectory is touched again.&nbsp;</li></ul><figure style="max-width:1206pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a340f852d1f938ab8675599_65a737a9.png" loading="lazy"></div><figcaption>All subdirectory CLAUDE.md files below the cwd load when Claude reads a file within that directory.</figcaption></figure><p>In a shared repository, CLAUDE.md grows the way any unowned config file does: every team appends its own instructions and nothing gets deleted. The cost compounds at scale. </p><p>Every line loads into every session for every engineer working in the repo, whether it's relevant to their task or not. This consumes tokens and dilutes adherence to the instructions that actually matter. As the file grows, push team-specific conventions into path-scoped rules and procedures into skills, where they load only when relevant.</p><p><strong>Tip:</strong> Keep CLAUDE.md under 200 lines, give it an owner, and review changes to it like code. The content itself should follow the same rules as any prompt: <a href="https://claude.com/blog/best-practices-for-prompt-engineering">writing effective prompts</a> means being explicit, explaining the why behind constraints, and showing examples.</p><p>Think of this file as giving Claude an overview of your codebase, or as an index pointing to other files where Claude can find more information as needed.</p><p>In monorepos, give each team's directory its own subdirectory CLAUDE.md so teams only load their own conventions, and developers can use the claudeMdExcludes setting to skip files from teams whose code they never touch. </p><p>For standards that must apply to every repository in the organization — security policies, compliance requirements — a centrally managed CLAUDE.md can be deployed to developer machines via MDM or config management, and it can't be excluded by individual settings.</p><p>More on setting up CLAUDE.md in our blog post, <a href="https://claude.com/blog/using-claude-md-files">CLAUDE.md files: Customizing Claude Code for your codebase</a>.</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/steering-claude-code-skills-hooks-rules-subagents-and-more" target="_blank">View original</a></p>
+          <p><a href="/">← Back to home</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>Content from <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · Translation by AI</p>
+    </div>
+  </footer>
+
+</body>
+</html>

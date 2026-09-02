@@ -1,0 +1,17 @@
+{
+  "slug": "memory",
+  "title": "Bringing memory to Claude",
+  "date": "September 11, 2025",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/memory",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/memory.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.789Z",
+  "translated": true,
+  "translatedTitle": "为 Claude 带来记忆",
+  "translatedAt": "2026-09-02T12:26:00.000Z",
+  "translateLang": "zh-CN"
+}

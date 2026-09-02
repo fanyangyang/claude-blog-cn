@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Understand Claude Code’s impact with contribution metrics — Claude Blog CN</title>
+  <meta name="description" content="Understand Claude Code’s impact with contribution metrics">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="/posts/contribution-metrics/" class="nav-link">中文版 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Claude Code</span>
+            <span class="article-date">January 29, 2026</span>
+            <span class="lang-badge-large">EN</span>
+          </div>
+          <h1 class="article-title">Understand Claude Code’s impact with contribution metrics</h1>
+          <a href="/posts/contribution-metrics/" class="lang-toggle">阅读中文翻译 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>Today, we're introducing contribution metrics in Claude Code, available in public beta. Engineering teams can now measure how Claude Code impacts their team’s velocity, tracking PRs shipped and code committed with Claude's help.</p><h2><strong>How we're shipping at Anthropic</strong></h2><p>Engineering teams at Anthropic use Claude Code extensively, and contribution data has helped us quantify its impact. As Claude Code adoption has increased internally, we've seen a 67% increase in PRs merged per engineer per day. Across teams, 70–90% of code is now being written with Claude Code assistance.</p><p>While pull requests alone are an incomplete measure of developer velocity, we’ve found them to be a close proxy for what engineering teams care about: shipping features, fixing bugs, and delighting users faster.</p><p>The new contribution metrics in Claude Code help you measure this impact in your own organization.</p><h2><strong>Measure velocity with Claude Code</strong></h2><p>By integrating with GitHub, contribution metrics surface the following data points:</p><ul role="list"><li><strong>Pull requests merged</strong>: Track PRs created with and without Claude Code assistance</li><li><strong>Code committed</strong>: See lines of code committed to your repositories with and without Claude Code assistance</li><li><strong>Per-user contribution data</strong>: Identify adoption patterns across your team</li></ul><p>Contribution data is calculated by matching Claude Code session activity with GitHub commits and PRs. We calculate this conservatively, and only code where we have high confidence in Claude Code's involvement is counted as assisted.</p><figure style="max-width:3840pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/697aba6d44c54e6710747e68_contribution-metrics-2.png" loading="lazy"></div></figure><figure style="max-width:3840pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/697aba633790d097ad08c6fc_contribution-metrics-1.png" loading="lazy"></div></figure><p>The metrics appear in your existing Claude Code analytics dashboard, accessible to workspace admins and owners. No external tools or data pipelines are required. Simply install our GitHub App and authenticate to your organization’s GitHub account, and metrics will automatically populate on the dashboard.</p><p>Contribution metrics are designed to complement your existing engineering KPIs. Use them alongside DORA metrics, sprint velocity, or other measures to understand directional changes from bringing Claude Code to your team.</p><h2><strong>Getting started</strong></h2><p>Code contribution metrics are available now in beta for Claude Team and Enterprise customers. To enable them:</p><ol role="list"><li>Install the <a href="https://github.com/apps/claude">Claude GitHub App</a> for your organization</li><li>Navigate to <a href="http://claude.ai/admin-settings/claude-code">Admin settings &gt; Claude Code</a> and toggle on GitHub Analytics</li><li>Authenticate to your GitHub organization</li></ol><p>Metrics begin populating automatically as your team uses Claude Code. View the <a href="https://code.claude.com/docs/en/analytics">documentation</a> for detailed setup instructions and guidance on interpreting your metrics.</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/contribution-metrics" target="_blank">View original</a></p>
+          <p><a href="/">← Back to home</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>Content from <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · Translation by AI</p>
+    </div>
+  </footer>
+
+</body>
+</html>

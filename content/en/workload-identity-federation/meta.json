@@ -1,0 +1,17 @@
+{
+  "slug": "workload-identity-federation",
+  "title": "Secure access to the Claude Platform with Workload Identity Federation",
+  "date": "June 17, 2026",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/workload-identity-federation",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/workload-identity-federation.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.791Z",
+  "translatedTitle": "用 Workload Identity Federation 安全访问 Claude Platform",
+  "translated": true,
+  "translatedAt": "2026-09-02T00:00:00.000Z",
+  "translateLang": "zh-CN"
+}

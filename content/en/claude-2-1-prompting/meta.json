@@ -1,0 +1,17 @@
+{
+  "slug": "claude-2-1-prompting",
+  "title": "Long context prompting for Claude 2.1",
+  "date": "December 6, 2023",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/claude-2-1-prompting",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/claude-2-1-prompting.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.792Z",
+  "translatedTitle": "Claude 2.1 的长上下文提示技巧",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:39:32.652Z",
+  "translateLang": "zh-CN"
+}

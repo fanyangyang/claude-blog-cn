@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product development in the agentic era — Claude Blog CN</title>
+  <meta name="description" content="Product development in the agentic era">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="/posts/product-development-in-the-agentic-era/" class="nav-link">中文版 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Agents</span>
+            <span class="article-date">April 29, 2026</span>
+            <span class="lang-badge-large">EN</span>
+          </div>
+          <h1 class="article-title">Product development in the agentic era</h1>
+          <a href="/posts/product-development-in-the-agentic-era/" class="lang-toggle">阅读中文翻译 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>One of the ironies of being a product manager in the age of AI is that my work feels more human than ever.</p><p>The job of product management has always been a mix of craft and alignment. For most of my career, my week was occupied by the latter: meetings with cross-functional stakeholders and teammates, status reports, and ticket backlogs with my engineering team. I got used to making instinctive, quick decisions followed by uphill battles advocating, convincing, and resourcing; shipping impactful products often felt more transactional than generative.&nbsp;</p><p>With Claude, I can pressure test ideas, automate workflows, and get unstuck. I'm finally spending real time with our users and my team on the part of the job that always mattered most: the craft. While these new workflows changed my day-to-day, the most meaningful shifts happened when we started developing <a href="https://claude.com/blog/claude-managed-agents" target="_blank">Claude Managed Agents</a> (currently in beta), a suite of composable APIs for building and deploying cloud-hosted agents at scale.</p><p>In this post, I'll share how Managed Agents has changed the way I work as a product manager, and a few patterns you can borrow for your own workflows.</p><h2><strong>Product development, then and now</strong></h2><p>API design used to live in documents and comment threads; <a href="https://claude.com/blog/product-management-on-the-ai-exponential" target="_blank">on the AI exponential</a>, we build with what we ship. A spec that reads elegantly in a doc can fall apart the first time you try to build against it. With Claude Code, I can sketch out an agent against pre-production versions of our API specs, and within an afternoon be running a real prototype end-to-end.&nbsp;</p><p>We reshaped API abstractions and Claude Console UX several times based on what we learned building with our own primitives–changes that even a multi-week doc review would never have surfaced, and otherwise would've come up too late via user feedback. We still litigate shapes and run raw curl requests to make sure we're happy with the bare-metal experience, but Claude Code gets me from the basic "hello world" test to a functional agent in the same sitting. As I build these agents, I'm able to more concretely anticipate ways our harness and API can flex for the next wave of model and task evolution.</p><p>Initially, these prototypes were just for shaping the product, but they now are evolving my day-to-day work as well. My workflow as a PM now splits cleanly across our products. I use <strong>Claude</strong> and <strong>Claude Cowork</strong> for open-ended research and discovery–the murky, early-stage exploration where I want an ongoing conversation. Once I have greater clarity on the job to be done, I use <strong>Claude Code</strong> to write and ship a custom agent for it, built atop of <strong>Managed Agents</strong>.&nbsp;</p><p>The two-pronged payoff has been the biggest unlock. On one side, being able to build against my own product easily raises the ceiling on what I can imagine shipping next. On the other, once the product is live, the same development muscle lets me automate the long tail of operational work that used to stall in my backlog.</p><h2><strong>Managed Agents use cases for product managers</strong></h2><figure style="width:100%;max-width:100%;padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/NLWiIj47IdI?start=26" title="What is Claude Managed Agents?" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><p>Now I spin up bespoke agents for any "job to be done." Building one is simple: I load the Managed Agents skill in Claude Code and outline a quick sketch of what I'm looking for. Developers can also use the latest version of Claude Code and built-in <code>claude-api skill</code> to build with Managed Agents–just prompt Claude with “<em>start onboarding for managed agents in Claude API</em>” to get started. After invoking this skill, Claude builds the agent, explaining its integration steps along the way, so I can easily shift direction as needed.&nbsp;</p><p>Examples of these agents include:</p><ul role="list"><li><strong>Adoption analytics.</strong> An agent with persistent access to our internal databases and skills for understanding our data schemas runs queries to surface interesting outliers and patterns. With <a href="https://claude.com/blog/claude-managed-agents-memory" target="_blank">memory</a> of prior runs, it can build on prior findings and continuously advance its perspective.</li><li><strong>Developer sentiment monitoring.</strong> An agent with the pre-built <a href="https://platform.claude.com/docs/en/managed-agents/tools#available-tools" target="_blank">web search tool</a> and guidance on focus areas scans a specific list of domains for the latest developer feedback, reporting back on common themes. Since there is so much content to analyze, it fans out research to <a href="https://platform.claude.com/docs/en/managed-agents/multi-agent" target="_blank">multiple agents</a> in parallel, waits for results, and synthesizes findings.&nbsp;</li><li><strong>Demo building.</strong> An agent with access to demo GitHub repos, branding assets, and an event deck turns prebuilt templates into a polished demo tailored to the relevant audience, such as a conference or customer meeting.</li></ul><p>Managed Agents sessions run in the cloud, so I can walk away and come back to find the work done. Processes that could never scale because every launch has its own quirks are now easy to automate using Managed Agents, and every agent run feels energizing instead of tedious.</p><h2><strong>Freeing up space to hone my craft</strong></h2><p>A year ago, all of this kind of work would've crawled along in cross-functional staffing requests, chaotic spreadsheets, or half-baked concepts I just never got to try out. Now, with Claude and Managed Agents, I can scale myself, using my time to partner with my team on developing the most impactful products. My day now spans generating innovative ideas with customers, digging into murky and ambiguous problems with my engineering counterparts, and investing real creative energy in frontier product work.</p><p>If you're a product manager and you haven't built an agent yet, that's where I'd start this week. The experiments and tools you've always wished existed are a single prompt and a few API calls away.</p><p><em>Learn more in </em><a href="https://platform.claude.com/docs/en/managed-agents/overview" target="_blank"><em>our docs</em></a><em>.&nbsp;</em></p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/product-development-in-the-agentic-era" target="_blank">View original</a></p>
+          <p><a href="/">← Back to home</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>Content from <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · Translation by AI</p>
+    </div>
+  </footer>
+
+</body>
+</html>

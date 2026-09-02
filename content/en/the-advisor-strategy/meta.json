@@ -1,0 +1,17 @@
+{
+  "slug": "the-advisor-strategy",
+  "title": "The advisor strategy: Give agents an intelligence boost",
+  "date": "April 9, 2026",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/the-advisor-strategy",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/the-advisor-strategy.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.784Z",
+  "translatedTitle": "顾问策略：为 agent 提供一次智能升级",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:46:32Z",
+  "translateLang": "zh-CN"
+}

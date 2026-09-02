@@ -1,0 +1,17 @@
+{
+  "slug": "building-ai-agents-for-the-enterprise",
+  "title": "Building AI agents for the enterprise",
+  "date": "April 30, 2026",
+  "category": "Agents",
+  "url": "https://claude.com/blog/building-ai-agents-for-the-enterprise",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/building-ai-agents-for-the-enterprise.svg",
+  "illustrationBg": "Sky",
+  "fetchedAt": "2026-09-02T03:50:17.788Z",
+  "translatedTitle": "为企业构建 AI 智能体",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:19:19.723Z",
+  "translateLang": "zh-CN"
+}

@@ -1,0 +1,17 @@
+{
+  "slug": "claude-platform-compliance-api",
+  "title": "Audit Claude Platform activity with the Compliance API",
+  "date": "March 30, 2026",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/claude-platform-compliance-api",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/claude-platform-compliance-api.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.784Z",
+  "translatedTitle": "使用 Compliance API 审计 Claude Platform 活动",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:07:33.000Z",
+  "translateLang": "zh-CN"
+}

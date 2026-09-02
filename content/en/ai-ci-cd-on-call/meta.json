@@ -1,0 +1,17 @@
+{
+  "slug": "ai-ci-cd-on-call",
+  "title": "Claude on call: How Claude Tag serves as Anthropic’s first responder for CI/CD failures",
+  "date": "August 18, 2026",
+  "category": "Enterprise AI",
+  "url": "https://claude.com/blog/ai-ci-cd-on-call",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/ai-ci-cd-on-call.svg",
+  "illustrationBg": "Heather",
+  "fetchedAt": "2026-09-02T03:50:17.771Z",
+  "translatedTitle": "Claude 值班：Claude Tag 如何成为 Anthropic CI/CD 故障的第一响应人",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:30:13.000Z",
+  "translateLang": "zh-CN"
+}

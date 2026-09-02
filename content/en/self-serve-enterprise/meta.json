@@ -1,0 +1,17 @@
+{
+  "slug": "self-serve-enterprise",
+  "title": "Claude Enterprise, now available self-serve",
+  "date": "February 12, 2026",
+  "category": "Enterprise AI",
+  "url": "https://claude.com/blog/self-serve-enterprise",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/self-serve-enterprise.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.788Z",
+  "translatedTitle": "Claude Enterprise 现已支持自助开通",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:22:24.000Z",
+  "translateLang": "zh-CN"
+}

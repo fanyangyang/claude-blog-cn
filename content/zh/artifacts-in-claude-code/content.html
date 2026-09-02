@@ -1,1 +1,29 @@
-<div class="u-rich-text-blog u-margin-trim w-richtext"><p>Claude Code 现在支持 artifacts，让你可以直接在终端中创建和查看丰富的可视化内容。Artifacts 是 Claude 生成的可视化内容，包括图表、流程图、交互式 UI 预览等，帮助你更好地理解和迭代代码。</p><p>在 Claude Code 中，artifacts 会直接在终端中渲染，无需离开命令行。你可以查看生成的图表、预览 HTML 页面，并与 Claude 一起迭代修改。</p><h2>主要功能</h2><ul><li><strong>即时可视化</strong>：在终端中直接查看生成的图表、流程图和 UI 预览</li><li><strong>迭代修改</strong>：基于生成的 artifacts 继续对话，Claude 会根据反馈修改</li><li><strong>代码导出</strong>：可以将 artifacts 中的代码直接保存到项目文件中</li></ul><h2>开始使用</h2><p>Artifacts 在最新版本的 Claude Code 中默认可用。只需在对话中请求 Claude 创建图表或可视化内容，它就会自动在终端中呈现。</p></div>
+<div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>从今天起，Claude Code 可以将工作进展捕获为 artifact，把 Claude Code 的工作成果变成实时、可分享的可视化页面——包括 PR 讲解、系统说明、仪表盘和发布检查清单——并且会随着会话的推进自动更新。</p>
+<p>一次 Claude Code 会话的工作可能五花八门：调查一起线上事故、重构某个服务，或者分析几个月的数据。Artifacts 能把这些工作成果转化为任何人都可以打开和浏览的网页，比如一次 pull request 的完整讲解、一个可以筛选和排序的仪表盘，甚至是一份随工作推进自动填写的发布检查清单。Artifacts 让协作变得更轻松，团队可以把更多时间花在构建上，而不是汇报进度上。</p>
+<figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/m7TJqx8CYG8" title="See your projects differently with Artifacts in Claude Code" scrolling="no" frameborder="0" allowfullscreen="true"></iframe>
+</div>
+</figure>
+<h2><strong>基于会话中的完整上下文构建</strong></h2>
+<p>Claude Code 构建 artifact 时会使用会话的全部上下文，包括你的代码库、你的连接器以及对话本身。一个事故页面可以把多方面信息汇聚在一起：代码中失败的测试及其背后的函数、来自已连接监控工具的错误率飙升，以及你刚刚运行的会话中的根因分析。有了 artifacts，你不需要接数据源，也不需要搭基础设施。你只要提出需要一个页面，Claude Code 就会基于已有的东西把它构建出来。</p>
+<h2><strong>实时更新的页面</strong></h2>
+<p>当 Claude Code 更新一个 artifact 时，已打开的页面会原地刷新，队友在发布的那一刻就能看到更新内容。每次发布都是同一链接下的一个新版本，附带版本历史，方便你随时回滚；还有一个画廊（gallery）页面，可以浏览和管理你创建的所有 artifacts。</p>
+<p>在我们的内部测试中，最常见的用例之一是调试。典型场景通常是这样的：一位工程师在站会前发起一次事故调查。Claude Code 逐步分析日志，并发布一个 artifact：一份时间线、可疑的提交，以及一张错误率图表。她通过页面头部把链接分享给团队。到站会开始时，随着调查的推进，Claude 已经重新发布了两次，纳入了最新信息。有了 artifacts，团队成员和相关方就不必再“给我们讲讲 agent 发现了什么”，因为大家看到的是同一个视图、同样的上下文。</p>
+<h2><strong>默认对组织私有</strong></h2>
+<p>每个 artifact 默认仅对其作者可见。准备好之后，你可以直接从页面上把它分享给队友和组织。Artifacts 只能被组织中经过身份验证的成员查看，无法公开。管理员可以通过组织级开关和基于角色的范围控制来管理访问权限，设置保留策略，并通过 compliance API 获得组织级的可见性。</p>
+<h2><strong>如何开始</strong></h2>
+<p>在你的会话中直接要一个 artifact——或者只是要一个可视化的东西，以下是<em>一些按角色划分的思路：</em></p>
+<ul role="list"><li><strong>法务 / 开源</strong>：直接从仓库出发，对每个依赖做一次许可证审计，标记出所有 copyleft 许可证。<em>“构建一个 artifact，列出所有第三方依赖及其许可证，并标记出 copyleft 的部分。”</em></li>
+<li><strong>隐私</strong>：一张数据流图，展示个人信息在代码中的收集、存储和记录的位置。<em>“追踪我们在代码库中所有涉及个人数据的地方，做成一个 artifact 用于隐私评审。”</em></li>
+<li><strong>安全</strong>：发现的问题直接链接到具体代码行，让修复方案毫无歧义。<em>“把这次评审中关于鉴权的发现做成一个 artifact，每一条都链接到对应代码。”</em></li>
+<li><strong>FinOps / 平台财务</strong>：从基础设施即代码中梳理出云资源和成本大头。<em>“把我们的 Terraform 中的云资源做成一个 artifact，按服务分组，并标出主要的成本来源。”</em></li>
+<li><strong>软件工程师</strong>：一份评审者真正能看懂的 PR 或 bug 讲解，内容取自 diff 及其周边代码。“做一个 artifact 来讲解这个 PR——diff、背后的思路，以及我做了哪些测试。”</li>
+<li><strong>设计师 &amp; 前端工程师</strong>：一个界面的多个 UX 方向，每个都用真实组件构建，选中的那个可以直接上线。“给我一个 artifact，用我们的组件库做这个注册表单的 5 个 UX 变体。”</li>
+<li><strong>资深工程师 &amp; 架构师</strong>：一张展示服务真实组成方式的地图，基于真实的 import 关系图绘制，而不是白板上的示意图。“根据代码把支付服务的组成方式做成一个 artifact。”</li>
+<li><strong>SRE &amp; 值班</strong>：一个随着调查推进不断丰富、最终成为复盘报告的事故页面。“把这个事故做成一个 artifact——时间线、可疑提交、来自监控的错误率飙升——并随着我的调查进展不断重新发布。”</li>
+<li><strong>工程经理</strong>：一个基于已合并 PR 生成的、记录实际发布内容的页面。“根据本周我团队合并的 PR 做一个 artifact，按项目分组。”</li>
+</ul>
+<p>Claude Code 会构建页面并给你一个链接。在浏览器或桌面应用中打开它，从页面头部分享出去——更新会自动发布到同一个 URL。</p>
+<h2><strong>可用性</strong></h2>
+<p>Artifacts 目前以 beta 形式向 Claude Team 和 Enterprise 组织开放，可在 Claude Code CLI 和桌面应用中使用，页面可在任何浏览器中查看。</p>
+<p><a href="http://code.claude.com/docs/en/artifacts"><strong><em>立即开始</em></strong></a><strong><em>使用 Claude Code。</em></strong></p>
+</div>

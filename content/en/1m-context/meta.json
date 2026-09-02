@@ -1,0 +1,17 @@
+{
+  "slug": "1m-context",
+  "title": "Claude Sonnet 4 now supports 1M tokens of context",
+  "date": "August 12, 2025",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/1m-context",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/1m-context.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.789Z",
+  "translated": true,
+  "translatedTitle": "Claude Sonnet 4 现已支持 100 万 token 上下文",
+  "translatedAt": "2026-09-02T12:38:00.000Z",
+  "translateLang": "zh-CN"
+}

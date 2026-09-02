@@ -1,0 +1,17 @@
+{
+  "slug": "claude-team-updates",
+  "title": "Updates to Claude Team",
+  "date": "January 28, 2026",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/claude-team-updates",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/claude-team-updates.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.788Z",
+  "translatedTitle": "Claude Team 计划更新",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:22:24.000Z",
+  "translateLang": "zh-CN"
+}

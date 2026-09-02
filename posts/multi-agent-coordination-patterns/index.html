@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>多 agent 协调模式：五种方法及其适用场景 — Claude Blog 中文翻译</title>
+  <meta name="description" content="多 agent 协调模式：五种方法及其适用场景">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/multi-agent-coordination-patterns" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Agents</span>
+            <span class="article-date">April 10, 2026</span>
+            
+          </div>
+          <h1 class="article-title">多 agent 协调模式：五种方法及其适用场景</h1>
+          <a href="/posts/multi-agent-coordination-patterns/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>在上一篇文章中，我们探讨了多 agent 系统什么时候能创造价值、什么时候单个 agent 是更好的选择。本文面向已经做出这个判断、接下来需要决定哪种协调模式适合自己问题的团队。</p><p>我们见过不少团队按照“听起来更高级”而非“契合手头问题”来选模式。我们建议从最简单的可行模式入手，观察它在哪里吃力，再由此演进。本文剖析五种模式的运作机制与局限：</p><ul><li><strong>生成器-验证器（Generator-verifier）</strong>，适合有明确评估标准、对输出质量要求极高的场景</li><li><strong>编排器-子代理（Orchestrator-subagent）</strong>，适合任务可清晰分解、子任务边界明确的场景</li><li><strong>Agent 团队（Agent teams）</strong>，适合并行、独立、长时间运行的子任务</li><li><strong>消息总线（Message bus）</strong>，适合事件驱动、agent 生态不断扩张的流水线</li><li><strong>共享状态（Shared-state）</strong>，适合 agent 相互借鉴发现的协作型工作</li></ul><h2>模式一：生成器-验证器</h2><p>这是最简单的多 agent 模式，也是部署最广泛的模式之一。我们在上一篇文章中以“验证 subagent 模式”之名介绍过它，这里采用外延更广的“生成器-验证器”表述，因为生成器并不一定要是编排器。&nbsp;</p><h3>运作方式</h3><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:1100px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="1100px"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69d901978c5cc197e3f1c1c7_1b56c9bc.png" width="auto" height="auto" loading="auto"></div></figure><p>‍</p><p>生成器接收任务并产出初始输出，交给验证器评估。验证器检查输出是否满足要求的标准，要么接受并视为完成，要么附上反馈予以拒绝。若被拒绝，反馈会路由回生成器，生成器据此产出修改后的版本。这个循环持续进行，直到验证器接受输出或达到最大迭代次数。</p><h3>优势场景</h3><p>设想一个为客服工单生成邮件回复的客服系统。生成器基于产品文档和工单上下文产出初始回复。验证器对照知识库检查准确性、依据品牌规范评估语气，并确认回复覆盖了工单提出的每一个问题。未通过检查的项连同反馈返回给生成器，反馈会点明具体问题，比如把某个功能错误地归到了不对的定价档位，或遗漏了工单中的某个问题没有回答。</p><p>当输出质量至关重要、且评估标准可以显式化时，使用这个模式。它对代码生成（一个 agent 写代码，另一个编写并运行测试）、事实核查、基于量表的评分、合规校验等任何“错误输出的代价高于多跑一轮生成”的领域都很有效。</p><h3>吃力之处</h3><p>验证器的水平取决于它的标准。如果只告诉验证器“检查输出好不好”而没有进一步标准，它就会给生成器的输出盖橡皮图章。团队最常见的失败方式就是搭建了循环却不定义“验证”的含义，制造出质量控制的形式却没有实质。（我们在上一篇文章中讨论过这种“早期胜利”问题。）</p><p>这个模式还假设生成与验证是可分离的两种能力。如果评估一个创意方案和生成它一样难，验证器就可能无法可靠地发现问题。</p><p>最后，迭代循环可能停滞。如果生成器无法解决验证器的反馈，系统就会反复震荡而不收敛。设置最大迭代次数并搭配兜底策略（升级给人工处理，或返回最佳尝试并附上说明）可以避免变成无限循环。</p><h2>模式二：编排器-子代理</h2><p>层级关系是这个模式的定义性特征。一个 agent 充当团队负责人，负责规划工作、分派任务、汇总结果。subagent 各自承担具体职责并汇报。</p><h3>运作方式</h3><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:1100px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="1100px"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69d901978c5cc197e3f1c1c4_76abfe32.png" width="auto" height="auto" loading="auto"></div></figure><p>主 agent 接收任务并决定处理方式。它可以自己直接完成部分子任务，把其余分派给 subagent。subagent 完成工作并返回结果，由编排器汇总为最终输出。</p><p><a href="https://claude.com/product/claude-code">Claude Code</a> 采用的就是这种模式。主 agent 自己写代码、改文件、跑命令，当需要检索大型代码库或调查独立问题时，就在后台派出 subagent，让工作在结果回流的同时继续推进。每个 subagent 在自己的上下文窗口中运行，返回的是提炼过的结论。这样编排器的上下文聚焦在主任务上，探索则并行发生。</p><h3>优势场景</h3><p>设想一个自动化代码评审系统。收到 pull request 后，系统需要检查安全漏洞、核实测试覆盖率、评估代码风格、并审视架构一致性。每项检查各自独立，需要不同的上下文，产出明确的结果。编排器把每项检查分派给专门的 subagent，收集结果后汇总成一份统一的评审意见。</p><p>当任务分解清晰、子任务之间相互依赖很少时，使用这个模式。编排器对总体目标保持连贯的把握，subagent 则专注于各自的具体职责。</p><h3>吃力之处</h3><p>编排器会成为信息瓶颈。当某个 subagent 的发现与另一个 subagent 的工作相关时，这条信息必须经由编排器中转。如果安全 subagent 发现了一个影响架构 subagent 分析的认证缺陷，编排器必须识别出这个依赖并正确路由信息。经过几轮这样的交接，关键细节往往丢失或被摘要掉。</p><p>串行执行也限制了吞吐量。除非显式并行，subagent 会一个接一个地运行——这意味着系统付出了多 agent 的 token 成本，却没有换来速度收益。</p><h2>模式三：Agent 团队</h2><p>当工作可以分解为能够长时间独立推进的并行子任务时，编排器-子代理模式可能变得过于束手束脚。</p><h3>运作方式</h3><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:1100px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="1100px"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69d901978c5cc197e3f1c1cd_4282798b.png" width="auto" height="auto" loading="auto"></div></figure><p>协调器（coordinator）以独立进程的形式派出多个工人 agent。队友（teammate）从共享队列认领任务，自主地跨多个步骤推进工作，并发出完成信号。</p><p>与编排器-子代理的区别在于工人的持久性。编排器为一个有边界的子任务派出 subagent，subagent 返回结果后即终止。而队友在多个任务之间保持存活，积累上下文和领域专长，性能随时间提升。协调器分配工作、收集成果，但不会在任务之间重置工人。</p><h3>优势场景</h3><p>设想把一个大型代码库从一个框架迁移到另一个。每个队友可以独立迁移一个服务，各自处理自己的依赖、测试套件和部署配置。协调器把每个服务分派给一个队友，每个队友自主完成迁移：更新依赖、修改代码、修复测试、验证。协调器收集完成的迁移，再对整个系统跑集成测试。</p><p>当子任务彼此独立、且能从持续的多步骤工作中受益时，使用这个模式。每个队友在其领域内逐步积累上下文，而不是每次分派都从零开始。</p><h3>吃力之处</h3><p>独立性是硬性前提。与编排器可以在 subagent 之间居中调停、路由信息的编排器-子代理模式不同，队友各自自主运行，难以共享中间发现。如果一个队友的工作会影响另一个的，双方都无从察觉，产出可能相互冲突。</p><p>完成检测也更难。由于队友自主工作、耗时各异，协调器必须处理“部分完成”的局面——一个队友两分钟收工，另一个要二十分钟。</p><p>共享资源会放大这两个问题。当多个队友操作同一个代码库、数据库或文件系统时，两个队友可能编辑同一个文件或做出互不兼容的修改。这个模式需要精细的任务切分和冲突解决机制。</p><h2>模式四：消息总线</h2><p>随着 agent 数量增加、交互模式日趋复杂，直接协调会变得难以管理。消息总线引入一个共享通信层，agent 在其上发布和订阅事件。</p><h3>运作方式</h3><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:1100px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="1100px"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69d901978c5cc197e3f1c1c1_78a53f59.png" width="auto" height="auto" loading="auto"></div></figure><p>agent 通过两个原语交互：发布和订阅。agent 订阅自己关心的话题，由路由器投递匹配的消息。携带新能力的新 agent 可以直接开始接收相关工作，无需重新接线现有连接。</p><h3>优势场景</h3><p>一个安全运营自动化系统可以展示这个模式的擅长之处。告警从多个来源涌入，分诊 agent 按严重程度和类型对每条告警分类，把高危网络告警路由给网络调查 agent，把凭证相关告警路由给身份分析 agent。每个调查 agent 可以发布富化请求，由上下文收集 agent 满足。调查发现流向响应协调 agent，由其决定恰当的处置动作。</p><p>这条流水线契合消息总线，因为事件从一个阶段流向下一个，团队可以随着威胁类别演变不断加入新的 agent 类型，各 agent 也能独立开发、独立部署。&nbsp;</p><p>当工作流由事件涌现而非预先设定、且 agent 生态大概率会持续扩张时，使用这个模式。</p><h3>吃力之处</h3><p>事件驱动通信的灵活性让追踪变得更难。当一条告警在五个 agent 之间触发一连串事件时，要弄清发生了什么，需要细致的日志和关联机制。调试比跟随编排器的串行决策更难。</p><p>路由准确性也至关重要。如果路由器误分或丢弃一个事件，系统会静默失败——什么都没处理，但也永远不会崩溃。基于 LLM 的路由器提供了语义上的灵活性，但自身也引入新的失败模式。</p><h2>模式五：共享状态</h2><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:1100px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="1100px"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69d901978c5cc197e3f1c1ca_d18482f0.png" width="auto" height="auto" loading="auto"></div></figure><p>前几种模式中的编排器、团队负责人和消息路由器都在集中管理信息流。共享状态移除了这个中间人：agent 通过一个所有人都能直接读写的持久化存储来协调。</p><h3>运作方式</h3><p>agent 自主运行，对一个共享的数据库、文件系统或文档进行读写。没有中央协调者。agent 检查存储中的相关信息，依据所见采取行动，再把发现写回去。工作通常由一个初始化步骤向存储注入问题或数据集而启动，并在满足终止条件时结束：时间限制、收敛阈值，或由指定 agent 判定存储中已包含足够的答案。</p><h3>优势场景</h3><p>设想一个研究综合系统，多个 agent 分别调查一个复杂问题的不同侧面。一个探索学术文献，一个分析行业报告，第三个审查专利申请，第四个跟踪新闻舆情。每个 agent 的发现都可能启发其他 agent 的调查——比如学术文献 agent 发现了一位关键研究者，行业 agent 就应该深入研究其所在的公司。</p><p>有了共享状态，发现直接写入存储。行业 agent 立刻就能看到学术 agent 的发现，无需等待协调器路由信息。agent 相互借鉴彼此的工作，共享存储成为一座不断演进的知识库。</p><p>共享状态还消除了协调器这个单点故障。任何一个 agent 停止，其余的仍继续读写。而在编排器和消息总线系统中，协调器或路由器一挂，一切都会停摆。</p><h3>吃力之处</h3><p>没有显式协调，agent 可能重复劳动或采取相互矛盾的路线。两个 agent 可能各自调查同一条线索。agent 之间的交互产生系统行为，而非自上而下的设计，这让结果更难预测。</p><p>更棘手的失败模式是反应式循环。比如 agent A 写入一个发现，agent B 读到后写入后续，agent A 看到后续又作出回应。系统持续在不会收敛的工作上烧 token。重复劳动和并发写有成熟的工程解法（加锁、版本化、分区），而反应式循环是行为层面的问题，需要一等公民式的终止条件：时间预算、收敛阈值（连续 N 轮没有新发现），或一个专门负责判定“存储中是否已有足够答案”的 agent。把终止当事后补丁的系统，往往无限循环，或在某个 agent 的上下文填满时随意停摆。</p><h2>在模式之间选择与演进</h2><p>选对模式取决于系统的几个结构性问题。在上一篇文章中，我们主张以上下文为中心的分解方式——按每个 agent 需要什么上下文来划分工作，而不是按它做什么类型的工作来划分。这个原则在这里同样适用。各模式的差异在于它们如何管理上下文边界和信息流。</p><h3>编排器-子代理 vs. agent 团队</h3><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:1600px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="1600px"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69d901978c5cc197e3f1c1d0_cb379a56.png" width="auto" height="auto" loading="auto"></div></figure><p>两者都由一个协调者向其他 agent 分派工作。关键问题是工人需要把上下文保持多久。</p><ul><li><strong>选编排器-子代理</strong>，当子任务短小、聚焦、产出明确时。代码评审系统很适合这里，因为每项检查运行自己的分析、生成报告，并在一次有边界的调用内返回。subagent 不需要跨多个周期携带上下文。</li><li><strong>选 agent 团队</strong>，当子任务能从持续的多步骤工作中受益时。代码库迁移适合这里，因为每个队友会与被分派的服务建立真正的熟悉度：依赖图、测试模式、部署配置。这些积累的上下文带来的性能提升，是一次性分派无法复制的。</li></ul><p>当 subagent 需要在多次调用之间保留状态时，agent 团队是更好的选择。</p><h3>编排器-子代理 vs. 消息总线</h3><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:1600px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="1600px"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69d901978c5cc197e3f1c1dc_4313c333.png" width="auto" height="auto" loading="auto"></div></figure><p>两者都能处理多步骤工作流。关键问题是工作流结构的可预测程度。</p><ul><li><strong>选编排器-子代理</strong>，当步骤顺序事先已知时。代码评审系统遵循固定的流水线：收到 PR、运行检查、汇总结果。</li><li><strong>选消息总线</strong>，当工作流由事件涌现、且可能因发现而变化时。安全运营系统无法预知会来什么告警、需要什么调查路径。新的告警类型可能出现并需要新的处理方式。消息总线通过把事件路由给有能力的 agent 而非遵循预定序列来容纳这种变化。</li></ul><p>当编排器中为应对日益增多的情形而堆积的条件逻辑越来越多时，消息总线能让这种路由变得显式且可扩展。</p><h3>agent 团队 vs. 共享状态</h3><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:1600px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="1600px"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69d901978c5cc197e3f1c1df_a8950920.png" width="auto" height="auto" loading="auto"></div></figure><p>两者都是 agent 自主工作。关键问题是 agent 是否需要彼此的发现。</p><ul><li><strong>选 agent 团队</strong>，当 agent 在互不交互的分区上工作时。代码库迁移适合这里，因为每个队友处理自己的服务，协调者最后合并结果。</li><li><strong>选共享状态</strong>，当工作是协作型的、发现需要在 agent 之间实时流动时。研究综合系统更契合这里，因为学术 agent 发现关键研究者这一信息，立刻就与行业 agent 的调查相关。</li></ul><p>一旦队友需要相互沟通，而不只是共享最终结果，共享状态让这一切来得更自然。</p><h3>消息总线 vs. 共享状态</h3><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:1600px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="1600px"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69d901978c5cc197e3f1c1d4_46c9b982.png" width="auto" height="auto" loading="auto"></div></figure><p>两者都支持复杂的多 agent 协作。关键问题是工作以离散事件的形式流动，还是积累成共享的知识库。</p><ul><li><strong>选消息总线</strong>，当 agent 在流水线中对事件作出反应时。安全运营系统逐阶段处理告警，每个事件在完成前触发下一个。这个模式擅长把事件路由给有能力的 agent。</li><li><strong>选共享状态</strong>，当 agent 在时间维度上基于积累的发现推进时。研究综合系统持续汇聚知识。agent 反复回到存储，查看别人的发现，并据此调整自己的调查。</li></ul><p>消息总线仍然有路由器，意味着仍有一个中央组件决定事件的去向。共享状态是去中心化的。如果消除单点故障是优先事项，共享状态在这方面做得更彻底。</p><p>如果消息总线系统中的 agent 发布事件是为了共享发现而非触发动作，那么共享状态是更合适的选择。</p><h2>如何起步</h2><p>生产系统常常组合多种模式。一种常见的混合方案是：整体工作流用编排器-子代理，某个重协作的子任务用共享状态。另一种是：事件路由用消息总线，每类事件由 agent 团队式的工人处理。这些模式是积木，不是互斥的单选题。</p><p>下表总结了每种模式的适用场景。</p><div data-rt-embed-type="true"><figure>
+  <div role="region" tabindex="0">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">场景</th>
+          <th scope="col">模式</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>质量攸关的输出，评估标准明确</td>
+          <td>生成器-验证器（Generator-Verifier）</td>
+        </tr>
+        <tr>
+          <td>任务分解清晰，子任务有边界</td>
+          <td>编排器-子代理（Orchestrator-Subagent）</td>
+        </tr>
+        <tr>
+          <td>并行负载，子任务独立且长时间运行</td>
+          <td>Agent 团队（Agent Teams）</td>
+        </tr>
+        <tr>
+          <td>事件驱动流水线，agent 生态不断增长</td>
+          <td>消息总线（Message Bus）</td>
+        </tr>
+        <tr>
+          <td>协作型研究，agent 共享发现</td>
+          <td>共享状态（Shared State）</td>
+        </tr>
+        <tr>
+          <td>不允许单点故障</td>
+          <td>共享状态（Shared State）</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</figure></div><p>对大多数场景，我们建议从编排器-子代理起步。它以最少的协调开销覆盖最广的问题域。观察它在哪里吃力，随着具体需求明确，再向其他模式演进。</p><p>‍<em>在接下来的文章中，我们将结合生产实现和案例研究深入剖析每种模式。关于何时值得投入多 agent 系统的背景，参见</em><a href="https://claude.com/blog/building-multi-agent-systems-when-and-how-to-use-them"><em>《构建多 agent 系统：何时以及如何使用》</em></a><em>。</em></p><h2><strong>致谢</strong></h2><p>作者 Cara Phillips，Eugene Yan、Jiri De Jonghe、Samuel Weller 和 Erik S. 亦有贡献。</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/multi-agent-coordination-patterns" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

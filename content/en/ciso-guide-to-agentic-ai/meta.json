@@ -1,0 +1,17 @@
+{
+  "slug": "ciso-guide-to-agentic-ai",
+  "title": "Zero risk isn't the job: a CISO's guide to agentic AI",
+  "date": "July 17, 2026",
+  "category": "Enterprise AI",
+  "url": "https://claude.com/blog/ciso-guide-to-agentic-ai",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/ciso-guide-to-agentic-ai.svg",
+  "illustrationBg": "Mineral",
+  "fetchedAt": "2026-09-02T03:50:17.788Z",
+  "translatedTitle": "零风险不是目标：写给 CISO 的智能体 AI 指南",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:34:18.000Z",
+  "translateLang": "zh-CN"
+}

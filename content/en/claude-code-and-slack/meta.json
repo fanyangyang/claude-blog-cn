@@ -1,0 +1,17 @@
+{
+  "slug": "claude-code-and-slack",
+  "title": "Claude Code and Slack",
+  "date": "December 8, 2025",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/claude-code-and-slack",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/claude-code-and-slack.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.789Z",
+  "translatedTitle": "Claude Code 与 Slack",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:54:25.809Z",
+  "translateLang": "zh-CN"
+}

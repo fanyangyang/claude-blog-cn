@@ -1,0 +1,316 @@
+<div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p><a href="https://www.claude.com/blog/skills" target="_blank">Skills</a> are custom instructions that extend Claude's capabilities for specific tasks or domains.&nbsp;</p><p>When you create a skill via a <a href="http://skill.md" target="_blank">SKILL.md</a> file, you're teaching Claude how to handle specific scenarios more effectively. The power of skills lies in their ability to encode institutional knowledge, standardize outputs, and handle complex multi-step workflows that would otherwise require repeated explanation or investment in building a custom agent.</p><p>Learn how to create skills that transform Claude from general-purpose assistant into specialized expert for your specific workflows either with our <a href="https://github.com/anthropics/skills/tree/main/skill-creator" target="_blank">skill creator</a> template or manually. (Pro-tip: to make it easy, we recommend building your <a href="http://skill.md" target="_blank">SKILL.md</a> file with this template and tailoring from there).</p><h2><strong>Creating a skill in 5 steps</strong></h2><p>Follow this structured approach to build skills that trigger more reliably.</p><h3><strong>1. Understand the core requirements</strong></h3><p>Before writing anything, clarify what problem your skill solves. Strong skills address concrete needs with measurable outcomes. "Extract financial data from PDFs and format as CSV" beats "Help with my finance stuff" because it specifies the input format, the operation, and the expected output.</p><p>Start by asking yourself: What specific task does this skill accomplish? What triggers should activate it? What does success look like? What are the edge cases or limitations?</p><h3><strong>2. Write the name</strong></h3><p>Your skill needs three core components: <strong>name</strong> (clear identifier), <strong>description</strong> (when to activate), and <strong>instructions</strong> (how to execute). In fact, the name and description are the only parts of the <a href="http://skill.md" target="_blank">SKILL.md</a> file that influence triggering, in other words, the ability for Claude&nbsp; to call a skill for specialized knowledge or workflows.&nbsp;</p><p>The name should be straightforward and descriptive. Use lowercase with hyphens (e.g., pdf-editor, brand-guidelines). Keep it short and clear.</p><h3><strong>3. Write the description field</strong></h3><p>The description determines when your skill activates, making it the most critical component. Write it from Claude's perspective, focusing on triggers, capabilities, and use cases.</p><p>A strong description balances several elements: specific capabilities, clear triggers, relevant context, and boundaries.</p><p><strong>Weak description</strong>:</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-markdown" style="white-space:pre-wrap"><span><span>This skill helps with PDFs and documents.</span></span></code></pre><p><strong>Strong description</strong>:</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-markdown" style="white-space:pre-wrap"><span><span>Comprehensive PDF manipulation toolkit for extracting text and tables, creating new PDFs, merging/splitting documents, and handling forms. When Claude needs to fill in a PDF form or programmatically process, generate, or analyze PDF documents at scale. Use for document workflows and batch operations. Not for simple PDF viewing or basic conversions.</span></span></code></pre><p>The stronger version gives Claude multiple data points: specific verbs (extract, create, merge), concrete use cases (form filling, batch operations), and clear boundaries (not for simple viewing).</p><h3><strong>4. Write the main instructions</strong></h3><p>Your instructions should be structured, scannable, and actionable. Use markdown headers, bullet points for options, and code blocks for examples.</p><p>Structure with clear hierarchy: overview, prerequisites, execution steps, examples, error handling, and limitations. Break complex workflows into discrete phases with clear inputs and outputs.</p><p>Include concrete examples showing correct usage. Specify what the skill cannot do to prevent misuse and manage expectations. Your <a href="http://skill.md" target="_blank">SKILL.md</a> file can also include additional reference files and assets to provide even more clarity and guidance around what you’re asking the agent to do when the skill is triggered.&nbsp;</p><h3><strong>5. Upload your skill&nbsp;</strong></h3><p>Depending on what Claude surface you’re building on, here’s how to upload your skill for use:&nbsp;</p><ul role="list"><li><a href="http://claude.ai" target="_blank">Claude.ai</a> (Claude apps): Go to <strong>Settings</strong> and add your custom skill there. Custom skills require a Pro, Max, Team, or Enterprise plan with code execution enabled. Skills uploaded here are individual to each user—they are not shared organization-wide and cannot be centrally managed by admins.</li><li><a href="https://www.claude.com/product/claude-code" target="_blank">Claude Code</a>: Create a skills/ directory in your plugin or project root and add skill folders containing SKILL.md files. Claude discovers and uses them automatically when the plugin is installed. Example structure:</li></ul><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-markdown" style="white-space:pre-wrap"><span><span>my-project/
+</span></span><span>├── skills/
+</span><span>│   └── my-skill/
+</span><span>│       └── SKILL.md</span></code></pre><ul role="list"><li><a href="https://www.claude.com/platform/api" target="_blank">Claude Developer Platform</a>: Upload skills via the Skills API (/v1/skills endpoints). Use a POST request with the required beta headers:</li></ul><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-markdown" style="white-space:pre-wrap"><span style="font-style:italic"><span>curl -X POST "https://api.anthropic.com/v1/skills" \
+</span></span><span style="font-style:italic"><span>  -H "x-api-key: $ANTHROPIC</span><span style="font-style:italic">_API_</span><span>KEY" \
+</span></span><span style="font-style:italic">  -H "anthropic-version: 2023-06-01" \
+</span><span style="font-style:italic">  -H "anthropic-beta: skills-2025-10-02" \
+</span><span style="font-style:italic"><span>  -F "display</span><span style="font-style:italic">_title=My Skill Name" \
+</span></span><span style="font-style:italic">  -F "files[]=@my-skill/SKILL.md;filename=my-skill/SKILL.md"</span></code></pre><h3><strong>4. Testing and validation</strong></h3><p>Test your skill with realistic scenarios before deploying it. Systematic testing reveals gaps in instructions, ambiguities in descriptions, and unexpected edge cases that only surface during actual use.</p><p>Create a test matrix covering three scenarios:</p><ul role="list"><li><strong>Normal operations</strong>: Test the skill with typical requests it should handle perfectly. If you built a financial analysis skill, try "analyze Microsoft's latest earnings" or "build a datapack for this 10-K filing." These baseline tests confirm your instructions work as intended.</li><li><strong>Edge cases</strong>: Test with incomplete or unusual inputs. What happens when data is missing? When file formats are unexpected? When users provide ambiguous instructions? Your skill should handle these gracefully—either producing degraded but useful output or explaining what's needed to proceed.</li><li><strong>Out-of-scope requests</strong>: Test with tasks that seem related but shouldn't trigger your skill. If you built an NDA review skill, try requesting "review this employment agreement" or "analyze this lease." The skill should stay dormant, letting other skills or general Claude capabilities handle the request.</li></ul><p>Consider implementing the following tests for even deeper validation:</p><ul role="list"><li><strong>Triggering tests:</strong> Does the skill activate when expected? Test with both explicit requests ("use the financial datapack skill to analyze this company") and natural requests ("help me understand this company's financials"). Does it stay inactive when irrelevant? A well-scoped skill knows when not to activate. Test similar but distinct requests to verify boundaries.</li><li><strong>Functional tests: </strong>These include output consistency (do multiple runs with similar inputs produce comparable results?), usability (can someone unfamiliar with the domain use it successfully?), and documentation accuracy (do your examples match actual behavior?).&nbsp;</li></ul><h3><strong>5. Iterate based on usage</strong></h3><p>Monitor how your skill performs in real-world usage. Refine descriptions if triggering is inconsistent. Clarify instructions if outputs vary unexpectedly. As with prompts, the best skills evolve through practical application.</p><h2><strong>General best practices for creating skills</strong></h2><p>These principles help you create skills that are maintainable, reusable, and genuinely useful rather than theoretical.</p><h3><strong>Start with use cases</strong></h3><p>Don't write skills speculatively. Build them when you have real, repeated tasks. The best skills solve problems you encounter regularly.</p><p>Before creating a skill, ask: Have I done this task at least five times? Will I do it at least ten more times? If yes, a skill makes sense.</p><h3><strong>Define success criteria—and include it in the skill</strong></h3><p>Tell Claude what a good out looks like. If you're creating financial reports, specify required sections, formatting standards, validation checks, and quality thresholds. Include these criteria in your instructions so Claude can self-check.</p><h3><strong>Use the Skill-Creator skill</strong></h3><p>The <a href="https://github.com/anthropics/skills/tree/main/skill-creator" target="_blank">skill-creator skill</a> guides you through creating well-structured skills. It asks clarifying questions, suggests description improvements, and helps format instructions properly. Available in the <a href="https://github.com/anthropics/skills" target="_blank">Skills repository on GitHub</a> and directly via <a href="http://claude.ai" target="_blank">Claude.ai</a>, it's particularly valuable for your first few skills.</p><h2><strong>Skill limitations and considerations</strong></h2><p>Understanding how skills work—and their boundaries—helps you design more effective skills and set appropriate expectations.</p><h3><strong>Skill triggering</strong></h3><p>Claude evaluates skill descriptions against your request to determine relevance. This isn't keyword matching—Claude understands semantic relationships. However, vague descriptions reduce triggering accuracy.</p><p>Multiple skills can activate simultaneously if they address different aspects of a complex task. Overly generic descriptions cause inappropriate activation, while missing use cases cause missed activations.</p><h3><strong>Appropriate file sizes</strong></h3><p>When writing skills, avoid bloating the context window with unnecessary content. Consider whether each piece of information needs to be loaded every time, or only conditionally.</p><p>Use a "menu" approach: if your skill covers multiple distinct processes or options, the SKILL.md should describe what's available and use relative paths to reference separate files for each. Claude then reads only the file relevant to the user's task, leaving the others untouched for that conversation.</p><p>These separate files don't need to represent mutually exclusive paths. The key principle is breaking content into reasonable chunks and letting Claude select what's needed based on the task at hand.</p><h2>‍<strong>Real-world skills examples</strong></h2><h3><strong>Skill example #1: </strong><a href="https://github.com/anthropics/skills/tree/main/document-skills/docx"><strong>docx creation skill</strong></a></h3><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-markdown" style="white-space:pre-wrap"><span><span style="color:#007faa">#---</span><span>
+</span></span><span>name: docx
+</span><span>description: "Comprehensive document creation, editing, and analysis with support for tracked changes, comments, formatting preservation, and text extraction. When Claude needs to work with professional documents (.docx files) for: (1) Creating new documents, (2) Modifying or editing content, (3) Working with tracked changes, (4) Adding comments, or any other document tasks"
+</span><span><span></span><span style="color:#007faa">license: Proprietary. LICENSE.txt has complete terms
+</span></span><span><span style="color:#007faa">---</span><span>
+</span></span><span>
+</span><span><span></span><span style="color:#007faa"># DOCX creation, editing, and analysis</span><span>
+</span></span><span>
+</span><span><span></span><span style="color:#007faa">## Overview</span><span>
+</span></span><span>
+</span><span>A user may ask you to create, edit, or analyze the contents of a .docx file. A .docx file is essentially a ZIP archive containing XML files and other resources that you can read or edit. You have different tools and workflows available for different tasks.
+</span><span>
+</span><span><span></span><span style="color:#007faa">## Workflow Decision Tree</span><span>
+</span></span><span>
+</span><span><span></span><span style="color:#007faa">### Reading/Analyzing Content</span><span>
+</span></span><span>Use "Text extraction" or "Raw XML access" sections below
+</span><span>
+</span><span><span></span><span style="color:#007faa">### Creating New Document</span><span>
+</span></span><span>Use "Creating a new Word document" workflow
+</span><span>
+</span><span><span></span><span style="color:#007faa">### Editing Existing Document</span><span>
+</span></span><span><span></span><span style="color:#008000">-</span><span> </span><span style="font-weight:bold">**Your own document + simple changes**</span><span>
+</span></span><span>  Use "Basic OOXML editing" workflow
+</span><span>
+</span><span><span></span><span style="color:#008000">-</span><span> </span><span style="font-weight:bold">**Someone else's document**</span><span>
+</span></span><span><span>  Use </span><span style="font-weight:bold">**"Redlining workflow"**</span><span> (recommended default)
+</span></span><span>
+</span><span><span></span><span style="color:#008000">-</span><span> </span><span style="font-weight:bold">**Legal, academic, business, or government docs**</span><span>
+</span></span><span><span>  Use </span><span style="font-weight:bold">**"Redlining workflow"**</span><span> (required)
+</span></span><span>
+</span><span><span></span><span style="color:#007faa">## Reading and analyzing content</span><span>
+</span></span><span>
+</span><span><span></span><span style="color:#007faa">### Text extraction</span><span>
+</span></span><span>If you just need to read the text contents of a document, you should convert the document to markdown using pandoc. Pandoc provides excellent support for preserving document structure and can show tracked changes:
+</span><span>
+</span><span><span></span><span class="hljs-code">```bash
+</span></span><span># Convert document to markdown with tracked changes
+</span><span>pandoc --track-changes=all path-to-file.docx -o output.md
+</span><span># Options: --track-changes=accept/reject/all
+</span><span><span class="hljs-code">```</span><span>
+</span></span><span>
+</span><span><span></span><span style="color:#007faa">### Raw XML access</span><span>
+</span></span><span>You need raw XML access for: comments, complex formatting, document structure, embedded media, and metadata. For any of these features, you'll need to unpack a document and read its raw XML contents.
+</span><span>
+</span><span><span></span><span style="color:#007faa">#### Unpacking a file</span><span>
+</span></span><span><span></span><span class="hljs-code">`python ooxml/scripts/unpack.py &lt;office_file&gt; &lt;output_directory&gt;`</span><span>
+</span></span><span>
+</span><span><span></span><span style="color:#007faa">#### Key file structures</span><span>
+</span></span><span><span></span><span style="color:#008000">*</span><span> </span><span class="hljs-code">`word/document.xml`</span><span> - Main document contents
+</span></span><span><span></span><span style="color:#008000">*</span><span> </span><span class="hljs-code">`word/comments.xml`</span><span> - Comments referenced in document.xml
+</span></span><span><span></span><span style="color:#008000">*</span><span> </span><span class="hljs-code">`word/media/`</span><span> - Embedded images and media files
+</span></span><span><span></span><span style="color:#008000">*</span><span> Tracked changes use </span><span class="hljs-code">`&lt;w:ins&gt;`</span><span> (insertions) and </span><span class="hljs-code">`&lt;w:del&gt;`</span><span> (deletions) tags
+</span></span><span>
+</span><span><span></span><span style="color:#007faa">## Creating a new Word document</span><span>
+</span></span><span>
+</span><span><span>When creating a new Word document from scratch, use </span><span style="font-weight:bold">**docx-js**</span><span>, which allows you to create Word documents using JavaScript/TypeScript.
+</span></span><span>
+</span><span><span></span><span style="color:#007faa">### Workflow</span><span>
+</span></span><span><span></span><span style="color:#008000">1.</span><span> </span><span style="font-weight:bold">**MANDATORY - READ ENTIRE FILE**</span><span>: Read [</span><span style="color:#008000">`docx-js.md`</span><span>](</span><span style="color:#aa5d00">docx-js.md</span><span>) (~500 lines) completely from start to finish. </span><span style="font-weight:bold">**NEVER set any range limits when reading this file.**</span><span> Read the full file content for detailed syntax, critical formatting rules, and best practices before proceeding with document creation.
+</span></span><span><span></span><span style="color:#008000">2.</span><span> Create a JavaScript/TypeScript file using Document, Paragraph, TextRun components (You can assume all dependencies are installed, but if not, refer to the dependencies section below)
+</span></span><span><span></span><span style="color:#008000">3.</span><span> Export as .docx using Packer.toBuffer()
+</span></span><span>
+</span><span><span></span><span style="color:#007faa">## Editing an existing Word document</span><span>
+</span></span><span>
+</span><span><span>When editing an existing Word document, use the </span><span style="font-weight:bold">**Document library**</span><span> (a Python library for OOXML manipulation). The library automatically handles infrastructure setup and provides methods for document manipulation. For complex scenarios, you can access the underlying DOM directly through the library.
+</span></span><span>
+</span><span><span></span><span style="color:#007faa">### Workflow</span><span>
+</span></span><span><span></span><span style="color:#008000">1.</span><span> </span><span style="font-weight:bold">**MANDATORY - READ ENTIRE FILE**</span><span>: Read [</span><span style="color:#008000">`ooxml.md`</span><span>](</span><span style="color:#aa5d00">ooxml.md</span><span>) (~600 lines) completely from start to finish. </span><span style="font-weight:bold">**NEVER set any range limits when reading this file.**</span><span> Read the full file content for the Document library API and XML patterns for directly editing document files.
+</span></span><span><span></span><span style="color:#008000">2.</span><span> Unpack the document: </span><span class="hljs-code">`python ooxml/scripts/unpack.py &lt;office_file&gt; &lt;output_directory&gt;`</span><span>
+</span></span><span><span></span><span style="color:#008000">3.</span><span> Create and run a Python script using the Document library (see "Document Library" section in ooxml.md)
+</span></span><span><span></span><span style="color:#008000">4.</span><span> Pack the final document: </span><span class="hljs-code">`python ooxml/scripts/pack.py &lt;input_directory&gt; &lt;office_file&gt;`</span><span>
+</span></span><span>
+</span><span>The Document library provides both high-level methods for common operations and direct DOM access for complex scenarios.
+</span><span>
+</span><span><span></span><span style="color:#007faa">## Redlining workflow for document review</span><span>
+</span></span><span>
+</span><span><span>This workflow allows you to plan comprehensive tracked changes using markdown before implementing them in OOXML. </span><span style="font-weight:bold">**CRITICAL**</span><span>: For complete tracked changes, you must implement ALL changes systematically.
+</span></span><span>
+</span><span><span></span><span style="font-weight:bold">**Batching Strategy**</span><span>: Group related changes into batches of 3-10 changes. This makes debugging manageable while maintaining efficiency. Test each batch before moving to the next.
+</span></span><span>
+</span><span><span></span><span style="font-weight:bold">**Principle: Minimal, Precise Edits**</span><span>
+</span></span><span><span>When implementing tracked changes, only mark text that actually changes. Repeating unchanged text makes edits harder to review and appears unprofessional. Break replacements into: [unchanged text] + [deletion] + [insertion] + [unchanged text]. Preserve the original run's RSID for unchanged text by extracting the </span><span class="hljs-code">`&lt;w:r&gt;`</span><span> element from the original and reusing it.
+</span></span><span>
+</span><span>Example - Changing "30 days" to "60 days" in a sentence:
+</span><span><span></span><span class="hljs-code">```python
+</span></span><span># BAD - Replaces entire sentence
+</span><span>'&lt;w:del&gt;&lt;w:r&gt;&lt;w:delText&gt;The term is 30 days.&lt;/w:delText&gt;&lt;/w:r&gt;&lt;/w:del&gt;&lt;w:ins&gt;&lt;w:r&gt;&lt;w:t&gt;The term is 60 days.&lt;/w:t&gt;&lt;/w:r&gt;&lt;/w:ins&gt;'
+</span><span>
+</span><span># GOOD - Only marks what changed, preserves original &lt;w:r&gt; for unchanged text
+</span><span>'&lt;w:r w:rsidR="00AB12CD"&gt;&lt;w:t&gt;The term is &lt;/w:t&gt;&lt;/w:r&gt;&lt;w:del&gt;&lt;w:r&gt;&lt;w:delText&gt;30&lt;/w:delText&gt;&lt;/w:r&gt;&lt;/w:del&gt;&lt;w:ins&gt;&lt;w:r&gt;&lt;w:t&gt;60&lt;/w:t&gt;&lt;/w:r&gt;&lt;/w:ins&gt;&lt;w:r w:rsidR="00AB12CD"&gt;&lt;w:t&gt; days.&lt;/w:t&gt;&lt;/w:r&gt;'
+</span><span><span class="hljs-code">```</span><span>
+</span></span><span>
+</span><span><span></span><span style="color:#007faa">### Tracked changes workflow</span><span>
+</span></span><span>
+</span><span><span></span><span style="color:#008000">1.</span><span> </span><span style="font-weight:bold">**Get markdown representation**</span><span>: Convert document to markdown with tracked changes preserved:
+</span></span><span><span>   </span><span class="hljs-code">```bash
+</span></span><span>   pandoc --track-changes=all path-to-file.docx -o current.md
+</span><span><span class="hljs-code">   ```</span><span>
+</span></span><span>
+</span><span><span></span><span style="color:#008000">2.</span><span> </span><span style="font-weight:bold">**Identify and group changes**</span><span>: Review the document and identify ALL changes needed, organizing them into logical batches:
+</span></span><span>
+</span><span><span>   </span><span style="font-weight:bold">**Location methods**</span><span> (for finding changes in XML):
+</span></span><span><span></span><span style="color:#008000">   -</span><span> Section/heading numbers (e.g., "Section 3.2", "Article IV")
+</span></span><span><span></span><span style="color:#008000">   -</span><span> Paragraph identifiers if numbered
+</span></span><span><span></span><span style="color:#008000">   -</span><span> Grep patterns with unique surrounding text
+</span></span><span><span></span><span style="color:#008000">   -</span><span> Document structure (e.g., "first paragraph", "signature block")
+</span></span><span><span></span><span style="color:#008000">   -</span><span> </span><span style="font-weight:bold">**DO NOT use markdown line numbers**</span><span> - they don't map to XML structure
+</span></span><span>
+</span><span><span>   </span><span style="font-weight:bold">**Batch organization**</span><span> (group 3-10 related changes per batch):
+</span></span><span><span></span><span style="color:#008000">   -</span><span> By section: "Batch 1: Section 2 amendments", "Batch 2: Section 5 updates"
+</span></span><span><span></span><span style="color:#008000">   -</span><span> By type: "Batch 1: Date corrections", "Batch 2: Party name changes"
+</span></span><span><span></span><span style="color:#008000">   -</span><span> By complexity: Start with simple text replacements, then tackle complex structural changes
+</span></span><span><span></span><span style="color:#008000">   -</span><span> Sequential: "Batch 1: Pages 1-3", "Batch 2: Pages 4-6"
+</span></span><span>
+</span><span><span></span><span style="color:#008000">3.</span><span> </span><span style="font-weight:bold">**Read documentation and unpack**</span><span>:
+</span></span><span><span></span><span style="color:#008000">   -</span><span> </span><span style="font-weight:bold">**MANDATORY - READ ENTIRE FILE**</span><span>: Read [</span><span style="color:#008000">`ooxml.md`</span><span>](</span><span style="color:#aa5d00">ooxml.md</span><span>) (~600 lines) completely from start to finish. </span><span style="font-weight:bold">**NEVER set any range limits when reading this file.**</span><span> Pay special attention to the "Document Library" and "Tracked Change Patterns" sections.
+</span></span><span><span></span><span style="color:#008000">   -</span><span> </span><span style="font-weight:bold">**Unpack the document**</span><span>: </span><span class="hljs-code">`python ooxml/scripts/unpack.py &lt;file.docx&gt; &lt;dir&gt;`</span><span>
+</span></span><span><span></span><span style="color:#008000">   -</span><span> </span><span style="font-weight:bold">**Note the suggested RSID**</span><span>: The unpack script will suggest an RSID to use for your tracked changes. Copy this RSID for use in step 4b.
+</span></span><span>
+</span><span><span></span><span style="color:#008000">4.</span><span> </span><span style="font-weight:bold">**Implement changes in batches**</span><span>: Group changes logically (by section, by type, or by proximity) and implement them together in a single script. This approach:
+</span></span><span><span></span><span style="color:#008000">   -</span><span> Makes debugging easier (smaller batch = easier to isolate errors)
+</span></span><span><span></span><span style="color:#008000">   -</span><span> Allows incremental progress
+</span></span><span><span></span><span style="color:#008000">   -</span><span> Maintains efficiency (batch size of 3-10 changes works well)
+</span></span><span>
+</span><span><span>   </span><span style="font-weight:bold">**Suggested batch groupings:**</span><span>
+</span></span><span><span></span><span style="color:#008000">   -</span><span> By document section (e.g., "Section 3 changes", "Definitions", "Termination clause")
+</span></span><span><span></span><span style="color:#008000">   -</span><span> By change type (e.g., "Date changes", "Party name updates", "Legal term replacements")
+</span></span><span><span></span><span style="color:#008000">   -</span><span> By proximity (e.g., "Changes on pages 1-3", "Changes in first half of document")
+</span></span><span>
+</span><span>   For each batch of related changes:
+</span><span>
+</span><span><span>   </span><span style="font-weight:bold">**a. Map text to XML**</span><span>: Grep for text in </span><span class="hljs-code">`word/document.xml`</span><span> to verify how text is split across </span><span class="hljs-code">`&lt;w:r&gt;`</span><span> elements.
+</span></span><span>
+</span><span><span>   </span><span style="font-weight:bold">**b. Create and run script**</span><span>: Use </span><span class="hljs-code">`get_node`</span><span> to find nodes, implement changes, then </span><span class="hljs-code">`doc.save()`</span><span>. See </span><span style="font-weight:bold">**"Document Library"**</span><span> section in ooxml.md for patterns.
+</span></span><span>
+</span><span><span>   </span><span style="font-weight:bold">**Note**</span><span>: Always grep </span><span class="hljs-code">`word/document.xml`</span><span> immediately before writing a script to get current line numbers and verify text content. Line numbers change after each script run.
+</span></span><span>
+</span><span><span></span><span style="color:#008000">5.</span><span> </span><span style="font-weight:bold">**Pack the document**</span><span>: After all batches are complete, convert the unpacked directory back to .docx:
+</span></span><span><span>   </span><span class="hljs-code">```bash
+</span></span><span>   python ooxml/scripts/pack.py unpacked reviewed-document.docx
+</span><span><span class="hljs-code">   ```</span><span>
+</span></span><span>
+</span><span><span></span><span style="color:#008000">6.</span><span> </span><span style="font-weight:bold">**Final verification**</span><span>: Do a comprehensive check of the complete document:
+</span></span><span><span></span><span style="color:#008000">   -</span><span> Convert final document to markdown:
+</span></span><span><span></span><span class="hljs-code">     ```bash
+</span></span><span>     pandoc --track-changes=all reviewed-document.docx -o verification.md
+</span><span>     ```
+</span><span>   - Verify ALL changes were applied correctly:
+</span><span>     ```bash
+</span><span>     grep "original phrase" verification.md  # Should NOT find it
+</span><span>     grep "replacement phrase" verification.md  # Should find it
+</span><span>     ```
+</span><span>   - Check that no unintended changes were introduced
+</span><span><span class="hljs-code"></span><span>
+</span></span><span>
+</span><span><span></span><span style="color:#007faa">## Converting Documents to Images</span><span>
+</span></span><span>
+</span><span>To visually analyze Word documents, convert them to images using a two-step process:
+</span><span>
+</span><span><span></span><span style="color:#008000">1.</span><span> </span><span style="font-weight:bold">**Convert DOCX to PDF**</span><span>:
+</span></span><span><span>   </span><span class="hljs-code">```bash
+</span></span><span>   soffice --headless --convert-to pdf document.docx
+</span><span><span class="hljs-code">   ```</span><span>
+</span></span><span>
+</span><span><span></span><span style="color:#008000">2.</span><span> </span><span style="font-weight:bold">**Convert PDF pages to JPEG images**</span><span>:
+</span></span><span><span>   </span><span class="hljs-code">```bash
+</span></span><span>   pdftoppm -jpeg -r 150 document.pdf page
+</span><span><span class="hljs-code">   ```</span><span>
+</span></span><span><span>   This creates files like </span><span class="hljs-code">`page-1.jpg`</span><span>, </span><span class="hljs-code">`page-2.jpg`</span><span>, etc.
+</span></span><span>
+</span><span>Options:
+</span><span><span></span><span style="color:#008000">-</span><span> </span><span class="hljs-code">`-r 150`</span><span>: Sets resolution to 150 DPI (adjust for quality/size balance)
+</span></span><span><span></span><span style="color:#008000">-</span><span> </span><span class="hljs-code">`-jpeg`</span><span>: Output JPEG format (use </span><span class="hljs-code">`-png`</span><span> for PNG if preferred)
+</span></span><span><span></span><span style="color:#008000">-</span><span> </span><span class="hljs-code">`-f N`</span><span>: First page to convert (e.g., </span><span class="hljs-code">`-f 2`</span><span> starts from page 2)
+</span></span><span><span></span><span style="color:#008000">-</span><span> </span><span class="hljs-code">`-l N`</span><span>: Last page to convert (e.g., </span><span class="hljs-code">`-l 5`</span><span> stops at page 5)
+</span></span><span><span></span><span style="color:#008000">-</span><span> </span><span class="hljs-code">`page`</span><span>: Prefix for output files
+</span></span><span>
+</span><span>Example for specific range:
+</span><span><span></span><span class="hljs-code">```bash
+</span></span><span>pdftoppm -jpeg -r 150 -f 2 -l 5 document.pdf page  # Converts only pages 2-5
+</span><span><span class="hljs-code">```</span><span>
+</span></span><span>
+</span><span><span></span><span style="color:#007faa">## Code Style Guidelines</span><span>
+</span></span><span><span></span><span style="font-weight:bold">**IMPORTANT**</span><span>: When generating code for DOCX operations:
+</span></span><span><span></span><span style="color:#008000">-</span><span> Write concise code
+</span></span><span><span></span><span style="color:#008000">-</span><span> Avoid verbose variable names and redundant operations
+</span></span><span><span></span><span style="color:#008000">-</span><span> Avoid unnecessary print statements
+</span></span><span>
+</span><span><span></span><span style="color:#007faa">## Dependencies</span><span>
+</span></span><span>
+</span><span>Required dependencies (install if not available):
+</span><span>
+</span><span><span></span><span style="color:#008000">-</span><span> </span><span style="font-weight:bold">**pandoc**</span><span>: </span><span class="hljs-code">`sudo apt-get install pandoc`</span><span> (for text extraction)
+</span></span><span><span></span><span style="color:#008000">-</span><span> </span><span style="font-weight:bold">**docx**</span><span>: </span><span class="hljs-code">`npm install -g docx`</span><span> (for creating new documents)
+</span></span><span><span></span><span style="color:#008000">-</span><span> </span><span style="font-weight:bold">**LibreOffice**</span><span>: </span><span class="hljs-code">`sudo apt-get install libreoffice`</span><span> (for PDF conversion)
+</span></span><span><span></span><span style="color:#008000">-</span><span> </span><span style="font-weight:bold">**Poppler**</span><span>: </span><span class="hljs-code">`sudo apt-get install poppler-utils`</span><span> (for pdftoppm to convert PDF to images)
+</span></span><span><span></span><span style="color:#008000">-</span><span> </span><span style="font-weight:bold">**defusedxml**</span><span>: </span><span class="hljs-code">`pip install defusedxml`</span><span> (for secure XML parsing)</span></span></code></pre><p><strong>What makes it strong</strong>: Provides a clear decision tree that routes Claude to the right workflow based on task type, uses progressive disclosure to keep the main file lean while referencing detailed implementation files only when needed, and includes concrete good/bad examples that show exactly how to implement complex patterns like tracked changes.</p><h3><strong>Skill example #2: </strong><a href="https://github.com/anthropics/skills/blob/main/brand-guidelines/SKILL.md?plain=1" target="_blank"><strong>Brand guidelines</strong></a></h3><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-markdown" style="white-space:pre-wrap"><span><span style="color:#007faa">#name: brand-guidelines</span><span>
+</span></span><span>description: Applies Anthropic's official brand colors and typography to any sort of artifact that may benefit from having Anthropic's look-and-feel. Use it when brand colors or style guidelines, visual formatting, or company design standards apply.
+</span><span><span></span><span style="color:#007faa">license: Complete terms in LICENSE.txt
+</span></span><span><span style="color:#007faa">---</span><span>
+</span></span><span>
+</span><span><span></span><span style="color:#007faa"># Anthropic Brand Styling</span><span>
+</span></span><span>
+</span><span><span></span><span style="color:#007faa">## Overview</span><span>
+</span></span><span>
+</span><span>To access Anthropic's official brand identity and style resources, use this skill.
+</span><span>
+</span><span><span></span><span style="font-weight:bold">**Keywords**</span><span>: branding, corporate identity, visual identity, post-processing, styling, brand colors, typography, Anthropic brand, visual formatting, visual design
+</span></span><span>
+</span><span><span></span><span style="color:#007faa">## Brand Guidelines</span><span>
+</span></span><span>
+</span><span><span></span><span style="color:#007faa">### Colors</span><span>
+</span></span><span>
+</span><span><span></span><span style="font-weight:bold">**Main Colors:**</span><span>
+</span></span><span>
+</span><span><span></span><span style="color:#008000">-</span><span> Dark: </span><span class="hljs-code">`#141413`</span><span> - Primary text and dark backgrounds
+</span></span><span><span></span><span style="color:#008000">-</span><span> Light: </span><span class="hljs-code">`#faf9f5`</span><span> - Light backgrounds and text on dark
+</span></span><span><span></span><span style="color:#008000">-</span><span> Mid Gray: </span><span class="hljs-code">`#b0aea5`</span><span> - Secondary elements
+</span></span><span><span></span><span style="color:#008000">-</span><span> Light Gray: </span><span class="hljs-code">`#e8e6dc`</span><span> - Subtle backgrounds
+</span></span><span>
+</span><span><span></span><span style="font-weight:bold">**Accent Colors:**</span><span>
+</span></span><span>
+</span><span><span></span><span style="color:#008000">-</span><span> Orange: </span><span class="hljs-code">`#d97757`</span><span> - Primary accent
+</span></span><span><span></span><span style="color:#008000">-</span><span> Blue: </span><span class="hljs-code">`#6a9bcc`</span><span> - Secondary accent
+</span></span><span><span></span><span style="color:#008000">-</span><span> Green: </span><span class="hljs-code">`#788c5d`</span><span> - Tertiary accent
+</span></span><span>
+</span><span><span></span><span style="color:#007faa">### Typography</span><span>
+</span></span><span>
+</span><span><span></span><span style="color:#008000">-</span><span> </span><span style="font-weight:bold">**Headings**</span><span>: Poppins (with Arial fallback)
+</span></span><span><span></span><span style="color:#008000">-</span><span> </span><span style="font-weight:bold">**Body Text**</span><span>: Lora (with Georgia fallback)
+</span></span><span><span></span><span style="color:#008000">-</span><span> </span><span style="font-weight:bold">**Note**</span><span>: Fonts should be pre-installed in your environment for best results
+</span></span><span>
+</span><span><span></span><span style="color:#007faa">## Features</span><span>
+</span></span><span>
+</span><span><span></span><span style="color:#007faa">### Smart Font Application</span><span>
+</span></span><span>
+</span><span><span></span><span style="color:#008000">-</span><span> Applies Poppins font to headings (24pt and larger)
+</span></span><span><span></span><span style="color:#008000">-</span><span> Applies Lora font to body text
+</span></span><span><span></span><span style="color:#008000">-</span><span> Automatically falls back to Arial/Georgia if custom fonts unavailable
+</span></span><span><span></span><span style="color:#008000">-</span><span> Preserves readability across all systems
+</span></span><span>
+</span><span><span></span><span style="color:#007faa">### Text Styling</span><span>
+</span></span><span>
+</span><span><span></span><span style="color:#008000">-</span><span> Headings (24pt+): Poppins font
+</span></span><span><span></span><span style="color:#008000">-</span><span> Body text: Lora font
+</span></span><span><span></span><span style="color:#008000">-</span><span> Smart color selection based on background
+</span></span><span><span></span><span style="color:#008000">-</span><span> Preserves text hierarchy and formatting
+</span></span><span>
+</span><span><span></span><span style="color:#007faa">### Shape and Accent Colors</span><span>
+</span></span><span>
+</span><span><span></span><span style="color:#008000">-</span><span> Non-text shapes use accent colors
+</span></span><span><span></span><span style="color:#008000">-</span><span> Cycles through orange, blue, and green accents
+</span></span><span><span></span><span style="color:#008000">-</span><span> Maintains visual interest while staying on-brand
+</span></span><span>
+</span><span><span></span><span style="color:#007faa">## Technical Details</span><span>
+</span></span><span>
+</span><span><span></span><span style="color:#007faa">### Font Management</span><span>
+</span></span><span>
+</span><span><span></span><span style="color:#008000">-</span><span> Uses system-installed Poppins and Lora fonts when available
+</span></span><span><span></span><span style="color:#008000">-</span><span> Provides automatic fallback to Arial (headings) and Georgia (body)
+</span></span><span><span></span><span style="color:#008000">-</span><span> No font installation required - works with existing system fonts
+</span></span><span><span></span><span style="color:#008000">-</span><span> For best results, pre-install Poppins and Lora fonts in your environment
+</span></span><span>
+</span><span><span></span><span style="color:#007faa">### Color Application</span><span>
+</span></span><span>
+</span><span><span></span><span style="color:#008000">-</span><span> Uses RGB color values for precise brand matching
+</span></span><span><span></span><span style="color:#008000">-</span><span> Applied via python-pptx's RGBColor class
+</span></span><span><span></span><span style="color:#008000">-</span><span> Maintains color fidelity across different systems</span></span></code></pre><p><strong>What makes it strong</strong>: Provides precise, actionable information Claude doesn't inherently have (exact hex codes, font names, size thresholds) with a clear description that tells Claude both what it does and when to trigger it.</p><p><strong>What makes it strong</strong>: Creative capability with clear boundaries, copyright protection built in, technical scaffolding for non-musicians, quality standards.</p><h3><strong>Skill example #3: </strong><a href="https://www.claude.com/blog/improving-frontend-design-through-skills" target="_blank"><strong>frontend design skill</strong></a></h3><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-markdown" style="white-space:pre-wrap"><span><span>name: frontend-design
+</span></span><span>description: Create distinctive, production-grade frontend interfaces with high design quality. Use this skill when the user asks to build web components, pages, or applications. Generates creative, polished code that avoids generic AI aesthetics.
+</span><span><span></span><span style="color:#007faa">license: Complete terms in LICENSE.txt
+</span></span><span><span style="color:#007faa">---</span><span>
+</span></span><span>
+</span><span>This skill guides creation of distinctive, production-grade frontend interfaces that avoid generic "AI slop" aesthetics. Implement real working code with exceptional attention to aesthetic details and creative choices.
+</span><span>
+</span><span>The user provides frontend requirements: a component, page, application, or interface to build. They may include context about the purpose, audience, or technical constraints.
+</span><span>
+</span><span><span></span><span style="color:#007faa">## Design Thinking</span><span>
+</span></span><span>
+</span><span>Before coding, understand the context and commit to a BOLD aesthetic direction:
+</span><span><span></span><span style="color:#008000">-</span><span> </span><span style="font-weight:bold">**Purpose**</span><span>: What problem does this interface solve? Who uses it?
+</span></span><span><span></span><span style="color:#008000">-</span><span> </span><span style="font-weight:bold">**Tone**</span><span>: Pick an extreme: brutally minimal, maximalist chaos, retro-futuristic, organic/natural, luxury/refined, playful/toy-like, editorial/magazine, brutalist/raw, art deco/geometric, soft/pastel, industrial/utilitarian, etc. There are so many flavors to choose from. Use these for inspiration but design one that is true to the aesthetic direction.
+</span></span><span><span></span><span style="color:#008000">-</span><span> </span><span style="font-weight:bold">**Constraints**</span><span>: Technical requirements (framework, performance, accessibility).
+</span></span><span><span></span><span style="color:#008000">-</span><span> </span><span style="font-weight:bold">**Differentiation**</span><span>: What makes this UNFORGETTABLE? What's the one thing someone will remember?
+</span></span><span>
+</span><span><span></span><span style="font-weight:bold">**CRITICAL**</span><span>: Choose a clear conceptual direction and execute it with precision. Bold maximalism and refined minimalism both work - the key is intentionality, not intensity.
+</span></span><span>
+</span><span>Then implement working code (HTML/CSS/JS, React, Vue, etc.) that is:
+</span><span><span></span><span style="color:#008000">-</span><span> Production-grade and functional
+</span></span><span><span></span><span style="color:#008000">-</span><span> Visually striking and memorable
+</span></span><span><span></span><span style="color:#008000">-</span><span> Cohesive with a clear aesthetic point-of-view
+</span></span><span><span></span><span style="color:#008000">-</span><span> Meticulously refined in every detail
+</span></span><span>
+</span><span><span></span><span style="color:#007faa">## Frontend Aesthetics Guidelines</span><span>
+</span></span><span>
+</span><span>Focus on:
+</span><span><span></span><span style="color:#008000">-</span><span> </span><span style="font-weight:bold">**Typography**</span><span>: Choose fonts that are beautiful, unique, and interesting. Avoid generic fonts like Arial and Inter; opt instead for distinctive choices that elevate the frontend's aesthetics; unexpected, characterful font choices. Pair a distinctive display font with a refined body font.
+</span></span><span><span></span><span style="color:#008000">-</span><span> </span><span style="font-weight:bold">**Color &amp; Theme**</span><span>: Commit to a cohesive aesthetic. Use CSS variables for consistency. Dominant colors with sharp accents outperform timid, evenly-distributed palettes.
+</span></span><span><span></span><span style="color:#008000">-</span><span> </span><span style="font-weight:bold">**Motion**</span><span>: Use animations for effects and micro-interactions. Prioritize CSS-only solutions for HTML. Use Motion library for React when available. Focus on high-impact moments: one well-orchestrated page load with staggered reveals (animation-delay) creates more delight than scattered micro-interactions. Use scroll-triggering and hover states that surprise.
+</span></span><span><span></span><span style="color:#008000">-</span><span> </span><span style="font-weight:bold">**Spatial Composition**</span><span>: Unexpected layouts. Asymmetry. Overlap. Diagonal flow. Grid-breaking elements. Generous negative space OR controlled density.
+</span></span><span><span></span><span style="color:#008000">-</span><span> </span><span style="font-weight:bold">**Backgrounds &amp; Visual Details**</span><span>: Create atmosphere and depth rather than defaulting to solid colors. Add contextual effects and textures that match the overall aesthetic. Apply creative forms like gradient meshes, noise textures, geometric patterns, layered transparencies, dramatic shadows, decorative borders, custom cursors, and grain overlays.
+</span></span><span>
+</span><span>NEVER use generic AI-generated aesthetics like overused font families (Inter, Roboto, Arial, system fonts), cliched color schemes (particularly purple gradients on white backgrounds), predictable layouts and component patterns, and cookie-cutter design that lacks context-specific character.
+</span><span>
+</span><span>Interpret creatively and make unexpected choices that feel genuinely designed for the context. No design should be the same. Vary between light and dark themes, different fonts, different aesthetics. NEVER converge on common choices (Space Grotesk, for example) across generations.
+</span><span>
+</span><span><span></span><span style="font-weight:bold">**IMPORTANT**</span><span>: Match implementation complexity to the aesthetic vision. Maximalist designs need elaborate code with extensive animations and effects. Minimalist or refined designs need restraint, precision, and careful attention to spacing, typography, and subtle details. Elegance comes from executing the vision well.
+</span></span><span>
+</span><span>Remember: Claude is capable of extraordinary creative work. Don't hold back, show what can truly be created when thinking outside the box and committing fully to a distinctive vision.</span></code></pre><p><strong>What makes it strong</strong>: Creative capability with clear boundaries, copyright protection built in, technical scaffolding for non-musicians, quality standards.</p><h2><strong>Common questions</strong></h2><h3><strong>How do I write descriptions that actually trigger?</strong></h3><p>Focus on capabilities and scenarios, not generic keywords. Include action verbs, specific file types, and clear use cases. Instead of "document processing skill," write "extract tables from PDFs and convert to CSV format for data analysis workflows."</p><h3><strong>How does Claude decide which skills to invoke?</strong></h3><p>Claude evaluates your request against skill descriptions using semantic understanding. It's not keyword matching—Claude determines contextual relevance. Multiple skills can activate if they address different aspects of your request.</p><h3><strong>What's the right granularity for my descriptions?</strong></h3><p>Aim for single-purpose skills. "SEO optimization for blog posts" is focused enough for specific instructions while broad enough for reusability. Too broad: "Content marketing helper." Too narrow: "Add meta descriptions."</p><h3><strong>How do I share Skills across my organization?</strong></h3><p>Regardless of your team size, we suggest creating a shared document repository with skill specifications.&nbsp;</p><p><strong>For smaller teams</strong>, use a template format with name, description, instructions, and version info.</p><p><strong>For medium to large teams</strong>, establish a skills governance process:</p><ul role="list"><li>Designate skill owners for each domain (finance, legal, marketing)</li><li>Maintain a central wiki or shared drive as your skill library</li><li>Include usage examples and common troubleshooting for each skill</li><li>Version your skills and document changes in a changelog</li><li>Schedule quarterly reviews to update or retire outdated skills</li></ul><p><strong>Best practices for all team sizes</strong>:</p><ul role="list"><li>Document the business purpose for each skill</li><li>Assign clear ownership for maintenance and updates</li><li>Create onboarding materials showing new team members how to implement shared skills</li><li>Track which skills deliver the most value to prioritize maintenance efforts</li><li>Use consistent naming conventions so skills are easy to find</li></ul><p>Enterprise customers can work with Anthropic's customer success team to explore additional deployment options and governance frameworks.</p><h3><strong>How do I debug skills?</strong></h3><p>Test triggering and execution separately. If skills don't activate, broaden your description and add use cases. If results are inconsistent, add specificity to instructions and include validation steps. Create a test case library covering normal usage, edge cases, and out-of-scope requests.</p><h3><strong>How do I share Skills across my organization?</strong></h3><p><strong>‍</strong>In <a href="http://claude.ai/" target="_blank">Claude.ai</a>, Skills are currently individual to each user, though org-wide management and sharing capabilities are coming soon. In the meantime, regardless of your team size, we suggest creating a shared document repository with skill specifications. This prepares your organization for upcoming features while establishing good governance practices today.</p><h2><strong>Get started</strong></h2><p>Ready to build with Skills? Here's how to start:</p><p><a href="https://claude.ai/" target="_blank">Claude.ai</a> users:</p><ul role="list"><li>Enable Skills in Settings → Features</li><li>Create your first project at claude.ai/projects</li><li>Try combining project knowledge with Skills for your next analysis task</li></ul><p>API developers:</p><ul role="list"><li>Explore the Skills endpoint in<a href="https://docs.anthropic.com/" target="_blank"> documentation</a></li><li>Check out our <a href="https://platform.claude.com/cookbook/skills-notebooks-01-skills-introduction" target="_blank">skills cookbook</a></li></ul><p>Claude Code users:</p><ul role="list"><li>Install Skills via <a href="https://code.claude.com/docs/en/plugin-marketplaces" target="_blank">plugin marketplaces</a></li><li>Check out our <a href="https://platform.claude.com/cookbook/skills-notebooks-01-skills-introduction" target="_blank">skills cookbook</a></li></ul></div>

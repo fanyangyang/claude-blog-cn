@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent view in Claude Code — Claude Blog CN</title>
+  <meta name="description" content="Agent view in Claude Code">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="/posts/agent-view-in-claude-code/" class="nav-link">中文版 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Product announcements</span>
+            <span class="article-date">May 11, 2026</span>
+            <span class="lang-badge-large">EN</span>
+          </div>
+          <h1 class="article-title">Agent view in Claude Code</h1>
+          <a href="/posts/agent-view-in-claude-code/" class="lang-toggle">阅读中文翻译 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>Today we're introducing agent view in Claude Code: one place to manage all your Claude Code sessions.&nbsp;</p><p>When running agents in parallel before, you've probably had to manage multiple terminal tabs, a tmux grid, and an overloaded mental ledger of what you need to tackle next.</p><p>With agent view in Claude Code, you can kick off new agents, send them to the background, and jump in only when Claude needs you. See at a glance which agents are waiting on you, which are still working, and which are done, so you can easily steer many all at once.</p><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/-INveHwbRz4" title="Introducing agent view in Claude Code" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><h2>How it works</h2><p>Agent view improves visualizing and interacting with your Claude Code sessions in the CLI.</p><h3>See everything at once</h3><p>Press the left arrow from any session or run <code>claude agents</code> from the terminal to open agent view. Each row shows the session, whether it needs your input, the contents of its last response, and when you last interacted with it.</p><figure style="max-width:1673pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a02147d18cd3a9a9fe18c4f_aef149a9.png" loading="lazy"></div></figure><h3>Peek and reply without leaving</h3><p>Select a session to peek at the last turn. If a session is waiting on a decision, answer inline and the session picks back up. Press enter to attach directly to sessions where you want to explore the full transcript.</p><figure style="max-width:1676pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a02147d18cd3a9a9fe18c52_57c35e02.png" loading="lazy"></div></figure><h3>Background anything</h3><p>Lastly, users can take any existing session and add it to agent view using <code>/bg</code> or skip the foreground entirely using <code>claude --bg [task]</code> to launch a fresh session.</p><h2>How developers are using agent view</h2><p>A few patterns we have seen from early users:</p><ul role="list"><li><strong>Scaling the number of concurrent sessions: </strong>Dispatch several ideas at once, each optionally paired with a skill, and return to a list of pull requests ready for review.</li><li><strong>Manage long running agents:</strong> PR babysitters, dashboard updaters, and other looping jobs show their next run time right in the list.</li><li><strong>Navigate between separate sessions:</strong> When you’re in the middle of a session, press the left arrow, start a related task or quick codebase question, then arrow right back into what you were doing. Peek shows the answer when it lands.</li><li><strong>See what shipped:</strong> Status indicators on each row plus the title in peek make it easy to scan which sessions produced a PR.</li></ul><h2>Getting started</h2><p>Agent view is available today as a Research Preview on Pro, Max, Team, Enterprise, and Claude API plans. Opt-in by running <code>claude agents</code>. Usual rate limits apply. See the <a href="https://code.claude.com/docs/en/agent-view">docs</a> for more information.</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/agent-view-in-claude-code" target="_blank">View original</a></p>
+          <p><a href="/">← Back to home</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>Content from <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · Translation by AI</p>
+    </div>
+  </footer>
+
+</body>
+</html>

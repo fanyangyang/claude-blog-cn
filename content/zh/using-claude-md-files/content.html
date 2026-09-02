@@ -1,0 +1,122 @@
+<div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>如果你在使用 AI 编程智能体，就绕不开同一个挑战：如何在不重复唠叨的前提下，给它足够的上下文去理解你的架构、约定和工作流？</p><p>随着代码库增长，这个问题会不断放大。复杂的模块关系、领域特有的模式、团队约定都不容易浮现出来。你不得不在每次对话开始时，重新解释相同的架构决策、测试要求和代码风格偏好。</p><p><a href="https://www.anthropic.com/engineering/claude-code-best-practices">CLAUDE.md</a> 文件解决了这个问题：它为 Claude 提供关于你项目的持久上下文。可以把它想象成一个配置文件，Claude 会自动将其纳入每次对话，确保它始终了解你的项目结构、编码标准和工作流偏好。</p><p>在本文中，我们将讲解如何组织你的 <a href="http://claude.md">CLAUDE.md</a>，分享最佳实践和使用技巧，帮助你把 Claude Code 的效能发挥到极致。</p><h2>什么是 CLAUDE.md 文件？</h2><p>CLAUDE.md 是一个存放在你仓库中的特殊配置文件，为 Claude 提供项目专属的上下文。你可以把它放在仓库根目录与团队共享，放在父目录以适配 monorepo 结构，或放在你的用户主目录下，对所有项目全局生效。</p><p>下面是一份你可能会在仓库中看到的 CLAUDE.md 示例：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-markdown" style="white-space:pre-wrap"><span><span style="color:#007faa"># Project Context</span><span>
+</span></span><span>
+</span></span><span>When working with this codebase, prioritize readability over cleverness. Ask clarifying questions before making architectural changes.
+</span></span><span>
+</span></span><span><span></span><span style="color:#007faa">## About This Project</span><span>
+</span></span><span>
+</span></span><span>FastAPI REST API for user authentication and profiles. Uses SQLAlchemy for database operations and Pydantic for validation.
+</span></span><span>
+</span></span><span><span></span><span style="color:#007faa">## Key Directories</span><span>
+</span></span><span>
+</span></span><span><span></span><span style="color:#008000">-</span><span> </span><span class="hljs-code">`app/models/`</span><span> - database models
+</span></span><span><span></span><span style="color:#008000">-</span><span> </span><span class="hljs-code">`app/api/`</span><span> - route handlers
+</span></span><span><span></span><span style="color:#008000">-</span><span> </span><span class="hljs-code">`app/core/`</span><span> - configuration and utilities
+</span></span><span>
+</span></span><span><span></span><span style="color:#007faa">## Standards</span><span>
+</span></span><span>
+</span></span><span><span></span><span style="color:#008000">-</span><span> Type hints required on all functions
+</span></span><span><span></span><span style="color:#008000">-</span><span> pytest for testing (fixtures in </span><span class="hljs-code">`tests/conftest.py`</span><span>)
+</span></span><span><span></span><span style="color:#008000">-</span><span> PEP 8 with 100 character lines
+</span></span><span>
+</span></span><span><span></span><span style="color:#007faa">## Common Commands</span><span>
+</span></span><span><span></span><span class="hljs-code">```bash
+</span></span><span>uvicorn app.main:app --reload  # dev server
+</span></span><span>pytest tests/ -v               # run tests
+</span></span><span><span class="hljs-code">```</span><span>
+</span></span><span>
+</span></span><span><span></span><span style="color:#007faa">## Notes</span><span>
+</span></span><span>
+</span></span><span><span>All routes use </span><span class="hljs-code">`/api/v1`</span><span> prefix. JWT tokens expire after 24 hours.
+</span></span><span></span></code></pre><p>一份配置得当的 CLAUDE.md 会彻底改变 Claude 在你特定项目上的工作方式。这个文件承担多重职责：提供架构上下文、确立工作流、把 Claude 连接到你的开发工具。每一条新增内容都应该解决你实际遇到过的问题，而不是对"Claude 也许需要什么"的凭空猜测。</p><p>这个文件可以记录常用 bash 命令、核心工具、代码风格指南、测试说明、仓库约定、开发环境配置和项目专属的警示信息。它没有规定的格式。我们的建议是保持文件简洁、人类可读，把它当作人和 Claude 都需要快速读懂的文档。</p><p>你的 CLAUDE.md 文件会成为 Claude 系统提示词的一部分。每次对话一开始就已加载这些上下文，从此不必反复解释基本的项目信息。</p><h2><strong>用 /init 快速上手</strong></h2><p>从零开始创建 CLAUDE.md 可能令人望而生畏，尤其是在一个陌生的代码库里。</p><p><code>/init</code> 命令可以自动化这个过程：分析你的项目并生成一份初始配置。</p><p>在任意 Claude Code 会话中运行 <code>/init</code>：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span style="color:#aa5d00">cd</span><span> your-project
+</span></span><span>claude
+</span></span><span>/init</span></code></pre><p>Claude 会检查你的代码库——读取 package 文件、既有文档、配置文件和代码结构——然后生成一份为你的项目量身定制的 CLAUDE.md。生成的文件通常包括构建命令、测试说明、关键目录，以及它识别出的编码约定。</p><p>把 <code>/init</code> 当作起点而非成品。生成的 CLAUDE.md 能捕捉显见的模式，但可能遗漏你工作流中的细微之处。请审阅 Claude 的产出，并根据团队的实际做法加以打磨。</p><p>你也可以在已有 CLAUDE.md 的项目上运行 <code>/init</code>。Claude 会审阅当前文件，并根据它探索代码库所得，提出改进建议。</p><p>运行 <code>/init</code> 之后，可以考虑这些后续步骤：</p><ul role="list"><li>审阅生成内容的准确性</li><li>补充 Claude 无法推断的工作流指令（分支命名约定、部署流程、代码评审要求）</li><li>删除不适用于你项目的泛泛之谈</li><li>把文件提交到版本控制，让团队共同受益</li></ul><p><code>/init</code> 命令适合快速建立方向感，但真正的价值来自对生成文件的持续打磨。在使用 Claude Code 的过程中，用 <code>#</code> 键把你发现自己反复重申的指令加进去——这些积累最终会沉淀为一份真正反映团队工作方式的 CLAUDE.md。</p><h2>如何组织你的 CLAUDE.md</h2><p>以下几节将展示如何组织内容以获得最大效果：在复杂架构中导航、跟踪多步骤任务的进展、集成自定义工具，以及通过一致的工作流避免返工。</p><h3>给 Claude 一张地图</h3><p>如果每个新任务都要重新解释项目架构、核心库和代码风格，会让人不胜其烦。你需要 Claude 对代码库结构保持一致的认知，而无需人工反复强化。</p><p>在 CLAUDE.md 中加入项目概述和高层目录结构。这能让 Claude 在你的代码库中导航时立刻建立方向感。</p><p>一个展示关键目录的简单树状输出，就能帮 Claude 理解各组件的位置：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-markdown" style="white-space:pre-wrap"><span><span>main.py
+</span></span><span>├── logs
+</span></span><span>│   ├── application.log
+</span></span><span>├── modules
+</span></span><span>│   ├── cli.py
+</span></span><span><span>│   ├── logging</span><span style="font-style:italic">_utils.py
+</span></span><span><span style="font-style:italic">│   ├── media_</span><span>handler.py
+</span></span><span>│   ├── player.py</span></code></pre><p>写入关于主要依赖、架构模式以及任何非标准组织方式的信息。如果你采用了领域驱动设计、微服务或特定框架，请记录下来。Claude 会利用这张地图，更好地决定去哪里找代码、在哪里做修改。</p><h3>把 Claude 连接到你的工具</h3><p>Claude 会继承你完整的环境，但需要指引才能知道该用哪些自定义工具和脚本。你的团队多半有用于部署、测试或代码生成的专用工具，Claude 应该了解它们。</p><p>在 CLAUDE.md 中记录你的自定义工具及用法示例。写明工具名称、基本用法模式和调用时机。如果你的工具通过 <code>--help</code> 标志提供帮助文档，请提及，让 Claude 知道可以查看。对于复杂工具，可以补充团队常用的调用示例。</p><p>Claude 可以作为 MCP（Model Context Protocol）客户端运行，连接拓展其能力的 MCP 服务器。可以通过项目设置、全局配置或提交到仓库的 <code>.mcp.json</code> 文件来配置。当工具没有按预期出现时，<code>--mcp-debug</code> 标志有助于排查连接问题。</p><p>例如，如果你的组织配置了 Slack MCP 服务器，并且需要 Claude 理解如何使用它，可以在 CLAUDE.md 中加入类似这样的内容：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-markdown" style="white-space:pre-wrap"><span><span style="color:#007faa">### Slack MCP</span><span>
+</span></span><span><span></span><span style="color:#008000">-</span><span> Posts to #dev-notifications channel only
+</span></span><span><span></span><span style="color:#008000">-</span><span> Use for deployment notifications and build failures
+</span></span><span><span></span><span style="color:#008000">-</span><span> Do not use for individual PR updates (those go through GitHub webhooks)
+</span></span><span><span></span><span style="color:#008000">-</span><span> Rate limited to 10 messages per hour</span></span></code></pre><p>了解 MCP 的<a target="_blank" href="https://www.anthropic.com/engineering/building-effective-mcp-servers">基础知识和最佳实践</a>。</p><p>有关为 Claude Code 设置权限的更多信息，请查阅 <a target="_blank" href="https://code.claude.com/docs/en/settings">code.claude.com</a> 上的 settings.json 文档。</p><h3><strong>定义标准工作流</strong></h3><p>让 Claude 不做规划就直接改代码，往往带来返工。Claude 可能实现一个偏离需求的方案、选错架构路径，或者做出破坏既有功能的改动。</p><p>你需要 Claude 先思考再行动。在 CLAUDE.md 中为不同类型的任务定义 Claude 应遵循的标准工作流。一个稳妥的默认工作流会在动手改动之前先回答四个问题：</p><ol role="list"><li>这是一个关于当前状态、需要先调查的问题吗？</li><li>实现之前是否需要一份详细计划？</li><li>还缺哪些信息？</li><li>效果将如何验证？</li></ol><p>具体的工作流可以包括：面向功能开发的 explore-plan-code-commit（探索-规划-编码-提交）、面向算法工作的测试驱动开发、面向 UI 改动的可视化迭代。把你的测试要求、提交信息格式和必要的审批环节写清楚。当 Claude 预先了解你的工作流，它就会按照团队的真实流程组织工作，而不是靠猜。</p><p>一条示例工作流指令可能长这样：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-markdown" style="white-space:pre-wrap"><span><span>1) Before modifying code in the following locations: X, Y, Z
+</span></span><span><span></span><span style="color:#008000">	-</span><span> Consider how it might affect A, B, C
+</span></span><span><span></span><span style="color:#008000">	-</span><span> Construct an implementation plan
+</span></span><span><span></span><span style="color:#008000">	-</span><span> Develop a test plan that will validate the following functions...</span></span></code></pre><h2>‍<strong>使用 Claude Code 的更多技巧</strong></h2><p>除了配置 CLAUDE.md 文件之外，还有三种技巧可以改善你与 Claude Code 的协作。</p><h3><strong>保持上下文新鲜</strong></h3><p>长期使用 Claude Code 会积累无关上下文。早先任务的文件内容、不再重要的命令输出、岔开的对话，都会填满 Claude 的上下文窗口。当信噪比下降，Claude 就难以专注于当前任务。</p><p>在不同任务之间使用 <code>/clear</code> 重置上下文窗口。它会清除积累的历史，同时保留你的 CLAUDE.md 配置，让 Claude 能带着干净的上下文处理新问题。可以把它理解为关闭一个工作会话、开启另一个。</p><p>当你调试完身份认证，转而去实现一个新的 API 端点时，请清空上下文。认证细节已经无关紧要，只会干扰新的工作。</p><h3><strong>为不同阶段使用子智能体</strong></h3><p>冗长的对话会积累干扰新任务的上下文。你刚调试完一个复杂的认证流程，接着要对同一份代码做安全评审。调试的细节会给 Claude 的安全分析"染色"，可能让它忽略问题，或聚焦于已经解决的隐患。</p><p>让 Claude 在工作的不同阶段使用<a target="_blank" href="https://code.claude.com/docs/en/sub-agents">子智能体（subagent）</a>。子智能体维护隔离的上下文，防止早先任务的信息干扰新分析。实现完一个支付处理器后，指示 Claude"使用子智能体对这段代码做安全评审"，而不是在同一对话里继续。</p><p>子智能体最适合每个阶段需要不同视角的多步骤工作流。实现需要架构上下文和功能需求；安全评审需要只盯着漏洞的全新眼光。上下文分离让两项分析都保持敏锐。</p><h3><strong>创建自定义命令</strong></h3><p>重复的提示词浪费时间。你会发现自己一遍遍输入"从安全角度评审这段代码"或"分析这段代码的性能问题"。而且每次都要回忆能带来好结果的确切措辞。</p><p>自定义斜杠命令以 markdown 文件的形式存放在你的 <code>.claude/commands/ </code>目录。创建一个名为 <code>performance-optimization.mm</code> 的文件，写入你偏好的性能优化提示词，它就会在任何对话中以 <code>/performance-optimization</code> 的形式可用。命令支持通过 $ARGUMENTS 或 <code>$1</code>、<code>$2</code> 这类编号占位符传入参数，方便你指定具体的文件或参数。</p><p>例如，<code>performance-optimization.md</code> 可能长这样：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-markdown" style="white-space:pre-wrap"><span class="hljs-code"><span style="color:#007faa"># Performance Optimization</span><span>
+</span></span><span class="hljs-code">
+</span></span><span class="hljs-code">Analyze the provided code for performance bottlenecks and optimization opportunities. Conduct a thorough review covering:
+</span></span><span class="hljs-code">
+</span></span><span class="hljs-code"><span></span><span style="color:#007faa">## Areas to Analyze</span><span>
+</span></span><span class="hljs-code">
+</span></span><span class="hljs-code"><span></span><span style="color:#007faa">### Database &amp; Data Access</span><span>
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">-</span><span> N+1 query problems and missing eager loading
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">-</span><span> Lack of database indexes on frequently queried columns
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">-</span><span> Inefficient joins or subqueries
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">-</span><span> Missing pagination on large result sets
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">-</span><span> Absence of query result caching
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">-</span><span> Connection pooling issues
+</span></span><span class="hljs-code">
+</span></span><span class="hljs-code"><span></span><span style="color:#007faa">### Algorithm Efficiency</span><span>
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">-</span><span> Time complexity issues (O(n²) or worse when better exists)
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">-</span><span> Nested loops that could be optimized
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">-</span><span> Redundant calculations or repeated work
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">-</span><span> Inefficient data structure choices
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">-</span><span> Missing memoization or dynamic programming opportunities
+</span></span><span class="hljs-code">
+</span></span><span class="hljs-code"><span></span><span style="color:#007faa">### Memory Management</span><span>
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">-</span><span> Memory leaks or retained references
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">-</span><span> Loading entire datasets when streaming is possible
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">-</span><span> Excessive object instantiation in loops
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">-</span><span> Large data structures kept in memory unnecessarily
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">-</span><span> Missing garbage collection opportunities
+</span></span><span class="hljs-code">
+</span></span><span class="hljs-code"><span></span><span style="color:#007faa">### Async &amp; Concurrency</span><span>
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">-</span><span> Blocking I/O operations that should be async
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">-</span><span> Sequential operations that could run in parallel
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">-</span><span> Missing Promise.all() or concurrent execution patterns
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">-</span><span> Synchronous file operations
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">-</span><span> Unoptimized worker thread usage
+</span></span><span class="hljs-code">
+</span></span><span class="hljs-code"><span></span><span style="color:#007faa">### Network &amp; I/O</span><span>
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">-</span><span> Excessive API calls (missing request batching)
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">-</span><span> No response caching strategy
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">-</span><span> Large payloads without compression
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">-</span><span> Missing CDN usage for static assets
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">-</span><span> Lack of connection reuse
+</span></span><span class="hljs-code">
+</span></span><span class="hljs-code"><span></span><span style="color:#007faa">### Frontend Performance</span><span>
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">-</span><span> Render-blocking JavaScript or CSS
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">-</span><span> Missing code splitting or lazy loading
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">-</span><span> Unoptimized images or assets
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">-</span><span> Excessive DOM manipulations or reflows
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">-</span><span> Missing virtualization for long lists
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">-</span><span> No debouncing/throttling on expensive operations
+</span></span><span class="hljs-code">
+</span></span><span class="hljs-code"><span></span><span style="color:#007faa">### Caching</span><span>
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">-</span><span> Missing HTTP caching headers
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">-</span><span> No application-level caching layer
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">-</span><span> Absence of memoization for pure functions
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">-</span><span> Static assets without cache busting
+</span></span><span class="hljs-code">
+</span></span><span class="hljs-code"><span></span><span style="color:#007faa">## Output Format</span><span>
+</span></span><span class="hljs-code">
+</span></span><span class="hljs-code">For each issue identified:
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">1.</span><span> </span><span style="font-weight:bold">**Issue**</span><span>: Describe the performance problem
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">2.</span><span> </span><span style="font-weight:bold">**Location**</span><span>: Specify file/function/line numbers
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">3.</span><span> </span><span style="font-weight:bold">**Impact**</span><span>: Rate severity (Critical/High/Medium/Low) and explain expected performance degradation
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">4.</span><span> </span><span style="font-weight:bold">**Current Complexity**</span><span>: Include time/space complexity where applicable
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">5.</span><span> </span><span style="font-weight:bold">**Recommendation**</span><span>: Provide specific optimization strategy
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">6.</span><span> </span><span style="font-weight:bold">**Code Example**</span><span>: Show optimized version when possible
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">7.</span><span> </span><span style="font-weight:bold">**Expected Improvement**</span><span>: Quantify performance gains if measurable
+</span></span><span class="hljs-code">
+</span></span><span class="hljs-code">If code is well-optimized:
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">-</span><span> Confirm optimization status
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">-</span><span> List performance best practices properly implemented
+</span></span><span class="hljs-code"><span></span><span style="color:#008000">-</span><span> Note any minor improvements possible
+</span></span><span class="hljs-code">
+</span></span><span class="hljs-code"><span></span><span style="font-weight:bold">**Code to review:**</span><span>
+</span></span><span class="hljs-code"><span></span><span class="hljs-code">```
+</span></span><span class="hljs-code">$ARGUMENTS
+</span></span><span class="hljs-code">```</span></code></pre><p>你不必手动编写自定义命令文件。让 Claude 替你创建：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-javascript" style="white-space:pre-wrap"><span><span>Create a custom slash command called /performance-optimization that analyzes code </span><span style="color:#7928a1">for</span><span> database query issues, algorithm efficiency, memory management, and caching opportunities.
+</span></span><span></span></code></pre><p>Claude 会把 markdown 文件写入 <code>.claude/commands/performance-optimization.md</code>，该命令随即立即可用。</p><h2><strong>从简单开始，再有的放矢地扩展</strong></h2><p>一上来就想写一份面面俱到的 CLAUDE.md？请克制这种冲动。</p><p>CLAUDE.md 每次都会被加入 Claude Code 的上下文，所以从<a target="_blank" href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">上下文工程</a>和<a target="_blank" href="https://www.anthropic.com/engineering/prompt-engineering-overview">提示词工程</a>的角度看，务必保持简洁。一种做法：把信息拆分到多个 markdown 文件中，然后在 CLAUDE.md 文件里引用它们。</p><p>不要在文件中包含敏感信息、API 密钥、凭据、数据库连接串或详细的安全漏洞信息——尤其当你把它提交到版本控制时。既然 CLAUDE.md 会成为 Claude 系统提示词的一部分，就把它当作一份可能被公开分享的文档来对待。</p><h2><strong>让 CLAUDE.md 为你所用</strong></h2><p>CLAUDE.md 文件能把 Claude Code 从通用助手变成专为你的代码库定制的工具。从基本的项目结构和构建文档起步，再依据工作流中的真实摩擦点逐步扩展。</p><p>最有效的 CLAUDE.md 解决的是真实问题：它们记录你反复输入的命令、沉淀那些需要十分钟才能讲清的架构背景，并建立防止返工的工作流。你的文件应该反映团队实际的软件开发方式——而不是那些听起来漂亮却与现实脱节的理论最佳实践。</p><p>把定制当作一项持续实践，而非一次性设置任务。项目在变，团队会学到更好的模式，新工具也会进入你的工作流。一份维护良好的 CLAUDE.md 会随代码库共同演进，持续降低在复杂软件上借助 AI 协作的摩擦。</p><p><strong><em>立即开始使用 </em></strong><a target="_blank" href="https://www.claude.com/product/claude-code"><strong><em>Claude Code</em></strong></a><strong><em>。</em></strong></p></div>

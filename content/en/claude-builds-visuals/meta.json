@@ -1,0 +1,17 @@
+{
+  "slug": "claude-builds-visuals",
+  "title": "Claude now creates interactive charts, diagrams and visualizations",
+  "date": "March 12, 2026",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/claude-builds-visuals",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/claude-builds-visuals.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.788Z",
+  "translatedTitle": "Claude 现在可以创建交互式图表、示意图与可视化内容",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:12:45.000Z",
+  "translateLang": "zh-CN"
+}

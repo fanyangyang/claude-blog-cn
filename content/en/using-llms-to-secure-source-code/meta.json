@@ -1,0 +1,17 @@
+{
+  "slug": "using-llms-to-secure-source-code",
+  "title": "Using LLMs to secure source code",
+  "date": "May 27, 2026",
+  "category": "Enterprise AI",
+  "url": "https://claude.com/blog/using-llms-to-secure-source-code",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/using-llms-to-secure-source-code.svg",
+  "illustrationBg": "Olive",
+  "fetchedAt": "2026-09-02T03:50:17.788Z",
+  "translatedTitle": "使用 LLM 保护源代码安全",
+  "translated": true,
+  "translatedAt": "2026-09-02T05:12:42.000Z",
+  "translateLang": "zh-CN"
+}

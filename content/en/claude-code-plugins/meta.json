@@ -1,0 +1,17 @@
+{
+  "slug": "claude-code-plugins",
+  "title": "Customize Claude Code with plugins",
+  "date": "October 9, 2025",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/claude-code-plugins",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/claude-code-plugins.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.792Z",
+  "translatedTitle": "用插件自定义 Claude Code",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:40:02.000Z",
+  "translateLang": "zh-CN"
+}

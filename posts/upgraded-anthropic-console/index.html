@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>升级版 Anthropic Console 助你更快走向生产 — Claude Blog 中文翻译</title>
+  <meta name="description" content="升级版 Anthropic Console 助你更快走向生产">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/upgraded-anthropic-console" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">General</span>
+            <span class="article-date">March 6, 2025</span>
+            
+          </div>
+          <h1 class="article-title">升级版 Anthropic Console 助你更快走向生产</h1>
+          <a href="/posts/upgraded-anthropic-console/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>我们重新设计了 Anthropic Console，将其打造成一个与 Claude 和队友一起构建、测试和迭代 AI 部署的一站式平台。</p><p>开发者现在可以在 <a href="https://console.anthropic.com/">Anthropic Console</a> 中直接分享提示词，与队友协作。我们还加入了对最新模型 Claude 3.7 Sonnet 的支持，以及控制扩展思考（extended thinking）预算的能力。</p><h3>构建可靠的 AI 应用</h3><p>提示词的质量在很大程度上决定模型在特定任务上回答的成败。Anthropic Console 已经通过更高效地编写、评估和优化提示词的工具，简化了 AI 开发流程。</p><p><strong>编写提示词：</strong>使用 Workbench 有效地组织提示词结构、加入示例并集成外部工具，在一个交互式环境中测试 API 调用。</p><figure class="w-richtext-align-center w-richtext-figure-type-image"><div><img loading="lazy" alt="A screenshot of the Workbench with an " src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e95d932c1c4f9aaa7bc975_e798963505760bd21a2b856fcab4cb4501b6574c-3840x2160.jpeg"></div></figure><p><strong>自动生成提示词：</strong>描述你想要实现的目标，Claude 会运用思维链（chain-of-thought）等提示词工程技术，创建一个高效、精准且可靠的提示词。</p><figure class="w-richtext-align-center w-richtext-figure-type-image"><div><img loading="lazy" alt="A screenshot of the prompt generator with the text " src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e95d932c1c4f9aaa7bc969_9144d85804e36926992bdf647641c6bd6f6524f0-3840x2160.jpeg"></div></figure><p><strong>评估模型回复：</strong>通过自动生成测试用例和并排对比输出，在真实场景中评估你的提示词。轻松运行测试套件、为回复质量打分，并基于数据决定部署哪些提示词。</p><figure class="w-richtext-align-center w-richtext-figure-type-image"><div><img loading="lazy" alt="A screenshot of two prompts being evaluated in a side-by-side comparison. " src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e95d932c1c4f9aaa7bc972_35166b80b76359fca2d9fa3fe0b513b6a50cde38-3840x2160.jpeg"></div></figure><p><strong>改进提示词：</strong>使用先进的提示词工程技术自动优化提示词。这非常适合改写最初为其他 AI 模型编写的提示词，也可用于优化手写提示词。</p><p>提示词定稿后，你可以点击"Get Code"获得一个可直接部署的生产级 API 调用。</p><h3>借助可分享的提示词开展协作</h3><p>开发者、领域专家、产品经理和 QA 专家常常需要就提示词展开协作，以获得最佳效果。以前，团队只能在文档或聊天应用之间复制粘贴提示词，导致版本管理混乱和知识孤岛。</p><figure class="w-richtext-align-center w-richtext-figure-type-image"><div><img loading="lazy" alt="A screenshot of a prompt that has been shared." src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e95d932c1c4f9aaa7bc965_38e5ae20a8de05342fbc6bb67e63dc1b621b716d-3840x2160.jpeg"></div></figure><p>Anthropic Console 中的可分享提示词提供了一个集中方式，在你的组织内开发、完善和标准化提示词。团队成员可以访问并协作维护一个共享的提示词库，更容易建立最佳实践，并确保所有由 Claude 驱动的应用保持一致的质量。</p><h3>为扩展思考优化提示词</h3><p><a href="https://www.anthropic.com/news/claude-3-7-sonnet">Claude 3.7 Sonnet</a> 是我们迄今为止最新、最智能的模型，既可以给出近乎即时的回复，也可以进行对用户可见的、逐步展开的扩展思考。</p><figure class="w-richtext-align-center w-richtext-figure-type-image"><div><img loading="lazy" alt="A screenshot with " src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e95d932c1c4f9aaa7bc96d_ad56b8a20dc4a3ac223ff8003c7e795ef64a5f97-3840x2160.jpeg"></div></figure><p>虽然启用扩展思考后提示词的写法大体相同，但我们让优化提示词以充分发挥这一新能力变得非常简单。只需说明提示词将配合扩展思考使用，Claude 就会生成尽可能出色的回复。你还可以在 Anthropic Console 中通过设置思考 token 上限来控制思考的<em>预算</em><strong> </strong>。</p><h3>开始使用</h3><p>升级后的 Anthropic Console 现已面向所有用户开放。<a href="https://console.anthropic.com/">登录</a>即可开始，或查阅我们的<a href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview">文档</a>了解更多。</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/upgraded-anthropic-console" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

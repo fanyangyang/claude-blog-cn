@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anthropic 财务团队如何用 Claude 塑造数字背后的叙事 — Claude Blog 中文翻译</title>
+  <meta name="description" content="Anthropic 财务团队如何用 Claude 塑造数字背后的叙事">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/how-anthropics-finance-team-uses-claude-to-shape-the-narrative-behind-the-numbers" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Enterprise AI</span>
+            <span class="article-date">May 22, 2026</span>
+            
+          </div>
+          <h1 class="article-title">Anthropic 财务团队如何用 Claude 塑造数字背后的叙事</h1>
+          <a href="/posts/how-anthropics-finance-team-uses-claude-to-shape-the-narrative-behind-the-numbers/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><div class="w-embed"><style>
+  /* Fluid breakout for blog embeds */
+  .u-rich-text-blog .w-embed {
+    --max-w: 860px;
+    --gutter: 24px;
+    --w: min(var(--max-w), calc(100vw - (var(--gutter) * 2)));
+    width: var(--w);
+    max-width: var(--w);
+    margin-left: calc((640px - var(--w)) / 2);
+    margin-right: calc((640px - var(--w)) / 2);
+    box-sizing: border-box;
+  }
+
+  /* Embed inner wrappers: scroll horizontally when content overflows */
+  .u-rich-text-blog .w-embed figure {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+  .u-rich-text-blog .w-embed figure > div {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* 4-column workflow table: Workflow | Cadence | Tool | What Claude does */
+  .u-rich-text-blog .w-embed table {
+    width: 100% !important;
+    table-layout: fixed !important;
+  }
+  .u-rich-text-blog .w-embed th,
+  .u-rich-text-blog .w-embed td {
+    padding: 16px 18px;
+    vertical-align: top;
+    overflow-wrap: break-word;
+  }
+  .u-rich-text-blog .w-embed th:nth-child(1),
+  .u-rich-text-blog .w-embed td:nth-child(1) {
+    width: 22%;
+  }
+  .u-rich-text-blog .w-embed th:nth-child(2),
+  .u-rich-text-blog .w-embed td:nth-child(2) {
+    width: 18%;
+  }
+  .u-rich-text-blog .w-embed th:nth-child(3),
+  .u-rich-text-blog .w-embed td:nth-child(3) {
+    width: 24%;
+  }
+  .u-rich-text-blog .w-embed th:nth-child(4),
+  .u-rich-text-blog .w-embed td:nth-child(4) {
+    width: 36%;
+  }
+
+  /* Mobile: full-width embed, table scrolls horizontally */
+  @media (max-width: 720px) {
+    .u-rich-text-blog .w-embed {
+      width: 100%;
+      max-width: 100%;
+      margin-left: 0;
+      margin-right: 0;
+    }
+    .blog_post_layout.u-column-custom,
+    .blog_post_content_wrap,
+    .u-rich-text-blog {
+      max-width: 100% !important;
+      box-sizing: border-box;
+    }
+    html,
+    body {
+      overflow-x: hidden;
+    }
+  }
+  @media (max-width: 639px) {
+    .u-rich-text-blog .w-embed table {
+      width: auto !important;
+      min-width: 720px !important;
+      table-layout: auto !important;
+      font-size: var(--_typography---font-size--body-3);
+      line-height: 1.5;
+    }
+    .u-rich-text-blog .w-embed th,
+    .u-rich-text-blog .w-embed td {
+      width: auto !important;
+      padding: 12px 14px;
+    }
+  }
+</style></div><p>财务工作的本质，是塑造数字背后的故事：解释某个关键指标为何变动、基于市场趋势设定预期、把财务成果与产品战略联系起来。但现实中，你很容易把大部分时间都花在确保数字本身没问题上——数据又一次刷新后，把演示文稿重读第四遍——而不是思考这些数字意味着什么。&nbsp;</p><p>举个例子：我负责运行分析并提取指标，供我们团队为 CFO 准备季度董事会材料。通常情况下，一份材料定稿前我不得不修改多次。直到材料发出的当天早晨，数字都还在不断刷新，而每刷新一次，所有评述都要与最新数字重新核对。除此之外，这份材料还是协作完成的，合作伙伴会同时更新各自负责的页面。每次更新都意味着整个叙事要重新对齐：第 4 页的评述是否仍与第 17 页的数据吻合？有没有人引入了一个没有定义的指标？我不得不反复通读整份材料，以确保故事仍然自洽。&nbsp;</p><p>现在，这些工作都由 Claude 来完成：它承担了工作底层的完整性校验层，让我的时间可以投入到其上的叙事本身。它也是我月度复盘和模型审计流程的一部分，为我省下了时间——如今这些时间我可以用来与团队协作，或用于创造性思考以及财务工作中真正需要判断力的部分。</p><h2>俯瞰一门快速变化的业务</h2><p>我于 2025 年 3 月加入 Anthropic 的公司财务与战略团队。公司财务处于整个财务组织的中心：其他财务团队直接与业务部门搭档——比如市场财务与销售部门——他们了解到的一切都会汇聚到我们这里。我们的职责是准备 CFO 和董事会需要看到的那份叙事：收入表现如何、利润率发生了什么变化、资金如何配置，以及这一切对今年余下时间意味着什么。</p><p>这份叙事必须在业务不断变化的同时保持连贯。在 Anthropic，这意味着产品发布、模型发布、定价调整、销售打法分群方式的转变等等，往往都发生在同一周。公司财务必须消化公司全部的变化速度，同时交给董事会一个逻辑自洽的故事。&nbsp;</p><h2>我如何在各个工作流中使用 Claude</h2><p>我同时使用 <a href="https://claude.com/product/cowork">Claude Cowork</a> 和 <a href="https://claude.com/claude-for-microsoft-365">Claude for Excel</a>：Claude Cowork 帮我在文档或演示材料中写作和整合信息，而 Claude for Excel 让我在财务模型里直接与 Claude 协作编辑。&nbsp;</p><p>处理前面提到的董事会材料时，我把文件交给 Claude Cowork，让它验证每个数字和论断都与唯一可信数据源核对一致。我还会让它像一位董事会成员那样通读整篇叙事，标出前后矛盾之处或假设了读者并不具备的背景信息的地方。Claude 能抓住我可能遗漏的问题，而且每当数字变动它都会再检查一遍，而不是只查一次。</p><p>另一个例子是我们的月度财务复盘：一份 Google 文档，每月一个标签页，结构为相对预测的差异分析。当我要撰写某个月的复盘时，会把财务模型中相关的数据表粘贴进文档，附上支撑上下文的链接，然后让 Claude Cowork 用我们已经形成的口径起草初稿：收入为 A，对比 B，偏差 C%，驱动因素是 D。我在此基础上修改。月度之间口径的 consistency 与数字同样重要，而只要我引用上个月的文档，Claude 就能做到这一点。</p><p>随着 Claude 和产品能力的提升，我与它们协作的方式也在进步。比如 Claude for Excel，从最初无法跨标签页追踪引用，到如今能够沿着一个不平衡的资产负债表穿越多个标签页、找到不平衡的根本原因。当我打开一个从未见过的模型时，会先让 Claude 总结关键驱动因素并标记结构性问题，然后再投入时间研究。</p><p>在所有这些工作流中——董事会材料的叙事一致性、Sheets 和 Excel 中的模型诊断、Claude Cowork 中的初稿评述——我省下了大把时间，如今全部投入到真正需要判断力的工作中：搭建分析框架、情景设问，以及前瞻性分析。</p><div class="w-embed"><figure>
+  <div role="region" tabindex="0">
+    <table>
+      <thead>
+        <tr>
+          <th>工作流</th>
+          <th>频率</th>
+          <th>工具</th>
+          <th>Claude 做什么</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>董事会材料</td>
+          <td>每季度</td>
+          <td>Claude Cowork</td>
+          <td>跨页面核对数字，检查叙事一致性</td>
+        </tr>
+        <tr>
+          <td>月度财务复盘</td>
+          <td>每月</td>
+          <td>Claude Cowork</td>
+          <td>用既定口径起草初稿评述</td>
+        </tr>
+        <tr>
+          <td>财务模型工作</td>
+          <td>按需</td>
+          <td>Claude for Excel</td>
+          <td>跨标签页追踪引用、诊断模型问题</td>
+        </tr>
+        <tr>
+          <td>跨团队上下文</td>
+          <td>持续</td>
+          <td>Google Workspace 和 Slack 连接器</td>
+          <td>从文档、邮件和 Slack 中提取决策及其理由</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</figure></div><h2>上下文是这一切的基础</h2><p>Claude Cowork 之所以好用，是因为它看到的上下文和我一样：文档和本地文件、邮件、Slack 等团队知识来源。当我遇到一份重要的文档，我会把它存入项目记忆。当一个决策在漫长的跨部门讨论串中敲定时，我会让 Claude 提取结论和推理过程，这样下次董事会周期再涉及该话题时随手可用。</p><p>我还会为不同的受众维护不同的项目：一个用于月度复盘，一个用于董事会材料。语气和惯例不同，记忆也就不同，Claude 会据此生成相应的内容。</p><h2>Claude Cowork 在财务组织中的应用</h2><p>在整个财务组织中，我的同事们正在使用许多如今被打包进 Claude Cowork <a href="https://www.anthropic.com/news/finance-agents">金融服务插件</a>中的 <a href="https://support.claude.com/en/articles/12512180-use-skills-in-claude">skills</a>。以下是 CFO 组织目前使用 Claude Cowork 的几个例子：</p><ul role="list"><li><strong>财务与战略：</strong>分析师直接用一句提示词构建交互式预测和队列（cohort）仪表盘：无需 SQL，也不需要工程团队介入。每天早上 7 点，一份当日收入和指标摘要准时送达管理层的 Slack。</li><li><strong>会计：</strong>总账与明细账、银行对账，差异项自动分类并起草审阅意见初稿。三大财务报表的波动分析（flux）自动运行。团队任何人都可以在 Slack 中向 Claude 提问并获得带来源的回答。</li><li><strong>公司发展与投资者关系：</strong>每天基于笔记和公开数据生成三到四个收购标的的筛选报告，几分钟内汇总成备忘录。团队把时间花在判断和拍板上，而不是初稿上。</li><li><strong>税务与资金：</strong>转移定价、研发抵免（R&amp;D credit）和纳税关联（nexus）问题均可获得附一手来源引用的回答。间接税和资金对账复用与会计相同的 skill 模式。</li></ul><h2>给财务团队上手 Claude 的建议</h2><p>一年前我加入 Anthropic 时，AI 工具还主要是纯 LLM：擅长文本，对数字却不那么在行。真正吸引我的是看到 Claude for Excel 的进步——模型变强的过程，我几乎可以真切地追踪到。</p><p>如果你还在观望，不妨从简单的开始：让 Claude 读一份文档并做总结，然后不断扩大边界。它在周期性 recurring 的工作流上价值最大，比如董事会周期和月度复盘——在这些场景中，一致性会不断累积，项目记忆每过一轮都会变得更加丰富。你不需要搭建复杂的技术栈；我几乎完全依靠 Claude Cowork <a href="https://support.claude.com/en/articles/14116274-organize-your-tasks-with-projects-in-claude-cowork">项目</a>、Claude for Excel 和 Google Suite 连接器。</p><p>如果你不知道该用 Claude 的哪个入口，直接问 Claude 就好。有 Claude 在环，我跟得上工作之下的变化节奏。我能更快抵达洞察，意外和瓶颈更少，还能把更多时间花在搭建框架和前瞻性分析上。&nbsp;</p><p><em>立即开始使用 </em><a href="https://claude.com/product/cowork"><em>Claude Cowork</em></a><em>。</em></p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/how-anthropics-finance-team-uses-claude-to-shape-the-narrative-behind-the-numbers" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

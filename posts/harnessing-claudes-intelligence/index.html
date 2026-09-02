@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent harness 设计：驾驭 Claude 智能的三种模式 — Claude Blog 中文翻译</title>
+  <meta name="description" content="Agent harness 设计：驾驭 Claude 智能的三种模式">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/harnessing-claudes-intelligence" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Agents</span>
+            <span class="article-date">April 2, 2026</span>
+            
+          </div>
+          <h1 class="article-title">Agent harness 设计：驾驭 Claude 智能的三种模式</h1>
+          <a href="/posts/harnessing-claudes-intelligence/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>Anthropic 联合创始人 Chris Olah 曾<a href="https://www.darioamodei.com/post/the-urgency-of-interpretability" target="_blank">说过</a>，像 Claude 这样的生成式 AI 系统与其说是被"构建"出来的，不如说是被"培育"出来的。研究者设定引导其成长的条件，但最终涌现出的具体结构或能力并不总是可以预测的。</p><p>这给基于 Claude 的构建工作带来了一个挑战：<a href="https://www.anthropic.com/engineering/harness-design-long-running-apps" target="_blank">agent harness 会将各种假设固化其中</a>，假设 Claude 自己做不了什么，但随着 Claude 能力的提升，这些假设会逐渐过时。</p><p>Agent harness 是围绕模型搭建的软件脚手架：包括循环、工具、上下文管理和护栏，它们把原始的智能转化为一个可运行的 agent。<a href="https://claude.com/blog/harnessing-claudes-intelligence">Agent harness 设计</a>要做的事情，就是决定哪些东西应该放进这个脚手架，以及随着模型进步，哪些东西可以从中拿掉。</p><p>在本文中，我们分享三种模式，帮助团队在构建应用时跟上 Claude 不断演进的智能，同时兼顾延迟与成本：善用 Claude 已经掌握的东西、不断追问哪些工作可以停止做，以及通过 agent harness 谨慎地划定边界。</p><h3><strong>1. 依靠模型而非 harness：善用 Claude 已有的知识</strong></h3><p>我们建议使用 Claude 熟悉的工具来构建应用。</p><p>2024 年底，Claude 3.5 Sonnet 仅凭一个 <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/bash-tool" target="_blank">bash 工具</a>和一个用于查看、创建和编辑文件的<a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/text-editor-tool" target="_blank">文本编辑器工具</a>，就在 SWE-bench Verified 上取得了 49% 的成绩——在当时是<a href="https://www.anthropic.com/engineering/swe-bench-sonnet" target="_blank">业界最先进水平</a>。Claude Code 正是基于这些相同的工具构建的。<a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/bash-tool" target="_blank">Bash</a> 并不是为构建 agent 而设计的，但它是 Claude <em>知道</em>如何使用的工具，而且随着时间推移用得越来越好。</p><figure style="max-width:1999pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69cd8747994e07042a959518_image2.png" loading="lazy"></div><figcaption><em>SWE-bench Verified 基准上各版本 Claude 模型的得分，展现了其演进历程。</em></figcaption></figure><p>我们看到 Claude 将这些通用工具组合成能解决不同问题的模式。例如，<a href="https://agentskills.io/home" target="_blank">Agent Skills</a>、<a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling" target="_blank">programmatic tool calling</a> 和<a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool" target="_blank">memory 工具</a>都是基于 bash 和文本编辑器工具构建的。</p><figure style="max-width:1400pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69cd8835161641fba4aa1def_image4.png" loading="lazy"></div><figcaption><em>Programmatic tool calling、skills 和 memory 都是对 bash 和文本编辑器工具的组合。</em></figcaption></figure><h3><strong>2. 精简你的 agent harness：不断追问哪些工作可以停止做</strong></h3><p><a href="https://www.anthropic.com/engineering/harness-design-long-running-apps">Agent harness 会固化各种假设</a>，假设 Claude 自己做不了什么。随着 Claude 能力增强，这些假设应当被重新检验。</p><p><strong>让 Claude 编排自己的行动</strong></p><p>一个常见的假设是：每个工具的返回结果都应该回流到 Claude 的<a href="https://platform.claude.com/docs/en/build-with-claude/context-windows" target="_blank">上下文窗口</a>中，用来指导下一步行动。但以 token 的形式处理工具结果可能很慢、很贵，而且没有必要——如果结果只需要传给下一个工具，或者 Claude 只关心输出中的一小部分。</p><figure style="max-width:1250pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69cd889c76e6e17dbe4ff4b9_image7.png" loading="lazy"></div><figcaption><em>Claude 调用工具，工具在某个环境中执行。</em></figcaption></figure><p>设想读取一张大表格来推理其中的一列：整张表都会进入上下文，Claude 要为每一行它并不需要的数据支付 token 成本。这个问题可以通过工具设计来解决，比如使用<a href="https://platform.claude.com/docs/en/about-claude/models/migration-guide#additional-recommended-changes" target="_blank">硬编码的过滤器</a>。但这并没有触及问题的本质：agent harness 正在替 Claude 做一个<em>编排决策</em>，而这个决策由 Claude 自己来做更合适。</p><p>给 Claude 一个<a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool" target="_blank">代码执行</a>工具（例如 <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/bash-tool" target="_blank">bash 工具</a>或<a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool" target="_blank">特定语言的 REPL</a>）可以解决这个问题：它让 Claude 能够编写代码来表达工具调用以及调用之间的逻辑。这样，不再由 harness 决定每个工具调用的结果都作为 token 处理，而是由 Claude 决定哪些结果直接传递、过滤或管道式地送入下一次调用而不经过上下文窗口。只有代码执行的最终输出才会进入 Claude 的上下文窗口。</p><figure style="max-width:1426pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69cd891f5b4d2dea57b008d1_image6.png" loading="lazy"></div><figcaption><em>Claude 可以编写代码来表达工具调用以及调用之间的逻辑。</em></figcaption></figure><p>编排决策从 harness 移交给了模型。由于代码是 Claude 编排行动的通用方式，一个强大的编码模型同时也是一个强大的<em>通用</em> agent。采用这一模式后，Claude 在<a href="https://claude.com/blog/improved-web-search-with-dynamic-filtering" target="_blank">非编码类评测</a>上也表现出色：在 BrowseComp（一个测试 agent 浏览网页能力的<a href="https://arxiv.org/abs/2504.12516" target="_blank">基准</a>）上，让 Opus 4.6 具备过滤自身工具输出的能力，将其准确率从 45.3% 提升到了 61.6%。</p><p><strong>让 Claude 管理自己的上下文</strong></p><p>任务特定的上下文会引导 Claude 对 bash 和文本编辑器工具等通用工具的使用。一个常见的假设是，<a href="https://platform.claude.com/docs/en/release-notes/system-prompts" target="_blank">系统提示词</a>应当由人工精心编写任务特定的指令。问题在于，把指令预先塞进提示词的做法无法扩展到大量任务：每增加一个 token 都会消耗<a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents" target="_blank">Claude 的注意力预算</a>，而用很少用到的指令预先填满上下文是一种浪费。</p><p>让 Claude 能够访问 <a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview" target="_blank">skills</a> 可以解决这个问题：每个 skill 的 YAML frontmatter 是一段预先载入上下文窗口的简短描述，提供该 skill 内容的概览。如果任务需要，Claude 可以通过调用读文件工具来渐进式地读取完整的 skill。</p><figure style="max-width:1252pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69cd895f7f04456cccf7b7e0_image3.png" loading="lazy"></div><figcaption><em>Claude 可以使用 skills 渐进式地展开与任务相关的上下文。</em></figcaption></figure><p>如果说 skills 给了 Claude 自由拼装自己上下文窗口的能力，那么<a href="https://platform.claude.com/docs/en/build-with-claude/context-editing" target="_blank">上下文编辑</a>（context editing）则是反向操作：它提供了一种选择性移除已过时或无关上下文的方式，比如旧的工具结果或思考块。</p><p>借助 <a href="https://code.claude.com/docs/en/sub-agents" target="_blank">subagents</a>，Claude 越来越善于判断何时该切换到一个全新的上下文窗口，以隔离特定任务的工作。<a href="https://www-cdn.anthropic.com/0dd865075ad3132672ee0ab40b05a53f14cf5288.pdf" target="_blank">在 Opus 4.6 上</a>，生成 subagent 的能力使其在 BrowseComp 上的成绩比最佳单 agent 运行提升了 2.8%。</p><p><strong>让 Claude 持久化自己的上下文</strong></p><p>长时间运行的 agent 可能超出单个<a href="https://platform.claude.com/docs/en/build-with-claude/context-windows" target="_blank">上下文窗口</a>的限制。一个常见的假设是，记忆系统应当依赖模型外部的检索基础设施。而我们的许多工作都聚焦于给 Claude 一些简单的方式，让它<em>自己决定</em>持久化哪些内容。</p><p>例如，<a href="https://platform.claude.com/docs/en/build-with-claude/compaction" target="_blank">compaction</a>（压缩）让 Claude 能够总结过去的上下文，从而在长周期任务中保持连续性。经过多个版本的迭代，Claude 在选择记住什么方面越来越好。例如<a href="https://www-cdn.anthropic.com/14e4fb01875d2a69f646fa5e574dea2b1c0ff7b5.pdf" target="_blank">在 BrowseComp</a>（一个 agentic 搜索任务）上，无论我们给 Sonnet 4.5 多少压缩预算，它的成绩都稳定在 43%。而 Opus 4.5 在同样的设置下达到了 68%，Opus 4.6 则达到了 84%。</p><p><a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool" target="_blank">记忆文件夹</a>（memory folder）是另一种做法，它允许 Claude 将上下文写入文件，之后按需读取。我们看到 Claude 将其用于 agentic 搜索。在 BrowseComp-Plus 上，给 Sonnet 4.5 一个记忆文件夹<a href="https://www-cdn.anthropic.com/bf10f64990cfda0ba858290be7b8cc6317685f47.pdf" target="_blank">将准确率从 60.4% 提升到了 67.2%</a>。</p><figure style="max-width:1284pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69cd89bfccdc7c50beb40e0d_image5.png" loading="lazy"></div><figcaption><em>Claude 可以将上下文持久化到记忆文件夹。</em></figcaption></figure><p><a href="https://www.youtube.com/watch?v=CXhYDOvgpuU" target="_blank">长周期游戏</a>（例如宝可梦）是 Claude 更好地使用记忆文件夹的一个例子。Sonnet 3.5 把记忆当成流水账，记录的是 NPC（非玩家角色）说过的话，而不是真正重要的信息。跑了 14,000 步之后，它留下了 31 个文件——包括两个内容几乎重复、关于毛毛虫宝可梦的文件——而且人还在第二个城镇：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-json" style="white-space:pre-wrap"><span><span>caterpie_weedle_info:
+</span></span><span>- Caterpie and Weedle are both caterpillar Pokémon.
+</span><span>- Caterpie is a caterpillar Pokémon that does not have poison.
+</span><span>- Weedle is a caterpillar Pokémon that does have poison.
+</span><span>- This information is crucial for future encounters and battles.
+</span><span>- If our Pokémon get poisoned, we should seek healing at a Pokémon
+</span><span>  Center as soon as possible.</span></code></pre><p>后来的模型则会写下战术笔记。Opus 4.6 在同样的步数下，拥有按目录组织的 10 个文件、三枚道馆徽章，以及一份从自己的失败中提炼出来的经验教训文件：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-json" style="white-space:pre-wrap"><span><span>/gameplay/learnings.md:
+</span></span><span>- Bellsprout Sleep+Wrap combo: KO FAST with BITE before Sleep
+</span><span>  Powder lands. Don't let it set up!
+</span><span><span>- Gen </span><span style="color:#f5ab35">1</span><span> Bag Limit: </span><span style="color:#f5ab35">20</span><span> items max. Toss unneeded TMs before dungeons.
+</span></span><span>- Spin tile mazes: Different entry y-positions lead to DIFFERENT
+</span><span>  destinations. Try ALL entries and chain through multiple pockets.
+</span><span><span>- B1F y=</span><span style="color:#f5ab35">16</span><span> wall CONFIRMED SOLID at ALL x=</span><span style="color:#f5ab35">9</span><span style="color:#f5ab35">-28</span><span> (step </span><span style="color:#f5ab35">14557</span><span>)</span></span></code></pre><h3><strong>3. 在 harness 设计中谨慎划定边界</strong></h3><p>Agent harness 为 Claude 提供结构性约束，以保障 UX、成本或安全。</p><p><strong>设计上下文以最大化缓存命中</strong></p><p><a href="https://platform.claude.com/docs/en/build-with-claude/working-with-messages" target="_blank">Messages API</a> 是无状态的。Claude 看不到之前轮次的对话历史。这意味着 agent harness 需要在每一轮将新的上下文连同过去的所有操作、工具描述和指令一起打包发给 Claude。</p><p>提示词可以根据设定的<a href="https://platform.claude.com/docs/en/build-with-claude/prompt-caching" target="_blank">断点</a>（breakpoint）进行缓存。也就是说，Claude API 会把断点之前的上下文写入缓存，并检查这些上下文是否与之前的缓存条目匹配。</p><p>由于缓存 token 的成本只有基础输入 token 的 <a href="https://platform.claude.com/docs/en/about-claude/pricing" target="_blank">10%</a>，在 agent harness 中遵循以下几条原则有助于最大化缓存命中：</p><div class="w-embed"><figure>
+  <div role="region" tabindex="0">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">原则</th>
+          <th scope="col">说明</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>静态内容在前，动态内容在后</td>
+          <td>对请求排序时，把稳定的内容（系统提示词、工具）放在前面。</td>
+        </tr>
+        <tr>
+          <td>用消息传递更新</td>
+          <td>在消息中追加 <code>&lt;system-reminder&gt;</code>，而不是修改提示词。</td>
+        </tr>
+        <tr>
+          <td>不要更换模型</td>
+          <td>避免在会话中途切换模型。缓存与模型绑定，切换会使缓存失效。如果需要更便宜的模型，请使用 subagent。</td>
+        </tr>
+        <tr>
+          <td>谨慎管理工具</td>
+          <td>工具位于被缓存的前缀中，增删一个工具都会使缓存失效。若需动态发现工具，请使用 <strong>tool search</strong>，它以追加方式生效，不会破坏缓存。</td>
+        </tr>
+        <tr>
+          <td>及时更新断点</td>
+          <td>对于多轮应用（例如 agent），把断点移动到最新一条消息，以保持缓存最新。可以使用 <strong>auto-caching</strong> 来实现。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</figure></div><p><strong>为 UX、可观测性或安全边界使用声明式工具</strong></p><p>Claude 并不一定了解应用的安全边界或 UX 界面。Claude 发出工具调用，由 harness 来处理。bash 工具给了 Claude 广泛的程序化操作能力去执行动作，但它只给 harness 一个命令字符串——每个动作的形态都一模一样。把动作提升为专用工具，harness 就获得了针对具体操作的钩子，拿到带类型的参数，可以拦截、把关、渲染或审计。</p><p>需要安全边界的动作是专用工具的天然候选。可逆性往往是一个好的判断标准，难以撤销的操作（例如外部 API 调用）可以通过用户确认来把关。像 <code>edit</code> 这样的写入工具可以加入过期检查，防止 Claude 覆盖自上次读取后已被修改的文件。</p><figure style="max-width:1402pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69cd8ebecb4a73207c8b2ffc_image1.png" loading="lazy"></div><figcaption><em>可以基于安全、UX 或可观测性方面的考量，将某些动作提升为专用工具。</em></figcaption></figure><p>当一个动作需要呈现给用户时，工具同样很有用。例如，可以把工具调用渲染为弹窗，向用户清晰地展示问题、提供多个选项，或者阻塞 agent 循环直到用户给出反馈。</p><p>最后，工具对于可观测性也很有价值。当动作是一个带类型的工具时，harness 就能拿到结构化的参数，用于日志、追踪和回放。</p><p>是否把动作提升为工具，这个决策应当被持续重新评估。例如，Claude Code 的 <a href="https://www.anthropic.com/engineering/claude-code-auto-mode" target="_blank">auto-mode</a>（发布时处于研究阶段）为 bash 工具提供了安全边界：由另一个 Claude 读取命令字符串并判断其是否安全。这种模式可以<em>减少</em>对专用工具的需求，但只应用于用户信任其总体方向的任务。对于某些高风险操作，专用工具依然有其价值。</p><h3>Agent harness 设计的未来</h3><p>Claude 智能的前沿始终在变化。每当它的能力出现一次阶跃式提升，关于"Claude 做不了什么"的假设都需要重新检验。</p><p>这样的模式在不断重演。在我们为长周期任务构建的一个 <a href="https://www.anthropic.com/engineering/harness-design-long-running-apps" target="_blank">agent</a> 中，Sonnet 4.5 会因为察觉到上下文极限临近而提前收尾。为了应对这种"上下文焦虑"，我们加入了重置机制来清空上下文窗口。而到了 Opus 4.5，这一行为消失了。我们为弥补缺陷而构建的上下文重置，反而成了 agent harness 中的累赘。</p><p>清除这些累赘很重要，<a href="http://www.incompleteideas.net/IncIdeas/BitterLesson.html" target="_blank">因为它们可能成为</a>Claude 性能的瓶颈。随着时间推移，我们应用中的结构或边界应当基于一个问题来修剪：<em>哪些工作我可以停止做？</em></p><p><em>要使用本文讨论的所有工具和模式，请查看</em><a href="https://github.com/anthropics/skills/tree/main/skills/claude-api" target="_blank"><em>我们的 claude-api skill</em></a><em>。</em></p><h3>致谢</h3><p>本文由 Claude Platform 团队的技术成员 Lance Martin 撰写。特别感谢 Thariq Shihipar、Barry Zhang、Mike Lambert、David Hershey 和 Daliang Li 就文中话题进行的深入讨论。感谢 Lydia Hallie、Lexi Ross、Katelyn Lesse、Andy Schumeister、Rebecca Hiscott、Jake Eaton、Pedram Navid 和 Molly Vorwerck 的编辑审阅与反馈。</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/harnessing-claudes-intelligence" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

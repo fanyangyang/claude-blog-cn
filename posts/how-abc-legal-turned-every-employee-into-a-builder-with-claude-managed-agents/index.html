@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ABC Legal 如何借助 Claude Managed Agents 让每位员工都成为构建者 — Claude Blog 中文翻译</title>
+  <meta name="description" content="ABC Legal 如何借助 Claude Managed Agents 让每位员工都成为构建者">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/how-abc-legal-turned-every-employee-into-a-builder-with-claude-managed-agents" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Enterprise AI</span>
+            <span class="article-date">August 17, 2026</span>
+            
+          </div>
+          <h1 class="article-title">ABC Legal 如何借助 Claude Managed Agents 让每位员工都成为构建者</h1>
+          <a href="/posts/how-abc-legal-turned-every-employee-into-a-builder-with-claude-managed-agents/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>今年早些时候，美国法律文书递送公司 ABC Legal 的 CTO Brandon Fuller 向全公司 1,100 名员工推出了 <a href="https://claude.com/solutions/enterprise" target="_blank">Claude Enterprise</a>，效果立竿见影。公司各个团队（诉讼文书送达、电子立案（eFiling）和出庭律师业务，以及市场、合规、财务等）开始主动构建自动化流程，没有人要求他们这么做。</p><p>"我们的用户真的是蜂拥而至，"Fuller 回忆道，"他们看到连接器和工具如此易用，突然之间，整个公司的人都在把那些一直吞噬他们日常工作时间的任务自动化。"</p><p>这正是任何一位 CTO 都梦寐以求的采用效果。但 Fuller 看到了更进一步的机会：如果 ABC Legal 还能运营一支有版本管理、可观测且始终在线的 AI 智能体队伍呢？</p><p>这个愿景最终归结为基础设施问题。早期的智能体运行在它的构建者碰巧放置的地方，比如个人桌面上的定时任务。把它们从个人电脑上迁移出来，就能让它们无人值守地运行，也让 Fuller 能够统一查看构建了什么、花了多少钱，以及昨晚是否运行过。</p><p>于是他部署了 <a href="https://platform.claude.com/docs/en/managed-agents/overview" target="_blank">Claude Managed Agents</a>：统一的部署结构、共享工作区、单一的审计和计费界面，智能体常驻云端运行，而不是跑在某个人的笔记本电脑上。&nbsp;</p><p>截至 2026 年 7 月，Fuller 和他在 ABC Legal 的团队已经取得了如下成果：&nbsp;</p><ul role="list"><li>50 多个使用 Managed Agents 构建的智能体已在生产环境运行</li><li>部分智能体所承担的人工任务成本最高降低约 50%，这还是在深度优化之前</li><li>全公司各部门约 310 名员工在日常工作中使用 Claude</li></ul><p>下面是他们如何走到这一步的，以及一路上学到的经验。</p><h1>从热情到工程化：把每个智能体当作软件对待</h1><p>首次部署 Claude Managed Agents 时，Fuller 要求团队把每个智能体都定义为代码。他相信这是智能体的天然形态。正如他所解释的：“智能体本质上就是结构化文本，一个提示词加一份配置，而凡是文本的东西都可以放进代码仓库，让全公司的人看到它、评审它、改进它。”智能体的提示词、工具列表、调度计划、凭据和记忆全部存入配置文件，与公司的软件一起放在 git 仓库中。智能体的任何变更都必须通过有人批准的 pull request 才能生效，这为每个智能体带来了版本历史、代码评审、回滚能力和审计轨迹。</p><p>他花了一周时间构建了一个包含两个模板的入门套件，存放在专门的 git 仓库中。一个模板用于事件驱动的智能体——一旦有事情发生（比如新任务到达或法院退回文书）就立即启动；另一个用于定时智能体，按小时、每天或每周定时运行。每个智能体都放在自己的文件夹里，遵循标准结构：一个 JSON 配置文件、一份 Markdown 格式的系统提示词、部署脚本和运维文档。将变更合并到主分支即可自动部署智能体。构建者完全不需要编写软件。他们克隆仓库、复制一个入门模板，用自然语言告诉 Claude Code 这个智能体该做什么，就能得到智能体所需的一切：配置、提示词、凭据存储和记忆。</p><h1>跨越技术鸿沟</h1><p>Fuller 召集了公司 15 人的指导委员会，成员来自财务、市场、运营和开发部门（没有一个是软件开发人员），让他们克隆仓库并使用 Claude Code 构建 Managed Agents。</p><p>这样做的目的是证明非开发人员也能自己构建生产级智能体。如果每个智能体都必须经过开发团队，这个瓶颈就会限制整个公司前进的速度。这件事之所以安全，是因为他们并不是在编写软件，而是在填写配置和提示词，运行时由 Managed Agents 提供。</p><p>"我得给他们解释什么是 PR。很多（非软件工程师）还以为 PR 是跑步的意思，就像 PR 那样跑得越快越好，”他说，“现在他们已经在互相发 pull request 了。"</p><p>一周之内，所有 15 名员工都有了能运行的智能体。这些构建者回到各自团队又培训了其他人。一个月之内，大约 50 多个智能体在 ABC Legal 运行起来。每个智能体都有名字、负责人和一项单一职责。</p><h2>覆盖法律文书流程大部分环节的智能体</h2><p>如今，ABC Legal 在法律立案流程的大部分环节及其周边运营中都部署了智能体。</p><p>AI Code Reviewer 评审四个代码库中的每一个 pull request，运行多模型分析来捕捉安全漏洞、性能回退和误提交的凭据。工程师现在合并前必须等待它的评审。</p><p>EvidenceChain™ Delivery Agent 接手了一位客户经理过去每周手工处理的杂务。ABC Legal 运营着一个名为 EvidenceChain.com 的专有网站，法院、原告和被告可以在这里查询现场完成送达的记录，包括送达员是谁、何时尝试送达，以及文书递送的照片。有一位客户希望持续从中提取特定记录。这个智能体现在每天自动拉取匹配任务的数据库报告，用 Managed Agent 内置的浏览器逐个获取 PDF，并将其送达客户的 FTP 服务器。搭建它的那位客户经理此前从未自动化过任何东西，通过向 Claude Code 描述需求，大约一小时就完成了构建。</p><p>eFiling Rejection Diagnoser 在法院驳回立案时自动触发，读取任务详情，核对法院规则，约一分钟后把诊断结果发布到 Slack——这些工作过去要耗掉员工数小时。一个任务核验智能体会对照法院核验每一个进来的任务：它通过浏览器访问法院网站，确认听证会或案件已正确立案且确实会在所述日期进行，然后根据查到的信息调整任务，标记司法辖区、法院和诉讼时效期限。&nbsp;</p><p>Attorney Coverage Agent 负责协调律师网络以确保听证会有人出庭：查询律师的档期、给他们发邮件、阅读关于档期和收费的回复，供协调员确认出庭安排。&nbsp;</p><p>在财务方面，一个 AR 回款智能体解析回款邮件，生成 NetSuite 的款项核销文件，发布到 Slack 供一键批准后完成导入；还有一个每日运行的智能体对每张工程工单给出资本化还是费用化的判定。市场团队运行着一个 Google Ads 分析智能体，每周为渠道负责人发布一条建议。在运营方面，一个名叫 Charvis 的复核智能体检查已完成的服务任务，如今与合规团队的意见一致率约为 98%。</p><p>Service-Overdue-Nudger 处理 ABC Legal 运营积压任务的第一层——那些原本需要人工完成的重复性初筛工作——并起草分层级的每日跟进消息，交由人工批准。</p><h1>让智能体更聪明：收集反馈、调优、循环往复</h1><p>ABC Legal 的智能体在人工监督下工作，它们把自己做了什么或建议什么发布到 Slack，人们在话题串中回复，并用表情符号做出反应。</p><figure style="max-width:2048pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a8313ee791ba5b5e5308366_196c45a5.png" loading="lazy"></div><figcaption><em>Hank 是一个内部代码评审智能体，它把每次评审都发布到共享的 Slack 频道。每条记录都标明了 pull request 及其产出的各项计数，使智能体的决策过程公开可查、可检索。</em></figcaption></figure><p>Fuller 意识到，这些反应数据是白白浪费掉的训练信号。不过并非每个智能体都需要这种信号。队伍中的大多数是单一任务的执行者，产出无人评分，独立运行。对于确实会收集带评分反馈的智能体，ABC Legal 采用三角色架构：多个智能体共享同一个工作区、环境和凭据库，但按不同的计划运行。这个模式把 Slack 中的消息转化为经过人工批准的、有版本记录的智能体变更：</p><ol role="list"><li><strong>初始智能体（Initial Agent）</strong>负责干活，通常在任务到达或文书返回时实时执行，并为每个动作记录审计轨迹。</li><li><strong>收集器（Harvester）</strong>按小时或按天运行，从 Slack 收集人工反馈——它们以话题串回复和表情符号反应的形式出现，每一条都成为一个带标注的数据点。</li><li><strong>调优器（Tuner）</strong>每周运行一次，通盘审视所有数据，然后提出对提示词或配置的修改建议，而不是改动模型权重。它只负责起草。由人工评审并合并 pull request。</li></ol><figure style="max-width:2048pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a8313ee791ba5b5e530836a_7e06f6e7.png" loading="lazy"></div><figcaption><em> 在 ABC Legal 的自我改进智能体闭环中，初始智能体实时完成工作，收集器按小时节奏从 Slack 收集人工反馈，每周运行的调优器则以 pull request 的形式提出提示词和配置的修改。智能体借助开发者们早已在用的同一套工作流实现改进。</em></figcaption></figure><p>一个例子是 "deliveries-as-code"，这是 Fuller 用于调优任务路由方式的智能体系统，起步于 ABC Legal 的姊妹公司、50 人规模的 Docketly。Docketly 以"delivery"为核心组织工作，每个 delivery 都有各自的路由和处理规则集。全部 145 个左右的规则集都是 git 中的单个 YAML 文件，而不是管理后台里的记录，因此调优一个 delivery 就是编辑一个文件并发起 pull request。&nbsp;</p><p>四个智能体组成这个闭环：一个每周向 Slack 发布判定结果，收集器根据人工反馈把表情反应转化为标注，调优器对 YAML 发起 pull request，第四个智能体把合并后的配置推送到生产数据库。第四个智能体只执行人工已经评审并批准过的内容。实践中，一个标记任务路由错误的表情符号反应，可以在当周之内变成对该任务路由规则的已合并变更。评审是这个闭环中唯一的手工环节。</p><h1>为什么选择 Claude Managed Agents</h1><p>Fuller 在最终选定 Claude Managed Agents 作为公司的智能体运行框架之前，评估过多个框架。他的标准很明确：平台必须具备版本管理、可观测的会话、工作区级计费、模型选择、记忆原语、MCP 接入能力，以及最关键的一点——无需照看的底层基础设施。</p><p>这个平台的职责划分与 Fuller 的管理思路完全契合。Anthropic 托管的基础设施负责让智能体运行起来的一切：执行循环、会话、记忆、控制台以及模型本身。ABC Legal 则拥有提示词、工具列表、触发逻辑、审计轨迹，以及基于结果反馈的改进闭环。</p><p>在大规模运行中，有几项能力显得尤为重要：</p><ul role="list"><li><strong>版本管理：</strong>每次推送都会创建一个带乐观锁的智能体新版本，回滚轻而易举。</li><li><strong>模型灵活性：</strong>大多数智能体默认使用 Claude Sonnet，高并发、快节奏的任务用 Claude Haiku，需要深度推理且成本划算时用 Claude Opus。更换模型只需改一行配置。</li><li><strong>MCP 接入与凭据库：</strong>智能体可以连接 ABC Legal 自有平台（提供 100 多个工具）、负责报表的 Metabase、用于人机协同交互的 Slack，以及负责项目管理的 Atlassian。</li><li><strong>定时部署：</strong>周期性智能体通过 Bitbucket Pipelines 按 cron 计划运行，后者已经处理好了仓库访问、密钥和计费。</li></ul><p>ABC Legal 追踪 AI 支出的每一分钱，按供应商、工具、团队和使用场景细分。支出在春季智能体队伍上线期间攀升，随后在 7 月开始下降，而使用量仍在增长——这得益于下文所述的效率优化工作：许多智能体承担的任务成本降低约 50%，全公司各部门约 310 名员工在使用 Claude。&nbsp;&nbsp;</p><p>公司对成本的态度是有意为之的：把支出推向回报可度量的垂直业务工具和智能体，同时让横向的聊天和创意类使用保持广泛，并把成本控制在合理范围。大多数智能体起步时都有人工参与：智能体查看任务或工单，提出建议供人评审，之后才采取行动。这些建议要么存入任务并在横幅中展示，让人在工作流程中直接接受或拒绝；要么发布到 Slack 频道，供大家在话题串中回复。这些回复构建出一个标注了好坏判断的数据集，供收集器和调优器闭环使用，也让团队能够编写评测（eval），在多个前沿模型之间对智能体做基准测试。一旦某个智能体证明在特定任务上达到或超过人类水平，它就切换到自动化模式独立行动，之后仍留在同一套度量框架内，以监测性能的任何变化。</p><p>ABC Legal 追踪的指标是效率比：智能体交付的价值与其运行成本的比值。每个 Managed Agent 在每次运行时都会以小时和美元为单位，向数据仓库上报自己的价值。智能体遵循 J 型曲线：初期往往处于"水下"（入不敷出），因为新上线且使用较大的模型；随着团队编写评测、迁移到更便宜更快的模型并削减 token，曲线随即转正。</p><h1>部署智能体队伍的最佳实践</h1><p>Fuller 部署 AI——尤其是 Claude Managed Agents——的经验，让他总结出几条使用这项技术的工作原则：&nbsp;</p><p>‍</p><ul role="list"><li><strong>把一切都视为代码。</strong>"代码只是结构化文本，LLM 则是文本引擎，”他说，“你能把越多业务转化为仓库里的文本，智能体给你的杠杆就越大。"这不仅适用于传统软件，同样适用于提示词、schema、调度规则、通知模板和业务配置。</li><li><strong>从人工参与闭环起步。</strong>每个智能体一开始都只发布建议供人工评审。只有在证明自己与人工决策持续一致之后，它才赢得独立行动的资格。"每个智能体都是先赢得信任，再独立行动。没有谁一开始就有这个资格。"</li></ul><ul role="list"><li><strong>把 PR 当作控制面。</strong>"如果你想让智能体参与某个决策，就把这个决策做成 pull request 的样子。"逐行评论、审批流程和不可篡改的审计轨迹都是版本控制免费赠送的，而且能自然地与 AI 评审和人工评审组合使用。</li><li><strong>在反馈闭环上投入。</strong>收集器-调优器模式让智能体无需重新训练就能改进。Slack 回复和表情反应变成结构化信号，回馈到提示词和配置的变更中，而这一切都通过人们已经在用的 pull request 工作流完成。</li><li><strong>别在定时任务上绕弯路。</strong>ABC Legal 曾在转向 Managed Agents 之前花了不少时间构建定时任务和本地例程，主要是因为当时该产品才刚刚开启公测。Fuller 今天的建议是：直接上 Managed Agents。</li><li><strong>预想到 git 这道坎，而不是 AI 这道坎。</strong>真正的难点是让业务用户习惯于克隆仓库、使用 Git 和 pull request，而不是 AI 本身的任何东西。这事最终办成了，而且很快，但确实是一道坎，Fuller 希望工具本身能让它变得更容易。</li><li><strong>不是每个任务都值得配一个智能体。</strong>成本是实实在在的，所以每个团队都必须用价值与成本之比来思考。这项工作的要义在于挑选那些真正节省时间或带来自动化的可行问题，并且敢于判定某个任务不值得为之建智能体。</li></ul><h1>下一步</h1><p>ABC Legal 的智能体队伍仍在继续壮大。正在推进的项目包括一个服务照片复核智能体、一个 PagerDuty 分诊智能体、一份每日 KPI 摘要，以及在现有智能体上扩展更多调优器闭环。</p><p>团队还在寻找更多"X-as-code"的候选对象：通知模板、事件路由规则和调度逻辑，都可以搬进仓库，让智能体读取、理解并提出改进建议。</p><p>正如 Fuller 所说："我们希望 AI 支撑起一个能够自我运转的业务，让员工腾出手来驾驭它。"</p><p><a href="https://platform.claude.com/docs/en/managed-agents/overview" target="_blank">了解更多</a>关于 Claude Managed Agents 的信息。</p><p>‍</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/how-abc-legal-turned-every-employee-into-a-builder-with-claude-managed-agents" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

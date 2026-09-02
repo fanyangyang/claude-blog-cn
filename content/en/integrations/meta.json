@@ -1,0 +1,17 @@
+{
+  "slug": "integrations",
+  "title": "Claude can now connect to your world",
+  "date": "May 1, 2025",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/integrations",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/integrations.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.788Z",
+  "translatedTitle": "Claude 现在可以连接你的世界",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:44:54.905Z",
+  "translateLang": "zh-CN"
+}

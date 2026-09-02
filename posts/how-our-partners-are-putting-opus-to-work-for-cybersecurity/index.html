@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>合作伙伴如何让 Opus 为网络安全效力 — Claude Blog 中文翻译</title>
+  <meta name="description" content="合作伙伴如何让 Opus 为网络安全效力">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/how-our-partners-are-putting-opus-to-work-for-cybersecurity" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Enterprise AI</span>
+            <span class="article-date">May 21, 2026</span>
+            
+          </div>
+          <h1 class="article-title">合作伙伴如何让 Opus 为网络安全效力</h1>
+          <a href="/posts/how-our-partners-are-putting-opus-to-work-for-cybersecurity/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>AI 正在改变安全漏洞被发现和被利用的速度，而最明确的应对之道，就是让安全团队把能力强大的模型用到自己的防御上。&nbsp;</p><p>当我们<a href="https://claude.com/blog/claude-security-public-beta" target="_blank">公开发布 Claude Security 测试版</a>时，还同时公布了一批基于 Claude Opus 构建的技术与服务合作伙伴，因为对每个团队来说，最快的落地路径各不相同：有的直接使用 Claude，有的通过已在运行的平台接入，还有的借助熟悉自身环境的服务伙伴。</p><p>其中若干产品如今已经上线，早期成果也展示了前沿模型防御在实践中的样子。</p><h2>早期成果</h2><p>合作伙伴报告称，无论在内部环境还是客户环境中，由 Opus 驱动的防御能力都有显著提升：&nbsp;</p><ul role="list"><li>每周对超过 150,000 个生产资产进行持续渗透测试，每周发现数千个经验证的高危和严重级别问题，零误报（Wiz，客户生产环境）。</li><li>不到三周时间完成了相当于一整年工作量的渗透测试（Palo Alto Networks，内部测试）。</li><li>安全测试覆盖率从约 10% 提升到 80% 以上，覆盖 1,600 个应用和 500,000 多个 API，扫描周转时间从 3–5 天缩短到一小时以内（Accenture，在其自有基础设施上）。</li></ul><p>这些工作可分为三类：大规模的进攻性测试、弥合漏洞发现与修复之间的鸿沟，以及在治理框架下将 AI 部署到生产环境。</p><h2>生产级规模的持续进攻性测试</h2><p>进攻性测试是指像对手那样攻击自己的系统，从而先于攻击者找到可利用的路径。&nbsp;</p><p>Wiz 的 <a href="https://www.wiz.io/blog/red-agent-claude-opus" target="_blank">Red Agent</a> 是一个 AI 驱动的攻击者，它使用 Opus 像人类渗透测试人员一样对生产 Web 应用和 API 进行推理。它分析应用逻辑、串联攻击步骤，并根据服务器实时响应做出调整，从而发现传统扫描器遗漏的逻辑类缺陷。它每周对超过 150,000 个生产资产持续运行，发现数千个高危和严重级别问题，每个发现都附带可利用性证明和来自 Wiz Security Graph 的业务上下文。“安全团队不再受限于数据不足，而是受限于对数据采取行动的能力，”Wiz AI 与威胁研究副总裁 Alon Schindel 说。“通过将前沿模型嵌入 Wiz Agents，我们让组织能够以 AI 的速度进行防御。”</p><p><a href="https://www.paloaltonetworks.com/unit42/ai-advantage" target="_blank">Unit 42 Frontier AI Defense</a> 是 Palo Alto Networks 的专家主导服务，它使用 Opus 发现隐藏漏洞、梳理这些漏洞如何串联成关键攻击路径，并制定针对 AI 驱动攻击的加固路线图。该服务将暴露面分析与一套经过基准检验的机器速度防御蓝图以及实操性转型工作相结合。“随着攻击者将前沿模型武器化以自动化网络攻击，防御也必须更快，”Palo Alto Networks Unit 42 高级副总裁 Sam Rubin 表示。</p><p>CrowdStrike 的 <a href="https://www.crowdstrike.com/en-us/services/ai-security-services/frontier-ai-readiness-and-resilience/" target="_blank">Frontier AI Readiness and Resilience Service</a> 将同级别的能力带入一个被超过 60% 的财富 500 强企业信赖的平台：它把 Opus 与 CrowdStrike 的 AI 红队服务和自有 agent 框架相结合，在客户应用中持续搜寻潜伏的零日漏洞、验证发现结果，并在新代码进入生产环境之前加速修复。</p><blockquote>“像 Anthropic 的 Claude Opus 这样的前沿模型，正在赋予防御者一年前还不存在的能力优势，把漏洞管理一路推向更左端。”&nbsp;- <strong>Mark Manglicmot，CrowdStrike 全球咨询服务副总裁</strong></blockquote><h2>弥合发现与修复之间的鸿沟</h2><p>从发现漏洞到修复漏洞之间的时间差，是漏洞暴露的主要来源，因为分类、排定优先级、补丁测试和跨团队交接都需要时间。</p><p>Accenture 的 <a href="https://newsroom.accenture.com/news/2026/accenture-and-anthropic-team-to-help-organizations-secure-scale-ai-driven-cybersecurity-operations" target="_blank">Cyber.AI</a> 是一个 agentic 平台，它把资产、身份、威胁和安全控制整合为一个统一的运营模型，由 Opus 在其上进行推理，将检测、排序和修复作为一个持续循环来运行。Accenture 先在内部大规模验证了效果：在其全球 IT 基础设施上，将安全测试覆盖率从约 10% 提升到 80% 以上，覆盖 1,600 个应用和 500,000 多个 API，扫描周转时间从 3–5 天缩短到一小时以内——这些成果正是如今 Cyber.AI 交付给客户的能力基础。</p><blockquote>“企业领导者正在应对有史以来变化最快、最复杂的网络威胁态势。我们与 Anthropic 合作，为客户提供保持领先所需的工具。” &nbsp;- <strong>Harpreet Sidhu，Accenture 网络安全全球负责人</strong></blockquote><p>TrendAI™ <a href="https://www.trendmicro.com/en_us/business/products/one-platform.html" target="_blank">Vision One</a> 利用 Opus 辅助的漏洞研究，帮助 185 个国家的企业识别暴露面并通过虚拟补丁降低风险。经验证的发现还会流入 TrendAI Zero Day Initiative 进行协同披露，从而在厂商补丁可用之前最多提前 96 天保护处于风险中的系统。“随着 AI 加速漏洞发现，防御者面临的真正挑战变成了大规模的修复，”TrendAI 负责人、首席平台与业务官 Rachel Jin 表示。“我们与 Anthropic 一起，帮助客户在攻击者利用空档之前，通过缓解措施和虚拟补丁降低风险。”</p><p>Deloitte 基于 Deloitte Ascend™ 构建的<a href="https://www.deloitte.com/global/en/services/consulting-risk/services/deloitte-cyber-attack-surface-management.html" target="_blank">持续威胁暴露管理（CTEM）</a>将发现、验证、排序和修复作为一个工作流运行，在没有补丁时甚至包括对策设计。Opus 的代码推理和自动化稳定性测试让团队有信心在数小时而非数天或数周内完成修复。“基于 Ascend 构建的 CTEM，就是为了缩短漏洞修复中的决策延迟，”Deloitte 合伙人兼美国网络安全负责人 Adnan Amjad 说，“这个空档决定了这扇窗口期里最终获胜的是攻击者还是防御者。”</p><h2>在治理之下把 AI 送进生产环境</h2><p>agentic AI 用例的新世界给许多团队带来了新挑战。缺少清晰的框架时，为部署设置控制、审计证据和自主性边界，往往会让安全领域的 AI 应用困在“试点炼狱”中。</p><p>PwC 的 <a href="https://www.pwc.com/us/en/technology/alliances/anthropic.html" target="_blank">Claude Native Cybersecurity 服务</a>同时解决 CISO 们经常一起提出的两个问题：让 AI 安全进入生产环境，以及让网络安全职能本身完成现代化。Secure AI Adoption 帮助企业用数周而非数个季度的时间从沙箱走向生产环境，并提供相应的部署、治理和审计证据，帮助 CISO 和 CRO 有信心把创新带给团队。Scaled Frontier Defense 则把 Opus 驱动的 agentic 推理融入既有的漏洞管理、检测、安全工程和 GRC 工作流，在明确的护栏和可审计性之下实现自主执行。</p><blockquote>“这是网络安全的一个决定性时刻——AI 驱动的转型已成为保持韧性和竞争力的关键，” - <strong>Morgan Adamski，PwC 美国网络、数据与技术负责人</strong></blockquote><h2>不断壮大的生态</h2><p>BCG、Infosys 和 SentinelOne 也在基于 Opus 构建防御类网络安全产品，相关进展我们会在可用时陆续分享。</p><p>上述所有产品都依托同一种底层的 Opus 能力：对代码进行推理、理解哪些暴露会转化为真实风险，以及长时间维持 agentic 工作流的运转。我们很高兴能与这些伙伴合作，通过最适合各自团队的接入方式，把前沿防御能力带给更多安全团队。&nbsp;</p><p><em>了解更多 </em><a href="https://claude.com/solutions/security" target="_blank"><em>Claude 的安全用例</em></a><em>。</em></p><p>‍</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/how-our-partners-are-putting-opus-to-work-for-cybersecurity" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

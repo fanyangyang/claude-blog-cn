@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>构建 Claude Code 的经验教训：提示词缓存就是一切 — Claude Blog 中文翻译</title>
+  <meta name="description" content="构建 Claude Code 的经验教训：提示词缓存就是一切">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/lessons-from-building-claude-code-prompt-caching-is-everything" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Claude Code</span>
+            <span class="article-date">April 30, 2026</span>
+            
+          </div>
+          <h1 class="article-title">构建 Claude Code 的经验教训：提示词缓存就是一切</h1>
+          <a href="/posts/lessons-from-building-claude-code-prompt-caching-is-everything/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>工程圈常说"缓存决定我周围的一切"（cache rules everything around me），这条铁律对智能体同样成立。</p><p>Claude Code 这样长时间运行的智能体产品之所以可行，靠的是<a href="https://x.com/RLanceMartin/status/2024573404888911886" target="_blank"><strong>提示词缓存（prompt caching）</strong></a>：它让我们得以复用之前多轮对话的计算结果，大幅降低延迟和成本。</p><p>在 Claude Code，我们整个 harness 都是围绕提示词缓存来构建的。提示词缓存命中率高，既能降低成本，也能帮我们为订阅计划提供更宽松的速率限制，因此我们会对缓存命中率设置告警，一旦过低就会立为 SEV 事故。</p><p>以下是我们在大规模优化提示词缓存的过程中学到的（常常反直觉的）经验。</p><h2><strong>为缓存而布局你的提示词</strong></h2><figure class="w-richtext-align-center w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69f2f39fa10dea4e26853e8c_2371721a.png" loading="lazy"></div><figcaption>Claude Code 的系统提示词经过精心组织：稳定部分保持缓存命中，只有对话本身逐轮增长。</figcaption></figure><p>提示词缓存基于前缀匹配——API 会缓存请求从头开始到每个 <code>cache_control </code>断点之间的所有内容。这意味着内容的排列顺序至关重要：你要让尽可能多的请求共享同一段前缀。</p><p>提示词的结构不仅影响缓存命中，也影响输出质量——<a href="https://claude.com/blog/best-practices-for-prompt-engineering">提示词工程的基本功</a>是这门学科的另一半。</p><p>最佳做法是：静态内容在前，动态内容在后。对 Claude Code 来说，结构是这样的：</p><ol role="list"><li><strong>静态系统提示词</strong>和工具（全局缓存）</li><li><strong>CLAUDE.md</strong>（项目内缓存）</li><li><strong>会话上下文</strong>（会话内缓存）</li><li><strong>对话消息</strong>&nbsp;</li></ol><p>这样我们就能最大化共享缓存命中的会话数量。</p><p>但这种做法可能出奇地脆弱。我们曾因各种原因破坏过这个顺序，比如：在静态系统提示词里放入精确到秒的时间戳、以不确定的顺序打乱工具定义、以及更新工具的参数（例如 Agent 工具可以调用哪些智能体）。</p><h2><strong>用消息来传递更新</strong></h2><p>有时提示词里的信息会过期，比如时间变了，或者用户修改了某个文件。直接更新提示词固然诱人，但那会导致缓存未命中，最终可能让用户付出高昂代价。</p><p>可以考虑改在智能体的下一轮中，通过消息传入这些信息。在 Claude Code 中，我们会在下一条用户消息或工具结果里加一个 &lt;system-reminder&gt; 标签，携带更新后的信息给模型，从而保住缓存。</p><h2><strong>会话中途不要更换模型</strong></h2><p>提示词缓存是按模型隔离的，这让提示词缓存的账变得非常反直觉。</p><p>举例来说，如果你已经和 Opus 进行到对话的 10 万 token 处，想问一个相当简单的问题，此时切换到 Haiku 反而比让 Opus 回答更贵，因为我们需要为 Haiku 重建整套提示词缓存。</p><p>如果确实需要切换模型，最好的办法是用子智能体；沿用上面的例子，你可以部署一个子智能体，让 Opus 为另一个模型准备一条关于待办任务的"交接"消息。我们在 Claude Code 的 Explore 智能体（使用 Haiku）上经常这么做。</p><h2><strong>会话中途绝不增删工具</strong></h2><p>在对话中途更改工具集，是人们破坏提示词缓存最常见的方式之一。它看起来很合理——只给模型此刻需要的工具。但由于工具是缓存前缀的一部分，增删一个工具会让整个对话的缓存失效。</p><p><strong>用 Plan Mode 展示如何围绕缓存做设计</strong></p><p><a href="https://code.claude.com/docs/en/common-workflows" target="_blank">Plan Mode</a> 是围绕缓存约束来设计功能的好例子。直觉上的做法是：用户进入计划模式时，把工具集换成只含只读工具——但这会破坏缓存。</p><p>我们的做法相反：请求中<em>始终</em>保留所有工具，并把 EnterPlanMode 和 ExitPlanMode 本身做成工具。当用户开启 Plan Mode 时，智能体会收到一条系统消息，说明它正处于计划模式以及相应指令：探索代码库、不要编辑文件、计划完成后调用 ExitPlanMode。工具定义从未改变。</p><p>这还有一个额外好处：因为 EnterPlanMode 是模型自己可以调用的工具，当它识别出一个难题时，可以自主进入计划模式，而不会破坏任何缓存。</p><p><strong>用工具搜索来延迟加载，而不是删除</strong></p><p>同样的原则也适用于我们的<a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool" target="_blank">工具搜索工具（tool search tool）</a>。Claude Code 可能加载着几十个 MCP 工具，把它们全部塞进每个请求开销不小，但在对话中途移除它们又会破坏缓存。</p><p>我们的解决方案是 <code>defer_loading</code>。我们不删除工具，而是发送轻量的存根（只有工具名，附带 <code>defer_loading: true</code>），模型需要时可以通过工具搜索来"发现"它们；完整的工具 schema 只在模型选中时才加载。由于相同的存根始终以相同的顺序存在，缓存前缀保持稳定。</p><p>你也可以通过我们的 API 使用<a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool" target="_blank">工具搜索工具</a>来简化这件事。</p><h2><strong>在不破坏缓存的前提下压缩</strong></h2><figure class="w-richtext-align-center w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69f2f39fa10dea4e26853e8f_9e1aba00.png" loading="lazy"></div><figcaption>上下文窗口快满时，Claude Code 会复用缓存发起一次分叉调用来总结对话，然后带着摘要（替代原始消息）继续。</figcaption></figure><p><a href="https://platform.claude.com/docs/en/build-with-claude/compaction" target="_blank">压缩（compaction）</a>发生在上下文窗口耗尽的时候。我们把迄今为止的对话总结下来，然后带着这份摘要开启新的会话。</p><p>压缩与提示词缓存的交互极易出错。要压缩一段对话，你必须把完整对话发给模型让它写摘要。最简单的做法是发起一个单独的 API 调用，配上自己的系统提示词（类似"请总结以下内容"）且不挂任何工具——但这恰恰是成本陷阱所在。提示词缓存只在请求前缀与已缓存内容从头逐字节完全一致时才生效。你的主对话是在一套系统提示词和工具集下缓存的；摘要调用用的是另一套系统提示词且没有工具，于是前缀在第一个 token 处就分道扬镳，缓存完全派不上用场。你最终要为送入的整段对话支付全额的非缓存输入价格——而对话越长（也就是越需要压缩的时候），这一次调用就越贵。</p><p><strong>解决方案：缓存安全的分叉</strong></p><p>执行压缩时，我们使用与父对话<em>完全相同</em>的系统提示词、用户上下文、系统上下文和工具定义。我们先放入父对话的消息，再把压缩指令作为一条新的用户消息追加在末尾。</p><p>在 API 看来，这个请求与父对话的最后一次请求几乎一模一样——相同的前缀、相同的工具、相同的历史——因此缓存前缀得以复用。新增的 token 只有压缩指令本身。</p><p>不过这也意味着，我们需要预留一块"压缩缓冲区"，确保上下文窗口里有足够的空间容纳压缩消息和摘要输出的 token。</p><p>压缩确实棘手，好在这些教训你不必亲自踩一遍——基于 Claude Code 的经验，我们已把<a href="https://platform.claude.com/docs/en/build-with-claude/compaction#prompt-caching" target="_blank">压缩</a>直接内建到 API 中，你可以在自己的应用里直接套用这些模式。</p><h2><strong>经验总结</strong></h2><p>以下是我们在构建智能体时总结的、对优化提示词缓存行之有效的几个模式：&nbsp;</p><ol role="list"><li><strong>提示词缓存是前缀匹配。</strong>前缀中任何位置的任何改动都会使其后的所有内容失效。请围绕这一约束设计整个系统。顺序排对了，大部分缓存就自动生效了。</li><li><strong>用消息代替系统提示词变更。</strong>你也许想通过修改系统提示词来实现进入计划模式、更新日期等操作，但更好的做法是把这些作为消息插入到对话中。</li><li><strong>对话中途不要更换工具或模型。</strong>用工具来建模状态切换（如计划模式），而不是更改工具集。用延迟加载代替删除工具。</li><li><strong>像监控可用性一样监控缓存命中率。</strong>我们为缓存破坏设置告警并当作事故处理。几个百分点的缓存未命中率就可能显著影响成本和延迟。</li><li><strong>分叉操作必须共享父对话的前缀。</strong>如果需要执行旁路计算（压缩、摘要、skill 执行），请使用一致的缓存安全参数，以便在父对话前缀上命中缓存。</li></ol><p>Claude Code 从第一天起就是围绕提示词缓存构建的；要在构建智能体时获得最佳效果，我们建议你也这么做。&nbsp;&nbsp;</p><p><a href="https://code.claude.com/docs/en/overview" target="_blank"><em>今天就</em></a><em>开始使用 Claude Code 吧。&nbsp;</em></p><p><em>本文作者为 Thariq Shihipar，Claude Code 团队的技术成员。&nbsp;</em></p><p>‍</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/lessons-from-building-claude-code-prompt-caching-is-everything" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>顾问策略：为 agent 提供一次智能升级 — Claude Blog 中文翻译</title>
+  <meta name="description" content="顾问策略：为 agent 提供一次智能升级">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/the-advisor-strategy" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Product announcements</span>
+            <span class="article-date">April 9, 2026</span>
+            
+          </div>
+          <h1 class="article-title">顾问策略：为 agent 提供一次智能升级</h1>
+          <a href="/posts/the-advisor-strategy/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>希望在智能与成本之间取得更好平衡的开发者，逐渐汇聚到一种我们称之为“顾问策略”（advisor strategy）的做法上：让 Opus 担任顾问（advisor），搭配 Sonnet 或 Haiku 担任执行者（executor）。这样既能为你的 agent 带来接近 Opus 级别的智能，又能把成本控制在接近 Sonnet 的水平。</p><p>今天我们在 Claude Platform 上推出 advisor 工具，让顾问策略只需在你的 API 调用中改动一行即可落地。</p><h2>用顾问策略构建高性价比的 agent&nbsp;</h2><figure style="max-width:1600pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69d7a8216b96ea826922fcf4_e9f8286d.png" loading="lazy"></div></figure><p>在顾问策略中，Sonnet 或 Haiku 作为执行者端到端地运行任务——调用工具、读取结果、不断迭代逼近解决方案。当执行者遇到自己难以合理解决的决策点时，会向作为顾问的 Opus 求教。Opus 访问共享上下文后返回一个计划、一处修正或一个停止信号，执行者随即继续。顾问从不调用工具，也不产出面向用户的输出，只为执行者提供指导。</p><p>这颠覆了一种常见的子 agent 模式——由更大的编排模型分解工作并委派给更小的工人模型。在顾问策略中，由更小、更具成本优势的模型驱动执行，并在需要时向上升级求助，无需任务分解、工人池或编排逻辑。前沿级别的推理只在执行者真正需要时才介入，其余运行过程都保持在执行者级别的成本上。</p><p>在我们的评测中，配备 Opus 顾问的 Sonnet 在<a href="https://www.swebench.com/multilingual.html"> SWE-bench Multilingual</a><sup>1</sup> 上比单独使用 Sonnet 提高了 2.7 个百分点，同时每个 agentic 任务的成本降低了 11.9%。</p><figure style="max-width:3840px" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69d908f43209164823554d52_Claude-Blog-Advisor-tool-SWE-bench-Multilingual.png" loading="lazy"></div></figure><h2><strong>advisor 工具&nbsp;</strong></h2><p>我们通过 <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/advisor-tool"><strong>advisor 工具</strong></a>将顾问策略引入我们的 API。这是一项服务端工具，Sonnet 和 Haiku 在需要针对特定任务获得指导或帮助时会自动调用它。</p><p>在我们的评测中，配备 Opus 顾问的 Sonnet 在 BrowseComp<sup>2</sup> 和 Terminal-Bench 2.0<sup>3</sup> 基准测试中的得分均有提升，且每个任务的成本低于单独使用 Sonnet。</p><figure style="max-width:1600pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69d7a8216b96ea826922fcfa_880b9e59.png" loading="lazy"></div></figure><p>顾问策略同样适用于以 Haiku 作为执行者的场景。在 BrowseComp 上，配备 Opus 顾问的 Haiku 拿到了 41.2% 的得分，是其单打独斗成绩（19.7%）的两倍多。配备 Opus 顾问的 Haiku 得分比单独使用的 Sonnet 低 29%，但每个任务的成本低 85%。顾问会增加相对 Haiku 单独使用的成本，但两者合计的价格仍然只是 Sonnet 的一小部分，这使它成为那些需要兼顾智能与成本的高并发任务的强力选项。</p><figure style="max-width:1600pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69d7a8216b96ea826922fcfd_ca657f5f.png" loading="lazy"></div></figure><p><br>在 Messages API 请求中声明<strong> </strong>advisor_20260301，模型交接就发生在一次 /v1/messages 请求内部——无需额外往返，也无需额外管理上下文。由执行者模型自行决定何时调用它。一旦调用，我们会把精心筛选的上下文路由给顾问模型，返回计划后执行者在同一请求内继续运行。<br></p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-python" style="white-space:pre-wrap"><span><span>response = client.messages.create(
+</span></span><span><span>    model=</span><span style="color:#abe338">"claude-sonnet-4-6"</span><span>,  </span><span style="color:#d4d0ab"># executor</span><span>
+</span></span><span>    tools=[
+</span><span>        {
+</span><span><span>            </span><span style="color:#abe338">"type"</span><span>: </span><span style="color:#abe338">"advisor_20260301"</span><span>,
+</span></span><span><span>            </span><span style="color:#abe338">"name"</span><span>: </span><span style="color:#abe338">"advisor"</span><span>,
+</span></span><span><span>            </span><span style="color:#abe338">"model"</span><span>: </span><span style="color:#abe338">"claude-opus-4-6"</span><span>,
+</span></span><span><span>            </span><span style="color:#abe338">"max_uses"</span><span>: </span><span style="color:#f5ab35">3</span><span>,
+</span></span><span>        },
+</span><span><span>        </span><span style="color:#d4d0ab"># ... your other tools</span><span>
+</span></span><span>    ],
+</span><span>    messages=[...]
+</span><span>)
+</span><span>
+</span><span><span></span><span style="color:#d4d0ab"># Advisor tokens reported separately</span><span>
+</span></span><span><span></span><span style="color:#d4d0ab"># in the usage block.</span></span></code></pre><p><strong>计费方式。</strong>顾问 token 按顾问模型的费率计费；执行者 token 按执行者模型的费率计费。由于顾问只生成一份简短的计划（通常 400-700 个文本 token），而全部输出由执行者以更低的费率完成，因此总成本远低于端到端运行顾问模型。<strong><br>内建成本控制。</strong>设置 max_uses 即可限制每次请求中顾问的调用次数。顾问 token 会在 usage 块中单独上报，方便你按层级追踪开销。</p><p><strong>与现有工具协同工作。</strong>advisor 工具只是 Messages API 请求中的又一个条目。你的 agent 可以在同一个循环里<a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool">搜索网页</a>、<a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool">执行代码</a>，并向 Opus 求教。</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/the-advisor-strategy" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

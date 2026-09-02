@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Automate security reviews with Claude Code — Claude Blog CN</title>
+  <meta name="description" content="Automate security reviews with Claude Code">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="/posts/automate-security-reviews-with-claude-code/" class="nav-link">中文版 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Product announcements</span>
+            <span class="article-date">August 6, 2025</span>
+            <span class="lang-badge-large">EN</span>
+          </div>
+          <h1 class="article-title">Automate security reviews with Claude Code</h1>
+          <a href="/posts/automate-security-reviews-with-claude-code/" class="lang-toggle">阅读中文翻译 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>Today we're introducing automated security reviews in Claude Code. Using our GitHub Actions integration and a new /security-review command, developers can easily ask Claude to identify security concerns—and then have it fix them.</p><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/YdiCjgYGKto" title="Automate security reviews with Claude Code" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><p>As developers increasingly rely on AI to ship faster and build more complex systems, ensuring code security becomes even more critical. These new features let you integrate security reviews into your existing workflows, helping you catch vulnerabilities before they reach production.</p><h3>Review code for vulnerabilities from your terminal</h3><p>The new /security-review command lets you run ad-hoc security analyses from your terminal before committing code. Run the command in Claude Code, and Claude will search your codebase for potential vulnerabilities and provide detailed explanations of any issues found.</p><p>This command uses a specialized security-focused prompt that checks for common vulnerability patterns including:</p><ul role="list"><li>SQL injection risks</li><li>Cross-site scripting (XSS) vulnerabilities</li><li>Authentication and authorization flaws</li><li>Insecure data handling</li><li>Dependency vulnerabilities</li></ul><p>You can also ask Claude Code to implement fixes for each issue after they’re identified. This keeps security reviews in your inner development loop, catching issues early when they're easiest to fix.</p><h3>Automate security reviews for new pull requests</h3><p>The new GitHub action for Claude Code takes security reviews a step further by automatically analyzing every pull request when it's opened. When configured, the action:</p><ul role="list"><li>Triggers automatically on new pull requests</li><li>Reviews code changes for security vulnerabilities</li><li>Applies customizable rules to filter out false-positives and known issues</li><li>Posts comments inline on the PR with any concerns found, including recommendations for fixes</li></ul><p>This creates a consistent security review process across your entire team, ensuring no code reaches production without a baseline security review. The action integrates with your existing CI/CD pipeline and can be customized to match your team's security policies.</p><figure style="max-width:1920pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="2 screenshots showing vulnerabilities that were caught by Claude Code, leaving comments in GitHub." src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e95d9257ab1dfc1937fcbe_37aa77df52f1a4e8d81f398f48dbb98a5ba1d5ec-1920x1080.png"></div></figure><h3>Improving product security at Anthropic</h3><p>We're using these features ourselves to help secure the code our team ships to production, including Claude Code itself. Since setting up the GitHub action, this has already caught security vulnerabilities in our own code and prevented them from being shipped.</p><p>For example, last week, our team built a new feature for an internal tool that relied on starting a local HTTP server meant to accept local connections. The GitHub action identified a remote code execution vulnerability exploitable through DNS rebinding and it was fixed before the PR was ever merged.</p><figure style="max-width:1920pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="A GitHub comment showing a remote code execution vulnerability" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e95d9257ab1dfc1937fcc2_a370dba2f6e5095cdbcb23ef878dda4befd61d95-1920x1080.png"></div></figure><p>In another case, an engineer built a proxy system to enable secure management of internal credentials. The GitHub action automatically flagged that this proxy was vulnerable to SSRF attacks, and we promptly fixed this issue.</p><figure style="max-width:1920pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="A GitHub comment showing a SSRF attack vulnerability" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e95d9257ab1dfc1937fcb8_23dd3b5404c6f7dc812df83a7de95babab286865-1920x1080.png"></div></figure><h3>Getting started</h3><p>Both features are available now for all Claude Code users. To start using automated security reviews:</p><ul role="list"><li><strong>For the /security-review command</strong>: Simply update Claude Code to the latest version and run /security-review in your project directory. <a target="_blank" href="https://github.com/anthropics/claude-code-security-review/tree/main?tab=readme-ov-file#security-review-slash-command">See the documentation</a> to customize your own version of the command</li><li><strong>For the GitHub action</strong>: <a target="_blank" href="https://github.com/anthropics/claude-code-security-review">See the documentation</a> for step-by-step installation and configuration instructions</li></ul></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/automate-security-reviews-with-claude-code" target="_blank">View original</a></p>
+          <p><a href="/">← Back to home</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>Content from <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · Translation by AI</p>
+    </div>
+  </footer>
+
+</body>
+</html>

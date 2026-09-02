@@ -1,9 +1,17 @@
 {
   "slug": "claude-code-desktop-redesign",
   "title": "Redesigning Claude Code on desktop for parallel agents",
-  "date": "Unknown",
+  "date": "April 14, 2026",
   "category": "Claude Code",
   "url": "https://claude.com/blog/claude-code-desktop-redesign",
   "fetchedAt": "2026-09-01T22:58:04.866Z",
-  "translated": false
+  "translated": true,
+  "inHero": true,
+  "heroIndex": 8,
+  "inGrid": true,
+  "illustration": "assets/illustrations/claude-code-desktop-redesign.svg",
+  "illustrationBg": "Clay",
+  "translatedTitle": "为并行智能体重新设计桌面端 Claude Code",
+  "translatedAt": "2026-09-02T05:14:34.865Z",
+  "translateLang": "zh-CN"
 }

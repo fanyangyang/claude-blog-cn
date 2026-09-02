@@ -1,0 +1,17 @@
+{
+  "slug": "zero-trust-for-ai-agents",
+  "title": "Zero Trust for AI agents",
+  "date": "May 27, 2026",
+  "category": "Enterprise AI",
+  "url": "https://claude.com/blog/zero-trust-for-ai-agents",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/zero-trust-for-ai-agents.svg",
+  "illustrationBg": "Heather",
+  "fetchedAt": "2026-09-02T03:50:17.788Z",
+  "translatedTitle": "面向 AI agent 的零信任",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:16:06Z",
+  "translateLang": "zh-CN"
+}

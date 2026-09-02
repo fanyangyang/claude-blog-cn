@@ -1,0 +1,17 @@
+{
+  "slug": "build-artifacts",
+  "title": "Turn ideas into interactive AI-powered apps",
+  "date": "June 25, 2025",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/build-artifacts",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/build-artifacts.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.789Z",
+  "translatedTitle": "将想法变成可交互的 AI 应用",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:44:54.905Z",
+  "translateLang": "zh-CN"
+}

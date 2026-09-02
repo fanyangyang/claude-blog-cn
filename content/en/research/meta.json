@@ -1,0 +1,17 @@
+{
+  "slug": "research",
+  "title": "Claude takes research to new places",
+  "date": "April 15, 2025",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/research",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/research.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.788Z",
+  "translatedTitle": "Claude 让研究进入新境界",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:44:54.905Z",
+  "translateLang": "zh-CN"
+}

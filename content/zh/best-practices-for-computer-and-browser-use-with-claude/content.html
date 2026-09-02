@@ -1,0 +1,695 @@
+<div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><div class="w-embed"><style>
+  /* Fluid breakout for blog embeds + code blocks */
+  .u-rich-text-blog .w-embed,
+  .u-rich-text-blog pre.w-code-block {
+    --max-w: 860px;
+    --gutter: 24px;
+    --available: calc(100vw - (var(--gutter) * 2));
+    --w: min(var(--max-w), var(--available));
+    width: var(--w);
+    max-width: var(--w);
+    margin-left: calc((640px - var(--w)) / 2);
+    margin-right: calc((640px - var(--w)) / 2);
+    box-sizing: border-box;
+  }
+  @media (max-width: 720px) {
+    .u-rich-text-blog .w-embed,
+    .u-rich-text-blog pre.w-code-block {
+      width: 100%;
+      max-width: 100%;
+      margin-left: 0;
+      margin-right: 0;
+    }
+    /* Constrain the post column to the viewport so nothing overflows the page */
+    .blog_post_layout.u-column-custom,
+    .blog_post_content_wrap,
+    .u-rich-text-blog {
+      max-width: 100% !important;
+      box-sizing: border-box;
+    }
+    html,
+    body {
+      overflow-x: hidden;
+    }
+  }
+  /* Embed inner wrappers: scroll horizontally when content overflows */
+  .u-rich-text-blog .w-embed figure {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+  .u-rich-text-blog .w-embed figure > div {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  /* Tables: ratios on wider screens, natural width + scroll on mobile */
+  .u-rich-text-blog .w-embed table {
+    width: 100% !important;
+    table-layout: fixed !important;
+  }
+  .u-rich-text-blog .w-embed table th:nth-child(1),
+  .u-rich-text-blog .w-embed table td:nth-child(1) {
+    width: 22%;
+  }
+  .u-rich-text-blog .w-embed table th:nth-child(2),
+  .u-rich-text-blog .w-embed table td:nth-child(2) {
+    width: 39%;
+  }
+  .u-rich-text-blog .w-embed table th:nth-child(3),
+  .u-rich-text-blog .w-embed table td:nth-child(3) {
+    width: 39%;
+  }
+  .u-rich-text-blog .w-embed td code,
+  .u-rich-text-blog .w-embed th code {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    white-space: normal;
+  }
+  @media (max-width: 639px) {
+    .u-rich-text-blog .w-embed table {
+      width: auto !important;
+      min-width: 640px !important;
+      table-layout: auto !important;
+    }
+    .u-rich-text-blog .w-embed table th,
+    .u-rich-text-blog .w-embed table td {
+      min-width: 0 !important;
+      width: auto !important;
+    }
+  }
+  /* Code blocks */
+  .u-rich-text-blog pre.w-code-block {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  @media (max-width: 639px) {
+    .u-rich-text-blog pre.w-code-block {
+      font-size: 0.82rem;
+    }
+  }
+</style></div><p>Claude 的<a href="https://www.anthropic.com/news/claude-sonnet-4-6">最新模型</a> 在计算机使用（computer use）和浏览器使用（browser use）能力上迈出了一大步。凭借这些特性，LLM 如今能够驱动越来越复杂的智能体系统，承担真正的工作，比如构建软件应用、跨多种异构技术自动化工作流。</p><p>在这篇博文中，我们分享将 Claude 用于计算机和浏览器使用的最佳实践，从简单的配置调整到更高级的集成模式应有尽有。希望这篇文章能为你把 Claude 的计算机和浏览器使用能力集成到自己产品中提供帮助。我们还发布了一个新的<a href="https://github.com/anthropics/claude-quickstarts/tree/main/computer-use-best-practices">演示实现</a>，它封装了其中一部分最佳实践，并提供了一些在 Claude 计算机使用能力之上进行开发的实用工具。</p><p><em>请注意，除非另有说明，这些建议适用于 Claude 4.6 系列（Opus 4.6、Sonnet 4.6、Haiku 4.5）和 Claude Opus 4.7。当 4.6 系列与 Opus 4.7 的指引有所不同时，我们会在文中就地注明。我们的结论基于内部实验，未来可能随着新模型和新技术的出现而更新。</em></p><h1><strong>入门：分辨率与缩放</strong></h1><p>点击准确率是任何计算机使用集成的根基。如果点击落点不对，下游一切都无法工作：表单填不了、按钮按不了、工作流失败。而影响最大的单一优化恰恰也是最简单的之一：在把截图发给 API 之前预先降采样。</p><h2><strong>确保缩放正确</strong></h2><p>当你把截图发给 Claude 的 Computer Use API 时，模型会查看它并在你指定的 display_width_px / display_height_px 坐标空间中返回点击坐标。但有一个重要约束：API 对图像尺寸有内部处理上限。超出上限的图像会在模型看到之前被降采样，这意味着模型是在一个劣化版的图像上点击，而你的 harness 却期望坐标对齐原始分辨率。</p><p>对于 Claude 4.6 系列模型，API 的限制是：</p><ul role="list"><li><strong>最长边上限</strong>：1568 像素</li><li><strong>总像素上限</strong>：115 万像素</li><li>超出<strong>任一</strong>限制的图像都会被内部降采样</li></ul><p>我们的 Opus 4.7 模型支持更高的分辨率，限制为：</p><ul role="list"><li><strong>最长边上限</strong>：2576 像素</li><li><strong>总像素上限</strong>：375 万像素</li><li>超出<strong>任一</strong>限制的图像都会被内部降采样</li></ul><p>当坐标空间与模型实际感知的图像不一致时，模型预测的点击会落在与它实际看到的图像不同的显示比例上。这正是高分辨率下点击不准的首要原因。解决办法很直接：在把截图发给 API 之前，务必将其降采样到限制以内。我们持续观察到图像超限会显著降低准确率，而这一处修改的价值胜过几乎所有其他优化。</p><h2><strong>推荐分辨率</strong></h2><p><strong>从 1280x720 开始。</strong>对大多数用例来说，这是一个安全、实用的默认选择。它占用大约 80% 的像素预算，稳稳处于最长边和总像素两个限制之内，而且是模型在训练中见过的标准分辨率。无论现代 Web UI 还是老式桌面应用，它都表现良好。</p><p><strong>如果你使用的是 Opus 4.7，我们建议从 1080p 开始</strong>，因为相对 720p 有实质性的质量提升，并在 token 用量和性能之间取得良好平衡。</p><p><strong>对于希望最大化模型接收到的视觉信息的开发者</strong>，我们还推荐"max API fit"（最大化贴合 API 限制）方案：根据源图像的原生宽高比为每张图像计算最优分辨率：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-python" style="white-space:pre-wrap"><span><span style="color:#dcc6e0">import</span><span> math
+</span></span><span>
+</span><span><span></span><span style="color:#d4d0ab"># 1568 for 4.6 family, 2576 for Opus 4.7</span><span>
+</span></span><span><span>MAX_LONG_EDGE = </span><span style="color:#f5ab35">1568</span><span>
+</span></span><span>
+</span><span><span></span><span style="color:#d4d0ab"># 1.15MP for 4.6 family, 3.75MP for Opus 4.7</span><span>
+</span></span><span><span>MAX_PIXELS = </span><span style="color:#f5ab35">1_150_000</span><span>
+</span></span><span>
+</span><span><span></span><span class="hljs-function" style="color:#dcc6e0">def</span><span class="hljs-function"> </span><span class="hljs-function" style="color:#00e0e0">compute_max_api_fit</span><span class="hljs-function">(</span><span class="hljs-function" style="color:#f5ab35">native_w, native_h</span><span class="hljs-function">):</span><span>
+</span></span><span><span>    </span><span style="color:#abe338">"""Compute the largest resolution that fits API limits
+</span></span><span><span style="color:#abe338">    while preserving aspect ratio."""</span><span>
+</span></span><span>    aspect = native_w / native_h
+</span><span>
+</span><span><span>    </span><span style="color:#d4d0ab"># Compute max dimensions from pixel budget</span><span>
+</span></span><span>    h_from_pixels = math.sqrt(MAX_PIXELS / aspect)
+</span><span>    w_from_pixels = h_from_pixels * aspect
+</span><span>
+</span><span><span>    </span><span style="color:#d4d0ab"># Apply long edge constraint</span><span>
+</span></span><span><span>    </span><span style="color:#dcc6e0">if</span><span> native_w &gt;= native_h:
+</span></span><span><span>        w = </span><span style="color:#f5ab35">min</span><span>(w_from_pixels, MAX_LONG_EDGE)
+</span></span><span>        h = w / aspect
+</span><span><span>    </span><span style="color:#dcc6e0">else</span><span>:
+</span></span><span><span>        h = </span><span style="color:#f5ab35">min</span><span>(h_from_pixels, MAX_LONG_EDGE)
+</span></span><span>        w = h * aspect
+</span><span>
+</span><span><span>    </span><span style="color:#d4d0ab"># Never upscale beyond native</span><span>
+</span></span><span><span>    w = </span><span style="color:#f5ab35">min</span><span>(w, native_w)
+</span></span><span><span>    h = </span><span style="color:#f5ab35">min</span><span>(h, native_h)
+</span></span><span>
+</span><span><span>    </span><span style="color:#dcc6e0">return</span><span> </span><span style="color:#f5ab35">int</span><span>(w), </span><span style="color:#f5ab35">int</span><span>(h)</span></span></code></pre><p>这个方案稍复杂，但能避免宽高比失真，并充分利用每张图像可用的像素预算。相比固定 1280x720，准确率的提升有限，但实现简单直接，避免了把 16:9 源图强行塞进 4:3 显示分辨率时产生的失真。</p><p><strong>应避免的分辨率：</strong></p><ul role="list"><li><strong>原生分辨率（未缩放）</strong>：除非你的源图像恰好低于分辨率限制，否则发送原生分辨率的截图是点击准确率不佳的最常见原因。</li><li><strong>过低的分辨率（低于 960x540）</strong>：低分辨率图像会丢失太多细节，模型无法准确识别小型 UI 元素。</li><li><strong>如果在 MacOS 上：</strong>&nbsp;浏览器使用中一个常见问题是，MacOS 上的截图常常以设备像素比 2 捕获，这意味着你得到的图像分辨率可能是屏幕坐标的 2 倍。</li><li><strong>如果使用 4.6 系列，请避免 1920x1080 及以上：</strong>这些超出了像素限制，会被静默降采样。Opus 4.7 的上限更高（375 万像素），1080p 和 1440p 都在预算之内；但未经降采样的原生 4K 仍应避免。</li></ul><h2><strong>坐标缩放</strong></h2><p>如果你在发送前调整了截图尺寸，模型返回的点击坐标就是基于你指定的显示分辨率的。在执行点击之前，你必须把这些坐标换算回实际的屏幕分辨率：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-python" style="white-space:pre-wrap"><span><span style="color:#d4d0ab"># Your screen is screen_w x screen_h</span><span>
+</span></span><span><span></span><span style="color:#d4d0ab"># You sent a screenshot resized to display_w x display_h</span><span>
+</span></span><span>scale_x = screen_w / display_w
+</span><span>scale_y = screen_h / display_h
+</span><span>
+</span><span><span>screen_x = </span><span style="color:#f5ab35">int</span><span>(api_returned_x * scale_x)
+</span></span><span><span>screen_y = </span><span style="color:#f5ab35">int</span><span>(api_returned_y * scale_y)</span></span></code></pre><p>这一步简单但至关重要：如果忘记换算，或者<code>display_width_px</code> / <code>display_height_px</code>与所发图像的实际尺寸不符，每一次点击都会出现固定的偏移</p><h2><strong>messages 数组中的内容顺序</strong></h2><p>构造 messages 内容数组时，请把文本指令放在图像<em>之前</em>，如下面的代码片段所示。这样模型在处理截图时就知道要找什么，从而提升点击准确率。</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-python" style="white-space:pre-wrap"><span><span style="color:#d4d0ab"># RECOMMENDED — text instruction first, then screenshot:</span><span>
+</span></span><span>content = [
+</span><span><span>    {</span><span style="color:#abe338">"type"</span><span>: </span><span style="color:#abe338">"text"</span><span>, </span><span style="color:#abe338">"text"</span><span>: </span><span style="color:#abe338">"Click on the Submit button"</span><span>},
+</span></span><span><span>    {</span><span style="color:#abe338">"type"</span><span>: </span><span style="color:#abe338">"image"</span><span>, </span><span style="color:#abe338">"source"</span><span>: {</span><span style="color:#abe338">"type"</span><span>: </span><span style="color:#abe338">"base64"</span><span>, </span><span style="color:#abe338">"media_type"</span><span>: </span><span style="color:#abe338">"image/png"</span><span>, </span><span style="color:#abe338">"data"</span><span>: screenshot_b64}},
+</span></span><span>]
+</span><span>
+</span><span><span></span><span style="color:#d4d0ab"># NOT RECOMMENDED — image first, then text:</span><span>
+</span></span><span>content = [
+</span><span><span>    {</span><span style="color:#abe338">"type"</span><span>: </span><span style="color:#abe338">"image"</span><span>, </span><span style="color:#abe338">"source"</span><span>: {</span><span style="color:#abe338">"type"</span><span>: </span><span style="color:#abe338">"base64"</span><span>, </span><span style="color:#abe338">"media_type"</span><span>: </span><span style="color:#abe338">"image/png"</span><span>, </span><span style="color:#abe338">"data"</span><span>: screenshot_b64}},
+</span></span><span><span>    {</span><span style="color:#abe338">"type"</span><span>: </span><span style="color:#abe338">"text"</span><span>, </span><span style="color:#abe338">"text"</span><span>: </span><span style="color:#abe338">"Click on the Submit button"</span><span>},
+</span></span><span>]</span></code></pre><h2><strong>诊断点击问题</strong></h2><p>如果点击没有命中目标，往往可以归结为以下原因之一：&nbsp;</p><div class="w-embed"><figure>
+  <div role="region" tabindex="0">
+    <table>
+      <thead>
+        <tr>
+          <th>症状</th>
+          <th>可能原因</th>
+          <th>尝试这样做</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>点击始终朝某个方向偏移</td>
+          <td>
+            <ul>
+              <li><code>display_width_px</code> / <code>display_height_px</code>与实际发送的图像尺寸不符</li>
+              <li>截图超出 API 限制，被静默降采样</li>
+              <li>内容顺序是图像在前而非文本在前</li>
+            </ul>
+          </td>
+          <td>
+            <ul>
+              <li>确保显示尺寸与你缩放后的截图完全一致，而不是原生分辨率</li>
+              <li>预先降采样到 1280x720，或使用<code>compute_max_api_fit</code></li>
+              <li>把文本指令移到 content 数组中图像之前</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>点击落在大致正确的区域但未命中目标</td>
+          <td>
+            <ul>
+              <li>目标非常小（复选框、图标、开关）</li>
+              <li>源图像分辨率很高（4K+），降采样时丢失了细节</li>
+              <li>强行使用非原生宽高比导致的比例失真</li>
+            </ul>
+          </td>
+          <td>
+            <ul>
+              <li>启用<code>enable_zoom: True</code>（适用于信息密集的 UI）</li>
+              <li>以较低 DPI 捕获，或在降采样前裁剪到相关屏幕区域</li>
+              <li>缩放时保持源图像的宽高比</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>模型点到了完全错误的元素</td>
+          <td>
+            <ul>
+              <li>指令含糊（存在多个类似提交按钮时只说"点击 Submit"）</li>
+              <li>目标附近存在视觉上相似的元素</li>
+              <li>UI 过于复杂，单条指令不足以描述</li>
+            </ul>
+          </td>
+          <td>
+            <ul>
+              <li>使用带位置信息的更具体提示词（"点击表单右下角的蓝色 Submit 按钮"）</li>
+              <li>把复杂交互拆成更小的步骤</li>
+              <li>提供关于页面布局的额外上下文</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>整体准确率都很差</td>
+          <td>
+            <ul>
+              <li>发送的截图超出了 API 限制</li>
+              <li>源图像来自超高分辨率显示器（4K+），压缩比极端</li>
+              <li>分辨率过低，丢失了关键细节</li>
+            </ul>
+          </td>
+          <td>
+            <ul>
+              <li>把所有截图预先降采样到限制以内</li>
+              <li>对于 4K+ 源图像，在 4.6 系列上 Sonnet 比 Opus 4.6 更耐受重度降采样。在 Opus 4.7 上这个差距基本消失，请使用 4.7 的像素预算（最高 375 万像素），从源头上减少所需的降采样。</li>
+              <li>以 1280x720 作为基线尝试；如果损失过大，请使用<code>compute_max_api_fit</code></li>
+            </ul>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</figure></div><h2><strong>点击任务的模型选择</strong></h2><p>根据我们的内部测试，Claude Sonnet 4.6 在点击的机械精度上往往更高（空间定位更准、几乎不失手），而 Claude Opus 4.6 推理能力更强。当源图像需要重度降采样时，Sonnet 4.6 也更稳健。&nbsp;</p><p>Opus 4.7 缩小了这一差距：测试发现它的点击精度已与 Sonnet 4.6 大致相当，加上更高的分辨率预算从源头上减少了降采样的需要，当你既想要 Opus 级别的推理又想要出色的点击精度时，它是一个有力的选择。</p><p>对大多数任务，我们建议从 Sonnet 4.6 开始，它在点击准确率、推理和成本之间提供了最佳平衡。需要更强推理时（尤其是使用高分辨率源图像时）选择 Opus 4.7。当延迟优先时，Haiku 4.5 仍是极好的选择。高级工作流还可以采用编排器 + 子智能体模式：由推理模型负责规划和决策，Sonnet 或 Haiku 执行机械性的点击步骤。</p><h2><strong>处理小目标</strong></h2><p>目标越小，点击准确率越低。大中型 UI 元素（按钮、输入框和标准菜单项）在安全区内的各种分辨率下都可靠。真正的挑战在于小型和微型目标，比如复选框、系统托盘图标、下拉箭头、小型开关和树形视图的展开/折叠按钮。</p><p>如果你的应用需要频繁点击小目标，请考虑以下策略：</p><p><strong>在信息密集的 UI 中使用缩放。</strong>Claude 4.6 和 4.7 系列模型支持缩放能力，让模型在点击前以更高分辨率检视特定屏幕区域。请在你的<a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool">工具配置</a>:</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-python" style="white-space:pre-wrap"><span><span>{
+</span></span><span><span>    </span><span style="color:#abe338">"type"</span><span>: </span><span style="color:#abe338">"computer_20251124"</span><span>,
+</span></span><span><span>    </span><span style="color:#abe338">"name"</span><span>: </span><span style="color:#abe338">"computer"</span><span>,
+</span></span><span><span>    </span><span style="color:#abe338">"display_width_px"</span><span>: </span><span style="color:#f5ab35">1280</span><span>,
+</span></span><span><span>    </span><span style="color:#abe338">"display_height_px"</span><span>: </span><span style="color:#f5ab35">720</span><span>,
+</span></span><span><span>    </span><span style="color:#abe338">"enable_zoom"</span><span>: </span><span style="color:#f5ab35">True</span><span>
+</span></span><span>}</span></code></pre><p><strong>把目标变大。</strong>如果你能控制被自动化的 UI，增大点击目标的尺寸（哪怕只是稍微）对可靠性的影响会不成比例地大。具体可以降低系统 DPI、在浏览器中放大页面，或调整 UI 缩放设置。</p><p><strong>对微型目标使用键盘替代方案。</strong>对于非常小的元素（如系统托盘图标或微型复选框），键盘快捷键或基于 Tab 的导航可能比点击更可靠。如果工作流允许，可以提示模型在特定步骤使用键盘交互，以提高成功率。</p><p><strong>考虑源图像分辨率。</strong>从 4K+ 显示器截取、再压缩到 720p 的截图会丢失大量细节（例如原生 3840x2160 下 16px 的复选框，在 1280x720 显示分辨率下只剩约 5px，目标变得更小、更难点中）。如果你在使用超高分辨率显示器，请考虑使用 Opus 4.7，它的分辨率上限高于之前的模型。如果使用 4.6 系列模型，可以考虑以较低 DPI 捕获、利用显示缩放放大 UI 元素，或只截取屏幕的相关区域而非整个屏幕。由于这些模型用更少的像素表达更多的信息，我们观察到源图像尺寸越大性能越差，因为需要更重的压缩。&nbsp;</p><h2><strong>我们测试过但无效的方案</strong></h2><p>我们在内部评估中试验了几种流行的优化技术，没有发现这些方法带来稳定的提升，不过结果可能因具体场景而异：</p><ul role="list"><li><strong>把图像切成小块</strong>：把截图切成四象限或多个区域分开发送，并没有提升点击准确率。</li><li><strong>叠加带坐标的网格图案</strong>：在截图上叠加可视化坐标网格来帮助模型定位目标，没有产生稳定的收益。</li><li><strong>缩放算法的选择</strong>：PIL LANCZOS、sips 及其他常见缩放算法的结果完全相同。用你的技术栈里最顺手的即可。</li></ul><h2><strong>检视失败</strong></h2><p>如果尝试了上述修复后模型行为仍然反常，请记录完整的交互记录，并把预测的点击位置叠加到源截图上，弄清模型实际看到了什么、做了什么判断。</p><p>有些失败根本与点击准确率无关。例如，某些下拉菜单可能会调出浏览器视口捕获不到的系统级 UI——模型看起来像是任务失败，但它只是看不见自己需要交互的那个菜单。这种情况下，模型应改用其他方式，比如执行 JavaScript、键盘导航，或直接操作文档对象模型（DOM），而不是点击。</p><h2><strong>快速参考</strong></h2><p><em>如何为计算机使用缩放并准备图像</em></p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-python" style="white-space:pre-wrap"><span><span style="color:#dcc6e0">import</span><span> math
+</span></span><span><span></span><span style="color:#dcc6e0">from</span><span> PIL </span><span style="color:#dcc6e0">import</span><span> Image
+</span></span><span><span></span><span style="color:#dcc6e0">import</span><span> base64
+</span></span><span><span></span><span style="color:#dcc6e0">import</span><span> io
+</span></span><span>
+</span><span><span></span><span style="color:#d4d0ab"># 1568 for 4.6 family, 2576 for Opus 4.7</span><span>
+</span></span><span><span>MAX_LONG_EDGE = </span><span style="color:#f5ab35">1568</span><span>
+</span></span><span>
+</span><span><span></span><span style="color:#d4d0ab"># 1.15MP for 4.6 family, 3.75MP for Opus 4.7</span><span>
+</span></span><span><span>MAX_PIXELS = </span><span style="color:#f5ab35">1_150_000</span><span>
+</span></span><span>
+</span><span><span></span><span class="hljs-function" style="color:#dcc6e0">def</span><span class="hljs-function"> </span><span class="hljs-function" style="color:#00e0e0">prepare_screenshot</span><span class="hljs-function">(</span><span class="hljs-function" style="color:#f5ab35">screenshot: Image.Image, native_w: </span><span class="hljs-function" style="color:#f5ab35">int</span><span class="hljs-function" style="color:#f5ab35">, native_h: </span><span class="hljs-function" style="color:#f5ab35">int</span><span class="hljs-function">) -&gt; </span><span class="hljs-function" style="color:#f5ab35">tuple</span><span class="hljs-function">[</span><span class="hljs-function" style="color:#f5ab35">str</span><span class="hljs-function">, </span><span class="hljs-function" style="color:#f5ab35">int</span><span class="hljs-function">, </span><span class="hljs-function" style="color:#f5ab35">int</span><span class="hljs-function">]:</span><span>
+</span></span><span><span>    </span><span style="color:#abe338">"""Resize a screenshot to fit API limits and return base64 + display dimensions."""</span><span>
+</span></span><span>
+</span><span><span>    </span><span style="color:#d4d0ab"># Option A: Fixed 720p (simple, reliable)</span><span>
+</span></span><span><span>    display_w, display_h = </span><span style="color:#f5ab35">1280</span><span>, </span><span style="color:#f5ab35">720</span><span>
+</span></span><span>
+</span><span><span>    </span><span style="color:#d4d0ab"># Option B: Max API fit (maximizes fidelity)</span><span>
+</span></span><span><span>    </span><span style="color:#d4d0ab"># display_w, display_h = compute_max_api_fit(native_w, native_h)</span><span>
+</span></span><span>
+</span><span>    resized = screenshot.resize((display_w, display_h), Image.LANCZOS)
+</span><span>
+</span><span>    buffer = io.BytesIO()
+</span><span><span>    resized.save(buffer, </span><span style="color:#f5ab35">format</span><span>=</span><span style="color:#abe338">"PNG"</span><span>)
+</span></span><span>    b64 = base64.standard_b64encode(buffer.getvalue()).decode()
+</span><span>
+</span><span><span>    </span><span style="color:#dcc6e0">return</span><span> b64, display_w, display_h
+</span></span><span>
+</span><span>
+</span><span><span></span><span class="hljs-function" style="color:#dcc6e0">def</span><span class="hljs-function"> </span><span class="hljs-function" style="color:#00e0e0">scale_coordinates</span><span class="hljs-function">(</span><span class="hljs-function" style="color:#f5ab35">api_x: </span><span class="hljs-function" style="color:#f5ab35">int</span><span class="hljs-function" style="color:#f5ab35">, api_y: </span><span class="hljs-function" style="color:#f5ab35">int</span><span class="hljs-function" style="color:#f5ab35">, display_w: </span><span class="hljs-function" style="color:#f5ab35">int</span><span class="hljs-function" style="color:#f5ab35">, display_h: </span><span class="hljs-function" style="color:#f5ab35">int</span><span class="hljs-function" style="color:#f5ab35">,
+</span></span><span><span class="hljs-function" style="color:#f5ab35">                      screen_w: </span><span class="hljs-function" style="color:#f5ab35">int</span><span class="hljs-function" style="color:#f5ab35">, screen_h: </span><span class="hljs-function" style="color:#f5ab35">int</span><span class="hljs-function">) -&gt; </span><span class="hljs-function" style="color:#f5ab35">tuple</span><span class="hljs-function">[</span><span class="hljs-function" style="color:#f5ab35">int</span><span class="hljs-function">, </span><span class="hljs-function" style="color:#f5ab35">int</span><span class="hljs-function">]:</span><span>
+</span></span><span><span>    </span><span style="color:#abe338">"""Scale API-returned coordinates back to native screen space."""</span><span>
+</span></span><span><span>    screen_x = </span><span style="color:#f5ab35">int</span><span>(api_x * (screen_w / display_w))
+</span></span><span><span>    screen_y = </span><span style="color:#f5ab35">int</span><span>(api_y * (screen_h / display_h))
+</span></span><span><span>    </span><span style="color:#dcc6e0">return</span><span> screen_x, screen_y
+</span></span><span>
+</span><span>
+</span><span><span></span><span class="hljs-function" style="color:#dcc6e0">def</span><span class="hljs-function"> </span><span class="hljs-function" style="color:#00e0e0">compute_max_api_fit</span><span class="hljs-function">(</span><span class="hljs-function" style="color:#f5ab35">native_w: </span><span class="hljs-function" style="color:#f5ab35">int</span><span class="hljs-function" style="color:#f5ab35">, native_h: </span><span class="hljs-function" style="color:#f5ab35">int</span><span class="hljs-function">) -&gt; </span><span class="hljs-function" style="color:#f5ab35">tuple</span><span class="hljs-function">[</span><span class="hljs-function" style="color:#f5ab35">int</span><span class="hljs-function">, </span><span class="hljs-function" style="color:#f5ab35">int</span><span class="hljs-function">]:</span><span>
+</span></span><span><span>    </span><span style="color:#abe338">"""Compute the largest resolution that fits API limits while preserving aspect ratio."""</span><span>
+</span></span><span>    aspect = native_w / native_h
+</span><span>    h_from_pixels = math.sqrt(MAX_PIXELS / aspect)
+</span><span>    w_from_pixels = h_from_pixels * aspect
+</span><span>
+</span><span><span>    </span><span style="color:#dcc6e0">if</span><span> native_w &gt;= native_h:
+</span></span><span><span>        w = </span><span style="color:#f5ab35">min</span><span>(w_from_pixels, MAX_LONG_EDGE)
+</span></span><span>        h = w / aspect
+</span><span><span>    </span><span style="color:#dcc6e0">else</span><span>:
+</span></span><span><span>        h = </span><span style="color:#f5ab35">min</span><span>(h_from_pixels, MAX_LONG_EDGE)
+</span></span><span>        w = h * aspect
+</span><span>
+</span><span><span>    w = </span><span style="color:#f5ab35">min</span><span>(w, native_w)
+</span></span><span><span>    h = </span><span style="color:#f5ab35">min</span><span>(h, native_h)
+</span></span><span><span>    </span><span style="color:#dcc6e0">return</span><span> </span><span style="color:#f5ab35">int</span><span>(w), </span><span style="color:#f5ab35">int</span><span>(h)</span></span></code></pre><p><strong>用法：</strong></p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-python" style="white-space:pre-wrap"><span><span style="color:#dcc6e0">import</span><span> anthropic
+</span></span><span><span></span><span style="color:#dcc6e0">from</span><span> PIL </span><span style="color:#dcc6e0">import</span><span> Image
+</span></span><span>
+</span><span>client = anthropic.Anthropic()
+</span><span>
+</span><span><span></span><span style="color:#d4d0ab"># Capture screenshot (your method here)</span><span>
+</span></span><span><span>screenshot = Image.</span><span style="color:#f5ab35">open</span><span>(</span><span style="color:#abe338">"screenshot.png"</span><span>)
+</span></span><span>native_w, native_h = screenshot.size
+</span><span>
+</span><span><span></span><span style="color:#d4d0ab"># Prepare for API</span><span>
+</span></span><span>b64, display_w, display_h = prepare_screenshot(screenshot, native_w, native_h)
+</span><span>
+</span><span><span></span><span style="color:#d4d0ab"># Send to Claude — text before image</span><span>
+</span></span><span>response = client.beta.messages.create(
+</span><span><span>    model=</span><span style="color:#abe338">"claude-sonnet-4-6"</span><span>,
+</span></span><span><span>    max_tokens=</span><span style="color:#f5ab35">4096</span><span>,
+</span></span><span><span>    betas=[</span><span style="color:#abe338">"computer-use-2025-11-24"</span><span>],
+</span></span><span>    messages=[{
+</span><span><span>        </span><span style="color:#abe338">"role"</span><span>: </span><span style="color:#abe338">"user"</span><span>,
+</span></span><span><span>        </span><span style="color:#abe338">"content"</span><span>: [
+</span></span><span><span>            {</span><span style="color:#abe338">"type"</span><span>: </span><span style="color:#abe338">"text"</span><span>, </span><span style="color:#abe338">"text"</span><span>: </span><span style="color:#abe338">"Click on the Submit button"</span><span>},
+</span></span><span><span>            {</span><span style="color:#abe338">"type"</span><span>: </span><span style="color:#abe338">"image"</span><span>, </span><span style="color:#abe338">"source"</span><span>: {</span><span style="color:#abe338">"type"</span><span>: </span><span style="color:#abe338">"base64"</span><span>, </span><span style="color:#abe338">"media_type"</span><span>: </span><span style="color:#abe338">"image/png"</span><span>, </span><span style="color:#abe338">"data"</span><span>: b64}},
+</span></span><span>        ]
+</span><span>    }],
+</span><span>    tools=[{
+</span><span><span>        </span><span style="color:#abe338">"type"</span><span>: </span><span style="color:#abe338">"computer_20251124"</span><span>,
+</span></span><span><span>        </span><span style="color:#abe338">"name"</span><span>: </span><span style="color:#abe338">"computer"</span><span>,
+</span></span><span><span>        </span><span style="color:#abe338">"display_width_px"</span><span>: display_w,
+</span></span><span><span>        </span><span style="color:#abe338">"display_height_px"</span><span>: display_h,
+</span></span><span>    }],
+</span><span>)
+</span><span>
+</span><span><span></span><span style="color:#d4d0ab"># Scale coordinates back for execution</span><span>
+</span></span><span><span>api_x, api_y = extract_click_coords(response)  </span><span style="color:#d4d0ab"># your parsing logic</span><span>
+</span></span><span>screen_x, screen_y = scale_coordinates(api_x, api_y, display_w, display_h, native_w, native_h)</span></code></pre><h1><strong>为计算机使用调优思考投入</strong></h1><p>Claude 的最新模型支持<a href="https://platform.claude.com/docs/en/build-with-claude/adaptive-thinking">自适应思考（adaptive thinking）</a>，这一设置让 Claude 自行决定在行动之前对中间步骤推理多少。无需手动设置思考 token 预算，自适应思考让 Claude 根据每个请求的复杂度动态决定何时以及多大程度地使用扩展思考。对计算机使用来说，这意味着 Claude 可以想清楚屏幕上看到的内容、规划多步交互，并在落笔点击或按键之前自我纠正。</p><p>在自适应思考下，Claude 的思考深度通过 thinking 参数的投入级别控制：low、medium、high、xhigh（Opus 4.7 专属）和 max。思考越多，每个动作的推理越充分，但输出 token 也越多，延迟和成本也随之上升。</p><p>一个自然的问题：视模型而定，计算机使用的最优思考量是多少？</p><h2><strong>Claude Opus 4.7</strong></h2><p>我们在一组端到端 UI 自动化任务上测试了每个思考投入级别，任务覆盖桌面应用、浏览器和多应用工作流。</p><figure class="w-richtext-align-center w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a0240d5a273c79dddb95eb5_image1.png" loading="lazy"></div></figure><p><strong>Opus 4.7 优于 4.6 系列。</strong>在 OSWorld Verified 基准上，我们发现 Opus 在相同 token 用量和投入设置下优于所有 4.6 系列模型。Opus 4.7 以 low 投入取得的成绩与 Sonnet 4.6 以 max 投入相当，而每任务 token 用量只有约 1/10。对困难任务来说，Opus 4.7 是显而易见的选择。</p><p><strong>将投入设为<code>high</code></strong>时，任务成功率接近最高，而输出 token 大约只有<code>max</code>的一半。与 Opus 4.6 相比，low、medium 和 high 的 token 用量大致相同，同时在 OSWorld 上的得分都有提升。内部测试中，max 投入使用的 token 更多，也拿到了最好的成绩。下表概述了我们关于何时使用各思考投入级别的建议。</p><h3><strong>投入级别建议</strong></h3><div class="w-embed"><figure>
+  <div role="region" tabindex="0">
+    <table>
+      <thead>
+        <tr>
+          <th>场景</th>
+          <th style="width:140px;">思考投入</th>
+          <th>原因</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>大多数用例的默认选择</td>
+          <td><code>high</code></td>
+          <td>Opus 4.7 最适合困难任务。使用 high 能给模型足够的推理能力来规划复杂的多步交互，同时不会显著增加 token 用量。</td>
+        </tr>
+        <tr>
+          <td>高吞吐 / 成本敏感</td>
+          <td><code>low</code></td>
+          <td>token 用量更低，而质量介于 Opus 4.6 的 high 与 max 投入设置之间。</td>
+        </tr>
+        <tr>
+          <td>简单、明确的工作流 / 最快</td>
+          <td>建议尝试 Sonnet 4.6</td>
+          <td>当低延迟是最高优先级时使用。适用于 UI 稳定、流程已知的短小可预测任务。</td>
+        </tr>
+        <tr>
+          <td>复杂的一次性任务</td>
+          <td><code>max</code></td>
+          <td>当任务极具挑战且必须一次做对时使用。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</figure></div><h2><strong>Claude 4.6 系列模型</strong></h2><p>我们在一组端到端 UI 自动化任务上测试了每个思考投入级别，任务覆盖桌面应用、浏览器和多应用工作流。</p><figure class="w-richtext-align-center w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a024267c961b1b1c42684fc_image2.png" loading="lazy"></div></figure><p>有两个规律值得注意：</p><p>‍<strong>medium 投入是最佳平衡点。</strong>将投入设为 medium 时，任务成功率接近最高，而输出 token 大约只有 high 的一半。超过 medium 之后，性能提升趋于平缓。值得注意的是，当任务可以重试时，medium 和 high 最终会收敛到相同的成功率。也就是说，high 投入有助于模型第一次就做对困难任务，但若允许多次尝试，medium 能以更低的成本同样可靠地达成。</p><p><strong>一点点思考就能走很远。</strong>low 投入是一个出人意料地强劲的选项。它实际消耗的总输出 token 比完全关闭思考<em>还要少</em>（模型犯错更少、重试轮次更少），同时准确率与不思考持平或略高。这使它成为成本敏感、高吞吐工作负载的最佳选择。下表概述了我们的投入建议。</p><h3><strong>投入级别建议</strong></h3><div class="w-embed"><figure>
+  <div role="region" tabindex="0">
+    <table>
+      <thead>
+        <tr>
+          <th>场景</th>
+          <th style="width:140px;">思考投入</th>
+          <th>原因</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>大多数用例的默认选择</td>
+          <td><code>medium</code></td>
+          <td>准确率与成本的最佳比值。给模型足够的推理来规划多步交互，又不会过度思考。配合重试机制，能以一半的 token 成本达到 high 的表现。</td>
+        </tr>
+        <tr>
+          <td>高吞吐 / 成本敏感</td>
+          <td><code>low</code></td>
+          <td>比不思考更准确，同时因错误和重试更少而 token 用量更低。</td>
+        </tr>
+        <tr>
+          <td>简单、明确的工作流 / 最快</td>
+          <td>关闭思考</td>
+          <td>当低延迟是最高优先级时使用。适用于 UI 稳定、流程已知的短小可预测任务。</td>
+        </tr>
+        <tr>
+          <td>复杂的一次性任务</td>
+          <td><code>high</code></td>
+          <td>当任务有挑战且必须一次做对时使用。如果你的系统支持重试，medium 最终可能达到同样的成功率。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</figure></div><p>我们不推荐在计算机使用中使用<code>max</code>投入。在我们的测试中，它相对<code>high</code>没有带来准确率收益，却进一步推高了输出 token 成本。UI 任务本质上偏感知而非深度逻辑，额外的推理预算要么用不上，要么导致过度思考。请记住，随着模型演进，这条建议也会变化。</p><h2><strong>medium 投入级别的配置示例</strong></h2><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-python" style="white-space:pre-wrap"><span><span style="color:#dcc6e0">import</span><span> anthropic
+</span></span><span>
+</span><span>client = anthropic.Anthropic()
+</span><span>
+</span><span>response = client.beta.messages.create(
+</span><span><span>    model=</span><span style="color:#abe338">"claude-sonnet-4-6"</span><span>,
+</span></span><span><span>    max_tokens=</span><span style="color:#f5ab35">16000</span><span>,
+</span></span><span><span>    betas=[</span><span style="color:#abe338">"computer-use-2025-11-24"</span><span>],
+</span></span><span><span>    thinking={</span><span style="color:#abe338">"type"</span><span>: </span><span style="color:#abe338">"adaptive"</span><span>},
+</span></span><span><span>    output_config={</span><span style="color:#abe338">"effort"</span><span>: </span><span style="color:#abe338">"medium"</span><span>},
+</span></span><span>    messages=[...],
+</span><span>    tools=[
+</span><span>        {
+</span><span><span>            </span><span style="color:#abe338">"type"</span><span>: </span><span style="color:#abe338">"computer_20251124"</span><span>,
+</span></span><span><span>            </span><span style="color:#abe338">"name"</span><span>: </span><span style="color:#abe338">"computer"</span><span>,
+</span></span><span><span>            </span><span style="color:#abe338">"display_width_px"</span><span>: </span><span style="color:#f5ab35">1280</span><span>,
+</span></span><span><span>            </span><span style="color:#abe338">"display_height_px"</span><span>: </span><span style="color:#f5ab35">720</span><span>,
+</span></span><span>        }
+</span><span>    ],
+</span><span>)</span></code></pre><h2><strong>为什么更多思考并不总是有用</strong></h2><p>UI 自动化任务与编程或数学问题有本质区别。大多数计算机使用动作是感知性和机械性的：识别正确的元素、点在正确的位置，而非深度逻辑推理。思考在以下情况最有帮助：</p><ul role="list"><li>在开始前规划多步序列（例如"我需要打开设置，进入隐私，然后关闭跟踪"）</li><li>从意外的 UI 状态中恢复（例如出现了预料之外的对话框）</li><li>把屏幕上的信息与任务指令相互对照</li><li>在专业软件上完成有挑战的项目</li></ul><h1><strong>提升安全性：善用提示词注入分类器</strong></h1><p><em>本节介绍提示词注入防护。如果使用我们的官方 computer use 工具头，该防护默认免费提供。如果你有兴趣在自定义的计算机或浏览器使用工具上启用它，请填写我们的</em> <a href="https://docs.google.com/forms/d/e/1FAIpQLSfXj6rXC-SUQEYHCLabwUe5JuYiYyJ29Ja-KP7EhLIPlyz0tw/viewform?usp=dialog"><em>提示词注入分类器意向表（Prompt Injection Classifiers Interest Form）。</em></a></p><p>计算机使用智能体天生就要与不可信内容打交道。Claude 处理的每一张截图、每一个网页或应用 UI，都可能包含对抗性指令——隐藏文字、被篡改的图像、欺骗性 UI 元素，或试图劫持智能体行为的社会工程手段。这个攻击面与你完全掌控输入的典型 API 集成有本质区别。在计算机使用中，模型的输入是开放的互联网和智能体正在操作的任何软件。</p><p>随着计算机使用智能体能力越来越强、部署越来越广，提示词注入的风险也水涨船高。一个能点击、输入、导航的智能体，可能被诱导执行现实世界的动作，比如填写表单、下载文件或访问恶意 URL。对任何生产部署而言，针对这类攻击建立稳固防御都必不可少。</p><h2><strong>我们如何做提示词注入防御</strong></h2><p>我们已详细撰文介绍我们在浏览器和计算机使用方面的<a href="https://www.anthropic.com/research/prompt-injection-defenses">提示词注入防御方法</a>。我们的防御策略在多个层面运作：</p><p><strong>训练时的鲁棒性。</strong>我们用强化学习把抗提示词注入能力直接内建到 Claude 中。训练时，Claude 会接触到嵌在模拟网页和应用 UI 中的注入内容，并在正确识别、拒绝执行恶意指令时获得奖励。这意味着 Claude 的第一道防线就是模型本身——它已经学会了区分合法的用户指令与任务执行中遇到的对抗性内容。</p><p><strong>实时分类器。</strong>我们运行探针，扫描进入 Claude 上下文窗口的内容，并标记潜在的提示词注入企图。这些探针能检测多种形态的对抗性指令——藏在页面内容里的文字、嵌在图像里的指令、专为欺骗智能体设计的 UI 元素——并在识别到攻击时调整 Claude 的行为。</p><p><strong>持续红队演练。</strong>我们的安全研究员持续探测这些防御，并参加外部对抗性评估，以检验防御体系对不断演进的攻击技术的鲁棒性。</p><p>自最初的计算机使用研究预览以来，我们持续在所有三个层面大力投入。每一代新模型都引入了更强的训练期防御和更有能力的分类器，我们也扩大了红队评估的攻击技术范围。</p><h2><strong>使用 Claude 内置的分类器</strong></h2><p>当你通过 API 使用 Claude 的<a href="https://docs.anthropic.com/en/docs/agents-and-tools/computer-use">官方计算机使用工具</a>时，提示词注入分类器会在每次请求上自动运行。这些分类器与主模型推理并行工作，为请求增加的延迟约等于零，也不产生额外费用。</p><p>启用这项保护无需任何配置。只要你使用官方的<code>computer_20251124</code>工具类型，它就默认开启。分类器会评估截图及其他内容中提示词注入的迹象，并据此影响 Claude 的回复。</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-javascript" style="white-space:pre-wrap"><span><span># Classifiers run automatically when using the official CU tool — no extra config needed
+</span></span><span>tools = [
+</span><span>    {
+</span><span><span>        </span><span style="color:#abe338">"type"</span><span>: </span><span style="color:#abe338">"computer_20251124"</span><span>,
+</span></span><span><span>        </span><span style="color:#abe338">"name"</span><span>: </span><span style="color:#abe338">"computer"</span><span>,
+</span></span><span><span>        </span><span style="color:#abe338">"display_width_px"</span><span>: </span><span style="color:#f5ab35">1280</span><span>,
+</span></span><span><span>        </span><span style="color:#abe338">"display_height_px"</span><span>: </span><span style="color:#f5ab35">720</span><span>,
+</span></span><span>    }
+</span><span>]</span></code></pre><h2><strong>如果你没有使用官方计算机使用工具</strong></h2><p>许多开发者使用自定义工具定义而非官方的<code>computer_20251124</code>工具类型来构建计算机使用集成，例如定义自己的截图和点击工具。如果你的情况正是如此，上述内置分类器目前不会在你的请求上运行。</p><p>我们正在积极探索如何把提示词注入防护扩展到这些自定义实现。如果你正在构建不使用官方工具类型的计算机或浏览器使用集成，并对提示词注入分类器感兴趣，请<a href="https://docs.google.com/forms/d/e/1FAIpQLSfXj6rXC-SUQEYHCLabwUe5JuYiYyJ29Ja-KP7EhLIPlyz0tw/viewform?usp=dialog">填写这份意向表</a>，该能力可用时我们会与你联系。</p><h2><strong>无论是否使用分类器都适用的最佳实践</strong></h2><p>分类器只是一层防御，不是完整的解决方案。对任何计算机使用部署，我们推荐以下实践：</p><p><strong>为高风险动作引入人工介入。</strong>让智能体在执行不可逆动作（提交表单、购买、发送消息、修改数据）之前暂停并请求用户确认。无论分类器表现如何，这都是对提示词注入最有效的单一缓解措施。</p><p><strong>限定智能体的权限。</strong>限制智能体能做的事。如果你的工作流不需要下载文件，就不要给它下载文件的权限；不需要发邮件，就不要让它访问邮件客户端。缩小成功注入的影响范围，与阻止注入本身同样重要。</p><p><strong>监控并记录智能体的动作。</strong>记录智能体执行的完整动作序列，包括每一步的截图。这让你能检测异常行为、审计出错时发生了什么，并建立反馈回路，逐步提升系统的鲁棒性。</p><p><strong>把所有网页内容视为不可信。</strong>在设计智能体的系统提示词时，明确区分用户指令与任务执行中遇到的内容。提醒模型：网页、邮件或应用 UI 中的文字并非来自用户，不应被当作指令执行。</p><h1><strong>计算机使用的上下文管理</strong></h1><p>构建计算机使用智能体时，截图累积得非常快。每个动作都会生成一张新图像，每张图像视分辨率大约消耗 1000-1800 个 token。扣除系统提示词、工具定义和文本内容后，一个 200k 的上下文窗口用不到 100 张截图就能填满。</p><p>管理好这些上下文有两个目标：1) 控制总 token 有界；2) 保持提示词缓存有效，避免为相同前缀反复支付全价。我们发现，有效的<a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">上下文管理</a>对长时运行智能体成本和延迟的影响，几乎胜过任何其他优化。本节介绍三个可以干净组合的层面：放置缓存断点、在不破坏缓存的前提下清理旧截图，以及在清理不够时对历史做摘要。</p><h2><strong>放置缓存断点</strong></h2><p>只有当断点落在会跨轮复现的内容上时，提示词缓存才有用。API 总共支持四个缓存断点。把它们全放在稳定前缀（系统提示词、工具定义）上是浪费，因为该前缀命中一次后就不会失效，一个断点足矣。另外三个更应花在近期历史上——那里失效风险最高，节省也会在长会话中复利累积。</p><p>我们建议：</p><ul role="list"><li><strong>在系统提示词或末尾的工具定义上放一个断点。</strong>这个前缀在一个会话内很少变化。</li><li><strong>在最近的工具结果上最多再放三个断点</strong>，每轮前移并清除上一次的断点，以免超出四断点上限。</li></ul><p>把断点分散在较近的位置可以带来优雅降级。如果最近的断点失效了（例如因为图像清理、压缩或工具定义变更），更早的断点仍可能命中，你继续支付的是完整输入成本的 10% 而不是 100%。</p><p><em>缓存控制与断点设置示例：</em></p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-python" style="white-space:pre-wrap"><span><span class="hljs-function" style="color:#dcc6e0">def</span><span class="hljs-function"> </span><span class="hljs-function" style="color:#00e0e0">set_trailing_cache_control</span><span class="hljs-function">(</span><span class="hljs-function" style="color:#f5ab35">messages, max_breakpoints=</span><span class="hljs-function" style="color:#f5ab35">3</span><span class="hljs-function">):</span><span>
+</span></span><span><span>    </span><span style="color:#abe338">"""Place up to `max_breakpoints` ephemeral cache_control markers on the
+</span></span><span><span style="color:#abe338">    most recent tool_result blocks, after clearing any existing markers."""</span><span>
+</span></span><span><span>    </span><span style="color:#dcc6e0">for</span><span> msg </span><span style="color:#dcc6e0">in</span><span> messages:
+</span></span><span><span>        </span><span style="color:#dcc6e0">for</span><span> block </span><span style="color:#dcc6e0">in</span><span> msg.get(</span><span style="color:#abe338">"content"</span><span>, []):
+</span></span><span><span>            </span><span style="color:#dcc6e0">if</span><span> </span><span style="color:#f5ab35">isinstance</span><span>(block, </span><span style="color:#f5ab35">dict</span><span>):
+</span></span><span><span>                block.pop(</span><span style="color:#abe338">"cache_control"</span><span>, </span><span style="color:#f5ab35">None</span><span>)
+</span></span><span>
+</span><span><span>    placed = </span><span style="color:#f5ab35">0</span><span>
+</span></span><span><span>    </span><span style="color:#dcc6e0">for</span><span> msg </span><span style="color:#dcc6e0">in</span><span> </span><span style="color:#f5ab35">reversed</span><span>(messages):
+</span></span><span><span>        </span><span style="color:#dcc6e0">for</span><span> block </span><span style="color:#dcc6e0">in</span><span> </span><span style="color:#f5ab35">reversed</span><span>(msg.get(</span><span style="color:#abe338">"content"</span><span>, [])):
+</span></span><span><span>            </span><span style="color:#dcc6e0">if</span><span> placed &gt;= max_breakpoints:
+</span></span><span><span>                </span><span style="color:#dcc6e0">return</span><span>
+</span></span><span><span>            </span><span style="color:#dcc6e0">if</span><span> </span><span style="color:#f5ab35">isinstance</span><span>(block, </span><span style="color:#f5ab35">dict</span><span>) </span><span style="color:#dcc6e0">and</span><span> block.get(</span><span style="color:#abe338">"type"</span><span>) == </span><span style="color:#abe338">"tool_result"</span><span>:
+</span></span><span><span>                block[</span><span style="color:#abe338">"cache_control"</span><span>] = {</span><span style="color:#abe338">"type"</span><span>: </span><span style="color:#abe338">"ephemeral"</span><span>}
+</span></span><span><span>                placed += </span><span style="color:#f5ab35">1</span></span></code></pre><h2><strong>方案 1：滚动缓冲（缓存友好）</strong></h2><p>控制 token 数量最简单的办法是只保留最近 N 张截图，其余丢弃。每次调用 API 前，遍历 messages 数组，把较旧的图像块替换成简短的占位符（例如写着"[Image omitted]"的文本块）。</p><p>这个模式的朴素版本是每当截图过期就丢一张，这会每轮都改变前缀，持续使提示词缓存失效——滚动缓冲破坏缓存的名声就是这么来的。修正方法是批量清理：让前缀在连续若干轮内保持逐字节一致，然后一次性失效，随后再次稳定。</p><p>我们验证过的一个具体模式是：</p><ol role="list"><li>完整保留最近 keep_n 张截图的原始分辨率。</li><li>当截图总数超过 keep_n + interval 时，一次性把最旧的 interval 张截图替换为占位符。</li><li>两次清理之间，messages 数组跨轮保持逐字节一致，因此缓存断点持续命中。</li></ol><p>合理的初始默认值：keep_n = 3，interval = 25。这些参数可调：interval 越大，清理事件越少（缓存效率更好），但上下文中全分辨率截图的尾巴越长（token 更多）。请在有代表性的轨迹上测量缓存命中率和总输入 token，再行调整。</p><p><em>在保留缓存断点的同时清理旧截图的示例：</em></p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-python" style="white-space:pre-wrap"><span><span class="hljs-function" style="color:#dcc6e0">def</span><span class="hljs-function"> </span><span class="hljs-function" style="color:#00e0e0">prune_old_screenshots</span><span class="hljs-function">(</span><span class="hljs-function" style="color:#f5ab35">messages, keep_n=</span><span class="hljs-function" style="color:#f5ab35">3</span><span class="hljs-function" style="color:#f5ab35">, interval=</span><span class="hljs-function" style="color:#f5ab35">25</span><span class="hljs-function">):</span><span>
+</span></span><span><span>    </span><span style="color:#abe338">"""Replace older screenshots with text placeholders in batches.
+</span></span><span>    Only prunes when the total count exceeds keep_n + interval, so the
+</span><span><span style="color:#abe338">    message prefix stays byte-stable for `interval` turns between prunes."""</span><span>
+</span></span><span>    image_positions = [
+</span><span>        (msg_idx, block_idx)
+</span><span><span>        </span><span style="color:#dcc6e0">for</span><span> msg_idx, msg </span><span style="color:#dcc6e0">in</span><span> </span><span style="color:#f5ab35">enumerate</span><span>(messages)
+</span></span><span><span>        </span><span style="color:#dcc6e0">for</span><span> block_idx, block </span><span style="color:#dcc6e0">in</span><span> </span><span style="color:#f5ab35">enumerate</span><span>(msg.get(</span><span style="color:#abe338">"content"</span><span>, []))
+</span></span><span><span>        </span><span style="color:#dcc6e0">if</span><span> </span><span style="color:#f5ab35">isinstance</span><span>(block, </span><span style="color:#f5ab35">dict</span><span>) </span><span style="color:#dcc6e0">and</span><span> block.get(</span><span style="color:#abe338">"type"</span><span>) == </span><span style="color:#abe338">"image"</span><span>
+</span></span><span>    ]
+</span><span><span>    </span><span style="color:#dcc6e0">if</span><span> </span><span style="color:#f5ab35">len</span><span>(image_positions) &lt;= keep_n + interval:
+</span></span><span><span>        </span><span style="color:#dcc6e0">return</span><span> messages
+</span></span><span>
+</span><span>    to_prune = image_positions[:-keep_n][-interval:]
+</span><span><span>    </span><span style="color:#dcc6e0">for</span><span> msg_idx, block_idx </span><span style="color:#dcc6e0">in</span><span> to_prune:
+</span></span><span><span>        messages[msg_idx][</span><span style="color:#abe338">"content"</span><span>][block_idx] = {
+</span></span><span><span>            </span><span style="color:#abe338">"type"</span><span>: </span><span style="color:#abe338">"text"</span><span>,
+</span></span><span><span>            </span><span style="color:#abe338">"text"</span><span>: </span><span style="color:#abe338">"[Image omitted]"</span><span>,
+</span></span><span>        }
+</span><span><span>    </span><span style="color:#dcc6e0">return</span><span> messages</span></span></code></pre><p>滚动缓冲仍有一个真实局限：缓冲区之外的东西就没了。最初的指令、智能体已经尝试过什么、任务进行到哪里，都随被清理的截图一起消失。对短任务（约 50 个动作以内）来说无妨；更长的任务请与压缩（compaction）结合使用。</p><h2><strong>方案 2：基于 LLM 的压缩</strong></h2><p>与其无声地丢弃旧图像，不如在丢弃前对完整对话做摘要。摘要保留发生了什么、用户要求了什么、完成了哪些、从哪里继续。旁边再保留几张最近的截图，让智能体能看到它当前正在看的内容。</p><p>压缩与缓存友好的滚动缓冲是互补的。轮与轮之间用滚动缓冲控制 token 增长；偶尔用压缩回收其余窗口空间而不丢失更早的上下文。每次压缩在设计上就是一次缓存失效，因此应让它少发生，而不是每隔几轮就来一次。</p><h3><strong>摘要提示词</strong></h3><p>这个示例提示词提供了一个骨架，每一节都针对一种特定的失败模式。提示词必须涵盖智能体无需重读原始对话就能继续任务所需的一切，如下例所示：&nbsp;</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-python" style="white-space:pre-wrap"><span style="color:#abe338"><span>COMPACT_PROMPT = </span><span style="color:#abe338">"""Your task is to create a detailed summary of this conversation that
+</span></span><span style="color:#abe338">will REPLACE the conversation history. The agent will continue working with only this
+</span><span style="color:#abe338">summary and a few recent screenshots as context.
+</span><span style="color:#abe338">
+</span><span style="color:#abe338">CRITICAL: Preserve ALL user instructions verbatim. User instructions are the most
+</span><span style="color:#abe338">critical element. If they are lost, the agent will deviate from the task.
+</span><span style="color:#abe338">
+</span><span style="color:#abe338">Before providing your summary, analyze the conversation in  tags:
+</span><span style="color:#abe338">1. Extract every user instruction, requirement, and constraint
+</span><span style="color:#abe338">2. Identify if this is a repeatable workflow (e.g., processing N items)
+</span><span style="color:#abe338">3. Chronologically trace what actions were taken and what happened
+</span><span style="color:#abe338">
+</span><span style="color:#abe338">Your summary MUST include these sections:
+</span><span style="color:#abe338">
+</span><span style="color:#abe338">1. USER INSTRUCTIONS:
+</span><span style="color:#abe338">   - Complete initial task definition (verbatim when possible)
+</span><span style="color:#abe338">   - ALL specific requirements and criteria
+</span><span style="color:#abe338">   - Every "DO NOT", "ALWAYS", "MUST" instruction
+</span><span style="color:#abe338">   - Any corrections or feedback that changed the approach
+</span><span style="color:#abe338">
+</span><span style="color:#abe338">2. TASK TEMPLATE (if this is a repeatable workflow):
+</span><span style="color:#abe338">   - The pattern being repeated
+</span><span style="color:#abe338">   - Decision criteria for each iteration
+</span><span style="color:#abe338">   - Standard workflow steps
+</span><span style="color:#abe338">   - Example of one completed iteration
+</span><span style="color:#abe338">
+</span><span style="color:#abe338">3. CONSTRAINTS AND RULES:
+</span><span style="color:#abe338">   - All user-specified rules and restrictions
+</span><span style="color:#abe338">   - Edge cases and exceptions discovered
+</span><span style="color:#abe338">
+</span><span style="color:#abe338">4. ACTIONS TAKEN:
+</span><span style="color:#abe338">   - Pages visited and elements interacted with
+</span><span style="color:#abe338">   - Forms filled and buttons clicked
+</span><span style="color:#abe338">
+</span><span style="color:#abe338">5. ERRORS AND FIXES:
+</span><span style="color:#abe338">   - What went wrong and how it was resolved
+</span><span style="color:#abe338">   - Approaches that failed (so they aren't retried)
+</span><span style="color:#abe338">
+</span><span style="color:#abe338">6. PROGRESS TRACKING:
+</span><span style="color:#abe338">   - Items completed vs. remaining
+</span><span style="color:#abe338">   - Current position in the workflow
+</span><span style="color:#abe338">
+</span><span style="color:#abe338">7. CURRENT STATE:
+</span><span style="color:#abe338">   - Current application, URL and domain (optional)
+</span><span style="color:#abe338">   - Important page state (logged in, form progress, etc.)
+</span><span style="color:#abe338">
+</span><span style="color:#abe338">8. NEXT STEP:
+</span><span style="color:#abe338">   - Exactly what should be done next to continue
+</span><span style="color:#abe338">"""</span></code></pre><p>在上面的提示词中，<strong>用户指令（User Instructions）</strong>一节防止任务漂移：没有它，智能体在压缩后就会跑偏。<strong>任务模板（Task Template）</strong>一节捕获可重复的模式，让智能体在压缩后无需从零重新推导工作流即可继续迭代。<strong>约束与规则（Constraints and Rules）</strong>一节保留任务前设定或任务中发现的限制和边界情况，避免智能体违反它本已遵守的既有规则。<strong>已执行动作（Actions Taken）</strong>一节帮助跟踪过往进度。&nbsp;<strong>错误与修复（Errors and Fixes）</strong>一节避免重试已失败的方案（"我已经试过点击 Submit 了；不勾选 Terms 复选框是没用的"）。<strong>进度跟踪（Progress Tracking）</strong>一节防止从头重来和跳过条目。<strong>当前状态（Current State）</strong>与<strong>下一步（Next Step）</strong>两节则给出明确的恢复入口。</p><h3><strong>服务端压缩（beta）</strong></h3><p>使用这个提示词最简单的方式，是让 API 通过<a href="https://docs.anthropic.com/en/docs/build-with-claude/compaction">服务端压缩（server-side compaction）</a>（beta）来处理压缩。把你的自定义摘要提示词作为<code>instructions</code>参数传入<code>context_management</code>，当输入 token 超过触发阈值时 API 会自动做摘要。<code>instructions</code>参数会完全替换默认的摘要提示词，因此模型遵循的就是上面那些章节。设置<code>pause_after_compaction</code>可以在压缩事件发生时附上最近的消息（包括截图）。</p><p><em>自动压缩工具的使用示例：</em></p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-python" style="white-space:pre-wrap"><span><span style="color:#d4d0ab"># Minimal — turn on autocompaction with API defaults</span><span>
+</span></span><span>response = client.beta.messages.create(
+</span><span><span>    model=</span><span style="color:#abe338">"claude-opus-4-7"</span><span>,
+</span></span><span><span>    max_tokens=</span><span style="color:#f5ab35">16000</span><span>,
+</span></span><span><span>    betas=[</span><span style="color:#abe338">"compact-2026-01-12"</span><span>, </span><span style="color:#abe338">"computer-use-2025-11-24"</span><span>],
+</span></span><span><span>    context_management={</span><span style="color:#abe338">"edits"</span><span>: [{</span><span style="color:#abe338">"type"</span><span>: </span><span style="color:#abe338">"compact_20260112"</span><span>}]},
+</span></span><span>    messages=[...],
+</span><span>    tools=[...],
+</span><span>)
+</span><span>
+</span><span><span></span><span style="color:#d4d0ab"># Customized — set your own trigger threshold and summarization prompt</span><span>
+</span></span><span>response = client.beta.messages.create(
+</span><span><span>    model=</span><span style="color:#abe338">"claude-opus-4-7"</span><span>,
+</span></span><span><span>    max_tokens=</span><span style="color:#f5ab35">16000</span><span>,
+</span></span><span><span>    betas=[</span><span style="color:#abe338">"compact-2026-01-12"</span><span>, </span><span style="color:#abe338">"computer-use-2025-11-24"</span><span>],
+</span></span><span>    context_management={
+</span><span><span>        </span><span style="color:#abe338">"edits"</span><span>: [
+</span></span><span>            {
+</span><span><span>                </span><span style="color:#abe338">"type"</span><span>: </span><span style="color:#abe338">"compact_20260112"</span><span>,
+</span></span><span><span>                </span><span style="color:#abe338">"trigger"</span><span>: {</span><span style="color:#abe338">"type"</span><span>: </span><span style="color:#abe338">"input_tokens"</span><span>, </span><span style="color:#abe338">"value"</span><span>: </span><span style="color:#f5ab35">150_000</span><span>},
+</span></span><span><span>                </span><span style="color:#abe338">"instructions"</span><span>: COMPACT_PROMPT,
+</span></span><span>            }
+</span><span>        ]
+</span><span>    },
+</span><span>    messages=[...],
+</span><span>    tools=[...],
+</span><span>)</span></code></pre><h3><strong>在客户端同步截断以对齐服务端</strong></h3><p>当 API 执行服务端压缩时，它会在自己那侧替换掉压缩前的内容，但你本地的 messages 数组仍保存着完整历史。如果后续每轮都继续发送完整历史，你将为服务端已不再需要的 token 买单；而且你的滚动缓冲清理器操作的消息切片与服务端实际看到的不一致，可能破坏你前面精心维护的缓存稳定前缀。</p><p>解决办法是在客户端镜像服务端的截断，如下面的代码片段所示。当响应报告发生了压缩时，在下一轮之前把本地 messages 数组中压缩标记之前的所有内容删掉。这能让客户端与服务端的视图保持一致，滚动缓冲也能继续正确工作。</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-python" style="white-space:pre-wrap"><span><span class="hljs-function" style="color:#dcc6e0">def</span><span class="hljs-function"> </span><span class="hljs-function" style="color:#00e0e0">truncate_to_last_compaction</span><span class="hljs-function">(</span><span class="hljs-function" style="color:#f5ab35">messages, response</span><span class="hljs-function">):</span><span>
+</span></span><span><span>    </span><span style="color:#abe338">"""If the server compacted on this turn, drop pre-compaction messages
+</span></span><span><span style="color:#abe338">    locally so the next turn's cache prefix matches what the server sees."""</span><span>
+</span></span><span><span>    context_mgmt = </span><span style="color:#f5ab35">getattr</span><span>(response, </span><span style="color:#abe338">"context_management"</span><span>, </span><span style="color:#f5ab35">None</span><span>)
+</span></span><span><span>    </span><span style="color:#dcc6e0">if</span><span> </span><span style="color:#dcc6e0">not</span><span> context_mgmt </span><span style="color:#dcc6e0">or</span><span> </span><span style="color:#dcc6e0">not</span><span> context_mgmt.get(</span><span style="color:#abe338">"applied_edits"</span><span>):
+</span></span><span><span>        </span><span style="color:#dcc6e0">return</span><span> messages
+</span></span><span>
+</span><span><span>    compaction = </span><span style="color:#f5ab35">next</span><span>(
+</span></span><span><span>        (e </span><span style="color:#dcc6e0">for</span><span> e </span><span style="color:#dcc6e0">in</span><span> context_mgmt[</span><span style="color:#abe338">"applied_edits"</span><span>] </span><span style="color:#dcc6e0">if</span><span> e[</span><span style="color:#abe338">"type"</span><span>] == </span><span style="color:#abe338">"compact"</span><span>),
+</span></span><span><span>        </span><span style="color:#f5ab35">None</span><span>,
+</span></span><span>    )
+</span><span><span>    </span><span style="color:#dcc6e0">if</span><span> compaction </span><span style="color:#dcc6e0">is</span><span> </span><span style="color:#f5ab35">None</span><span>:
+</span></span><span><span>        </span><span style="color:#dcc6e0">return</span><span> messages
+</span></span><span>
+</span><span><span>    keep_from = compaction[</span><span style="color:#abe338">"message_index_after_compaction"</span><span>]
+</span></span><span><span>    </span><span style="color:#dcc6e0">return</span><span> messages[keep_from:]</span></span></code></pre><h2><strong>客户端压缩</strong></h2><p>如果你使用的模型不支持服务端压缩，或者你想要完全掌控，可以用同样的提示词在客户端实现压缩。每次 API 调用后，从响应的 usage 字段检查总输入 token 数。当它超过阈值（如上下文窗口的 90%）时，把对话发给摘要模型，以 COMPACT_PROMPT 作为系统提示词。然后用摘要加上几张最近的截图替换消息历史，继续智能体循环。</p><h2><strong>组合起来</strong></h2><p>一个长时运行的计算机使用智能体，好的默认配置是这样的：</p><ul role="list"><li>稳定前缀上一个缓存断点，末尾工具结果上三个，每轮清除并重新放置。</li><li>缓存友好的滚动缓冲，keep_n = 3、interval = 25，分批用占位符替换较旧的截图。</li><li>约 150k 输入 token 时触发的服务端压缩（使用自定义提示词），外加一次客户端截断以保持两侧视图一致。</li></ul><p>有了这三层，一个典型的长程 CU 会话在绝大多数轮次都会命中提示词缓存，总输入 token 被控制在远低于上下文窗口的水平，并通过压缩事件保留足够的历史，智能体不会迷失任务。</p><h1><strong>改进计算机和浏览器使用的实验性设置</strong></h1><p>下面这些模式是我们在自己的实现中测试过、前景可观但尚未成为普适推荐的技术。每一种都是用复杂度或成本换取特定工作负载上的潜在提升。我们把它们写在这里供你自己的工作流尝试，但请预期本节的指引会快速演进。</p><h2><strong>批量工具</strong></h2><p>在更新后的参考实现中，我们在标准计算机和浏览器工具之外还提供了两个工具：<code>computer_batch</code>和<code>browser_batch</code>。它们各自接受一个子动作列表，并在一次工具调用中执行。例如，模型不必分别用点击、输入、按键三个轮次，而是可以发出一次包含全部三个动作的 computer_batch 调用。</p><p>吸引力在于效率：一个包含 N 个机械动作的工作流只需一次往返而不是 N 次，这在长程任务上能显著缩短实际耗时和输出 token 开销。风险在于误差累积：如果动作 2 依赖动作 1 改变的视觉状态，而动作 1 失手了，批次中其余动作就会基于过时的假设执行，智能体甚至可能在从未见过实际状态截图的情况下越跑越偏。</p><p>当子动作彼此独立、不依赖对方的视觉结果时（填写表单中的多个字段、串联键盘快捷键、滚动后点击已知目标），我们推荐使用批量工具。在探索式导航、错误恢复序列，或任何"动作 1 失败就需要重新规划"是真实状态的工作流中，我们不建议使用。</p><p>由于批量工具是你自己的自定义定义，它们可以与标准计算机或浏览器工具干净地叠加。两种都保持可用，让模型自己选。</p><h2><strong>advisor 工具（beta）</strong></h2><p><a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/advisor-tool">advisor 工具</a> 把一个执行模型与一个更高智能的顾问模型配对，执行模型可以在生成过程中向顾问寻求战略性指导。执行模型负责跑循环，当遇到需要更深推理的环节时，就调用顾问、拿到计划或纠偏建议，然后继续。这一切都在服务端的单次请求内完成，你这边无需额外往返。</p><p>具体到计算机使用，这个模式在长程任务上最有用：大多数轮次是机械点击，但偶发的规划时刻（选择打开哪个标签页、从意外的模态框中恢复、决定是否放弃某个策略）能从 Opus 级推理中受益。你既能获得接近顾问模型独立完成的质量，而大部分 token 生成又按执行模型的费率计费。</p><p><em>启用 advisor 工具的示例：</em></p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-python" style="white-space:pre-wrap"><span><span>response = client.beta.messages.create(
+</span></span><span><span>    model=</span><span style="color:#abe338">"claude-sonnet-4-6"</span><span>,
+</span></span><span><span>    max_tokens=</span><span style="color:#f5ab35">16000</span><span>,
+</span></span><span><span>    betas=[</span><span style="color:#abe338">"advisor-tool-2026-03-01"</span><span>, </span><span style="color:#abe338">"computer-use-2025-11-24"</span><span>],
+</span></span><span>    tools=[
+</span><span>        {
+</span><span><span>            </span><span style="color:#abe338">"type"</span><span>: </span><span style="color:#abe338">"advisor_20260301"</span><span>,
+</span></span><span><span>            </span><span style="color:#abe338">"name"</span><span>: </span><span style="color:#abe338">"advisor"</span><span>,
+</span></span><span><span>            </span><span style="color:#abe338">"model"</span><span>: </span><span style="color:#abe338">"claude-opus-4-7"</span><span>,
+</span></span><span>        },
+</span><span>        {
+</span><span><span>            </span><span style="color:#abe338">"type"</span><span>: </span><span style="color:#abe338">"computer_20251124"</span><span>,
+</span></span><span><span>            </span><span style="color:#abe338">"name"</span><span>: </span><span style="color:#abe338">"computer"</span><span>,
+</span></span><span><span>            </span><span style="color:#abe338">"display_width_px"</span><span>: </span><span style="color:#f5ab35">1280</span><span>,
+</span></span><span><span>            </span><span style="color:#abe338">"display_height_px"</span><span>: </span><span style="color:#f5ab35">720</span><span>,
+</span></span><span>        },
+</span><span>    ],
+</span><span>    messages=[...],
+</span><span>)</span></code></pre><p>advisor 工具的实用控制项包括：</p><ul role="list"><li><strong><code>max_uses</code>: </strong>限制每次请求的顾问调用次数。当你想兜住最坏情况成本时很有用。</li><li><strong>在 harness 中设置会话级上限：</strong>。顾问每次咨询按 Opus 4.7 费率计费，因此在超长会话中，你可能希望在若干次使用后不再提供顾问。</li><li><strong>顾问侧缓存：</strong>。在多次调用的对话中，缓存顾问的前缀大约三次咨询后就开始划算。参考实现中我们默认使用 5 分钟的临时缓存。</li></ul><p>两件不那么显眼的事值得知道：advisor 运行时既没有工具也没有上下文管理，因此它不能替你点击或浏览，只返回文字建议。另外，在长程任务中执行模型并不总是记得 advisor 的存在，请看下面的提醒微扰一节。</p><h2><strong>清理孤立的 advisor 块</strong></h2><p>当 advisor 工具触发时，执行模型会发出一个<code>server_tool_use</code>块（name 为 "advisor"），随后在返回内容中跟一个<code>advisor_tool_result</code>块。这些块与其他内容一起存在于你的 messages 数组中。</p><p>如果你之后从 tools 数组中移除了 advisor 工具——因为触达会话级上限、更改了配置或切换了模型——先前那些<code>server_tool_use</code> / <code>advisor_tool_result</code>块就会变成孤块。下一次请求时 API 会返回 400，因为被引用的工具已不再声明。</p><p>解决办法是发送前做一次简单遍历：只要某一轮禁用了 advisor，就遍历消息历史，剥离所有类型为<code>server_tool_use</code>（且 name == "advisor"）和<code>advisor_tool_result</code>.</p><p><em>移除过期 advisor 块的示例：</em></p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-python" style="white-space:pre-wrap"><span><span class="hljs-function" style="color:#dcc6e0">def</span><span class="hljs-function"> </span><span class="hljs-function" style="color:#00e0e0">strip_orphaned_advisor_blocks</span><span class="hljs-function">(</span><span class="hljs-function" style="color:#f5ab35">messages</span><span class="hljs-function">):</span><span>
+</span></span><span><span>    </span><span style="color:#abe338">"""Remove advisor server_tool_use / tool_result blocks from history.
+</span></span><span><span style="color:#abe338">    Call this before any request that doesn't include the advisor tool."""</span><span>
+</span></span><span><span>    </span><span style="color:#dcc6e0">for</span><span> msg </span><span style="color:#dcc6e0">in</span><span> messages:
+</span></span><span><span>        content = msg.get(</span><span style="color:#abe338">"content"</span><span>)
+</span></span><span><span>        </span><span style="color:#dcc6e0">if</span><span> </span><span style="color:#dcc6e0">not</span><span> </span><span style="color:#f5ab35">isinstance</span><span>(content, </span><span style="color:#f5ab35">list</span><span>):
+</span></span><span><span>            </span><span style="color:#dcc6e0">continue</span><span>
+</span></span><span><span>        msg[</span><span style="color:#abe338">"content"</span><span>] = [
+</span></span><span><span>            block </span><span style="color:#dcc6e0">for</span><span> block </span><span style="color:#dcc6e0">in</span><span> content
+</span></span><span><span>            </span><span style="color:#dcc6e0">if</span><span> </span><span style="color:#dcc6e0">not</span><span> (
+</span></span><span><span>                </span><span style="color:#f5ab35">isinstance</span><span>(block, </span><span style="color:#f5ab35">dict</span><span>)
+</span></span><span><span>                </span><span style="color:#dcc6e0">and</span><span> (
+</span></span><span><span>                    (block.get(</span><span style="color:#abe338">"type"</span><span>) == </span><span style="color:#abe338">"server_tool_use"</span><span>
+</span></span><span><span>                     </span><span style="color:#dcc6e0">and</span><span> block.get(</span><span style="color:#abe338">"name"</span><span>) == </span><span style="color:#abe338">"advisor"</span><span>)
+</span></span><span><span>                    </span><span style="color:#dcc6e0">or</span><span> block.get(</span><span style="color:#abe338">"type"</span><span>) == </span><span style="color:#abe338">"advisor_tool_result"</span><span>
+</span></span><span>                )
+</span><span>            )
+</span><span>        ]
+</span><span><span>    </span><span style="color:#dcc6e0">return</span><span> messages</span></span></code></pre><h2><strong>周期性提醒微扰</strong></h2><p>在长会话中，执行模型可能忘记有哪些工具可用，或忘了该优先用哪个。在我们的测试中，两种简短的提醒模式很有帮助：</p><p><strong>批量提醒。</strong>如果你提供了<code>computer_batch</code>或<code>browser_batch</code>，并发现模型在本该用批量调用时却连续发起单动作调用，可以在下一条工具结果后追加一条简短的系统级提示："记住，当连续动作不依赖中间截图时，你可以使用<code>computer_batch</code>把多个连续动作合并到一次工具调用中。"目标是把模型拉回到批量的方向，而不是硬性规定具体时机。</p><p><strong>advisor 提醒。</strong>执行模型很容易忘记 advisor 工具的存在，尤其当它已经很多轮没被调用时。在超过约 20 轮未调用 advisor 的会话中，可以追加一条简短提醒，告知 advisor 可用于规划或纠偏时刻。参考实现中我们以 20 轮为周期追加一行提示。</p><p>两种微扰都是轻量的上下文注入，不是对系统提示词的重写。每次追加只花费几十个输入 token。如果你的系统提示词已经很长，或缓存断点放置得很精确，请权衡这点提升是否值得增加的缓存失效风险。</p><h2><strong>参考实现中的调试模式</strong></h2><p>当某个环节行为异常，而你不确定问题出在 harness、截图还是模型时，参考实现中的三个辅助工具值得一试，先别急着加日志：</p><ul role="list"><li><strong>轨迹查看器（streamlit run viewer/app.py）。</strong>加载一条录制好的轨迹，让你逐步查看智能体的每一轮：截图、思考、工具调用和用量。最适合在失败运行后回答"模型当时到底看到了什么、做了什么决定？"</li><li><strong>工具调试面板（uvicorn debug.server:app --reload）</strong>。一个小型 Web UI，可以逐个试用每个工具：截图、捕获点击坐标、输入、滚动、缩放。适合确认你的捕获管线和坐标缩放是否真的产出了你期望的结果。</li><li><strong>定位演练场（uvicorn localize.server:app --reload --port 8001）</strong>。上传任意图像，让模型指向某个目标，然后把预测坐标以显示分辨率和原生分辨率两种方式渲染回你的图像上。这是诊断点击失误究竟源自尺寸调整 bug、坐标缩放 bug，还是货真价实的模型错误的最快方法。当客户报告点击不佳、而你想单独复现故障时尤其有用。</li></ul><p>这些都不是构建可用集成的必需品；它们只是当默认反馈回路（记日志、重跑、眯着眼看记录）不够快时的调试辅助。</p><h2><strong>提升可靠性：教 Claude</strong></h2><p>与其反复迭代文字提示词直到 Claude 做对某个工作流，你可以直接把正确的行为示范给它看。录制你自己执行任务的过程，在每一步捕获截图、动作和（可选的）语音解说，然后在 Claude 执行同一工作流时把这段演示作为上下文回放。录制的演示成为一份可复用的规范，Claude 会遵循它并适应实际 UI 状态的差异。</p><p>我们在 Claude in Chrome 内部使用了这个模式（我们称之为"Teach Mode"），在这里分享出来是因为其底层思路对任何构建计算机或浏览器使用产品的人都普遍有用。它有两方面帮助：提升 Claude 大体掌握但偶尔出错的工作流的可靠性，以及解锁 Claude 仅凭文字提示词无法完成的全新工作流。核心思路（捕获演示，作为上下文回放）实现简单，且能很好地适配浏览器和桌面两种环境。</p><h3><strong>核心理念：做给它看，而不是说给它听</strong></h3><p>传统的提示词工程要求用户用文字描述想要什么，然后在 AI 理解偏差时反复迭代。这个模式反其道而行：用户亲自演示任务，系统记录其动作、截图和（可选的）语音解说。回放时，Claude 收到完整演示作为上下文，遵循相同的步骤序列，并适应当前 UI 状态的任何差异。</p><p>关键的洞见在于：回放不等于死板重放。Claude 把演示当作指引，同时对实际环境进行推理。如果按钮挪了位置或菜单重新组织过，Claude 能在当前 UI 中找到等价元素，而不是盲目点击录制下来的坐标。</p><h3><strong>数据模型</strong></h3><p>基本单位是"工作流步骤"（workflow step），即录制期间捕获的单个动作。每个步骤把做了什么、在哪里做的、当时屏幕是什么样打包在一起：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-python" style="white-space:pre-wrap"><span><span style="color:#dcc6e0">from</span><span> dataclasses </span><span style="color:#dcc6e0">import</span><span> dataclass, field
+</span></span><span><span></span><span style="color:#dcc6e0">from</span><span> typing </span><span style="color:#dcc6e0">import</span><span> </span><span style="color:#f5ab35">Literal</span><span>, </span><span style="color:#f5ab35">Optional</span><span>
+</span></span><span>
+</span><span><span></span><span style="color:#f5ab35">@dataclass</span><span>
+</span></span><span><span></span><span class="hljs-class" style="color:#dcc6e0">class</span><span class="hljs-class"> </span><span class="hljs-class" style="color:#00e0e0">WorkflowStep</span><span class="hljs-class">:</span><span>
+</span></span><span><span>    action: </span><span style="color:#f5ab35">Literal</span><span>[</span><span style="color:#abe338">"click"</span><span>, </span><span style="color:#abe338">"type"</span><span>, </span><span style="color:#abe338">"navigate"</span><span>, </span><span style="color:#abe338">"scroll"</span><span>, </span><span style="color:#abe338">"select"</span><span>]
+</span></span><span><span>    description: </span><span style="color:#f5ab35">str</span><span>                         </span><span style="color:#d4d0ab"># Human-readable, e.g. "Click the Submit button"</span><span>
+</span></span><span><span>    timestamp: </span><span style="color:#f5ab35">float</span><span>
+</span></span><span><span>    selector: </span><span style="color:#f5ab35">Optional</span><span>[</span><span style="color:#f5ab35">str</span><span>] = </span><span style="color:#f5ab35">None</span><span>           </span><span style="color:#d4d0ab"># CSS selector or XPath</span><span>
+</span></span><span><span>    coordinates: </span><span style="color:#f5ab35">Optional</span><span>[</span><span style="color:#f5ab35">dict</span><span>] = </span><span style="color:#f5ab35">None</span><span>       </span><span style="color:#d4d0ab"># {"x": int, "y": int}</span><span>
+</span></span><span><span>    url: </span><span style="color:#f5ab35">Optional</span><span>[</span><span style="color:#f5ab35">str</span><span>] = </span><span style="color:#f5ab35">None</span><span>
+</span></span><span><span>    screenshot: </span><span style="color:#f5ab35">Optional</span><span>[</span><span style="color:#f5ab35">str</span><span>] = </span><span style="color:#f5ab35">None</span><span>         </span><span style="color:#d4d0ab"># Base64-encoded screenshot</span><span>
+</span></span><span><span>    viewport_dimensions: </span><span style="color:#f5ab35">Optional</span><span>[</span><span style="color:#f5ab35">dict</span><span>] = </span><span style="color:#f5ab35">None</span><span>  </span><span style="color:#d4d0ab"># {"width": int, "height": int}</span><span>
+</span></span><span><span>    speech_transcript: </span><span style="color:#f5ab35">Optional</span><span>[</span><span style="color:#f5ab35">str</span><span>] = </span><span style="color:#f5ab35">None</span><span>  </span><span style="color:#d4d0ab"># Voice narration, if captured</span><span>
+</span></span><span><span>    value: </span><span style="color:#f5ab35">Optional</span><span>[</span><span style="color:#f5ab35">str</span><span>] = </span><span style="color:#f5ab35">None</span><span>              </span><span style="color:#d4d0ab"># For type actions</span><span>
+</span></span><span>
+</span><span><span></span><span style="color:#f5ab35">@dataclass</span><span>
+</span></span><span><span></span><span class="hljs-class" style="color:#dcc6e0">class</span><span class="hljs-class"> </span><span class="hljs-class" style="color:#00e0e0">SavedWorkflow</span><span class="hljs-class">:</span><span>
+</span></span><span><span>    </span><span style="color:#f5ab35">id</span><span>: </span><span style="color:#f5ab35">str</span><span>
+</span></span><span><span>    name: </span><span style="color:#f5ab35">str</span><span>                                </span><span style="color:#d4d0ab"># e.g. "Submit expense report"</span><span>
+</span></span><span><span>    steps: </span><span style="color:#f5ab35">list</span><span>[WorkflowStep] = field(default_factory=</span><span style="color:#f5ab35">list</span><span>)
+</span></span><span><span>    description: </span><span style="color:#f5ab35">Optional</span><span>[</span><span style="color:#f5ab35">str</span><span>] = </span><span style="color:#f5ab35">None</span><span>        </span><span style="color:#d4d0ab"># AI-generated summary of the workflow</span><span>
+</span></span><span><span>    start_url: </span><span style="color:#f5ab35">Optional</span><span>[</span><span style="color:#f5ab35">str</span><span>] = </span><span style="color:#f5ab35">None</span><span>
+</span></span><span><span>    created_at: </span><span style="color:#f5ab35">float</span><span> = </span><span style="color:#f5ab35">0.0</span><span>
+</span></span><span><span>    usage_count: </span><span style="color:#f5ab35">int</span><span> = </span><span style="color:#f5ab35">0</span></span></code></pre><p>同时捕获选择器和坐标是有意为之：选择器对布局变化更稳健，而坐标提供了选择器失效时 Claude 可以使用的视觉兜底。存储视口尺寸则是为了在回放环境与录制环境不同步时能够缩放坐标。</p><h3><strong>录制：捕获什么</strong></h3><p>至少要捕获点击事件、键盘输入、导航变化，以及每个动作时的一张截图。对每次点击，生成一段人类可读的描述（来自 aria-label、文本内容，或快速调用一次 Claude），并在截图的点击位置标注视觉标记：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-python" style="white-space:pre-wrap"><span><span class="hljs-function" style="color:#dcc6e0">def</span><span class="hljs-function"> </span><span class="hljs-function" style="color:#00e0e0">on_click</span><span class="hljs-function">(</span><span class="hljs-function" style="color:#f5ab35">event</span><span class="hljs-function">):</span><span>
+</span></span><span>    step = WorkflowStep(
+</span><span><span>        action=</span><span style="color:#abe338">"click"</span><span>,
+</span></span><span>        selector=generate_selector(event.target),
+</span><span><span>        coordinates={</span><span style="color:#abe338">"x"</span><span>: event.client_x, </span><span style="color:#abe338">"y"</span><span>: event.client_y},
+</span></span><span>        url=current_url(),
+</span><span>        description=generate_description(event.target),
+</span><span>        timestamp=now(),
+</span><span>        viewport_dimensions=get_viewport_size(),
+</span><span>    )
+</span><span><span>    </span><span style="color:#d4d0ab"># Annotate screenshot with a circle at the click position</span><span>
+</span></span><span>    screenshot = capture_screenshot()
+</span><span>    step.screenshot = annotate_with_circle(screenshot, event.client_x, event.client_y)
+</span><span>    workflow_steps.append(step)</span></code></pre><p>这个标注（点击位置的彩色圆圈）有两个用途：帮助用户确认录制捕获的是正确的元素；在回放时向 Claude 精确展示动作发生的位置。你的回放提示词应说明这些标记是录制产物，不是实际 UI 的一部分。</p><h3><strong>回放：构造提示词</strong></h3><p>这是最重要的一环。当用户触发一个已保存的工作流时，你要构造一条发给 Claude 的消息，包含三样东西：用户的意图、解释演示格式的上下文块，以及录制的截图。</p><p>上下文块告诉 Claude 如何解读带标注的截图，以及当实际 UI 有差异时如何调整：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-python" style="white-space:pre-wrap"><span style="color:#abe338"><span class="hljs-function" style="color:#dcc6e0">def</span><span class="hljs-function"> </span><span class="hljs-function" style="color:#00e0e0">generate_playback_context</span><span class="hljs-function">(</span><span class="hljs-function" style="color:#f5ab35">steps: </span><span class="hljs-function" style="color:#f5ab35">list</span><span class="hljs-function" style="color:#f5ab35">[WorkflowStep]</span><span class="hljs-function">) -&gt; </span><span class="hljs-function" style="color:#f5ab35">str</span><span class="hljs-function">:</span><span>
+</span></span><span style="color:#abe338"><span>    steps_description = </span><span style="color:#abe338">"\n"</span><span>.join(
+</span></span><span style="color:#abe338"><span>        </span><span style="color:#abe338">f"Step </span><span class="hljs-subst" style="color:#abe338">{i+</span><span class="hljs-subst" style="color:#f5ab35">1</span><span class="hljs-subst" style="color:#abe338">}</span><span style="color:#abe338">: </span><span class="hljs-subst" style="color:#abe338">{step.description}</span><span style="color:#abe338">"</span><span>
+</span></span><span style="color:#abe338"><span>        </span><span style="color:#dcc6e0">for</span><span> i, step </span><span style="color:#dcc6e0">in</span><span> </span><span style="color:#f5ab35">enumerate</span><span>(steps)
+</span></span><span style="color:#abe338">    )
+</span><span style="color:#abe338">
+</span><span style="color:#abe338"><span>    </span><span style="color:#dcc6e0">return</span><span> </span><span style="color:#abe338">f"""&lt;demonstration_context&gt;
+</span></span><span style="color:#abe338">The user has recorded a demonstration showing how to perform this task.
+</span><span style="color:#abe338">
+</span><span style="color:#abe338">RECORDED STEPS:
+</span><span style="color:#abe338"><span style="color:#abe338"></span><span class="hljs-subst" style="color:#abe338">{steps_description}</span><span style="color:#abe338">
+</span></span><span style="color:#abe338">
+</span><span style="color:#abe338">ABOUT THE SCREENSHOTS:
+</span><span style="color:#abe338">- Each screenshot shows the screen state when an action was taken
+</span><span style="color:#abe338">- BLUE CIRCLES mark where the user clicked — these are recording annotations
+</span><span style="color:#abe338">- The blue highlighting is NOT part of the actual interface
+</span><span style="color:#abe338">- Your own screenshots will NOT have these markers
+</span><span style="color:#abe338">
+</span><span style="color:#abe338">HOW TO USE THIS DEMONSTRATION:
+</span><span style="color:#abe338">1. Review all steps and screenshots to understand the complete workflow
+</span><span style="color:#abe338">2. Take your own screenshot to see the CURRENT page state
+</span><span style="color:#abe338">3. The blue highlights show which element to interact with — find it in your current view
+</span><span style="color:#abe338">4. Follow the same sequence of actions, adapting to any differences
+</span><span style="color:#abe338">5. If the UI has changed significantly, use judgment to find equivalent elements
+</span><span style="color:#abe338">&lt;/demonstration_context&gt;"""</span></code></pre><p>然后把用户的提示词、上下文块，以及每一步的截图（作为图像）组装成完整消息：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-python" style="white-space:pre-wrap"><span><span style="color:#dcc6e0">import</span><span> anthropic
+</span></span><span>
+</span><span>client = anthropic.Anthropic()
+</span><span>
+</span><span>content = [
+</span><span><span>    {</span><span style="color:#abe338">"type"</span><span>: </span><span style="color:#abe338">"text"</span><span>, </span><span style="color:#abe338">"text"</span><span>: user_prompt},
+</span></span><span><span>    {</span><span style="color:#abe338">"type"</span><span>: </span><span style="color:#abe338">"text"</span><span>, </span><span style="color:#abe338">"text"</span><span>: generate_playback_context(workflow.steps)},
+</span></span><span>]
+</span><span>
+</span><span><span></span><span style="color:#dcc6e0">for</span><span> i, step </span><span style="color:#dcc6e0">in</span><span> </span><span style="color:#f5ab35">enumerate</span><span>(workflow.steps):
+</span></span><span><span>    </span><span style="color:#dcc6e0">if</span><span> step.screenshot:
+</span></span><span><span>        content.append({</span><span style="color:#abe338">"type"</span><span>: </span><span style="color:#abe338">"text"</span><span>, </span><span style="color:#abe338">"text"</span><span>: </span><span style="color:#abe338">f"[Step </span><span class="hljs-subst" style="color:#abe338">{i+</span><span class="hljs-subst" style="color:#f5ab35">1</span><span class="hljs-subst" style="color:#abe338">}</span><span style="color:#abe338">: </span><span class="hljs-subst" style="color:#abe338">{step.description}</span><span style="color:#abe338">]"</span><span>})
+</span></span><span>        content.append({
+</span><span><span>            </span><span style="color:#abe338">"type"</span><span>: </span><span style="color:#abe338">"image"</span><span>,
+</span></span><span><span>            </span><span style="color:#abe338">"source"</span><span>: {</span><span style="color:#abe338">"type"</span><span>: </span><span style="color:#abe338">"base64"</span><span>, </span><span style="color:#abe338">"media_type"</span><span>: </span><span style="color:#abe338">"image/jpeg"</span><span>, </span><span style="color:#abe338">"data"</span><span>: step.screenshot},
+</span></span><span>        })
+</span><span>
+</span><span>response = client.beta.messages.create(
+</span><span><span>    model=</span><span style="color:#abe338">"claude-sonnet-4-6"</span><span>,
+</span></span><span><span>    max_tokens=</span><span style="color:#f5ab35">4096</span><span>,
+</span></span><span><span>    betas=[</span><span style="color:#abe338">"computer-use-2025-11-24"</span><span>],
+</span></span><span><span>    messages=[{</span><span style="color:#abe338">"role"</span><span>: </span><span style="color:#abe338">"user"</span><span>, </span><span style="color:#abe338">"content"</span><span>: content}],
+</span></span><span>    tools=[{
+</span><span><span>        </span><span style="color:#abe338">"type"</span><span>: </span><span style="color:#abe338">"computer_20251124"</span><span>,
+</span></span><span><span>        </span><span style="color:#abe338">"name"</span><span>: </span><span style="color:#abe338">"computer"</span><span>,
+</span></span><span><span>        </span><span style="color:#abe338">"display_width_px"</span><span>: </span><span style="color:#f5ab35">1280</span><span>,
+</span></span><span><span>        </span><span style="color:#abe338">"display_height_px"</span><span>: </span><span style="color:#f5ab35">720</span><span>,
+</span></span><span>    }],
+</span><span>)</span></code></pre><h3><strong>回放模式</strong></h3><p>并非每个工作流都需要同样严格地遵循录制的演示。有些工作流太长，会消耗大量输入 token，最终拖慢延迟、推高成本。可以考虑在上下文提示词中加入一个严格度参数：</p><p><strong>严格（Strict）：</strong>严格按步骤执行；UI 变化过大时停下并报告。适合精确序列至关重要的合规敏感工作流。</p><p><strong>自适应（Adaptive）：</strong>把演示当作指引，但适应 UI 变化。这是大多数用例的最佳默认值——能优雅处理小幅布局偏移、按钮文案更新和菜单重组。</p><p>‍<strong>目标导向（Goal-oriented）：</strong>聚焦最终结果；把录制的步骤当作提示而非指令。适用于 UI 频繁变化但目标不变的场景。可以先用一个模型对录制的演示做摘要（策略类似下一节所述），再把摘要传给 CU 模型。</p><h3><strong>示例：端到端的报销单工作流</strong></h3><p>下面是一个已保存工作流的实际样貌。该工作流捕获了五个步骤：导航到报销表单、选择费用类型、在下拉菜单中选择"Travel"、输入金额、点击 Submit。</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-python" style="white-space:pre-wrap"><span><span>expense_workflow = SavedWorkflow(
+</span></span><span><span>    </span><span style="color:#f5ab35">id</span><span>=</span><span style="color:#abe338">"wf_abc123"</span><span>,
+</span></span><span><span>    name=</span><span style="color:#abe338">"Submit Expense Report"</span><span>,
+</span></span><span><span>    start_url=</span><span style="color:#abe338">"https://expenses.company.com/new"</span><span>,
+</span></span><span>    steps=[
+</span><span>        WorkflowStep(
+</span><span><span>            action=</span><span style="color:#abe338">"navigate"</span><span>,
+</span></span><span><span>            url=</span><span style="color:#abe338">"https://expenses.company.com/new"</span><span>,
+</span></span><span><span>            description=</span><span style="color:#abe338">"Navigate to new expense form"</span><span>,
+</span></span><span><span>            timestamp=</span><span style="color:#f5ab35">1700000000</span><span>,
+</span></span><span>        ),
+</span><span>        WorkflowStep(
+</span><span><span>            action=</span><span style="color:#abe338">"click"</span><span>,
+</span></span><span><span>            selector=</span><span style="color:#abe338">"#expense-type-dropdown"</span><span>,
+</span></span><span><span>            coordinates={</span><span style="color:#abe338">"x"</span><span>: </span><span style="color:#f5ab35">400</span><span>, </span><span style="color:#abe338">"y"</span><span>: </span><span style="color:#f5ab35">200</span><span>},
+</span></span><span><span>            description=</span><span style="color:#abe338">"Click on expense type dropdown"</span><span>,
+</span></span><span><span>            timestamp=</span><span style="color:#f5ab35">1700000001</span><span>,
+</span></span><span>        ),
+</span><span>        WorkflowStep(
+</span><span><span>            action=</span><span style="color:#abe338">"click"</span><span>,
+</span></span><span><span>            selector=</span><span style="color:#abe338">"[data-value='travel']"</span><span>,
+</span></span><span><span>            coordinates={</span><span style="color:#abe338">"x"</span><span>: </span><span style="color:#f5ab35">400</span><span>, </span><span style="color:#abe338">"y"</span><span>: </span><span style="color:#f5ab35">280</span><span>},
+</span></span><span><span>            description=</span><span style="color:#abe338">'Select "Travel" expense type'</span><span>,
+</span></span><span><span>            timestamp=</span><span style="color:#f5ab35">1700000002</span><span>,
+</span></span><span>        ),
+</span><span>        WorkflowStep(
+</span><span><span>            action=</span><span style="color:#abe338">"type"</span><span>,
+</span></span><span><span>            selector=</span><span style="color:#abe338">"#amount-input"</span><span>,
+</span></span><span><span>            value=</span><span style="color:#abe338">"150.00"</span><span>,
+</span></span><span><span>            description=</span><span style="color:#abe338">"Enter expense amount"</span><span>,
+</span></span><span><span>            timestamp=</span><span style="color:#f5ab35">1700000003</span><span>,
+</span></span><span>        ),
+</span><span>        WorkflowStep(
+</span><span><span>            action=</span><span style="color:#abe338">"click"</span><span>,
+</span></span><span><span>            selector=</span><span style="color:#abe338">"#submit-expense-btn"</span><span>,
+</span></span><span><span>            coordinates={</span><span style="color:#abe338">"x"</span><span>: </span><span style="color:#f5ab35">1150</span><span>, </span><span style="color:#abe338">"y"</span><span>: </span><span style="color:#f5ab35">420</span><span>},
+</span></span><span><span>            description=</span><span style="color:#abe338">"Click the Submit button"</span><span>,
+</span></span><span><span>            speech_transcript=</span><span style="color:#abe338">"Now I'll click submit to send the report for approval"</span><span>,
+</span></span><span><span>            timestamp=</span><span style="color:#f5ab35">1700000004</span><span>,
+</span></span><span>        ),
+</span><span>    ],
+</span><span>)</span></code></pre><p>当用户之后说"帮我提交团队午餐的报销单（85.50 美元）"时，回放服务会构造一个包含演示上下文、全部五张带标注截图以及新请求具体数值的提示词。Claude 清楚该点哪里、按什么顺序执行，并把金额和描述调整为与当前任务匹配。如果你的工作流因输入 token 量太大而不适合直接采用这种方式，可以先对工作流做压缩再当作示例使用。上下文管理的技巧请参见下一节。</p><h1><strong>开始使用计算机和浏览器使用</strong></h1><p>这些实践反映了我们目前对"什么让计算机使用集成在生产环境中可靠"的最佳理解。它们适用于 Claude 4.6 系列和 Opus 4.7，并将随着新模型和新技术的出现而更新。</p><p>随着你的集成日趋成熟，最重要的模式将取决于你的具体环境、目标应用和可靠性要求。<em>‍</em></p><p><em>请从</em><a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool"><em>计算机使用文档</em></a><em>开始，查看我们对这些最佳实践的新</em><a href="https://github.com/anthropics/claude-quickstarts/tree/main/computer-use-best-practices"><em>演示实现</em></a><em>，或重温</em><a href="https://www.anthropic.com/news/developing-computer-use"><em>最初的计算机使用研究文章</em></a><em>，了解这些能力如何构建以及未来走向的背景。</em></p><p><em>致谢：本文及配套演示由 Lucas Gonzalez 和 Luca Weihs 撰写。作者感谢 Molly Vorwerck、Javier Rando、Maya Nielan、Gabe Mulley 和 Brigit Brown 的贡献。</em></p></div>

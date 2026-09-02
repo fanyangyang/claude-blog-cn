@@ -1,0 +1,17 @@
+{
+  "slug": "observability-for-developers-building-connectors",
+  "title": "Observability for developers building connectors",
+  "date": "June 8, 2026",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/observability-for-developers-building-connectors",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/observability-for-developers-building-connectors.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.792Z",
+  "translatedTitle": "面向连接器开发者的可观测性",
+  "translated": true,
+  "translatedAt": "2026-09-02T00:00:00.000Z",
+  "translateLang": "zh-CN"
+}

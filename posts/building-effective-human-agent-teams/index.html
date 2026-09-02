@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>构建高效的人机协作团队 — Claude Blog 中文翻译</title>
+  <meta name="description" content="构建高效的人机协作团队">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/building-effective-human-agent-teams" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Enterprise AI</span>
+            <span class="article-date">June 24, 2026</span>
+            
+          </div>
+          <h1 class="article-title">构建高效的人机协作团队</h1>
+          <a href="/posts/building-effective-human-agent-teams/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>过去，使用 AI 往往意味着一个人对着一个单独的聊天窗口。随着时间推移，AI 处理编码、研究、财务分析等复杂长期任务的能力越来越强。与此同时，我们也看到了许多使用 AI 的新方式——从终端和 IDE 到电子表格和幻灯片——但这些工作在很大程度上仍是一种“单人游戏”体验：一个人与一个 agent 协作完成具体任务。</p><p>随着 <a href="https://www.anthropic.com/news/introducing-claude-tag" target="_blank">Claude Tag</a> 等工具的发布，情况正在改变。现在，人类和 agent 可以在同一个工作区中协同工作，为团队共同的目标而合作。工作变得更像一场<em>多人游戏</em>：由人类团队制定战略，Claude 负责执行。</p><p>这也带来了一些新的工作方式。过去几个月，Anthropic 一直在测试让人与 agent 组成的团队取得成功所需的技术。在这篇文章中，我们将解释什么是“多人 agent”（multiplayer agent），以及我们在构建此类团队过程中积累的经验教训。</p><figure style="max-width:2880pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a3c1e1e24f66edde9ee63db_Claude-Tag-v2%402x.png" loading="lazy"></div></figure><h2><strong>什么是多人 agent？</strong></h2><p>“多人 agent”是我们对能够同时与许多不同人类协作的 AI 模型的称呼。与普通 agent 一样，它们拥有自己的<a href="https://platform.claude.com/docs/en/managed-agents/memory" target="_blank">记忆</a>和<a href="https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills" target="_blank">技能</a>。但在其他方面，它们又大不相同：它们拥有自己的<a href="https://www.anthropic.com/engineering/managed-agents" target="_blank">凭据</a>，并且驻留在实际开展工作的场所中。在 Anthropic，这个场所就是 Slack 之类的团队协作工具。</p><p>下面是一个人类与 agent 组成的团队在 Slack 中共同分析数据集的例子：</p><figure style="max-width:924pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a3be9ec0c7dd123eea0fcea_85b9b96b.png" loading="lazy"></div></figure><p>要让 agent 高效地参与团队频道的工作，它们需要具备以下能力：</p><ul role="list"><li><a href="https://platform.claude.com/docs/en/managed-agents/memory" target="_blank"><strong>持久记忆</strong></a>，使它们能够记住目标，并围绕目标调整自己的执行方式</li><li><a href="https://www.anthropic.com/engineering/managed-agents" target="_blank"><strong>不与人类绑定的凭据</strong></a><strong>，</strong>使它们能够在安全、可预期的边界之内运作</li><li><a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents" target="_blank"><strong>持续、广泛的信息访问权限</strong></a><strong>，</strong>使它们能够了解组织的运作方式，并采取行动完成服务于团队目标的任务</li></ul><p>这些能力构成了一个 agent 在由众多人类组成的团队中高效参与协作所需的技术基础。然而，要让人与 agent 的团队取得<em>成功</em>，仅靠这些还不够：团队还需要特定的工作方式和共同的规范。</p><h2><strong>经验一：公开工作，并给 agent 提供广泛的上下文</strong></h2><p>Anthropic 的团队会主动、开放地共享信息。当团队中有 agent 时尤其如此，因为 agent 的理解完全来自团队中可被检索的文本：Slack、代码、文档和会议纪要。私信、走廊里的闲聊和受限的文档都无法为 agent 提供上下文。对 agent 而言，没有被写下来且无法访问的东西，就等于不存在。</p><p>我们没有逐个文档、逐个 Slack 频道地决定哪些信息应该对 agent 开放，而是采用了明确定义的安全边界，并将其应用于整个 Slack 工作区、会议记录和文档库。在安全边界之内，上下文会流向每一位团队成员——无论人类还是 AI。这不仅提升了人类和 agent 能获取的信息量，也减少了“什么可以分享、跟谁分享”带来的困惑。人类和 agent 都很难应对逐条设置的软性边界带来的问题：<em>这个频道应该公开还是私密？这份文档能不能分享给那个人？这个 agent 可以看那个讨论串吗？</em>少量清晰的工作区级边界，消除了日常工作中的决策疲劳。</p><p>高度透明是有回报的。例如，能够读取团队会议决策的 agent，不会再建议已被降低优先级的任务或项目；能够访问其他团队产品规格的 agent，可以推荐在别处已获得成功的模式。而且，由于 agent 阅读海量文本的速度远超人类，它们经常能发现人类原本会遗漏的相关工作。在一个繁忙、快节奏的行业里，我们非常依赖 agent 来保持信息灵通和步调一致。</p><p>在 Anthropic，公开工作体现在：</p><ul role="list"><li>在公司层面选定少数几条安全边界，并创建与每条安全边界相匹配的工作区和文档共享设置</li><li>将新的沟通频道默认设为组织内公开，并确保每次决策都沉淀在频道、文档和会议纪要中</li><li>以 agent 能够找到的方式撰写产出物和会议纪要，因为 agent 如今是团队文档的主要消费者之一</li><li>确保 AI 拥有完成工作所需的恰当工具和信息访问权限</li></ul><p>将信息默认设为对内公开，可能需要文化上的转变。但是，拥有充分上下文的人与 agent 团队和缺乏上下文的团队之间的差距太大，不容忽视。</p><p>当然，有些互动是敏感的，需要在单个人类和 AI 之间保持私密。对于这类情况，使用 Claude Tag 时你可以给 @Claude 发送私信，或者使用现有的 <a href="http://claude.ai" target="_blank">Claude.ai</a> 和 Claude Cowork 应用。这些工具通过你的个人 MCP 连接器让 Claude 访问私密信息，并且你可以确信你与 agent 的对话和分享的内容都会保持私密。</p><h2><strong>经验二：每个人和每个 agent 都有明确的角色和称手的工具</strong></h2><p>人与 agent 组成的团队共享同一份团队名册、同一套产出物和同一个工作空间。Agent 拥有自己的<a href="https://www.anthropic.com/engineering/how-we-contain-claude" target="_blank">凭据</a>、<a href="https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills" target="_blank">技能</a>和工具访问权限。不同的 agent 也承担不同的角色：例如，一个 agent 可能负责某个项目的数据分析，另一个负责制定并维护设计规范，第三个负责研究综合。</p><p>项目启动时，人类会与 agent 讨论确定分配哪些角色，以及人类和 agent 如何协作。</p><figure style="max-width:884pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a3bf2ac55e5efdefd1d06fb_LAUNCH%20ROOM.png" loading="lazy"></div></figure><p>一旦人类和 agent 的分工明确，某个 agent 可能会启动其他 agent，以确保具体任务由具备相应记忆和恰当权限的 agent 来处理。重要的是，它们需要获得完成工作所需的全部工具：负责数据分析的 agent 可能需要访问 BigQuery，执行 QA 的 agent 可能需要访问 Playwright MCP。</p><p>清晰界定的角色和职责为人与 agent 的团队奠定了成功基础。人类经常和 agent 在同一个讨论串中工作，但由人类承担只有人类才能承担的角色。这确保了所有工作协调一致，最重要的决策由人类判断来把关。如果没有明确的角色，人们就会各自在旁边运营一批“私人 AI”，造成重复劳动，也割裂了团队的上下文。指标追踪就是一个常见例子：一个多人 agent 可以一次性完成这项工作，让所有人看到同一组数字。</p><p>在 Anthropic，为团队定义清晰角色体现在：</p><ul role="list"><li>一套商定一致的任务分工：团队中的人类和 agent 就谁做什么达成一致</li><li>人类和 agent 在同一个共享讨论串中工作，任何人都能随时接续他人的工作</li><li>人类和 agent 都拥有完成各自工作所需的恰当工具的访问权限</li><li>对 agent 的角色和职责范围有明确的描述</li></ul><figure style="max-width:924pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a3be9ee0c7dd123eea0fd08_e35d445f.png" loading="lazy"></div><figcaption><em>Claude agent 共同承担代码库的日常维护：分拣反馈、规划、编写代码、审查变更和汇报状态。每个 agent 负责一项明确任务并按自己的节奏工作；人类制定目标并审查产出。</em></figcaption></figure><p>Anthropic 的一个工程团队开始编写“团队名册”来固化人类和 agent 的角色，因为这让他们推进工作变得更加轻松和具体。他们早期总结出的经验包括：</p><ul role="list"><li>具体的角色也帮助人类轻松追踪某项任务的责任归属，无论是单个任务还是整个团队的职责范围</li><li>编写<a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview" target="_blank">技能文件</a>来定义特定 agent 的角色，既能轻松实现专业化，也让公司里的其他人能快速搭建起同类 agent</li><li>当项目变得更复杂时，团队会增加新的 agent 来专注新的领域。例如，他们增加了一个发布管理 agent 来处理新的软件发布。</li></ul><p>这些方法让人类对人机团队的心智模型能够随着 agent 数量的增长而扩展。</p><h2><strong>经验三：设定“北极星”目标，让 agent 更主动</strong></h2><p>虽然 Anthropic 的一些 agent 只是完成被分配的任务，但最重要的那些 agent 会主动建议新的项目和工作流。这往往发生在已经为 agent 提供了充分上下文和明确角色的团队中，再增加一项指引：北极星目标。</p><p>北极星目标是宏大的、覆盖面广的目标，能帮助团队判断哪些任务和工作流是正确的选择。在 Anthropic，北极星目标始终由人类制定，并立足于公司的使命和业务目标。</p><p>北极星目标以书面形式清晰表述之后，人类会把它分享给团队中的 agent。接下来很关键的一步是，由人类选择哪些 agent 可以主动建议新的工作流来帮助实现这一长期目标。（团队中的每个 agent 都不太可能同时具备主动提出建议所需的技能和信任。）</p><p>例如，一个以“让产品新手上手体验更有帮助”为北极星目标的内部工具团队，看到一个 agent 主动建议修改上手流程中错误信息的文案。这些修改在接下来的一周里显著提升了上手成功率。</p><p>在 Anthropic，设定北极星目标体现在：</p><ul role="list"><li>由团队的人类讨论、辩论并记录一个人机团队的宏大北极星目标——一个植根于公司使命和业务目标的目标</li><li>将北极星目标分享给团队中的 agent，并明确指定哪些 agent 可以主动推荐新的工作流</li><li>在日程上保护高质量的人类时间，让会议聚焦于最重要的工作</li></ul><p>清晰的北极星目标为 agent 提供了一致的努力方向，也为它们主动支持团队工作创造了有意义的契机。</p><h2><strong>经验四：随着时间推移逐步建立信任</strong></h2><p>Anthropic 的团队会根据 agent 已展示的可靠性授予其自主权，然后再审慎地逐步扩大。工程师们已经成功地让团队中的 agent 独立处理了 500 个 bug 修复，但事情当然不是一开始就这样。</p><p>当一位新的人类同事加入团队时，评估其能力并建立顺畅的协作惯例需要时间。通常需要多轮反馈，才能把“怎样把任务做到最好”的全部隐性知识显性化。对 agent 来说也是一样。用户需要通过给 agent 布置各种不同的任务来实验，从而了解 agent 的能力边界、如何清晰描述目标、它需要哪些技能文件，以及哪些提示词最能引导出期望的行为。随着模型的更新和改进，重新测试任务也很重要。提示词可能需要重新措辞，过去有帮助的护栏也可能束缚更聪明的模型，使其无法探索更有创造性的解决方案。</p><p>值得注意的是，我们发现最好的长期运行 agent 都有多种方式在人类查看之前验证自己的工作。代码当然有测试，但大多数其他工作同样可以被验证。例如，技术文档可以套用评分标准和风格指南。当人类设定质量标准，并确保分配给 agent 的所有工作都能被检验时，质量就能保持高位，不会偏离最初意图。另外，与人类一样，让一个 agent 负责执行任务、另一个 agent 负责检查第一个 agent 的工作，往往很有帮助。这通常被称为 <a href="https://www.anthropic.com/engineering/harness-design-long-running-apps" target="_blank">“执行者—验证者”（Doer-Verifier）agent 框架</a>。</p><p>在 Anthropic，随时间与 agent 建立信任体现在：</p><ul role="list"><li>初期人工审查 agent 的工作，以检验质量、提供反馈，并设计任务验证清单</li><li>告知 agent 将使用“验证者”agent 检查自己的工作，作为任务的一部分</li><li>在循环中内置复盘环节，要求 agent 回顾自己的失误，让工作质量随时间提升</li><li>追踪每个 agent 在哪些类型的任务上已赢得自主权，并在多次成功后按任务类型逐步扩大授权范围</li></ul><p>Anthropic 的一位工程负责人接手了一个积压了大量工作的团队。为了摸清情况，他邀请了几位人类和几个 agent 帮他梳理积压工作，并按重要性排序。其中一组 agent 通读了积压列表中的所有事项，判断是否有人在处理，并为无人认领的事项评估复杂度评分。另一组 agent 从列表中筛选出中等和低复杂度的事项，并创建代码变更。起初，人类会审查 agent 做出的每一个决策，并标记出需要人类介入的部分。随后，人类教会 agent 直接把这些决策提交给人类，确保涉及艰难权衡的决策始终有人类参与。</p><figure style="max-width:1200pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a3be9ee0c7dd123eea0fd03_9eb4409f.png" loading="lazy"></div></figure><p>每周，这位负责人和他的团队都会要求 agent 汇总一份包含“经验与失误”的周报，让 agent 记录错误，避免将来重蹈覆辙。随着时间推移，他能够把越来越复杂的代码变更交给 agent，自己则在指导 agent 日常任务上花费越来越少的时间。</p><p>而当 agent 更加独立之后，这位负责人又引导它们把人类的注意力当作稀缺资源来对待：把问题打包成一批、一次性作答，重复关键上下文以便人类快速进入状态，并控制每个人类一次能看到的事项数量。</p><p>帮助 agent 良好地沟通，能确保它们持续有用、高效。有些人的团队中设有专门的 agent，其唯一职责就是决定如何打包信息，只把最重要的沟通内容呈递给人类成员。另一些人为 agent 每天的工作量设定了护栏，使人类能够有意义地参与这些工作。这类护栏确保人类保住对自己重要的技能，也让需要人类审查的事项数量维持在可持续的水平。</p><h2><strong>值得自问的问题</strong></h2><p>在为你的人机团队打好基础时，不妨思考以下问题：</p><ol role="list"><li>agent 和人类所需的所有信息和访问权限，是否既公开又能被广泛检索？</li><li>你能否写下团队的完整名册（人类和 agent），并说明每个成员负责什么？</li><li>团队中的每个人类和 agent 是否都拥有完成本职工作所需的恰当工具？</li><li>你是否有供人类和 agent 验证关键工作成果的评分标准或测试？</li><li>你的团队是否有一个每个人都能引用的清晰北极星目标？</li></ol><h2><strong>展望未来</strong></h2><p>这些模式都不是新东西——至少对人类来说不是。宏大的北极星目标、清晰的角色、完善的文档、共同的质量标准，以及从错误中学习的空间，都是我们几十年前就知道的健康团队习惯。Agent 的出现，只是让坚持这些习惯变得更加重要。</p><p>从 agent 身上获得最大收益的团队，正是那些在践行这些基本原则上最有意识的团队。</p><p><strong>致谢</strong></p><p>本文作者为 Anthropic 教育团队的 Kristen Swanson。她感谢 Matt Bell、Erik Olesund、Hasnain Lakhani、Shale Craig、Nolan Caudill、Mike Schiraldi、Aleks Todorova 和 Molly Vorwerck 对本文的贡献。</p><p><em>开始构建多人 agent：在 Claude Code 中使用 </em><a href="https://code.claude.com/docs/en/agent-teams"><em>agent teams</em></a><em>，或使用 </em><a href="https://support.claude.com/en/articles/15594475-what-is-claude-tag"><em>Claude Tag</em></a><em>。</em></p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/building-effective-human-agent-teams" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "slug": "subagents-in-claude-code",
+  "title": "How and when to use subagents in Claude Code",
+  "date": "April 7, 2026",
+  "category": "Claude Code",
+  "url": "https://claude.com/blog/subagents-in-claude-code",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/subagents-in-claude-code.svg",
+  "illustrationBg": "Cactus",
+  "fetchedAt": "2026-09-02T03:50:17.784Z",
+  "translatedTitle": "如何以及何时在 Claude Code 中使用 subagent",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:49:22Z",
+  "translateLang": "zh-CN"
+}

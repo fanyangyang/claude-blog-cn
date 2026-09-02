@@ -1,0 +1,17 @@
+{
+  "slug": "agent-capabilities-api",
+  "title": "New capabilities for building agents on the Anthropic API",
+  "date": "May 22, 2025",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/agent-capabilities-api",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/agent-capabilities-api.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.789Z",
+  "translatedTitle": "在 Anthropic API 上构建智能体的全新能力",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:44:54.905Z",
+  "translateLang": "zh-CN"
+}

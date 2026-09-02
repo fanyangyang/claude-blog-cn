@@ -1,9 +1,17 @@
 {
   "slug": "claude-for-foundation-models",
-  "title": "Claude support for Apple's Foundation Models framework",
-  "date": "Unknown",
+  "title": "Building intelligent apps for Apple platforms with Claude in the Foundation Models framework",
+  "date": "June 8, 2026",
   "category": "Product announcements",
   "url": "https://claude.com/blog/claude-for-foundation-models",
   "fetchedAt": "2026-09-01T22:57:55.171Z",
-  "translated": false
+  "translated": true,
+  "inHero": true,
+  "heroIndex": 3,
+  "inGrid": true,
+  "illustration": "assets/illustrations/claude-for-foundation-models.svg",
+  "illustrationBg": "Clay",
+  "translatedTitle": "在 Foundation Models 框架中使用 Claude，为 Apple 平台构建智能应用",
+  "translatedAt": "2026-09-02T05:14:34.865Z",
+  "translateLang": "zh-CN"
 }

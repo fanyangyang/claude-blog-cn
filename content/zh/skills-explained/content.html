@@ -1,0 +1,123 @@
+<div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>自推出 <a href="https://www.anthropic.com/news/skills" target="_blank">Skills</a> 以来，很多人希望了解 Claude 的 agentic 生态中各个组件是如何协同工作的。</p><p>无论你是在 <a href="https://www.claude.com/product/claude-code" target="_blank">Claude Code</a> 中构建复杂工作流、用 API 打造企业级解决方案，还是在 <a href="http://claude.ai" target="_blank">Claude.ai</a> 上提升个人生产力，弄清楚什么时候该用哪个工具，都能彻底改变你与 Claude 协作的方式。</p><p>本指南将逐一拆解每个构建模块，解释各自的使用时机，并展示如何组合它们来打造强大的 agentic 工作流。</p><h2><strong>认识你的 agentic 构建模块</strong></h2><h3><strong>什么是 Skills？</strong></h3><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/IoqpBKrNaZI" title="Agent Skills: Specialized capabilities you can customize" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><p>Skills 是包含指令、脚本和资源的文件夹，Claude 会在与任务相关时动态发现并加载它们。可以把它们理解为专业培训手册，赋予 Claude 特定领域的专长——从操作 Excel 表格到遵循你组织的品牌规范。</p><p><strong>Skills 的工作方式：</strong>当 Claude 遇到一个任务时，它会扫描可用的 Skills，寻找相关的匹配项。Skills 采用渐进式披露（progressive disclosure）：元数据先加载（约 100 token），刚好让 Claude 知道某个 Skill 何时相关。完整指令在需要时加载（<5k token），捆绑的文件或脚本则仅在必要时加载。</p><p><strong>何时使用 Skills：</strong>当你需要 Claude 稳定高效地执行专门任务时，请选择 Skills。它们非常适合：</p><ul role="list"><li><strong>组织级工作流：</strong>品牌规范、合规流程、文档模板</li><li><strong>领域专长：</strong>Excel 公式、PDF 处理、数据分析</li><li><strong>个人偏好：</strong>笔记体系、编码模式、研究方法</li></ul><p><strong>示例：</strong>创建一个包含公司配色、字体规则和排版规范的<a href="https://github.com/anthropics/skills/tree/main/skills/brand-guidelines" target="_blank">品牌规范 Skill</a>。当 Claude 制作演示文稿或文档时，会自动应用这些标准，你不必每次都重新说明。</p><p><a href="https://support.claude.com/en/articles/12512176-what-are-skills" target="_blank">进一步了解</a> Skills，并浏览我们不断扩充的 <a href="https://github.com/anthropics/skills" target="_blank">Skills 库</a>。</p><h3><strong>什么是提示词（prompts）？</strong></h3><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/ysPbXH0LpIE" title="" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><p><a href="https://docs.claude.com/en/prompt-library/library" target="_blank">提示词</a>是你在对话中用自然语言向 Claude 下达的指令。它们是临时性的、对话式的、反应式的——你在当下提供上下文和方向。</p><p><strong>何时使用提示词：</strong>以下场景请使用提示词：</p><ul role="list"><li>一次性请求："总结这篇文章"</li><li>对话式调整："把语气改得更专业一些"</li><li>即时上下文："分析这份数据并找出趋势"</li><li>临时指令："把这些整理成项目符号列表"</li></ul><p><strong>示例：</strong></p><p><em>请对这段代码进行一次全面的安全审查。我希望看到：</em></p><p><em>1. 常见漏洞，包括：</em></p><ul role="list"><li><em>注入缺陷（SQL、命令、XSS 等）</em></li><li><em>身份验证与授权问题</em></li><li><em>敏感数据暴露</em></li><li><em>安全配置错误</em></li><li><em>访问控制失效</em></li><li><em>加密相关缺陷</em></li><li><em>输入校验问题</em></li><li><em>错误处理与日志问题</em></li></ul><p><em>2. 针对发现的每个问题，请提供：</em></p><ul role="list"><li><em>严重程度（Critical/High/Medium/Low）</em></li><li><em>代码中的位置（行号或函数名）</em></li><li><em>为什么它是安全风险、可能如何被利用的解释</em></li><li><em>具体的修复建议，尽可能附上代码示例</em></li><li><em>预防类似问题的最佳实践指引</em></li></ul><p><em>3. 代码背景：[描述代码的功能、语言/框架以及运行环境，例如："这是一个 Node.js REST API，负责用户身份验证并处理支付数据"]</em></p><p><em>4. 其他考虑事项：</em></p><ul role="list"><li><em>是否存在 OWASP Top 10 漏洞？</em></li><li><em>代码是否遵循 [特定框架/语言] 的安全最佳实践？</em></li><li><em>是否有已知存在漏洞的依赖项？</em></li></ul><p><em>请按严重程度和潜在影响对发现进行排序。</em></p><p><strong>小技巧：</strong>提示词是你与 Claude 交互的主要方式，但它们不会跨对话保留。对于重复性的工作流或专门知识，可以考虑把提示词沉淀为 Skills 或项目指令。</p><p><strong>何时改用 Skill：</strong>如果你发现自己在多次对话中反复输入同一个提示词，就该创建一个 Skill 了。把诸如"按照 OWASP 标准审查这段代码的安全漏洞"或"把这份分析整理成执行摘要、关键发现和建议"这类经常出现的指令转化为 Skill，可以免去每次重新解释流程的麻烦，并保证执行的一致性。</p><p>可以查看我们的<a href="https://docs.claude.com/en/prompt-library/library" target="_blank">提示词库</a>、<a href="http://claude.com/blog/prompt-engineering-best-practices" target="_blank">提示词最佳实践</a>，或<a href="https://claude.ai/public/artifacts/3796db7e-4ef1-4cab-b70c-d045778f23ec" target="_blank">智能提示词生成器</a>来上手。</p><h3><strong>什么是 Projects？</strong></h3><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/nbG2DO6Xsek" title="Shareable Projects in Claude" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><p><a href="https://support.claude.com/en/articles/9517075-what-are-projects" target="_blank">Projects</a> 在所有付费 Claude 计划中可用，它们是自带聊天历史和知识库的独立工作区。每个项目拥有一个 200K 的上下文窗口，你可以在其中上传文档、提供背景信息，并设置对该项目内所有对话生效的自定义指令。</p><p><strong>Projects 的工作方式：</strong>你上传到项目知识库的所有内容，都会对项目内的所有聊天可用。Claude 会自动利用这些上下文，给出更充分、更切题的回答。当项目知识接近上下文上限时，Claude 会无缝启用检索增强生成（RAG）模式，将容量最多扩展 10 倍。</p><p><strong>何时使用 Projects：</strong>在以下需求时选择 Projects：</p><ul role="list"><li><strong>持久上下文：</strong>应当为每一次对话提供背景的知识</li><li><strong>工作区组织：</strong>为不同事项划分独立的上下文</li><li><strong>团队协作：</strong>共享知识与对话历史（Team 和 Enterprise 计划）</li><li><strong>自定义指令：</strong>项目特定的语气、视角或方法</li></ul><p><strong>示例：</strong>创建一个"Q4 产品发布"项目，放入市场调研、竞品分析和产品规格。该项目内的每次聊天都能使用这些知识，你不必重新上传或重新解释背景。</p><p><strong>何时改用 Skill：</strong>Projects 为某项具体工作（你们的代码库、一项研究计划、一个持续的客户项目）提供持久上下文；Skills 教会 Claude 如何做事。一个 Project 可能装着产品发布的全部背景资料，而一个 skill 可以教会 Claude 你们团队的写作规范或代码审查流程。如果你发现自己在多个 Projects 之间复制同样的指令，那就是该创建 skill 的信号。</p><p><a href="https://support.claude.com/en/articles/9517075-what-are-projects" target="_blank">进一步了解</a> Projects。</p><h3><strong>什么是 subagents？</strong></h3><p><a href="https://docs.claude.com/en/docs/claude-code/sub-agents" target="_blank">Subagents</a> 是专门的 AI 助手，拥有自己的上下文窗口、自定义系统提示词和特定的工具权限。它们在 Claude Code 和 Claude Agent SDK 中可用，独立处理具体任务并将结果返回给主 agent。</p><p><strong>Subagents 的工作方式：</strong>每个 subagent 都按自己的配置运行——你定义它做什么、如何解决问题、可以访问哪些工具。Claude 会根据它们的描述自动把任务委派给合适的 subagent，你也可以显式指定某个 subagent。</p><p><strong>何时使用 subagents：</strong>以下场景请使用 subagents：</p><ul role="list"><li><strong>任务专门化：</strong>代码审查、测试生成、安全审计</li><li><strong>上下文管理：</strong>让主对话保持聚焦，把专门工作分流出去</li><li><strong>并行处理：</strong>多个 subagent 可以同时处理不同侧面</li><li><strong>工具限制：</strong>把特定 subagent 限制在安全操作内（例如只读访问）</li></ul><p><strong>示例：</strong></p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-plaintext" style="white-space:pre-wrap"><span><span>Create a code-reviewer subagent with access to Read, Grep, and Glob tools but not Write or Edit. When you modify code, Claude automatically delegates to this subagent for quality and security review without risking unintended code changes.</span></span></code></pre><p><strong>何时改用 Skill：</strong>如果多个 agent 或对话需要同样的专长——比如安全审查流程或数据分析方法——请创建 Skill，而不要把这些知识内置到一个个 subagent 里。Skills 可移植、可复用，而 subagents 是为特定工作流量身定制的。要教给任何 agent 都能用的专长，用 Skills；需要独立执行任务并配合特定工具权限和上下文隔离时，用 subagents。</p><p><a href="https://code.claude.com/docs/en/sub-agents" target="_blank">进一步了解</a> subagents。</p><h3><strong>什么是 MCP？</strong></h3><figure style="max-width:1600pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69141f0993d68ff4c536f316_619a5262.png" loading="lazy"></div><figcaption>MCP 在 AI 应用与你现有的工具、数据源之间建立一个通用连接层。</figcaption></figure><p>Model Context Protocol（MCP）是一个开放标准，用于把 AI 助手连接到数据所在的外部系统——内容仓库、业务工具、数据库和开发环境。</p><p><strong>MCP 的工作方式：</strong>MCP 提供了一种标准化的方式，把 Claude 连接到你的工具和数据源。你不需要为每个数据源单独构建定制集成，只需面向单一协议开发。MCP server 暴露数据和能力；MCP 客户端（比如 Claude）连接这些 server。</p><p><strong>何时使用 MCP：</strong>当你需要 Claude 做以下事情时，选择 MCP：</p><ul role="list"><li>访问外部数据：Google Drive、Slack、GitHub、数据库</li><li>使用业务工具：CRM 系统、项目管理平台</li><li>连接开发环境：本地文件、IDE、版本控制</li><li>集成自定义系统：你的专有工具和数据源</li></ul><p><strong>示例：</strong>通过 MCP 把 Claude 连接到公司的 Google Drive。Claude 就可以搜索文档、读取文件、引用内部知识，无需手动上传——连接持久存在并自动更新。</p><p><strong>何时改用 Skill：</strong>MCP 把 Claude 连接到数据；Skills 教会 Claude 拿这些数据做什么。如果你是在解释<em>如何</em>使用某个工具或遵循某套流程——比如"查询我们的数据库时，总是先按日期范围过滤"或"用这些特定公式格式化 Excel 报表"——那是 Skill。如果你需要 Claude 首先<em>访问</em>数据库或 Excel 文件，那是 MCP。把两者搭配使用：MCP 负责连接，Skills 负责流程知识。</p><p><a href="https://www.anthropic.com/news/model-context-protocol" target="_blank">进一步了解</a> MCP，并查阅如何构建 MCP server 的<a href="https://modelcontextprotocol.io/docs/develop/build-server" target="_blank">文档</a>。</p><h2><strong>它们如何协同工作</strong></h2><p>当你把这些构建模块组合起来，真正的威力才会显现。每个模块各司其职，合在一起就能构建出复杂的 agentic 工作流。</p><h3><strong>对比：选择合适的工具</strong></h3><div class="w-embed"><figure>
+  <div role="region" tabindex="0">
+    <table>
+      <thead>
+        <tr>
+          <th>特性</th>
+          <th>Skills</th>
+          <th>提示词</th>
+          <th>Projects</th>
+          <th>Subagents</th>
+          <th>MCP</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>提供什么</b></td>
+          <td>流程知识</td>
+          <td>即时指令</td>
+          <td>背景知识</td>
+          <td>任务委派</td>
+          <td>工具连接</td>
+        </tr>
+        <tr>
+          <td><b>持久性</b></td>
+          <td>跨对话</td>
+          <td>单次对话</td>
+          <td>项目内</td>
+          <td>跨会话</td>
+          <td>持续连接</td>
+        </tr>
+        <tr>
+          <td><b>包含内容</b></td>
+          <td>指令 + 代码 + 资源</td>
+          <td>自然语言</td>
+          <td>文档 + 上下文</td>
+          <td>完整 agent 逻辑</td>
+          <td>工具定义</td>
+        </tr>
+        <tr>
+          <td><b>加载时机</b></td>
+          <td>按需动态加载</td>
+          <td>每一轮</td>
+          <td>项目中始终存在</td>
+          <td>被调用时</td>
+          <td>始终可用</td>
+        </tr>
+        <tr>
+          <td><b>能否包含代码</b></td>
+          <td>能</td>
+          <td>不能</td>
+          <td>不能</td>
+          <td>能</td>
+          <td>能</td>
+        </tr>
+        <tr>
+          <td><b>最适合</b></td>
+          <td>专门技能</td>
+          <td>快速请求</td>
+          <td>集中式上下文</td>
+          <td>专门任务</td>
+          <td>数据访问</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</figure></div><h3><strong>Agentic 工作流示例：研究 agent</strong></h3><p>让我们构建一个组合了多个构建模块的完整研究 agent。这个例子展示如何组装并激活一个用于竞争分析的 agent。</p><p><strong>第 1 步：搭建你的 Project</strong></p><p>创建一个"竞争情报"项目并上传：</p><ul role="list"><li>行业报告和市场分析</li><li>竞品产品文档</li><li>来自 CRM 的客户反馈</li><li>以往的研究总结</li></ul><p>添加项目指令：</p><p><em>从我们产品战略的视角分析竞争对手。重点关注差异化机会和新兴市场趋势。呈现结论时附上具体证据和可执行的建议。</em></p><p><strong>第 2 步：通过 MCP 连接数据源</strong></p><p>为以下服务启用 MCP server：</p><ul role="list"><li>Google Drive（访问共享研究文档）</li><li>GitHub（审查竞争对手的开源仓库）</li><li>网络搜索（获取实时市场信息）</li></ul><p><strong>第 3 步：创建专门的 Skills</strong></p><p>创建一个"competitive-analysis"skill：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-plaintext" style="white-space:pre-wrap"><span><span># My Company GDrive Navigation Skill
+</span></span><span>
+</span><span>## Overview
+</span><span>Optimized search and retrieval strategy for Meridian Tech's Google Drive structure. Use this skill to efficiently locate internal documents, research, and strategic materials.
+</span><span>
+</span><span>## Drive Organization
+</span><span>
+</span><span>**Top-level structure:**
+</span><span>- `/Strategy &amp; Planning/` - OKRs, quarterly plans, board decks
+</span><span>- `/Product/` - PRDs, roadmaps, technical specs
+</span><span>- `/Research/` - Market research, competitive intel, user studies
+</span><span>- `/Sales &amp; Marketing/` - Case studies, pitch decks, campaign materials
+</span><span>- `/Customer Success/` - Implementation guides, success metrics
+</span><span>- `/Company Ops/` - Policies, org charts, team directories
+</span><span>
+</span><span>**Naming conventions:**
+</span><span>- Format: `YYYY-MM-DD_DocumentName_vX`
+</span><span>- Final versions marked with `_FINAL`
+</span><span>- Drafts include `_DRAFT` or `_WIP`
+</span><span>
+</span><span>## Search Best Practices
+</span><span>
+</span><span>1. **Start broad, then filter** - Use folder context + keywords
+</span><span>2. **Target document owners** - Sales materials from Sales/, not root
+</span><span>3. **Check recency** - Prioritize documents from last 6 months for current strategy
+</span><span>4. **Look for "source of truth"** - Files with `_FINAL`, `_APPROVED`, or in `/Archives/Official/`
+</span><span>
+</span><span>## Research Agent Workflow
+</span><span>
+</span><span>1. Identify topic category (product, market, customer)
+</span><span>2. Search relevant folder with targeted keywords
+</span><span>3. Retrieve 3-5 most recent/relevant documents
+</span><span>4. Cross-reference with `/Strategy &amp; Planning/` for context
+</span><span>5. Cite sources with file names and dates</span></code></pre><p><strong>第 4 步：配置 subagents（仅限 Claude Code/SDK）</strong></p><p>创建专门的 subagents：</p><p><code>market-researcher</code> subagent：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-plaintext" style="white-space:pre-wrap"><span><span>name: market-researcher
+</span></span><span>description: Research market trends, industry reports, and competitive landscape data. Use proactively for competitive analysis.
+</span><span>tools: Read, Grep, Web-search
+</span><span>---
+</span><span>You are a market research analyst specializing in competitive intelligence.
+</span><span>
+</span><span>When researching:
+</span><span>1. Identify authoritative sources (Gartner, Forrester, industry reports)
+</span><span>2. Gather quantitative data (market share, growth rates, funding)
+</span><span>3. Analyze qualitative insights (analyst opinions, customer reviews)
+</span><span>4. Synthesize trends and patterns
+</span><span>
+</span><span>Present findings with citations and confidence levels.</span></code></pre><p><code>technical-analyst </code>subagent：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-plaintext" style="white-space:pre-wrap"><span><span>name: technical-analyst
+</span></span><span>description: Analyze technical architecture, implementation approaches, and engineering decisions. Use for technical competitive analysis.
+</span><span>tools: Read, Bash, Grep
+</span><span>---
+</span><span>You are a technical architect analyzing competitor technology choices.
+</span><span>
+</span><span>When analyzing:
+</span><span>1. Review public repositories and technical documentation
+</span><span>2. Assess architecture patterns and technology stack
+</span><span>3. Evaluate scalability and performance approaches
+</span><span>4. Identify technical strengths and limitations
+</span><span>
+</span><span>Focus on actionable technical insights that inform our product decisions.</span></code></pre><p><strong>第 5 步：激活你的研究 agent</strong></p><p>现在，当你对 Claude 说："分析我们排名前三的竞争对手如何定位他们的新 AI 功能，并找出我们可以利用的差距"</p><p>接下来会发生这些事：</p><ol role="list"><li><strong>项目上下文加载</strong>：Claude 访问你上传的研究文档，并遵循项目指令</li><li><strong>MCP 连接激活</strong>：Claude 搜索你的 Google Drive 获取最新竞品简报，并拉取 GitHub 数据</li><li><strong>Skills 生效</strong>：competitive-analysis Skill 提供分析框架</li><li><strong>Subagents 执行</strong>（在 Claude Code 中）：market-researcher 收集行业数据，technical-analyst 审查技术实现</li><li><strong>提示词微调</strong>：你以对话方式给出指引："特别关注医疗行业的企业客户"</li></ol><p><strong>最终结果：</strong>一份全面的竞争分析——它调用多个数据源，遵循你的分析框架，借助专门的技能，并在整个研究项目中保持上下文连贯。</p><h2><strong>常见问题</strong></h2><h4><strong>Skills 是如何工作的？</strong></h4><p>Skills 使用<a href="https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills" target="_blank">渐进式披露</a>来保持 Claude 的高效。在处理任务时，Claude 先扫描 Skill 的元数据（描述和摘要）以识别相关匹配项。如果某个 Skill 匹配，Claude 再加载完整指令。最后，如果该 Skill 包含可执行代码或参考文件，这些只在需要时才加载。</p><p>这一架构意味着你可以准备大量 Skills，而不会撑爆 Claude 的上下文窗口。Claude 会在需要的时候，精确地取用需要的内容。</p><h4><strong>Skills 与 subagents：该用哪个</strong></h4><p><strong>使用 Skills 的场景：</strong>你希望任何 Claude 实例都能加载并使用的能力。Skills 就像培训材料——它们让 Claude 在所有对话中都更擅长特定任务。</p><p><strong>使用 subagents 的场景：</strong>你需要为特定目的设计、能独立处理工作流的完整自足 agent。Subagents 就像拥有自己上下文和工具权限的专职员工。</p><p><strong>组合使用的场景：</strong>你希望 subagent 拥有专门技能。例如，一个代码审查 subagent 可以使用针对语言最佳实践的 Skills，把 subagent 的独立性与 Skills 的可移植专长结合起来。</p><h4><strong>Skills 与提示词：该用哪个</strong></h4><p><strong>使用提示词的场景：</strong>你下达一次性指令、提供即时上下文，或进行来回对话。提示词是反应式的、临时的。</p><p><strong>使用 Skills 的场景：</strong>你有会反复用到的流程或专长。Skills 是主动式的——Claude 知道何时应用它们——并且跨对话持久存在。</p><p><strong>组合使用：</strong>提示词与 Skills 天然互补。用 Skills 提供基础专长，再用提示词为每个任务提供具体上下文和细化要求。</p><h4><strong>Skills 与 Projects：该用哪个</strong></h4><p><strong>使用 Projects 的场景：</strong>你需要为某个特定事项的所有对话提供背景知识和上下文。Projects 提供始终加载的静态参考资料。</p><p><strong>使用 Skills 的场景：</strong>你需要只在相关时才激活的流程知识和可执行代码。Skills 提供按需加载的动态技能，节省你的上下文窗口。</p><p><strong>组合使用：</strong>你既想要持久上下文，又想要专门能力。例如，一个包含产品规格和用户调研的"产品开发"项目，搭配用于撰写技术文档和分析用户反馈数据的 Skills。</p><p><strong>关键区别：</strong>Projects 说的是"你需要知道这些"。Skills 说的是"这些事要这么做"。Projects 提供你工作所依托的知识库；Skills 提供到处可用的能力——任何对话、任何项目。</p><h4><strong>Subagents 能使用 Skills 吗？</strong></h4><p>能。在 Claude Code 和 Agent SDK 中，subagent 可以像主 agent 一样访问和使用 Skills。这能形成强大的组合：专门的 subagent 借助可移植的专长。</p><p>例如，你的 python-developer subagent 可以使用 pandas-analysis Skill，按照你们团队的约定执行数据转换；而你的 documentation-writer subagent 使用 technical-writing skill，以一致的格式撰写 API 文档。</p><h2><strong>开始使用</strong></h2><p>准备好用 Skills 构建了吗？按以下步骤开始：</p><p><a href="https://Claude.ai" target="_blank"><strong>Claude.ai</strong></a><strong> 用户：</strong></p><ul role="list"><li>在 Settings → Features 中启用 Skills</li><li>在 claude.ai/projects 创建你的第一个项目</li><li>在下一次分析任务中，尝试把项目知识与 Skills 结合起来</li></ul><p><strong>API 开发者：</strong></p><ul role="list"><li>在<a href="https://docs.anthropic.com" target="_blank">文档</a>中探索 Skills 端点</li><li>查看我们的 <a href="https://platform.claude.com/cookbook/skills-notebooks-01-skills-introduction" target="_blank">skills cookbook</a></li></ul><p><strong>Claude Code 用户：</strong></p><ul role="list"><li>通过<a href="https://code.claude.com/docs/en/plugin-marketplaces" target="_blank">插件市场</a>安装 Skills</li><li>查看我们的 <a href="https://platform.claude.com/cookbook/skills-notebooks-01-skills-introduction" target="_blank">skills cookbook</a><br></li></ul></div>

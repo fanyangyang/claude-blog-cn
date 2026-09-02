@@ -1,0 +1,133 @@
+<div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><div class="w-embed"><style>
+  /* Fluid breakout for blog embeds + code blocks */
+  .u-rich-text-blog .w-embed,
+  .u-rich-text-blog pre.w-code-block {
+    --max-w: 860px;
+    --gutter: 24px;
+    --available: calc(100vw - (var(--gutter) * 2));
+    --w: min(var(--max-w), var(--available));
+    width: var(--w);
+    max-width: var(--w);
+    margin-left: calc((640px - var(--w)) / 2);
+    margin-right: calc((640px - var(--w)) / 2);
+    box-sizing: border-box;
+  }
+  @media (max-width: 720px) {
+    .u-rich-text-blog .w-embed,
+    .u-rich-text-blog pre.w-code-block {
+      width: 100%;
+      max-width: 100%;
+      margin-left: 0;
+      margin-right: 0;
+    }
+    /* Constrain the post column to the viewport so nothing overflows the page */
+    .blog_post_layout.u-column-custom,
+    .blog_post_content_wrap,
+    .u-rich-text-blog {
+      max-width: 100% !important;
+      box-sizing: border-box;
+    }
+    html,
+    body {
+      overflow-x: hidden;
+    }
+  }
+  /* Embed inner wrappers: scroll horizontally when content overflows */
+  .u-rich-text-blog .w-embed figure {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+  .u-rich-text-blog .w-embed figure > div {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  /* Tables: ratios on wider screens, natural width + scroll on mobile */
+  .u-rich-text-blog .w-embed table {
+    width: 100% !important;
+    table-layout: fixed !important;
+  }
+  .u-rich-text-blog .w-embed table th:nth-child(1),
+  .u-rich-text-blog .w-embed table td:nth-child(1) {
+    width: 22%;
+  }
+  .u-rich-text-blog .w-embed table th:nth-child(2),
+  .u-rich-text-blog .w-embed table td:nth-child(2) {
+    width: 39%;
+  }
+  .u-rich-text-blog .w-embed table th:nth-child(3),
+  .u-rich-text-blog .w-embed table td:nth-child(3) {
+    width: 39%;
+  }
+  .u-rich-text-blog .w-embed td code,
+  .u-rich-text-blog .w-embed th code {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    white-space: normal;
+  }
+  @media (max-width: 639px) {
+    .u-rich-text-blog .w-embed table {
+      width: auto !important;
+      min-width: 640px !important;
+      table-layout: auto !important;
+    }
+    .u-rich-text-blog .w-embed table th,
+    .u-rich-text-blog .w-embed table td {
+      min-width: 0 !important;
+      width: auto !important;
+    }
+  }
+  /* Code blocks */
+  .u-rich-text-blog pre.w-code-block {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  @media (max-width: 639px) {
+    .u-rich-text-blog pre.w-code-block {
+      font-size: 0.82rem;
+    }
+  }
+</style></div><p>2024 年，Claude 还待在聊天窗口里。你提出问题，它给出回答，但要把回答变成有用的东西，还是得靠你自己。2025 年，Claude Code 让工程师们的交付速度快到让我们其他人有点眼红。</p><p>今年，我们所有人都能跟上节奏了——借助 <a href="https://claude.com/product/cowork" target="_blank">Claude Cowork</a>。</p><p>我从去年开始用 Claude Code 来处理聊天模式应付不了的长流程、多步骤任务。不到一周，我就从一个不知道终端是什么的人，变成了搭建出<a href="https://claude.com/blog/how-anthropic-uses-claude-marketing" target="_blank">能把 30 分钟任务在 30 秒内完成的 Claude Code 工作流</a>的人。当时我用 Claude Code 做非技术工作，纯粹是因为 Claude Cowork 还不存在。</p><p>现在，我 90% 的工作都在 <a href="https://claude.com/product/cowork" target="_blank">Claude Cowork</a> 中完成。在这篇文章里，我会告诉你如何判断哪些任务适合交给它，通过我工作中的真实案例带你走一遍流程，并让你在大约十分钟内产出第一份完成的交付物。</p><h2>Chat、Claude Cowork 与 Claude Code 怎么选</h2><p>如果你的工作是非技术性的知识工作——邮件、幻灯片、表格、文档、会议，以及“能不能帮我汇总一下这个”——那 Claude Cowork 就是为你准备的。你不需要会写代码，也不需要知道什么是“智能体”或者怎么搭建一个。</p><p>如果你在过去两年里一直开着 100 多个标签页和文件，其中一个标签页是 AI 聊天，你把提示词或问题复制粘贴进去，再把答案复制粘贴出来，那你已经会用 Claude Cowork 了。它做的就是这件事，只是省去了复制粘贴。</p><p>Chat、Claude Cowork、Claude Code、Claude Design，以及 Claude 出现的所有其他地方，背后都是同一批 Claude 模型。它们是用于不同工作类型的独立工作区，但内部运行的是同样的模型。下面是一个帮助你判断何时使用哪一个的框架：</p><ul role="list"><li><strong>Chat</strong> 往往是知识工作者接触 Claude 的起点。你把自己手头的东西交给 Claude：上传一个文件、粘贴一段文字、描述一下情况，然后得到回答。Chat 适合获取答案、头脑风暴和梳理思路。</li><li>Claude 桌面应用中的 <strong>Claude Cowork</strong> 则把这件事反转过来。不是你把工作带给 Claude，而是把 Claude 带到你的工作中。你让它指向电脑上的某个文件夹，把它连接到你已经在用的应用，然后告诉它你想完成什么。使用 Claude Cowork 时，你只需描述一个成果，然后走开，回来时工作已经完成。<strong>‍</strong></li><li><strong>Claude Code</strong> 专为构建和交付软件的开发者设计。如果你的工作以代码为核心，从它开始。</li></ul><p>很多人不知道，Claude Cowork 和 Claude Code 底层运行在同一个<a href="https://code.claude.com/docs/en/how-claude-code-works">引擎</a>上。</p><h3>什么时候该用 Claude Cowork？</h3><p>理解什么时候用 Claude Cowork、什么时候用 Chat，是大多数人卡住的地方，所以这里分享我的经验法则：</p><ul role="list"><li>如果想要的东西在几轮对话内就能解决，比如一个问题、一段解释、一次头脑风暴或一个快速求证，<strong>用 Chat</strong>。</li><li>如果你需要的是一份交付物——比如一个别人会打开的文件、一份别人会演示的幻灯片、一张待整理的表格——<strong>用 Claude Cowork</strong>。凡是多步骤的、涉及多个文件或文件类型的、跨多个应用的，或者你会把它描述为“任务”而不是“问题”的事情，都用它。使用 Claude Cowork 时，你是在把工作<em>委派</em>给 Claude。</li></ul><p>下面举几个例子，帮你找到这条分界线在哪里：</p><div class="w-embed"><figure>
+  <div role="region" tabindex="0">
+    <table>
+      <colgroup>
+        <col style="width: 70%">
+        <col style="width: 30%">
+      </colgroup>
+      <thead>
+        <tr>
+          <th scope="col">示例问题或任务</th>
+          <th scope="col">使用</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>我们的业务回顾会议上应该讲些什么？</td>
+          <td>Chat</td>
+        </tr>
+        <tr>
+          <td>读取这个 Google Drive 文件夹里过去三个月的会议记录，用我们的模板帮我做一份 QBR 幻灯片。</td>
+          <td>Claude Cowork</td>
+        </tr>
+        <tr>
+          <td>VLOOKUP 怎么用？</td>
+          <td>Chat</td>
+        </tr>
+        <tr>
+          <td>检查我所有的表格，把里面的 VLOOKUP 全部改成 INDEX MATCH。</td>
+          <td>Claude Cowork</td>
+        </tr>
+        <tr>
+          <td>帮这个页面想一个更好的标题标签和 meta 描述。</td>
+          <td>Chat</td>
+        </tr>
+        <tr>
+          <td>按照这份表格里 30 个页面的新标题标签和 meta 描述，通过 CMS 连接器统一更新。</td>
+          <td>Claude Cowork</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</figure></div><p>最常见的错误，是凡事都用 Chat，从未体会过 Claude Cowork 能带来的差异。相反的错误则是把一次性的小问题也丢给 Claude Cowork，然后干等着本可以由 Chat 在五秒内回答的问题出结果。</p><h3>适合 Claude Cowork 的任务有五个特征</h3><p>刚上手时如果不确定该把哪些项目委派给 Claude Cowork，可以用这份清单过一遍。不必五条全部满足，但一个合适的候选任务通常能命中其中几条：</p><ol role="list"><li><strong>输入不止一样东西。</strong>多个文件、一整个文件夹，或者一个文件加上若干连接器。如果只有一个输入，Chat 大多数情况下就够用了（不过你仍可以多试试）。</li><li><strong>产出是一个文件。</strong>你需要一份可以附加、演示、分享或再利用的交付物：文档、幻灯片、表格或 CSV。</li><li><strong>你会反复做这件事。</strong>一次性的任务也没问题，但周期性任务才是最佳场景。你可以把它们安排在你还没到工位之前就自动运行。</li><li><strong>你已经知道“好”长什么样。</strong>你对产出的形态很熟悉，所以能在 15 秒内判断结果是正确的、错误的，还是完成了七成。</li><li><strong>中间过程是无聊的部分。</strong>思考集中在一头一尾：开头是决定你要什么，结尾是判断结果对不对。中间的一切（提取、汇总、核对、重新排版）就是你交出去的部分。</li></ol><h2>我在 Anthropic 如何使用 Claude Cowork</h2><p>我在 Anthropic 负责增长营销，所以我的例子都带着营销色彩。不要照搬这些工作流——从长远看那不会有什么帮助。要看的是每个案例如何命中上面清单中的若干条，因为那才是你在自己的 Claude Cowork 工作流中要寻找的模式。</p><h3>每日简报</h3><p>营销人员每天收到的 Slack 消息和邮件数量可能让人喘不过气。我设置了一个每天早上 6 点运行的“每日简报”任务。Claude Cowork 连接了我的 Slack 和 Gmail，我的提示词告诉它查看我未读的邮件和我关注的频道，把它们分类整理，并生成一份简短的报告。</p><figure style="max-width:1815pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1e1e027cf5a76278798b40_CleanShot%202026-05-19%20at%2014.56.25.png" loading="lazy"></div></figure><p>这份报告会给我一个“需要关注什么”的 TLDR、按类型分组的标记邮件、频道摘要，以及任何可能影响营销的隔夜产品相关事件。任何被 Slack 和邮件淹没的人都可以运行某个版本的这个工作流。</p><h3>预算消耗进度</h3><p>我的部分职责包括效果营销的预算消耗进度管理。这是那种没人想干的活，因为既无聊又繁琐。许多效果营销团队会在 Google Sheets 中跟踪每日花费和消耗速率，来估算达成目标的进度。要么你手动从每个渠道导出每日花费再粘贴到表格里，要么你花钱买第三方工具帮你做数据的抽取、转换和加载。</p><figure style="max-width:4272pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1e1e995df01f6fda548ac6_CleanShot%202026-05-19%20at%2013.33.32%402x.png" loading="lazy"></div></figure><p>有了 Claude Cowork，我连接 Google Ads 和 Meta Ads，在桌面应用中创建一个实时 artifact（本质上就是一个 HTML 仪表盘），自动拉取我的每日花费并帮我计算消耗进度。我还可以直接用自然语言告诉 Claude 如何筛选我的广告系列，以及需要留意什么。</p><p>拿上面的清单来对照：多个数据源输入（每个渠道的花费）、产出一个文件（这里是仪表盘）、我会不断重新运行，而中间过程正是那种榨干灵魂的“下载—复制—粘贴”机械劳动，我绝对不想自己干。由于广告平台都是通过连接器集成的，我可以随时更新这个仪表盘。</p><h3>报告</h3><p>我不是导出一堆 CSV 再手动建数据透视表或合并文件，而是让 Claude Cowork 连接 Google Search Console。它拉取我关心的内容（查询词、国家、页面），并核对汇总到一张表格里——而不是像 Google 默认的那样，手动导出数据时每个维度一个 CSV。</p><figure style="max-width:3630pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1e1ed16cb3dd91de3b5612_CleanShot%202026-05-19%20at%2013.46.03%402x.png" loading="lazy"></div></figure><p>我还会告诉 Claude 该关注什么，比如对比最近七天和之前七天、只筛选特定国家、标记任何有明显变化的项目，并按照我想要的模板撰写报告。之后我可以随意微调，或者向 Claude 追问。</p><figure style="max-width:3630pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1e1f056c0d01abd9a59479_CleanShot%202026-05-19%20at%2013.46.22%402x.png" loading="lazy"></div></figure><p>借助 Claude Cowork 的定时功能，这每周自动运行一次。报告以前每周要花我大约 30 分钟，现在只要 5 分钟，而且我可以把时间花在真正需要判断力的部分：补充缺失的背景、打磨重点提示。</p><p>这些只是我使用 Claude Cowork 的几个例子，连冰山一角都算不上。我还写过另一篇文章，通过一个更复杂的用例做了<a href="https://www.linkedin.com/feed/update/urn:li:activity:7448056387772833795/" target="_blank">更详细的拆解</a>，其中涉及插件、Skills、本地 MCP 和 <a href="https://support.claude.com/en/articles/13947068-assign-tasks-from-anywhere-in-claude-cowork" target="_blank">Dispatch</a>，欢迎查阅更多最佳实践。</p><h2>你的前 10 分钟 Claude Cowork 体验</h2><p>第一次打开应用？按下面的步骤开始：</p><ol role="list"><li>打开 Claude 桌面应用，切换到 Claude Cowork 标签页。</li><li>给 Claude 一些可用的材料。放入几个文件、让它指向电脑上的某个文件夹，或者连接一个你常用的应用（Slack、Gmail、Notion、CRM 等）。Claude Cowork 产出的平庸与出色之间的差距，几乎从来不在你的提示词，而在于你是否提供了足够丰富的上下文供 Claude 使用。</li><li>告诉 Claude 你想要的成果。描述你最终想要的交付物，并提供必要的背景信息。</li><li>从一个你非常熟悉的真实任务开始。你会立刻看到它哪里强、哪里需要你补充上下文，而且你本来就知道这个任务的“好”是什么样子。</li><li>让 Claude 在开始之前先向你提问。这是我养成的最有用的习惯。在提示词里加上这句：<em>开始之前，先向我复述一遍我的需求以确认我们理解一致，然后把你所有想澄清的问题都问我。</em></li></ol><p>这会暴露出你没想到要说明的事情，比如我们看的是哪个时间段、这里的“好”意味着什么、有哪些你才知道而 Claude 不知道的边界情况。陷阱在于假设 Claude 已经知道那些对你来说显而易见的东西。提前回答五个问题只花你 30 秒；事后发现同样的遗漏，花费的是你的时间和 token，而且返工很痛苦。</p><p>还是不确定该交出什么？问 Claude。Claude 有记忆功能，可以搜索你过去的对话，所以你可以问它你最常做哪些任务，以及哪些任务值得在 Claude Cowork 里试试。</p><figure style="max-width:1815pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1e1f566c0d01abd9a5a6a9_CleanShot%202026-05-19%20at%2015.05.52.png" loading="lazy"></div></figure><h3>我仍然会用 Chat 的场景</h3><p>我依然大量使用 Chat 来讨论定位问题、在下定决心之前压力测试一个想法，或者问一些随机问题，比如我家狗为什么总舔床。</p><p>重点不在于 Chat 是“过时的东西”。Chat 适用于产出是你脑中一个想法的场景，而 Claude Cowork 适用于产出是你要交给别人的东西的场景。</p><h2>去做点什么吧</h2><p>挑一个你每周都会做的重复性任务，试着用<a href="https://claude.com/product/cowork" target="_blank"> Claude Cowork</a> 完成它，看看结果如何。最初几个任务可能感觉有点别扭，但试过几次之后，你很快就会从“这要怎么用”变成“下一个该交给它什么”。</p><p><em>本文作者为 Anthropic 增长团队的 Austin Lau，表达的是他个人对 Claude Cowork 的观点、使用方式和心得。</em></p></div>

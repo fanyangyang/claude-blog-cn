@@ -1,0 +1,17 @@
+{
+  "slug": "cowork-chrome-side-panel",
+  "title": "The Claude in Chrome side panel is now Claude Cowork",
+  "date": "August 12, 2026",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/cowork-chrome-side-panel",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/cowork-chrome-side-panel.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.776Z",
+  "translatedTitle": "Claude in Chrome 侧边栏现已升级为 Claude Cowork",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:30:13.000Z",
+  "translateLang": "zh-CN"
+}

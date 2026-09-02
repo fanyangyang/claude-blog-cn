@@ -1,1 +1,290 @@
-<div class="u-rich-text-blog u-margin-trim w-richtext"><p>Claude Code 是 Anthropic 的 AI 编程助手，直接在你的终端中工作。对于创业公司来说，Claude Code 可以帮助小团队以更快的速度构建产品，减少重复性工作，让开发者专注于真正重要的事情。</p><p>本指南涵盖了创业公司如何最大化利用 Claude Code 的最佳实践，包括设置、工作流程以及团队协作模式。</p><h2>快速开始</h2><p>Claude Code 可以直接在终端中安装和使用。它理解你的代码库，可以编写代码、重构、调试和解释代码。</p><h2>创业公司的最佳实践</h2><ul><li><strong>从小的、明确的任务开始</strong>：让 Claude Code 处理明确定义的任务，如编写单元测试、重构函数或添加文档。</li><li><strong>使用描述性的提示</strong>：清晰描述你想要的代码，包括上下文、约束条件和期望的输出。</li><li><strong>审查所有生成的代码</strong>：始终审查 Claude Code 生成的代码，确保它符合你的标准和安全要求。</li><li><strong>迭代式开发</strong>：通过多轮对话逐步完善代码，而不是期望一次性得到完美的结果。</li></ul><h2>团队协作</h2><p>在创业团队中，Claude Code 可以作为团队的编程伙伴，帮助新成员快速上手代码库，减少知识传递的瓶颈。</p></div>
+<div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><div class="w-embed"><!-- cs- shared styles for The Claude Code Guide for Startups. Paste once at the top of the body. v5 -->
+<style>
+.w-richtext .cs-pdf{background:#141413;color:#faf9f5;border-radius:14px;padding:22px 26px;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center;margin:0 0 32px}
+.w-richtext .cs-pdf p{margin:0;font-size:15px;line-height:1.5;color:#faf9f5}
+.w-richtext .cs-pdf p b{color:#faf9f5;font-weight:600}
+.w-richtext .cs-pdf small{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:#d97757;margin-bottom:6px}
+.w-richtext .cs-btn{display:inline-block;font-size:14px;font-weight:500;text-decoration:none;color:#141413;background:#faf9f5;padding:11px 16px;border-radius:8px;white-space:nowrap;border:0}
+.w-richtext .cs-btn:hover{background:#e8e6dc}
+.w-richtext .cs-toc{border:1px solid #e8e6dc;border-radius:14px;padding:22px 26px;margin:0 0 32px;background:#fff}
+.w-richtext .cs-k{font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:#d97757;margin:0 0 10px}
+.w-richtext .cs-toc ol{margin:0 0 14px;padding:0;list-style:none;counter-reset:r}
+.w-richtext .cs-toc li{counter-increment:r;font-size:15px;line-height:1.45;margin:0 0 7px;padding:0;display:flex;gap:12px}
+.w-richtext .cs-toc li::before{content:"0" counter(r);font-size:14px;color:#d97757;min-width:24px;font-variant-numeric:tabular-nums}
+.w-richtext .cs-toc a{color:#141413;text-decoration:none;border-bottom:1px solid #e8e6dc}
+.w-richtext .cs-toc a:hover{border-color:#141413}
+.w-richtext .cs-co{display:grid;grid-template-columns:repeat(3,1fr);gap:10px 16px;margin:0;padding-top:16px;border-top:1px solid #e8e6dc}
+.w-richtext .cs-co a{display:flex;align-items:center;gap:10px;font-size:14px;color:#141413;text-decoration:none;border:0}
+.w-richtext .cs-co img{width:28px;height:28px;border-radius:7px;flex:none;object-fit:cover;background:#fff;border:1px solid #e8e6dc;margin:0;display:block}
+@media(max-width:560px){.w-richtext .cs-co{grid-template-columns:repeat(2,1fr)}}
+.w-richtext .cs-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 32px}
+.w-richtext .cs-stat{border-radius:12px;padding:16px 18px;font-size:15px;line-height:1.4;color:#141413}
+.w-richtext .cs-stat b{display:block;font-weight:400;font-size:30px;line-height:1;margin:0 0 6px;letter-spacing:-.01em}
+.w-richtext .cs-stat small{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;opacity:.6;margin:0 0 8px}
+.w-richtext .cs-part{background:#f1d9cc;border-radius:14px;padding:26px 28px 28px;display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:start;margin:12px 0 32px}
+.w-richtext .cs-part b{font-weight:400;font-size:62px;line-height:1;color:#141413;opacity:.35}
+.w-richtext .cs-part h2{font-family:inherit;font-weight:400;font-size:27px;line-height:1.15;margin:0 0 8px;padding:0;color:#141413}
+.w-richtext .cs-part p{margin:0;font-size:14.5px;line-height:1.5;color:#3b3a36}
+.w-richtext .cs-q{display:grid;grid-template-columns:56px 1fr;gap:18px;align-items:start;margin:0 0 32px}
+.w-richtext .cs-q img{width:56px;height:56px;border-radius:50%;object-fit:cover;background:#e8e6dc;margin:0;display:block}
+.w-richtext .cs-q .cs-av{width:56px;height:56px;border-radius:50%;overflow:hidden;background:#e8e6dc;display:block;flex:none}
+.w-richtext .cs-q .cs-av img{width:100%;height:100%;border-radius:0;object-fit:cover;transform-origin:var(--cs-focus,50% 50%);object-position:var(--cs-focus,50% 50%);transform:scale(var(--cs-zoom,1))}
+.w-richtext .cs-q blockquote{margin:0;padding:0;border:0;font-family:inherit;font-size:17px;line-height:1.55;font-style:normal;color:inherit}
+.w-richtext .cs-q blockquote a{color:inherit}
+.w-richtext .cs-q cite{display:block;font-style:normal;font-size:13px;color:inherit;opacity:.72;margin-top:8px}
+.w-richtext .cs-q cite b{color:inherit;font-weight:600}
+.w-richtext .cs-q cite a{color:inherit;text-decoration:none;border-bottom:1px solid currentColor}
+.w-richtext .cs-q cite a:hover{opacity:1}
+.w-richtext .cs-tip{background:#f3e3dc;border-radius:12px;padding:16px 20px;font-size:15px;line-height:1.55;margin:0 0 32px;color:#141413}
+.w-richtext .cs-tip>div{margin:0;padding:0;font-size:inherit;line-height:inherit;color:inherit}
+.w-richtext .cs-tip b{font-weight:600}
+.w-richtext .cs-tip code{font-family:Menlo,Consolas,monospace;font-size:12.5px;background:rgba(20,20,19,.08);padding:1px 5px;border-radius:4px;color:inherit}
+.w-richtext .cs-tip a{color:#141413}
+.w-richtext .cs-chk{border:1px solid #e8e6dc;border-radius:14px;padding:22px 24px;background:#fff;margin:0 0 32px}
+.w-richtext .cs-chk h4{font-family:inherit;font-size:13px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;margin:18px 0 8px;color:#6b6a64}
+.w-richtext .cs-chk h4:first-child{margin-top:0}
+.w-richtext .cs-chk label{display:grid;grid-template-columns:18px 1fr;gap:12px;align-items:start;font-size:14.5px;line-height:1.5;padding:7px 0;border-top:1px solid #f1efe8;cursor:pointer;color:#141413}
+.w-richtext .cs-chk input{margin:4px 0 0;accent-color:#d97757}
+.w-richtext .cs-chk input:checked+span{color:#b0aea5;text-decoration:line-through}
+.w-richtext .cs-chk a{color:#141413}
+@media(max-width:560px){.w-richtext .cs-pdf,.w-richtext .cs-stats{grid-template-columns:1fr}.w-richtext .cs-part{grid-template-columns:1fr;gap:8px}.w-richtext .cs-part b{font-size:40px}}
+</style></div>
+<div class="w-embed"><div class="cs-pdf"><div><small>Prefer a PDF?</small><p><b>本指南也提供下载版本</b>——同样的五条法则、创始人洞见与检查清单，排版适合离线阅读或分享给你的团队。</p>
+</div>
+<a class="cs-btn" href="https://cdn.prod.website-files.com/6889473510b50328dbb70ae6/6a85f3ce3623355a8a44ca36_Claude_Code_Guide_For_Startups_Final_web.pdf" target="_blank" rel="noopener">Download the PDF ↓</a></div>
+</div>
+<h2>在前沿工作的 AI 原生者</h2>
+<p>想窥见工作的未来，就去看看今天的创业公司在怎么运转。于是我们这么做了。</p>
+<p>我们与十几家高速成长的创业公司交流，了解他们如何使用 agentic coding 工具来构建产品、扩张公司。这些创业公司正在改写规则：谁可以参与构建、什么该被淘汰，以及如何在“怎么构建”与“构建什么”之间打造飞轮。</p>
+<p>而他们的发布节奏，像极了规模十倍于自己的组织。</p>
+<div class="w-embed"><div class="cs-stats"><div class="cs-stat" style="background:#f3e3dc"><small>ClickHouse</small><b>30%</b>多发布的功能</div>
+<div class="cs-stat" style="background:#dbe5ef"><small>Omni</small><b>2–3x</b>工程生产力</div>
+<div class="cs-stat" style="background:#e3e8dc"><small>Clay</small><b>100%</b>bug 分诊自动化</div>
+<div class="cs-stat" style="background:#ece7da"><small>Artemis Security</small><b>6,000+</b>每周 PR 数</div>
+</div>
+</div>
+<p>在这份指南中，我们将深入这些组织的独特实践，学习他们赖以快速发布并保持竞争优势的法则。</p>
+<p>在这个过程中，我们也将逐渐看清一个问题的答案：如果一家组织从零开始、以 Claude Code 为基础构建整个产品开发生命周期，会是什么样子？</p>
+<div class="w-embed"><div class="cs-toc"><p class="cs-k">五条法则</p>
+<ol><li><a href="#rule-1">人人皆可发布</a></li>
+<li><a href="#rule-2">自动化繁琐之事</a></li>
+<li><a href="#rule-3">信任，但要验证</a></li>
+<li><a href="#rule-4">为重构而构建</a></li>
+<li><a href="#rule-5">原型、内部试用、产品化</a></li>
+</ol>
+<p class="cs-k">创始人洞见来自</p>
+<div class="cs-co"><a href="https://artemissecurity.com/"><img src="https://cdn.prod.website-files.com/6889473510b50328dbb70ae6/6a860f726d9f0514aae99ebd_Artemis%20Security.jpg" alt="" width="28" height="28">Artemis Security</a><a href="https://www.cainex.com/"><img src="https://cdn.prod.website-files.com/6889473510b50328dbb70ae6/6a860f7201a449f6bbff0b4f_Cainex.jpg" alt="" width="28" height="28">Cainex</a><a href="https://www.clay.com/"><img src="https://cdn.prod.website-files.com/6889473510b50328dbb70ae6/6a860f73c8f5e66ab5fed4db_Clay.jpg" alt="" width="28" height="28">Clay</a><a href="https://clickhouse.com/"><img src="https://cdn.prod.website-files.com/6889473510b50328dbb70ae6/6a860f71da96c480fc76ac4f_ClickHouse.jpg" alt="" width="28" height="28">ClickHouse</a><a href="https://cognition.ai/"><img src="https://cdn.prod.website-files.com/6889473510b50328dbb70ae6/6a860f726c029e7298385bec_Cognition.jpg" alt="" width="28" height="28">Cognition</a><a href="https://www.commure.com/"><img src="https://cdn.prod.website-files.com/6889473510b50328dbb70ae6/6a860f7307af7c791b192b11_Commure.jpg" alt="" width="28" height="28">Commure</a><a href="https://crosby.ai/"><img src="https://cdn.prod.website-files.com/6889473510b50328dbb70ae6/6a860f7148a76d79b3a5a4a1_Crosby.jpg" alt="" width="28" height="28">Crosby</a><a href="https://emergent.sh/"><img src="https://cdn.prod.website-files.com/6889473510b50328dbb70ae6/6a860f718a480aa385569532_Emergent.jpg" alt="" width="28" height="28">Emergent</a><a href="https://www.harvey.ai/"><img src="https://cdn.prod.website-files.com/6889473510b50328dbb70ae6/6a860f738a480aa385569680_Harvey.jpg" alt="" width="28" height="28">Harvey</a><a href="https://www.heidihealth.com/"><img src="https://cdn.prod.website-files.com/6889473510b50328dbb70ae6/6a860f71fb8535b15c70d337_Heidi.jpg" alt="" width="28" height="28">Heidi</a><a href="https://higgsfield.ai/"><img src="https://cdn.prod.website-files.com/6889473510b50328dbb70ae6/6a860f71c8f5e66ab5fed3b0_Higgsfield.jpg" alt="" width="28" height="28">Higgsfield</a><a href="https://omni.co/"><img src="https://cdn.prod.website-files.com/6889473510b50328dbb70ae6/6a860f6c8487d6fbba47effa_Omni.jpg" alt="" width="28" height="28">Omni</a><a href="https://www.parahelp.com/"><img src="https://cdn.prod.website-files.com/6889473510b50328dbb70ae6/6a860f6e8487d6fbba47f063_Parahelp.jpg" alt="" width="28" height="28">Parahelp</a><a href="https://www.translucent.co/"><img src="https://cdn.prod.website-files.com/6889473510b50328dbb70ae6/6a860fb5e110c43cd7302055_Translucent%20Logomark%20Color%20(1).png" alt="" width="28" height="28">Translucent</a><a href="https://zingage.com/"><img src="https://cdn.prod.website-files.com/6889473510b50328dbb70ae6/6a860f6e48f16e9918d53e32_Zingage.jpg" alt="" width="28" height="28">Zingage</a></div>
+</div>
+</div>
+<div class="w-embed"><div class="cs-tip"><p><b>提示：</b>只想看实操步骤？我们在<a href="#checklist">本指南末尾准备了一份检查清单</a>，汇总了每一章的关键技术要点。</p>
+</div>
+</div>
+<div class="w-embed"><div class="cs-part" id="rule-1"><b>01</b><div><h2>人人皆可发布</h2>
+<p>Agentic coding 降低了参与门槛，让最理解问题的人可以直接发布修复的第一版。</p>
+</div>
+</div>
+</div>
+<p>Agentic coding 降低了非技术员工构建产品的门槛。有了 Claude Code，即使不精通编程语言、不会用 IDE，也能创建可用的功能。</p>
+<div class="w-embed"><div class="cs-q"><img src="https://cdn.prod.website-files.com/6889473510b50328dbb70ae6/6a85efb96afe3f55f3c73f16_1716034051392.jpeg" alt="Mads Lunau Liechti" width="56" height="56"><blockquote>“不仅工程师的产出多了很多，非技术的人（比如我）也开始突然发布 UI 改动和其他产品改进。”<cite><b><a href="https://www.linkedin.com/in/mads-lunau-liechti/">Mads Lunau Liechti</a></b> · 联合创始人，<a href="https://www.parahelp.com/">Parahelp</a></cite></blockquote>
+</div>
+</div>
+<p>对创业公司创始人来说，这好处显而易见。其一，他们没有大竞争对手那样的人手，必须“全员上阵”。但创始人看中的不只是产能——这些团队里的非技术成员还带来了领域专长。</p>
+<div class="w-embed"><div class="cs-q"><img src="https://cdn.prod.website-files.com/6889473510b50328dbb70ae6/6a85efb9a794cf3b05d104b2_1759928398629.jpeg" alt="Ryan Daniels" width="56" height="56"><blockquote>“Claude Code 改变了在 Crosby 当律师的意义。律师们有最好的产品洞察，因为他们就是用户。看他们大展身手真是太棒了。”<cite><b><a href="https://www.linkedin.com/in/crosbyryan/">Ryan Daniels</a></b> · 联合创始人兼 CEO，<a href="https://crosby.ai/">Crosby</a></cite></blockquote>
+</div>
+</div>
+<p><a target="_blank" href="#">Heidi</a> 的联合创始人兼 CEO Thomas Kelly 医生也表达了同样的看法。</p>
+<div class="w-embed"><div class="cs-q"><img src="https://cdn.prod.website-files.com/6889473510b50328dbb70ae6/6a860761e110c43cd72b4b36_thomas-kelly.jpg" alt="Dr. Thomas Kelly" width="56" height="56"><blockquote>“对我们来说，Claude Code 解决了‘传话走样’的问题。过去一个新想法在团队里的流转路径是：有想法的人告诉 PM，PM 告诉设计师，设计师再告诉工程师……想法的精髓不可避免地在链条中流失。等东西发布出来，往往已经不是提出者脑中的样子，而且一耗就是几周。Claude Code 把这条链条压缩了。真正理解问题的人可以直接提 PR，在设计者和工程师的专业最关键的部分把他们拉进来。”<cite><b><a href="https://www.linkedin.com/in/tomkeykong/">Dr. Thomas Kelly</a></b> · 联合创始人兼 CEO，<a href="https://www.heidihealth.com/">Heidi</a></cite></blockquote>
+</div>
+</div>
+<p>说“人人皆可发布”发个 LinkedIn 很漂亮，但实际怎么运作？市场团队在审批 pull request 吗？法务团队在钻研不稳定测试的二分定位吗？</p>
+<p>我们得到的答案是：分工依然存在。市场人员仍专注市场，开发者仍专注开发。但那个至关重要的第一步——把一个想法变成可运行的原型、从 0 到 1——对所有人开放。</p>
+<p>我们还看到，最有效的创业公司会建立机制，让这类贡献成为体系化的常态，而不是听凭运气或个人雄心。</p>
+<h3>建立连接</h3>
+<p>期望员工使用 AI 是一回事，让他们用上 Claude Code 和所需工具是另一回事。</p>
+<div class="w-embed"><div class="cs-q"><img src="https://cdn.prod.website-files.com/6889473510b50328dbb70ae6/6a85f1033623355a8a430864_Kareem-clay.webp" alt="Kareem Amin" width="56" height="56"><blockquote>“我们其实没有回避（非技术员工做贡献），而是主动拥抱。我们的判断是，每一种角色都在变成某种意义上的工程角色，因为你完全可以为它构建软件……所以我们招的是喜欢动手折腾、对构建有兴趣的人。”<cite><b><a href="https://www.linkedin.com/in/kareemamin/">Kareem Amin</a></b> · 联合创始人兼 CEO，<a href="https://www.clay.com/">Clay</a></cite></blockquote>
+</div>
+</div>
+<p>在 Crosby，团队不是把律师带到 Claude Code 面前，而是把 Claude Code 带到律师面前——把它接到律师熟悉、每天使用的工具和操作系统上。</p>
+<div class="w-embed"><div class="cs-tip"><div><b>提示：</b>Claude 无法理解它看不到的东西。扩展 Claude 价值最有效的方式之一，就是把它连接到事实来源（source of truth）和团队每天使用的工具上。</div>
+<div style="margin-top:10px"><a href="https://code.claude.com/docs/en/mcp">MCP</a> 是一个开源的 AI 工具集成标准，让 Claude Code 能访问你的工具、数据库和 API。每当团队发现自己在把某个工具里的信息复制粘贴给 Claude 时，就值得考虑加上这类连接。</div>
+<div style="margin-top:10px">当已有成熟的命令行工具（<code>gh</code>、<code>kubectl</code>、<code>bq</code>、<code>psql</code>）且你希望 Claude 与工程师面对同一份事实依据时，通过 CLI 连接往往更省 token。</div>
+</div>
+</div>
+<figure style="max-width:1934pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a85f6614d1e747fe4f0b524_fca89ab9.png" loading="lazy"></div>
+<figcaption>Claude Code 桌面版中的 MCP 连接器目录。</figcaption>
+</figure>
+<h3>站会展示</h3>
+<p>想法终归需要被给予进入优先级排序的机会，组织资源才能帮它走向市场。对产品经理来说这条路很清晰——那本来就是他们的工作——但对非技术员工就没那么清晰了。</p>
+<p>Clay 设立季度评审，原型在那里被讨论，有机会进入正式路线图。Clay 的一位市场团队成员就是这样构建了一个自主 agent：它会访问你的网站、填写你的线索收集表单、测算响应耗时、给体验打分，并生成一份性能报告。</p>
+<p>Omni 有一个专门的 Slack 频道展示 Claude 生成的原型，贡献者包括资深技术人员在内的所有人。他们还践行着“人人皆可发布”的对偶命题——“人人都要见客户”。</p>
+<div class="w-embed"><div class="cs-q"><img src="https://cdn.prod.website-files.com/6889473510b50328dbb70ae6/6a85efb9b23e4794dee49b44_1772096288397.jpeg" alt="Chris Merrick" width="56" height="56"><blockquote>尽管工程师天然不会主动亲近客户电话，Omni 依然刻意安排他们直面客户，因为这能更快闭合反馈环。<cite><b><a href="https://www.linkedin.com/in/merrickchristopher/">Chris Merrick</a></b> · 联合创始人兼 CTO，<a href="https://omni.co/">Omni</a></cite></blockquote>
+</div>
+</div>
+<h3>共享 skills</h3>
+<p> “人人皆可发布”与“东拼西凑”之间的界线可能很薄。功能原型无论出自谁手，最终都要整合进一个浑然一体的产品。这正是 skills 的用武之地——这些可复用的指令文件沉淀了团队的标准与上下文，能在流程日益民主化的同时确保开发不跑偏。</p>
+<p>“团队里任何人都可以参照我们的设计系统，用 Claude Code 起草产品组件、营销物料或演示材料。会触碰产品的 AI 必须达到高得多的标准，而 Claude Code 帮我们更精准地达到它。”Heidi 的 Thomas Kelly 医生说。</p>
+<p>它们还能让新开发者和非技术员工快速上手、迅速跑起来。</p>
+<div class="w-embed"><div class="cs-q"><img src="https://cdn.prod.website-files.com/6889473510b50328dbb70ae6/6a85efb78347c9db82e1a2f7_1769085036393.png" alt="Mukund Jha" width="56" height="56"><blockquote>“……我们还有一个 Claude Code skills 的 GitHub 仓库，作为共享知识库，能快速引导一个 Claude Code 会话掌握 Emergent 的既有信息，比如数据库（和数据仓库）位置、一些 schema（信息）、整体公司背景……与其在这里追求完美，不如接受上下文文件略有滞后——只要 agent 能快速验证并自我纠正就好。”<cite><b><a href="https://www.linkedin.com/in/mukund-jha-a1596413/">Mukund Jha</a></b> · 联合创始人兼 CEO，<a href="https://emergent.sh/">Emergent</a></cite></blockquote>
+</div>
+</div>
+<div class="w-embed"><div class="cs-q"><img src="https://cdn.prod.website-files.com/6889473510b50328dbb70ae6/6a85efb9f09c093edabf6943_1733849104342.jpeg" alt="Jack O'Hara" width="56" height="56"><blockquote>“我们的工程师用 Claude Code 搭建了一个内部专属 agent 市场，按角色组织——工程、交付、销售各自都能拿到为自己真实工作方式量身定制的工具。”<cite><b><a href="https://www.linkedin.com/in/jack-o-hara-/">Jack O'Hara</a></b> · 创始人兼 CEO，<a href="https://www.translucent.co/">Translucent</a></cite></blockquote>
+</div>
+</div>
+<div class="w-embed"><div class="cs-tip"><p><b>提示：</b>Skills <a href="https://code.claude.com/docs/en/plugin-marketplaces">可以通过目录（directory）在全公司共享</a>，一个人的最佳实践就能即时传递给另一个人。在仓库的每个子目录放置 <code>CLAUDE.md</code> 文件，用于该子目录专属、每次都生效的编码约定。Skills 则用于按需触发的流程性工作流。更多信息请阅读：<a href="https://claude.com/blog/steering-claude-code-skills-hooks-rules-subagents-and-more">Steering Claude Code: when to use CLAUDE.md, skills, hooks, and subagents</a>。</p>
+</div>
+</div>
+<div class="w-embed"><div class="cs-part" id="rule-2"><b>02</b><div><h2>自动化繁琐之事</h2>
+<p>由 agent 负责生命周期中机械的 80%，工程师把时间花在真正需要判断力的场景上。</p>
+</div>
+</div>
+</div>
+<p>自工业革命以来，所有公司都在寻求通过技术提效，但这些创业公司的与众不同之处在于采纳的速度和深度。</p>
+<p>这些创始人相信 AI 是其使命中不可或缺的部分。许多人明确表示：机械的 80% 由 agent 负责，工程师把时间花在真正需要判断力的场景上。</p>
+<div class="w-embed"><div class="cs-q"><img src="https://cdn.prod.website-files.com/6889473510b50328dbb70ae6/6a85efb924b99c1b701066b9_1783109987447.png" alt="Shachar Hirshberg" width="56" height="56"><blockquote>“所有人都在抢着做 AI 产品，但很少有人在重构公司实际的运转方式。后者才是更大的破局点。Artemis Security 是一家 AI 原生公司在运营，而不是一家碰巧用了 AI 的公司。这极大提升了我们的速度，让我们能帮助客户以机器速度拦截攻击。”<cite><b><a href="https://www.linkedin.com/in/shachar-hirshberg/">Shachar Hirshberg</a></b> · 联合创始人兼 CEO，<a href="https://artemissecurity.com/">Artemis Security</a></cite></blockquote>
+</div>
+</div>
+<p>具体而言，我们看到他们比其他公司更深度地把 AI 融入 SDLC 各阶段，也构建了更多专门设计的 agent 来端到端承接周期性任务。来看两类例子。</p>
+<h3>AI 原生的 SDLC</h3>
+<p>这些受访创业公司中的许多都建立了机制，加速团队进入 agentic coding 流程的磨合。例如在 Emergent，Mukund 告诉我们：“入职第一天，新员工只需让 Claude 读对的 markdown 文件，就能引导搭建整套开发环境。如果 Claude 在入职过程中发现任何损坏或过时的内容，它会顺手更新那个文件。”</p>
+<div class="w-embed"><div class="cs-tip"><p><b>提示：</b><a href="https://code.claude.com/docs/en/code-review">Code Review</a>（research preview）是 Claude Code 中托管的 多 agent 服务。它会对你在启用仓库中的 PR 自动执行评审。你可以手动修复发现并推送，也可以（在配置好 GitHub Actions 后）在发现处评论 <code>@Claude</code> 来闭环。</p>
+</div>
+</div>
+<figure style="max-width:1344pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a85fadd2e4ee0c9bc09260c_f0ed4c96.png" loading="lazy"></div>
+<figcaption>Code Review 会为每个发现标注严重级别。</figcaption>
+</figure>
+<p>这些工程师必须快速上手，因为这些团队发布得飞快。</p>
+<div class="w-embed"><div class="cs-q"><img src="https://cdn.prod.website-files.com/6889473510b50328dbb70ae6/6a85efba858ba52aeb268f5b_1765628872241.png" alt="Tanay Tandon" width="56" height="56"><blockquote>“这里的工程师在调度 agent 舰队，生产数据问题发现的当天就把修复发上线，同时推进多个 PR。有位工程师用一个约 13 张工单的项目让 Claude subagent 并行跑，每个负责一张工单和它的 PR。”<cite><b><a href="https://www.linkedin.com/in/tanaytandon/">Tanay Tandon</a></b> · CEO 兼创始人，<a href="https://www.commure.com/">Commure</a></cite></blockquote>
+</div>
+</div>
+<p>在这些组织里，Claude Code 不仅帮忙写代码，也负责评审代码。“我们按既定的技术与合规框架跑自动化代码评审，标记关键问题，并在任何东西发布前把建议的改动路由给对应的评审人。”Heidi 的 Kelly 医生说。</p>
+<p>其中一些组织还针对代码评审、测试和 CI 构建了自定义 agent。这些创业公司在<a href="https://claude.com/blog/getting-started-with-loops" target="_blank">构建循环（loop）</a>而非仅仅部署代码上倾注了大量心力。</p>
+<p>“我最喜欢的是‘Translucent 代码评审员’，它会围绕一次改动展开多路分析、从多个角度评审，然后像我们某位资深工程师那样综合结论——但比任何个人都快。”Translucent 创始人 Jack 说。</p>
+<p>Clay “……构建了一个处理 bug 分诊的 agent，从第一遍筛选到给出修复的代码改动建议。”Kareem 说。</p>
+<div class="w-embed"><div class="cs-tip"><div><b>提示：</b>过去几个月，<a href="https://claude.com/product/tag">Claude Tag</a> 一直是 Anthropic 内部 CI/CD 故障值班的第一响应人。在近期每一次有情况报告的事故中，第一份情况报告都出自 Claude 之手，通常在 15 分钟内就发布首轮分析。</div>
+<div style="margin-top:10px"><a href="https://claude.com/blog/agent-identity-access-model">Claude Tag 拥有自己的服务账号</a>，以及 Anthropic CI 工程师所需的 Datadog、Grafana 等工具的访问权限。常备指令以 markdown 文件的 skills 形式提交在 GitHub 仓库里。这样多个队友可以协作迭代，变更管理也和代码一样。</div>
+</div>
+</div>
+<figure style="max-width:1344pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a85fb2fd93d3b5e91d50ec3_1891dfb7.png" loading="lazy"></div>
+<figcaption>Claude Tag 在 Slack 中接手一条值班线程，并在频道里汇报进展。</figcaption>
+</figure>
+<p>‍</p>
+<div class="w-embed"><div class="cs-q"><img src="https://cdn.prod.website-files.com/6889473510b50328dbb70ae6/6a85efb9491bc622d12a7ad2_1632147780689.jpeg" alt="Alexey Milovidov" width="56" height="56"><blockquote>这一点在 <a href="https://clickhouse.com/">ClickHouse</a> 体现得最为极致。<b>联合创始人兼 CTO Alexey Milovidov 介绍说</b>，这家数据库公司几乎把每个 SDLC 阶段都变成了自主循环。两个分别用于修复不稳定测试和补齐缺失测试覆盖的专用 agent，如今是 ClickHouse 仓库贡献榜的第 2 和第 3 名。另一族 agent 负责运维，而团队正是用 Claude Code 来构建和迭代这些 agent 本身。</blockquote>
+</div>
+</div>
+<h3>用 agent 加速流程</h3>
+<p>另一个一致的模式是：这些创业公司不仅在开发工作中用 Claude Code 里的 agent 循环提速，还在创建 agent 来加速那些重复且往往枯燥的流程。</p>
+<p>被加速的常是例行工作，好让团队把更多注意力放在竞争优势、客户关系和营收增长上。我们看到的被 Claude 加速的最常见流程之一，是自助式数据分析。</p>
+<p> 这些公司几乎每一家都有某种机制，能用新鲜数据（包括非结构化数据）快速决策——支撑创业公司生命中至关重要的方向调整。</p>
+<p>例如，Clay 构建了内部数据分析 agent；Heidi 用 Claude Code 把客户和临床医生的反馈与使用数据归类，浮出对产品洞察重要的信号。</p>
+<p>ClickHouse 和 Omni 发布的产品则把这类 AI 数据分析直接打包其中，全部由 Claude 驱动。</p>
+<p>其他例子还有：用 subagent 摘要数千份法律文件（Crosby）、扫描理赔数据标记跨站点异常（Commure）、持续挖掘医院财务数据寻找任何分析师团队都来不及发现的预警信号（Translucent）。</p>
+<div class="w-embed"><div class="cs-tip"><p><b>提示：</b><a href="https://claude.com/blog/a-harness-for-every-task-dynamic-workflows-in-claude-code">Dynamic workflows</a> 可以让多个 subagent 并行分析海量数据，或对另一个 agent 的工作做对抗性评审。使用 Claude Opus 或 Claude Fable 这类模型时，直接说“展开多个 subagent”或“用一个 workflow”即可。</p>
+</div>
+</div>
+<figure class="w-richtext-align-center w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a8600cd57a9407076b2e246_4bd02c85.png" loading="lazy"></div>
+</figure>
+<div class="w-embed"><div class="cs-part" id="rule-3"><b>03</b><div><h2>信任，但要验证</h2>
+<p>除非有可靠的手段来监控和验证结果，否则谈不上自动化。</p>
+</div>
+</div>
+</div>
+<p>这条法则是法则二“自动化繁琐之事”的必要推论：除非有可靠的手段监控和验证结果，否则谈不上自动化一个流程。</p>
+<div class="w-embed"><div class="cs-q"><img src="https://cdn.prod.website-files.com/6889473510b50328dbb70ae6/6a86fc9ddbdb6a1fb6d61375_dan-shiebler.jpg" alt="Dan Shiebler" width="56" height="56"><blockquote>Artemis Security 联合创始人 Dan Shiebler 说，他们之所以能提部署速度，正是因为“我们在测试基础设施、代码库组织和团队知识体系上做了深度投入，agent 才能端到端交付。这就是我们与 Claude 一起打造的飞轮：用正确的方式组织你的代码库、知识库和团队，每一次贡献都会复利叠加。”<cite><b><a href="https://www.linkedin.com/in/dan-shiebler-10219b42/">Dan Shiebler</a></b> · 联合创始人，<a href="https://artemissecurity.com/">Artemis Security</a></cite></blockquote>
+</div>
+</div>
+<div class="w-embed"><div class="cs-q"><img src="https://cdn.prod.website-files.com/6889473510b50328dbb70ae6/6a85f1ef3623355a8a439148_Victor%20Hunt.jpg" alt="Victor Hunt" width="56" height="56"><blockquote>“起初我们给了 Claude 完全自主权，然后它干了 AI 常干的事：飞快交付看起来合理的代码。问题在于它以看似正确、实则错误的方式偏离了我们的架构。于是我们……把每一条不变量都写了下来。我们怎么界定问题。无论如何都必须成立的条件是什么。如何证明一个东西真的有效，而不是相信一个自信的回答。整整 567 行，写满这支团队的思考方式。”<cite><b><a href="https://www.linkedin.com/in/victor-c-hunt">Victor Hunt</a></b> · 联合创始人兼 CEO，<a href="https://zingage.com/">Zingage</a></cite></blockquote>
+</div>
+</div>
+<div class="w-embed"><div class="cs-tip"><p><b>提示：</b>把不可动摇的约束放进仓库根目录的 <code>CLAUDE.md</code>。Claude 在每次会话开始时都会读它，你的架构规则、安全边界和不容妥协的底线就会随每个会话同行。</p>
+</div>
+</div>
+<p>需要说明的是，这些创业公司没有一家是让 agent 直接合入 main 然后听天由命的。他们中许多身处强监管行业，需要强有力的治理框架。Cainex 是“agent + 确定性校验”结合的绝佳例子：读取病历并生成驱动医院账单的编码。</p>
+<div class="w-embed"><div class="cs-q"><img src="https://cdn.prod.website-files.com/6889473510b50328dbb70ae6/6a85e97524b99c1b700c5b18_uriah.webp" alt="Uriah Israel" width="56" height="56"><blockquote>“在医疗编码里，一个错误的编码不是笔误，而是账单与合规事件。仅这一件事就决定了我们怎么构建产品。”<cite><b><a href="https://www.linkedin.com/in/uriah-israel/">Uriah Israel</a></b> · 联合创始人兼 CTO，<a href="https://www.cainex.com/">Cainex</a></cite></blockquote>
+</div>
+</div>
+<p> “Claude Code 为我们跑的是这样一个循环：agent 处理一个批次，审计员在内部应用里评审产出。他们看到的不只是编码，还有模型的推理过程，两样都可以批注……所有内容都有版本、可审计。”他说。</p>
+<p>“然后 Claude Code 接手。它直接从数据库读取原始预测，连同每一条更正和批注。每条更正都按涉及的编码类别打了标签，所以 Claude Code 知道面对的是诊断问题、手术操作问题还是别的类别，可以直接去查管辖该类编码的指引。</p>
+<p>从那里，它找到 agent 指令中导致错误的部分并修订，遇到真正的新情况就撰写新指引。每一次修改都基于带版本的指令集，并针对曾经出错的记录做测试。我们强制执行的规则是：修原则，不修个案。”他继续说道。</p>
+<p>“然后是回测。一条记录可以有不止一种可接受的编码，所以不能做字符串匹配。校验把我们已接受的编码集合做语义匹配，再结合一个裁判判断‘这是真错误，还是只是另一条有效路径’，Claude Code 还会在其上加自己的比对。</p>
+<p> 它把候选改动跑遍黄金集加随机抽样，在任何东西发布前暴露回归。返回的是一份短清单：建议的修改、它没能解决的记录、以及它想得到解答的问题。工程师把时间花在真正困难的案例上，而不是那机械的 80%。”他说。</p>
+<p>这个医疗账单专属流程中，有大量可供创始人们借鉴的普适经验。</p>
+<p>例如，Cainex 让领域专家定期评审并引导 Claude 的推理，并确保这些引导成为自我改进循环的一部分。但专家们并非逐例修错——他们的引导被纳入自我改进循环。用 Uriah 的话说：“修原则，不修个案。”</p>
+<div class="w-embed"><div class="cs-tip"><div><b>提示：</b>循环（loop）是不断重复工作周期直至满足停止条件的 agent。它们是让 Claude Code 承担更自主、更长周期工作的有效方式。<a href="https://claude.com/blog/building-verification-loops-in-claude-code-with-skills">你可以用 skills 定义 agent 需要满足的标准</a>（定义得越清晰越好），让 agent 迭代直到达成目标。</div>
+<div style="margin-top:10px">例如，很多组织都建了不稳定测试 agent 或循环，因为停止条件清晰且自包含：agent 重跑测试直到通过，就能自己验证修复。</div>
+</div>
+</div>
+<figure class="w-richtext-align-center w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a43eb603762e725a739d98f_c6fa9ae5.png" loading="lazy"></div>
+<figcaption>循环会不断重复工作周期，直至满足停止条件。</figcaption>
+</figure>
+<p>‍</p>
+<p>另一个经验是对维护高质量评测“黄金集”的执着——即一组经过人工核实的问答对，用来验证 agent 的准确性。每家创业公司都应为自己的关键用例维护多套评测集并定期更新，以便防止漂移、评估未来的模型。</p>
+<div class="w-embed"><div class="cs-q"><img src="https://cdn.prod.website-files.com/6889473510b50328dbb70ae6/6a85f11c728d6a4b5ce8da6d_alexhiggsfield.webp" alt="Alex Mashrabov" width="56" height="56"><blockquote>“（Claude Code）也改变了我们管理模型迭代速度的方式。新的视频和图像模型源源不断。每一个都需要新的 skills、评测、路由逻辑和上线前测试。Claude Code 把这个周期从几天压缩到几小时，让我们能在同一次会话里发现生产问题并部署修复……当你面对的是人手十倍于你的公司，这种杠杆改变一切。”<cite><b><a href="https://www.linkedin.com/in/amashrabov">Alex Mashrabov</a></b> · 联合创始人兼 CEO，<a href="https://higgsfield.ai/">Higgsfield</a></cite></blockquote>
+</div>
+</div>
+<div class="w-embed"><div class="cs-tip"><p><b>提示：</b>团队刚开始构建 agent 时，靠手工测试、内部试用加上直觉，往往能走出很远。破绽通常出现在用户反馈“改完之后 agent 变差了”，而团队只能瞎猜乱试、无从验证。团队分不清真实回归与噪声，无法在发布前自动跑几百个场景测试改动，也无法度量改进。更多信息请阅读：<a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents">Demystifying evals for AI agents</a>。</p>
+</div>
+</div>
+<p>Uriah 的最后一点是，这个过程需要下功夫。“它一开始没这么干净。我们的第一版过拟合了：它靠把具体案例硬编码来‘修复’问题，我们在攒补丁，而不是变聪明。我们改了方法，强制要求泛化为通用原则，并限制一次改动里能塞进多少具体个案。”</p>
+<div class="w-embed"><div class="cs-tip"><div><b>提示：</b>AI agent 不是确定性的，但许多强监管工作要求流程每次都一模一样。Claude Code 提供了把前沿智能与确定性流程结合起来的能力。</div>
+<div style="margin-top:10px"><a href="https://code.claude.com/docs/en/hooks">Hooks</a> 是在 Claude Code 生命周期固定节点触发的用户自定义命令，可以作为硬性关卡。无论模型怎么决定，它们每次都会执行。例如：拦截一次没过 lint 的写入、要求提交前测试通过、或在任何内容离开沙箱前剥离密钥。</div>
+<div style="margin-top:10px"><a href="https://code.claude.com/docs/en/workflows#orchestrate-subagents-at-scale-with-dynamic-workflows">Dynamic workflows</a> 以确定性的编排、相互独立的上下文窗口和聚焦的目标来调度 subagent。<code>/goal</code> 适合长而复杂的任务——Claude 可能在那种任务里过早宣布完工、评审时偏袒自己的结论、或偏离最初的目标。</div>
+</div>
+</div>
+<div class="w-embed"><div class="cs-part" id="rule-4"><b>04</b><div><h2>为重构而构建</h2>
+<p>团队能依赖的模型能力持续变化，所以很少有东西被当作永久的。</p>
+</div>
+</div>
+</div>
+<p>这些 AI 原生创业公司中的许多都处在持续再造的状态。</p>
+<p>AI 既常在他们构建的产品核心，也在他们构建产品的方式之中。既然模型能力持续演进，那些开创性的功能和关键脚手架一旦沦为沉没成本就被果断舍弃。这些组织中的许多把这种不断的重建视为竞争优势的一部分。</p>
+<p>“我们在 Clay 的做法是：你把它构建一遍，然后再构建一遍，再构建一遍。到第四次构建时，你已经知道需要的一切，就能一次做对。所以我们不一定是把东西扔掉，我们只是重建它：这一次带着更清晰的认识。”Kareem 说。</p>
+<p>“重构不是在新路径发布时完成的，而是在旧路径消失时才算完成。拆除（teardown）以前总在优先级之争里落败：它枯燥，又交付不了功能。”Commure 联合创始人 Tanay 说，“现在 Commure 的一位工程师只要调用一个 Claude skill，大意是‘对每一个已全量发布的功能开关，开一个 PR 移除它及关联代码’，然后评审返回的结果。过去吞噬大量开发周期的迁移工作，现在就是一次规划加一次扇出，几个小时搞定。”</p>
+<div class="w-embed"><div class="cs-tip"><p><b>提示：</b>用 <a href="https://code.claude.com/docs/en/worktrees">git worktrees</a> 在仓库的隔离副本里跑重构，当前版本毫发无伤。Claude Code 可以帮你创建——你会得到运行在 v1 旁边的 v2，对两者跑评测，新版本胜出才合并。这正是让“构建四次”变得便宜的原因。</p>
+</div>
+</div>
+<figure style="max-width:1959pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a86014c09a6e237c1ac273c_ccb97885.png" loading="lazy"></div>
+<figcaption>一个仓库、一个对象存储——三个可以同时工作的检出，各自在自己的分支上。</figcaption>
+</figure>
+<p>每个关联的 worktree 都是一个普通目录，有自己的检出分支；三者共享 acme-web 内部唯一的 .git 对象存储。</p>
+<p>Kareem 还把 Clay 护城河的一部分描述为不断重建、演化并打造自我改进循环的能力。</p>
+<p>“我认为当下任何公司的护城河都是：它必须能自我改进。所以 Clay 是一台自学习的营收引擎。你用得越多，我们就越清楚你最好的客户是谁、你该说什么、什么有效、什么无效，而这些也在随时间变化。”他说。“这场竞赛说到底，是谁能最快抵达分发……这样你才能帮助每一位（客户），从而自我改进。”</p>
+<p>在 <a href="https://www.youtube.com/live/OFDm3T7pVlc?si=Z_RENcJSqm8H79aj" target="_blank">2026 年 5 月的 Code with Claude 活动</a>上，Harvey 应用 AI 负责人 Niko Grupen 谈到，每一波新的模型能力——涌现式推理、agentic 自动化、规划与编排——都要求平台做一次彻底的重新架构。</p>
+<div class="w-embed"><div class="cs-q"><img src="https://cdn.prod.website-files.com/6889473510b50328dbb70ae6/6a85f137a1aa7f601c74989a_1b877ceecea22945f9acd75a60692d9c7b488058-1600x1600.webp" alt="Niko Grupen" width="56" height="56"><blockquote>“如果你六个月前问我的架构长什么样，我的回答会跟今天的截然不同。如果我们当初不愿意说‘嘿，我们要把这套东西废掉、转向 agent 原生’，我们的平台现在根本不可能有这些能力。”<cite><b><a href="https://www.linkedin.com/in/nikogrupen">Niko Grupen</a></b> · 应用 AI 负责人，<a href="https://www.harvey.ai/">Harvey</a></cite></blockquote>
+</div>
+</div>
+<p>在同一场活动上，Cognition 联合创始人 Walden Yan 说：</p>
+<div class="w-embed"><div class="cs-q"><img src="https://cdn.prod.website-files.com/6889473510b50328dbb70ae6/6a85efb993c65fad88a4e0b3_1699725986976.jpeg" alt="Walden Yan" width="56" height="56"><blockquote>“当下构建 AI 的生活方式，就是接受你今天构建的东西很可能在六个月到一年内被废弃……（Devin）在两年前那批模型上根本做不出来，（但我们的赌注是）今天也许不行，但很快就行。”<cite><b><a href="https://www.linkedin.com/in/waldenyan">Walden Yan</a></b> · 联合创始人，<a href="https://cognition.ai/">Cognition</a></cite></blockquote>
+</div>
+</div>
+<div class="w-embed"><div class="cs-tip"><p><b>提示：</b>对于非平凡的重写，让 Claude Code 以<a href="https://code.claude.com/docs/en/permission-modes#analyze-before-you-edit-with-plan-mode">plan mode</a>（<code>--plan</code> 或按 Shift+Tab）启动。Claude 会先探索代码库、提出重构方案，然后才动手写代码——你批准或纠偏。这是拦截“即将偏离你架构的重构”最便宜的位置。</p>
+</div>
+</div>
+<div class="w-embed"><div class="cs-part" id="rule-5"><b>05</b><div><h2>原型、内部试用、产品化</h2>
+<p>用 AI 构建帮助这些创业公司用 AI 打造颠覆性产品——这是他们流程核心的飞轮。</p>
+</div>
+</div>
+</div>
+<p>这些创业公司中的许多都在开发流程的核心装有一个关键飞轮：用 AI 构建，帮助他们用 AI 打造颠覆性产品。</p>
+<p>当开发者推进自己的 agentic coding 实践时，他们对模型能力有了更扎实的把握，也能洞察前沿的 harness 设计如何演进。然后他们可以把这些启发用到自己的 agent 和产品里。</p>
+<p>“我们从（Anthropic 的）文件 vs. 嵌入方案中获得了启发，这让我们敢于在自己的产品里保持简单。我们避开了 RAG 流水线会带来的一大堆复杂性。”Omni 的 Chris 说。“我们还看到 Claude Code 的 harness 如何让用户并行做事，并把其中一些概念改编进了我们自己的 UI。”</p>
+<p> 这也帮助他们保持对自家产品性能的敏感。</p>
+<p>“因为我们的应用构建器背后用的也是 Anthropic 模型，所以每当我们在产品上看到某个行为……我们可以通过 Claude Code 在本地快速调试，判断这是模型行为还是 harness 问题。这极大改善了我们的分诊周期。”Emergent 的 Mukund 说。</p>
+<p>我们反复听到的模式是：用 Claude Code 构建一个内部 agent，先内部试用（dogfood），再根据反响升级为面向客户的产品——通常借助 Claude API、SDK 或 Claude Managed Agents。</p>
+<p>“我们（在产品里）构建了自己的 AI agent，供团队直接交互，包括 SQL 控制台里的 agent 和一个 AI SRE。我们用 Claude Code 来构建和迭代这些 agent 本身。驱动客户 AI 体验的工具，部分正是用 AI 构建的。”ClickHouse 的 Alexey 说。</p>
+<h2>检查清单</h2>
+<p>本指南覆盖了很多内容。以下是把关键要点汇于一页的清单：</p>
+<div class="w-embed"><div class="cs-chk" id="checklist"><h4>第 1 章：人人皆可发布</h4>
+<label><input type="checkbox"><span>Claude 无法理解它看不到的东西。通过 <a href="https://code.claude.com/docs/en/mcp">MCP</a> 或 CLI 把它连接到事实来源和团队每天使用的工具上。</span></label><label><input type="checkbox"><span>创建<a href="https://code.claude.com/docs/en/plugin-marketplaces">公司插件市场</a>，让一个人的最佳实践通过 skill 即时传递给另一个人。在仓库的每个子目录放置 CLAUDE.md 文件，用于该子目录专属、每次都生效的编码约定。Skills 用于按需触发的流程性工作流。</span></label><h4>第 2 章：自动化繁琐之事</h4>
+<label><input type="checkbox"><span>在仓库上启用 <a href="https://code.claude.com/docs/en/code-review">Code Review</a>（research preview），对 PR 自动执行评审。</span></label><label><input type="checkbox"><span>让 <a href="https://claude.com/product/tag">Claude Tag</a>（公测中）成为你 CI/CD 值班响应和 bug 分诊的一部分。</span></label><label><input type="checkbox"><span><a href="https://code.claude.com/docs/en/workflows#orchestrate-subagents-at-scale-with-dynamic-workflows">Dynamic workflows</a> 可让多个 subagent 并行分析海量数据，或对另一个 agent 的工作做对抗性评审。</span></label><h4>第 3 章：信任，但要验证</h4>
+<label><input type="checkbox"><span>把不可动摇的约束放进仓库根目录的 CLAUDE.md。</span></label><label><input type="checkbox"><span>用<a href="https://code.claude.com/docs/en/workflows">循环（loop）</a>——即不断重复工作周期直至满足停止条件的 agent——承担更自主、更长周期的工作。</span></label><label><input type="checkbox"><span>建立<a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents">创建和维护 agent 评测</a>的流程。</span></label><label><input type="checkbox"><span><a href="https://code.claude.com/docs/en/hooks">Hooks</a> 是在 Claude Code 生命周期固定节点触发的用户自定义命令，可作为硬性关卡。当工作环节需要确定性时使用它们。</span></label><h4>第 4 章：为重构而构建</h4>
+<label><input type="checkbox"><span>用 <a href="https://code.claude.com/docs/en/worktrees">git worktrees</a> 在仓库的隔离副本里跑重构，当前版本毫发无伤。这正是让“构建四次”变得便宜的原因。</span></label><label><input type="checkbox"><span>对于非平凡的重写，让 Claude Code 以 <a href="https://code.claude.com/docs/en/permission-modes#analyze-before-you-edit-with-plan-mode">plan mode</a>（/plan 或按 Shift+Tab）启动。Claude 会先探索代码库、提出重构方案，然后才动手写代码——你批准或纠偏。这是拦截“即将偏离你架构的重构”最便宜的位置。</span></label></div>
+</div>
+<h2>前沿的创业公司，以前沿的方式构建</h2>
+<p>这些洞见来自与你一样在前沿构建的同行，希望它们务实可用。Claude 创业社区是灵感、最佳实践和建议的不竭来源。你可以通过以下方式加入这个社区：</p>
+<ul role="list"><li><a href="https://claude.com/programs/startups" target="_blank">订阅 Startup Newsletter 并加入创业公司项目</a>。</li>
+<li><a href="https://academy.claude.com/code/webinars" target="_blank">收藏即将举行的 Claude Code 网络研讨会</a>。</li>
+<li><a href="https://luma.com/claudecommunity" target="_blank">参加你附近的活动</a></li>
+<li>在 <a href="https://www.reddit.com/r/ClaudeAI/" target="_blank">Reddit</a> 和 <a href="https://discord.com/invite/6PPFFzqPDZ" target="_blank">Discord</a> 上贡献内容。</li>
+<li>早期公司还可以申请 <a href="https://claude.com/programs/startups">Claude for Startups 项目</a>，获取额度与支持。</li>
+</ul>
+</div>

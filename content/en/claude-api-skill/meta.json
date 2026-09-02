@@ -1,0 +1,17 @@
+{
+  "slug": "claude-api-skill",
+  "title": "Claude API skill now in CodeRabbit, JetBrains, Resolve AI, and Warp",
+  "translatedTitle": "Claude API skill 现已登陆 CodeRabbit、JetBrains、Resolve AI 和 Warp",
+  "date": "April 29, 2026",
+  "category": "Agents",
+  "url": "https://claude.com/blog/claude-api-skill",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/claude-api-skill.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.776Z",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:32:12.000Z",
+  "translateLang": "zh-CN"
+}

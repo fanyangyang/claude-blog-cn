@@ -1,0 +1,17 @@
+{
+  "slug": "enterprise-managed-auth",
+  "title": "Centrally manage authorization for MCP connectors",
+  "date": "June 18, 2026",
+  "category": "Enterprise AI",
+  "url": "https://claude.com/blog/enterprise-managed-auth",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/enterprise-managed-auth.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.789Z",
+  "translatedTitle": "集中管理 MCP 连接器的授权",
+  "translated": true,
+  "translatedAt": "2026-09-02T00:00:00.000Z",
+  "translateLang": "zh-CN"
+}

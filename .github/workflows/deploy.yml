@@ -25,6 +25,9 @@ jobs:
       - run: npm ci --omit=dev
         working-directory: ./
       - run: node scripts/build-site.js
+        env:
+          BASE_PATH: /claude-blog-cn
+          SITE_URL: https://fanyangyang.github.io/claude-blog-cn
       - uses: actions/upload-pages-artifact@v3
         with:
           path: .

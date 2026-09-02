@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Code w/ Claude London 2026: Rethinking how we build — Claude Blog CN</title>
+  <meta name="description" content="Code w/ Claude London 2026: Rethinking how we build">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="/posts/code-w-claude-london-2026-rethinking-how-we-build/" class="nav-link">中文版 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Product announcements</span>
+            <span class="article-date">May 26, 2026</span>
+            <span class="lang-badge-large">EN</span>
+          </div>
+          <h1 class="article-title">Code w/ Claude London 2026: Rethinking how we build</h1>
+          <a href="/posts/code-w-claude-london-2026-rethinking-how-we-build/" class="lang-toggle">阅读中文翻译 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>This week in London, we brought <a href="https://claude.com/code-with-claude/london" target="_blank">Code w/ Claude</a> to Europe. The event brought together builders, developers, and founders for two days of keynotes, breakout sessions, and workshops with the teams building Claude.</p><figure style="max-width:1999px" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a162288008621ab8a976251_image3.jpg" loading="lazy"></div><figcaption><em>Cat Wu, Head of Product, Claude Code, chats with an attendee between sessions.&nbsp;</em></figcaption></figure><p>Boris Cherny, Head of Claude Code, kicked off <a href="https://www.youtube.com/watch?v=6amLO7I9xdg" target="_blank">the keynote</a> by describing the first time he felt the “magic” of coding. In secondary school, he wrote TI-83 programs that solved his math homework and tests, and taught himself HTML to make his eBay listings for Pokémon cards sell better. He learned by tinkering, and when something ran, it was exciting.</p><p>Somewhere along the way, he suggested, programming got complicated. Compilers, typecheckers, build systems, and each layer pushed the distance between "I have an idea" and "it runs" a little further out. With agents, that distance is collapsing again: you describe a problem, and the program shows up. It's the calculator feeling, except the calculator can write a distributed system.</p><p>From workshops highlighting how to <a href="https://claude.com/code-with-claude/session/ldn-beyond-the-basics-with-claude-code" target="_blank">go beyond the basics</a> with Claude Code to optimizing <a href="https://claude.com/code-with-claude/session/ldn-the-thinking-lever" target="_blank">thinking budgets and effort levels</a> across our models, we demonstrated how Anthropic and customers like <a href="https://claude.com/code-with-claude/session/ldn-coding-is-no-longer-the-constraint-scaling-devex-to-teams-and-agents-at-spotify" target="_blank">Spotify</a>, <a href="https://claude.com/code-with-claude/session/ldn-from-one-person-to-80-scaling-a-hypergrowth-engineering-org-with-claude-code" target="_blank">Base44</a>, and <a href="https://claude.com/code-with-claude/session/ldn-what-legal-agents-inherit-from-coding-agents-lessons-from-legora" target="_blank">Legora</a> are already recapturing this experience.&nbsp;&nbsp;</p><h2>What was announced</h2><figure style="max-width:1999px" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1623afcae08af4b3a9de5e_image1.jpg" loading="lazy"></div><figcaption><em>Katelyn Lesse, Head of Engineering, Claude Developer Platform, and Angela Jiang, Head of Product, Claude Developer Platform, demo some of our new Claude Managed Agents features during Code w/ Claude London.&nbsp;</em></figcaption></figure><p>Announced at the conference, Claude Managed Agents can now operate in a sandbox you control and connect to your private Model Context Protocol (MCP) servers. Now both the environment where an agent executes tools and the services it reaches run within the established boundaries of your enterprise. These two <a href="https://claude.com/blog/claude-managed-agents-updates">new capabilities</a> are available on the Claude Platform:</p><ul role="list"><li><strong>Self-hosted sandboxes</strong> (public beta). Tool execution moves to an environment you configure—your own infrastructure or a managed provider like Cloudflare, Daytona, Modal, or Vercel—while the agent loop that handles orchestration, context management, and error recovery stays on Anthropic's infrastructure. Your network policies, audit logging, and security tooling apply, files and repositories don't leave your perimeter, and you control compute sizing and the runtime image for compute-heavy work.</li><li><strong>MCP tunnels</strong> (research preview)<em>.</em> Your agents reach MCP servers inside your private network without exposing them to the public internet. A lightweight gateway you deploy makes a single outbound connection: no inbound firewall rules, no public endpoints, and traffic encrypted end to end. MCP tunnels are supported in Managed Agents and the Messages API, and are managed from the Claude Console by organization admins.</li></ul><p>Teams including Amplitude, Clay, and Rogo are already building on Managed Agents with self-hosted sandboxes. To get started, explore the <a href="https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes">docs</a>, follow our <a href="https://github.com/anthropics/claude-cookbooks/tree/main/managed_agents/self_hosted_sandboxes">cookbooks</a>, or <a href="https://claude.com/form/claude-managed-agents" target="_blank">request access</a> to MCP tunnels.</p><h2>In case you missed it</h2><figure style="max-width:1999px" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1623c3214b8b8cf8f378e7_image2.jpg" loading="lazy"></div><figcaption><em>Lisa Crofoot, Research Product Manager, presents during the Code w/ Claude London keynote.&nbsp;</em></figcaption></figure><p>If you missed the livestream, check our keynote and breakout session <a href="https://claude.com/code-with-claude/london" target="_blank">recordings</a>.</p><p>Code w/ Claude heads to <a href="https://claude.com/code-with-claude/tokyo" target="_blank">Tokyo</a> next (June 5–6). All Day 1 keynotes and breakout sessions will be streamed live.</p><p><em>Stay tuned for technical tutorials, guides, and customer stories inspired by our talks.</em></p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/code-w-claude-london-2026-rethinking-how-we-build" target="_blank">View original</a></p>
+          <p><a href="/">← Back to home</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>Content from <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · Translation by AI</p>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "slug": "preview-review-and-merge-with-claude-code",
+  "title": "Bringing automated preview, review, and merge to Claude Code on desktop",
+  "date": "February 20, 2026",
+  "category": "Claude Code",
+  "url": "https://claude.com/blog/preview-review-and-merge-with-claude-code",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/preview-review-and-merge-with-claude-code.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.788Z",
+  "translatedTitle": "为桌面端 Claude Code 带来自动化预览、审查与合并",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:22:24.000Z",
+  "translateLang": "zh-CN"
+}

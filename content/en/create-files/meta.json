@@ -1,0 +1,17 @@
+{
+  "slug": "create-files",
+  "title": "Claude can now create and edit files",
+  "date": "September 9, 2025",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/create-files",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/create-files.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.789Z",
+  "translated": true,
+  "translatedTitle": "Claude 现在可以创建和编辑文件",
+  "translatedAt": "2026-09-02T12:28:00.000Z",
+  "translateLang": "zh-CN"
+}

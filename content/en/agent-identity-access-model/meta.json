@@ -1,0 +1,17 @@
+{
+  "slug": "agent-identity-access-model",
+  "title": "Agent identity in Claude Tag: a new access model for autonomous, team-wide AI",
+  "date": "June 24, 2026",
+  "category": "Claude Code",
+  "url": "https://claude.com/blog/agent-identity-access-model",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/agent-identity-access-model.svg",
+  "illustrationBg": "Plum",
+  "fetchedAt": "2026-09-02T03:50:17.789Z",
+  "translatedTitle": "Claude Tag 中的智能体身份：面向自主、团队协作 AI 的新型访问模型",
+  "translated": true,
+  "translatedAt": "2026-09-02T00:00:00.000Z",
+  "translateLang": "zh-CN"
+}

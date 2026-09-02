@@ -1,0 +1,209 @@
+<div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><div class="w-embed"><style>
+  /* Fluid breakout for blog embeds + code blocks */
+  .u-rich-text-blog .w-embed,
+  .u-rich-text-blog pre.w-code-block {
+    --max-w: 860px;
+    --gutter: 24px;
+    --available: calc(100vw - (var(--gutter) * 2));
+    --w: min(var(--max-w), var(--available));
+    width: var(--w);
+    max-width: var(--w);
+    margin-left: calc((640px - var(--w)) / 2);
+    margin-right: calc((640px - var(--w)) / 2);
+    box-sizing: border-box;
+  }
+  @media (max-width: 720px) {
+    .u-rich-text-blog .w-embed,
+    .u-rich-text-blog pre.w-code-block {
+      width: 100%;
+      max-width: 100%;
+      margin-left: 0;
+      margin-right: 0;
+    }
+    /* Constrain the post column to the viewport so nothing overflows the page */
+    .blog_post_layout.u-column-custom,
+    .blog_post_content_wrap,
+    .u-rich-text-blog {
+      max-width: 100% !important;
+      box-sizing: border-box;
+    }
+    html,
+    body {
+      overflow-x: hidden;
+    }
+  }
+
+  /* Embed inner wrappers: scroll horizontally when content overflows */
+  .u-rich-text-blog .w-embed figure {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+  .u-rich-text-blog .w-embed figure > div {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Tables: ratios on wider screens, natural width + scroll on mobile */
+  .u-rich-text-blog .w-embed table {
+    width: 100% !important;
+    table-layout: fixed !important;
+  }
+  .u-rich-text-blog .w-embed table th:nth-child(1),
+  .u-rich-text-blog .w-embed table td:nth-child(1) {
+    width: 22%;
+  }
+  .u-rich-text-blog .w-embed table th:nth-child(2),
+  .u-rich-text-blog .w-embed table td:nth-child(2) {
+    width: 39%;
+  }
+  .u-rich-text-blog .w-embed table th:nth-child(3),
+  .u-rich-text-blog .w-embed table td:nth-child(3) {
+    width: 39%;
+  }
+  .u-rich-text-blog .w-embed td code,
+  .u-rich-text-blog .w-embed th code {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    white-space: normal;
+  }
+  @media (max-width: 639px) {
+    .u-rich-text-blog .w-embed table {
+      width: auto !important;
+      min-width: 640px !important;
+      table-layout: auto !important;
+    }
+    .u-rich-text-blog .w-embed table th,
+    .u-rich-text-blog .w-embed table td {
+      min-width: 0 !important;
+      width: auto !important;
+    }
+  }
+
+  /* Code blocks */
+  .u-rich-text-blog pre.w-code-block {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  @media (max-width: 639px) {
+    .u-rich-text-blog pre.w-code-block {
+      font-size: 0.82rem;
+    }
+  }
+
+  /* 5-column comparison tables (e.g. Claude Code components)
+     Scoped via :has() so 3-column tables above are untouched. */
+  .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) {
+    font-size: var(--_typography---font-size--body-3);
+    line-height: 1.55;
+  }
+  .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) th,
+  .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) td {
+    font-size: var(--_typography---font-size--body-3);
+    line-height: 1.55;
+    padding: 16px 18px;
+    overflow-wrap: anywhere;
+    word-break: normal;
+    hyphens: none;
+    vertical-align: top;
+  }
+  /* Column ratios: Component | What it is | When it loads | Best for | Common confusion */
+  .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) th:nth-child(1),
+  .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) td:nth-child(1) {
+    width: 16%;
+  }
+  .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) th:nth-child(2),
+  .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) td:nth-child(2) {
+    width: 21%;
+  }
+  .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) th:nth-child(3),
+  .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) td:nth-child(3) {
+    width: 15%;
+  }
+  .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) th:nth-child(4),
+  .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) td:nth-child(4) {
+    width: 24%;
+  }
+  .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) th:nth-child(5),
+  .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) td:nth-child(5) {
+    width: 24%;
+  }
+
+  @media (max-width: 639px) {
+    .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) th,
+    .u-rich-text-blog .w-embed table:has(thead tr th:nth-child(5)) td {
+      padding: 12px 14px;
+      line-height: 1.5;
+    }
+  }
+</style></div><p>Claude Code 已经在生产环境中运行于数百万行的 monorepo、有数十年历史的遗留系统、横跨数十个仓库的分布式架构，以及拥有数千名开发者的组织中。这些环境带来了较小、较简单代码库不会遇到的挑战，比如每个子目录的构建命令各不相同，或者遗留代码散落在没有共同根目录的多个文件夹中。</p><p>本文总结了我们在实践中观察到、并已帮助 Claude Code 大规模成功落地的模式。我们所说的“大型代码库”涵盖多种部署形态：数百万行的 monorepo、数十年间逐步构建的遗留系统、分散在多个仓库中的数十个微服务，或上述情况的任意组合。其中也包括使用一些团队通常不会与 AI 编码工具联系起来的语言的代码库，例如 C、C++、C#、Java、PHP。（在这些场景下，Claude Code 的表现比大多数团队的预期要好，尤其是最近发布的模型版本。）虽然每个大型代码库的部署都受到其具体的版本控制、团队结构和长期积累的惯例的影响，但本文所述模式具有普遍适用性，对于正在考虑采用 Claude Code 的团队来说是一个很好的起点。</p><h2>Claude Code 如何在大型代码库中导航</h2><p>Claude Code 像软件工程师一样在代码库中工作：它遍历文件系统、读取文件、使用 grep 精确查找所需内容，并顺着代码库中的引用追根溯源。它在开发者本地机器上运行，不需要构建、维护代码库索引，也不需要把索引上传到服务器。&nbsp;</p><p>基于 RAG 的 AI 编码工具的原理是对整个代码库做嵌入（embedding），并在查询时检索相关片段。在大规模场景下，这类系统可能失效，因为嵌入管道无法跟上活跃工程团队的节奏。当开发者查询索引时，索引反映的是几周、几天甚至几小时之前的代码库状态。检索结果于是会返回团队两周前就已重命名的函数，或引用上个冲刺里已删除的模块，而且不会提示这些信息已经过时。</p><p>Agentic 搜索（智能体搜索）可以避免这些失败模式。当数千名工程师持续提交新代码时，没有需要维护的嵌入管道或集中式索引。每个开发者的实例都直接基于实时代码库工作。&nbsp;</p><p>但这种方式也有取舍：只有当 Claude 拥有足够的起始上下文、知道该往哪里找时，它才能发挥最佳效果。这意味着 Claude 导航能力的优劣取决于代码库的设置是否完善，比如是否用 CLAUDE.md 文件和 Skills 分层提供上下文。如果你让它在一个十亿行的代码库中查找某种模糊模式的所有实例，工作还没开始就会撞上上下文窗口的限制。在代码库设置上投入精力的团队，效果明显更好。</p><h2>harness 与模型同等重要</h2><p>关于 Claude Code 最常见的误解之一，是认为它的能力完全由所用的模型决定。团队往往关注模型的基准测试成绩以及在测试任务上的表现。而实际实践中，围绕模型构建的生态系统——也就是 harness（运行框架）——比模型本身更能决定 Claude Code 的表现。</p><p>harness 由五个扩展点构成——CLAUDE.md 文件、Hooks、Skills、插件和 MCP 服务器——各自承担不同的职能。团队搭建这些组件的顺序很重要，因为每一层都建立在前一层的基础之上。此外还有两项能力——LSP 集成和 Subagents——可以进一步完善整套设置。下面我们逐一说明这些组件和能力的作用：&nbsp;</p><p><a href="https://code.claude.com/docs/en/memory" target="_blank"><strong>CLAUDE.md</strong></a><strong> 文件要最先建立</strong>。这是 Claude 在每次会话开始时自动读取的上下文文件：根目录文件提供全局视角，子目录文件承载局部约定。它们为 Claude 提供做好任何事情所需的代码库知识。由于无论任务是什么它们都会在每次会话中加载，让它们聚焦于具有广泛适用性的内容，可以避免拖累性能。</p><p><a href="https://code.claude.com/docs/en/hooks-guide" target="_blank"><strong>Hooks</strong></a><strong> 让整套设置能够自我改进</strong>。大多数团队把 hooks 当作防止 Claude 犯错的脚本，但它们更有价值的用途是持续改进。一个 stop hook 可以回顾会话中发生的事情，趁着上下文还新鲜，提出 CLAUDE.md 的更新建议。一个 start hook 可以动态加载团队特定的上下文，让每个开发者无需手动配置就能获得适合自己模块的环境。对于 lint、格式化这类自动检查，hooks 以确定性的方式执行规则，比指望 Claude 记住某条指令的结果更稳定一致。</p><p><a href="https://code.claude.com/docs/en/skills" target="_blank"><strong>Skills</strong></a><strong> 让合适的专业知识按需可用，又不会撑大每次会话。</strong>在包含数十种任务类型的大型代码库中，并非所有专业知识都需要出现在每次会话里。Skills 通过<a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices" target="_blank">渐进式披露</a>（progressive disclosure）解决这一问题：把原本会争夺上下文空间的专业工作流和领域知识剥离出去，只在任务需要时才加载。例如，安全审查 skill 只在 Claude 评估代码漏洞时加载，而文档处理 skill 只在代码发生变更、需要更新文档时加载。</p><p>Skills 还可以限定在特定路径下生效，只在代码库的相关部分被激活。负责支付服务的团队可以把他们的部署 skill 绑定到该目录，这样当有人在 monorepo 的其他位置工作时，它绝不会自动加载。</p><p><a href="https://code.claude.com/docs/en/plugins" target="_blank"><strong>插件</strong></a><strong> 让行之有效的配置得以分发</strong>。大型代码库的一个挑战是，<em>好的</em>配置可能只在小圈子里流传。插件把 Skills、Hooks 和 MCP 配置打包成一个可安装的包，新工程师入职第一天安装这个插件，就能立即获得与老用户相同的上下文和能力。插件更新可以通过<a href="https://support.claude.com/en/articles/13837433-manage-claude-cowork-plugins-for-your-organization" target="_blank">托管市场</a>在整个组织内分发。&nbsp;</p><p>例如，与我们合作的一家大型零售企业构建了一个将 Claude 接入其内部数据分析平台的 skill，让业务分析师无需离开工作流就能拉取绩效数据。在向业务部门全面推广之前，他们先把它作为插件分发。</p><p><strong>语言服务器协议（LSP）集成让 Claude 拥有与开发者在 IDE 中相同的导航能力。</strong>大多数大型代码库的 IDE 本来就运行着 LSP，支撑着“转到定义”和“查找所有引用”功能。把这些能力暴露给 Claude，就赋予了它符号级的精度：它可以顺着函数调用找到定义、跨文件追踪引用，并区分不同语言中同名的函数。没有 LSP，Claude 只能做文本模式匹配，可能会定位到错误的符号。我们合作过的一家企业软件公司在全面推行 Claude Code 之前，先在整个组织内部署了 LSP 集成，专门为了让 C 和 C++ 的导航在规模化场景下可靠工作。对于多语言代码库来说，这是最有价值的投资之一。</p><p><strong>MCP 服务器扩展一切。</strong>MCP 服务器是 Claude 连接内部工具、数据源和 API 的方式，否则它无法触达这些资源。最成熟的团队构建了 MCP 服务器，将结构化搜索暴露为 Claude 可直接调用的工具。另一些团队则把 Claude 接入内部文档、工单系统或数据分析平台。</p><p><a href="https://code.claude.com/docs/en/sub-agents" target="_blank"><strong>Subagents</strong></a><strong> 把探索与编辑分离。</strong>Subagent 是一个拥有独立上下文窗口的隔离 Claude 实例，接收任务、完成工作，然后只把最终结果返回给父实例。一旦 harness 就绪，一些团队会启动一个只读 subagent 去摸清某个子系统并把发现写入文件，然后让主 agent 在掌握全貌的情况下进行编辑。&nbsp;</p><figure style="max-width:2880pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a04aaf1c37c6196e5ee19bb_fig1-the-claude-code-harness-v1%402x.png" loading="lazy"></div><figcaption><em>Claude Code 扩展层一览。</em></figcaption></figure><p>下表概括了每个组件的作用、加载时机，以及我们观察到的最常见的使用误区：</p><div class="w-embed"><figure>
+  <div role="region" tabindex="0">
+    <table>
+      <thead>
+        <tr>
+          <th>组件</th>
+          <th>是什么</th>
+          <th>何时加载</th>
+          <th>最适合</th>
+          <th>常见误区</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>CLAUDE.md</td>
+          <td>Claude 自动读取的上下文文件</td>
+          <td>每次会话</td>
+          <td>项目专属约定、代码库知识</td>
+          <td>把本应放进 skill 的可复用专业知识写在里面</td>
+        </tr>
+        <tr>
+          <td>Hooks</td>
+          <td>在关键时刻运行的脚本</td>
+          <td>由事件触发</td>
+          <td>自动化一致的行为、沉淀会话中的经验</td>
+          <td>把本应自动执行的事情交给提示词</td>
+        </tr>
+        <tr>
+          <td>Skills</td>
+          <td>面向特定任务类型的打包指令</td>
+          <td>按需，在相关时加载</td>
+          <td>跨会话、跨项目的可复用专业知识</td>
+          <td>把所有内容都塞进 CLAUDE.md</td>
+        </tr>
+        <tr>
+          <td>插件</td>
+          <td>打包在一起的 Skills、Hooks、MCP 配置</td>
+          <td>配置后始终可用</td>
+          <td>在全组织范围内分发可用的配置</td>
+          <td>任由好的配置只在小圈子里流传</td>
+        </tr>
+        <tr>
+          <td>语言服务器协议（LSP）*</td>
+          <td>通过语言专属服务器提供的实时代码智能</td>
+          <td>配置后始终可用</td>
+          <td>符号级导航，以及类型化语言中的自动错误检测</td>
+          <td>以为它会自动生效</td>
+        </tr>
+        <tr>
+          <td>MCP 服务器</td>
+          <td>连接外部工具和数据</td>
+          <td>配置后始终可用</td>
+          <td>让 Claude 访问原本无法触达的内部工具</td>
+          <td>在基础配置尚未跑通时就先构建 MCP 连接</td>
+        </tr>
+        <tr>
+          <td>Subagents*</td>
+          <td>处理特定任务的独立 Claude 实例</td>
+          <td>被调用时</td>
+          <td>分离探索与编辑、并行工作</td>
+          <td>在同一会话中同时做探索和编辑</td>
+        </tr>
+        <tr>
+          <td colspan="5" style="font-size:13px; padding-top:16px; border-bottom:none;">*LSP 通过插件层接入。Subagents 是一种委派能力，而非配置型扩展点。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</figure></div><h2>来自成功部署的三种配置模式</h2><p>如何为大型代码库配置 Claude Code，很大程度上取决于代码库的结构。不过在我们观察到的部署中，有三种模式反复出现。</p><h3>让代码库在规模化场景下可导航</h3><p>Claude 在大型代码库中的助力上限，取决于它找到正确上下文的能力。每次会话加载过多上下文会降低性能，而上下文太少则会让 Claude 盲目摸索。最有效的部署会提前投入精力，让代码库对 Claude 可读。有几种模式屡见成效：</p><ul role="list"><li><strong>保持 CLAUDE.md 文件精简且分层。</strong>Claude 在代码库中移动时会叠加式地加载它们：根目录文件提供全局视角，子目录文件承载局部约定。根目录文件应只包含指引和关键陷阱，其余内容都会沦为噪音。</li><li><strong>在子目录而非仓库根目录初始化。</strong>Claude 在限定于与任务真正相关的代码库范围内时表现最佳。在 monorepo 中，这可能有些反直觉，因为工具链通常假设拥有根目录权限；但 Claude 会自动向上遍历目录树并加载沿途找到的每个 CLAUDE.md 文件，因此根级别的上下文不会丢失。</li><li><strong>按子目录限定测试和 lint 命令。</strong>当 Claude 只改了一个服务却运行完整测试套件，会导致超时，并把上下文浪费在无关输出上。子目录级别的 CLAUDE.md 文件应写明适用于该部分代码库的命令。这种做法非常适合每个目录都有独立测试和构建命令的面向服务的代码库。在存在深度跨目录依赖的编译型语言 monorepo 中，按子目录限定较难实现，可能需要针对项目的构建配置。</li><li><strong>使用 <code>.</code></strong><code>ignore</code><strong> 文件排除生成文件、构建产物和第三方代码。</strong>把 <code>permissions.deny</code> 规则提交到 <code>.claude/settings.json</code> 意味着这些排除规则纳入了版本控制，团队中每个开发者无需自行配置就能获得同样的降噪效果。在有些代码库中，生成文件本身就是开发工作的对象。从事代码生成器开发的开发者可以在本地设置中覆盖项目级排除规则，而不影响团队其他人。</li><li><strong>当目录结构本身不够用时，构建代码库地图。</strong>对于代码没有归入常规目录结构的组织，可以在仓库根目录放一个轻量级的 markdown 文件，列出每个顶层文件夹及其内容的单行描述，让 Claude 在打开文件之前先扫一遍这份目录。对于有数百个顶层文件夹的代码库，最好采用分层方式：根文件只描述最高层结构，子目录的 CLAUDE.md 文件提供下一层细节，随 Claude 在目录树中移动按需加载。对于较简单的场景，直接 @ 提及 Claude 应参考的具体文件或目录也能达到同样效果。</li><li><strong>运行 LSP 服务器，让 Claude 按符号而非字符串搜索。</strong>在大型代码库中 grep 一个常见函数名会返回数千条匹配，Claude 得逐个打开文件来判断哪条重要，白白消耗上下文。LSP 只返回指向同一符号的引用，过滤发生在 Claude 读取任何内容之前。<strong> </strong>配置方法是为你的语言安装<a href="https://code.claude.com/docs/en/discover-plugins#code-intelligence" target="_blank">代码智能插件</a>及对应的语言服务器二进制文件；Claude Code 文档列出了可用插件和故障排查方法。</li></ul><p><strong>一点提醒</strong>：在一些极端情况下，即使是分层 CLAUDE.md 方案也会失效，例如拥有数十万个文件夹、数百万个文件的代码库，或使用非 Git 版本控制的遗留系统。我们会在本系列后续文章中讨论这些挑战。关于遗留系统，可参阅 AI 如何<a href="https://claude.com/blog/how-ai-helps-break-cost-barrier-cobol-modernization"><em>打破 COBOL 现代化的成本壁垒</em></a>。</p><h3>随模型智能演进，持续维护 CLAUDE.md 文件&nbsp;</h3><p>随着模型演进，为当前模型编写的指令可能对未来的模型产生反作用。那些曾引导 Claude 走出其过去薄弱环节的 CLAUDE.md 文件，在新模型发布后可能变得多余，甚至成为束缚。例如，一条要求 Claude 把每次重构拆成单文件变更的 CLAUDE.md 规则，或许曾帮助早期模型保持正轨，却会阻止新模型完成它本已擅长处理的跨文件协同编辑。&nbsp;</p><p>为弥补特定模型局限（无论是模型推理能力还是 Claude Code 自身工具）而构建的 Skills 和 Hooks，在这些局限不复存在后就成了负担。例如，在 Perforce 代码库中通过拦截文件写入来强制执行 p4 edit 的 hook，在 Claude Code 原生支持 Perforce 模式之后就变得多余了。</p><p>团队应预期每三到六个月做一次认真的配置审查，而在重大模型发布后感觉性能停滞不前时，也值得做一次。&nbsp;</p><h3>为 Claude Code 的管理和推广指定负责人</h3><p>仅靠技术配置无法推动普及。做得出色的组织在组织层面同样投入了精力。</p><p>推广最快的团队在开放大规模访问之前，都先做了专门的基础设施投入。一个小团队（有时甚至只有一个人）提前把工具链搭好，开发者第一次接触 Claude 时它就已经融入了工作流。在一家公司，几位工程师构建了一整套插件和 MCP，第一天就可用；在另一家公司，一个专门管理 AI 编码工具的团队在推广开始前就把基础设施准备就绪。在这两个案例中，开发者的初次体验都是高效而非受挫，普及也由此展开。</p><figure style="max-width:2880pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a04e25f1984beb50dc5525b_fig2-phases-of-claude-code-rollout-v1%402x.png" loading="lazy"></div></figure><p>目前承担这项工作的团队大多隶属开发者体验或开发者 productivity 部门，这通常也是负责新工程师入职和构建开发者工具的职能。多个组织中出现了一个新兴角色——agent manager：一个专门管理 Claude Code 生态的混合型 PM/工程师职能。对于没有专职团队的组织，最小可行版本是一个 DRI（直接负责人）：一个人对 Claude Code 配置拥有所有权，有权就设置、权限策略、插件市场和 CLAUDE.md 规范做出决策，并负责让它们保持更新。</p><p>自下而上的推广能激发热情，但若没有人来集中沉淀有效经验，就会碎片化。你需要由个人或团队来整理并推广正确的 Claude Code 规范（例如标准化的 CLAUDE.md 层级，或一套精选的 Skills 和插件）。缺少这项工作，知识会局限于小圈子，普及也会停滞。&nbsp;</p><p>在大型组织尤其是受监管行业中，治理问题会很早浮现，例如：谁来决定哪些 Skills 和插件可用？如何防止数千名工程师各自重复造轮子？如何确保 AI 生成的代码与人工编写的代码走同样的评审流程？为了尽早应对这些问题，我们建议从一组明确批准的 Skills、强制代码评审流程和有限的初始访问权限开始，随信心建立逐步扩大。&nbsp;</p><p>我们观察到，推广最顺畅的组织会尽早建立跨职能工作组，把工程、信息安全和治理方面的代表召集到一起，共同定义需求并制定推广路线图。</p><h2>将这些模式应用到你的组织</h2><p>Claude Code 围绕传统软件工程环境设计：工程师是代码库的主要贡献者，仓库使用 Git，代码遵循标准目录结构。大多数大型代码库符合这一形态，但非传统设置——例如包含大量二进制资源的游戏引擎、采用非常规版本控制的环境，或由非工程师向代码库贡献代码的场景——需要额外的配置工作。我们的建议以常规设置为前提，所描述的模式已在众多客户处得到验证。&nbsp; 余下的复杂性需要结合你的代码库、工具链和组织具体情况来判断。Anthropic 的 Applied AI 团队正是为此与工程团队直接合作，把这些模式转化为符合你组织具体需求的方案。</p><figure style="max-width:2880pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a04e2860abbe67418ca0f8b_fig3-getting-started-checklist-v2%402x.png" loading="lazy"></div></figure><p><em>从 </em><a href="https://claude.com/product/claude-code/enterprise" target="_blank"><em>Claude Code for Enterprise</em></a><em> 开始。</em></p><p>‍</p><p><strong><em>致谢：</em></strong><em>特别感谢 Anthropic Applied AI 团队的 Alon Krifcher、Charmaine Lee、Chris Concannon、Harsh Patel、Henrique Savelli、Jason Schwartz、Jonah Dueck 和 Kirby Kohlmorgen 分享他们大规模部署 Claude Code 的经验，同时感谢 Zoox 的 Amit Navindgi 为本文提供反馈。</em></p><p>‍</p></div>

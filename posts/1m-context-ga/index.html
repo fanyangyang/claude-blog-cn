@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1M 上下文窗口正式发布，适用于 Opus 4.6 和 Sonnet 4.6 — Claude Blog 中文翻译</title>
+  <meta name="description" content="1M 上下文窗口正式发布，适用于 Opus 4.6 和 Sonnet 4.6">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/1m-context-ga" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Product announcements</span>
+            <span class="article-date">March 13, 2026</span>
+            
+          </div>
+          <h1 class="article-title">1M 上下文窗口正式发布，适用于 Opus 4.6 和 Sonnet 4.6</h1>
+          <a href="/posts/1m-context-ga/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>Claude Opus 4.6 和 Sonnet 4.6 现已在 Claude Platform 上以标准价格提供完整的 1M 上下文窗口。标准价格适用于整个窗口——Opus 4.6 为每百万 token $5/$25，Sonnet 4.6 为 $3/$15。没有任何加价系数：一个 900K token 的请求与一个 9K token 的请求按完全相同的单价计费。</p><p><strong>正式发布（GA）后的新变化：</strong></p><ul role="list"><li><strong>一个价格，完整上下文窗口。</strong>没有长上下文溢价。</li><li><strong>所有上下文长度均享有完整速率限制。</strong>你账户的标准吞吐量适用于整个窗口。</li><li><strong>每次请求可处理的媒体数量提升 6 倍。</strong>最多支持 600 张图片或 PDF 页面，此前为 100。即日起在 Claude Platform（原生）、Microsoft Foundry 和 Google Cloud 的 Vertex AI 上可用。</li><li>​​<strong>无需 beta header。</strong>超过 200K token 的请求自动生效。如果你已经在发送 beta header，它会被忽略，因此无需修改任何代码。</li></ul><p><strong>使用 Opus 4.6 的 Claude Code Max、Team 和 Enterprise 用户现在已包含 1M 上下文。</strong>Opus 4.6 会话可以自动使用完整的 1M 上下文窗口，这意味着更少的压缩（compaction）操作，以及更多得以完整保留的对话。此前 1M 上下文需要额外付费使用。</p><h3><strong>经得起考验的长上下文</strong></h3><p>一百万 token 的上下文只有在模型能够回忆起正确的细节并在其中进行推理时才有意义。Opus 4.6 在 MRCR v2 上取得 78.3% 的成绩，是该上下文长度下前沿模型中的最高水平。</p><figure style="max-width:1920pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69b49c06e1c573f3ce50276b_image%20(3).png" loading="lazy"></div><figcaption>Claude Opus 4.6 和 Sonnet 4.6 在完整的 1M 窗口内保持准确率。长上下文检索能力随每一代模型不断提升。</figcaption></figure><p>这意味着你可以加载整个代码库、数千页的合同，或者一个长时间运行 agent 的完整轨迹——包括工具调用、观察结果和中间推理——并直接加以使用。长上下文工作以前所需的工程处理、有损摘要和上下文清理，现在都不再需要。完整的对话将原样保留。</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/1m-context-ga" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>认识 Built with Opus 4.6 Claude Code 黑客松的获胜者们 — Claude Blog 中文翻译</title>
+  <meta name="description" content="认识 Built with Opus 4.6 Claude Code 黑客松的获胜者们">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/meet-the-winners-of-our-built-with-opus-4-6-claude-code-hackathon" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Claude Code</span>
+            <span class="article-date">April 20, 2026</span>
+            
+          </div>
+          <h1 class="article-title">认识 Built with Opus 4.6 Claude Code 黑客松的获胜者们</h1>
+          <a href="/posts/meet-the-winners-of-our-built-with-opus-4-6-claude-code-hackathon/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>上周，我们宣布了与 Cerebral Valley 合办的 <a href="https://cerebralvalley.ai/e/built-with-4-7-hackathon" target="_blank"><em>Built with Opus 4.7</em> Claude Code 线上黑客松</a>，邀请社区使用<a href="https://www.anthropic.com/news/claude-opus-4-7">我们最新的</a> Opus 模型进行构建。与此前以 Opus 4.6 为主题的黑客松一样，我们将选出 500 名参与者，每人获得 500 美元的 API 额度和一周时间用 Claude Code 进行开发。随后，Claude 团队的评委将评选出六名获胜者，并从总额 10 万美元的 Claude API 额度奖金池中发放奖励，用于项目开发。</p><p>作为本系列的首场赛事，Opus 4.6 黑客松的获胜者包括一位人身伤害律师、一位心脏病专科医生、一位道路与基础设施专家、一位电子音乐人，以及一位职业软件工程师。他们的项目涉及住房、医疗、基础设施、音乐和教育领域。五名获胜者中有四位并非职业开发者。&nbsp;</p><p>我们希望他们的项目能给你带来启发，去构建有意义的东西。</p><h2>第一名：<a href="https://www.youtube.com/watch?v=jHwBkFSvyk0" target="_blank">CrossBeam</a>，Mike Brown</h2><figure style="max-width:1366px" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69e452d10be28aa3eb8577be_image3.png" loading="lazy"></div><figcaption>图片由 Mike Brown 提供。</figcaption></figure><p>加利福尼亚州的住房许可证首次提交驳回率超过 90%，平均延期六个月，让房主损失 3 万美元。而问题大多出在官僚流程上：缺少签名、法规引用编号错误、表格填写不完整。&nbsp;</p><p>"人人都说加州有住房危机。其实我们没有住房危机，我们有的是许可证危机。"人身伤害律师 Mike Brown 说。拿到建造新住宅所需的许可证，可能比施工本身花的时间还长。Mike 的黑客松项目 <a href="https://github.com/mikeOnBreeze/cc-crossbeam" target="_blank">CrossBeam</a>，正是用 AI 来打通加州的许可证审批瓶颈。&nbsp;</p><p>使用 CrossBeam 时，建筑商只需把蓝图和整改通知函拖入工具；并行的 sub-agent 会解析文档、建立空间索引，并为每一条独立的整改项分派专职 agent。二十分钟后，建筑商就拿到一份精确的获批行动方案。而在桌子的另一端，CrossBeam 让市政部门能够批量处理提交的许可证，并自动生成整改通知函草稿。&nbsp;</p><p>布埃纳帕克（Buena Park）是南加州的一座城市，它需要在 2029 年前为超过 8900 套住房单元发放许可，但 2024 年只发了大约 120 套。该市正在考虑采用 CrossBeam 来加速许可流程——受益的不只是建筑商，还有那些要审阅成堆材料的行政人员。<br>"如果我们能同时解决加州许可证危机的两端，"Mike 说，"我们或许真的能解决加州的住房危机。"&nbsp;</p><p>Mike 构建 CrossBeam 的工作流是：先给 Claude Code 写提示词，然后让 Claude 编写测试。"我居然赢了这场比赛，而我一行代码都没写过，这太不可思议了，"他说，"我甚至一行代码都没读过。"</p><p><a href="https://github.com/mikeOnBreeze/cc-crossbeam"><em>在 GitHub 上查看 CrossBeam。</em></a></p><h2>第二名：<a href="https://www.youtube.com/watch?v=rsUaz_QAK6o" target="_blank">Elisa</a>，Jon McBee</h2><figure style="max-width:1340px" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69e45316687854976b223003_image2.png" loading="lazy"></div><figcaption>图片由 Jon McBee 提供。</figcaption></figure><p>当 Jon McBee 12 岁的女儿要为七年级的科学展项目给微控制器编程时，他希望她能用上自己作为软件工程师每天使用的工具：Claude Code。但终端界面并不是为初中生设计的——于是他自己做了一个。</p><p>Elisa 是一个基于积木块的可视化集成开发环境（IDE），用户通过拼搭原语（目标、需求、agent、skill、规则、入口、部署）来设计软件，而 AI 在幕后编写真正的代码。用户用一种可视语言编写规格说明，一个元规划器（meta-planner）将其分解为任务图，剩下的交给 agent 处理。内置的教学引擎会以适龄的语言解释所用到的编程概念，让每一次构建都成为一堂课。Jon 的女儿用它为她的项目把代码烧录到微控制器上，全程没写一行代码。</p><p>借助 Claude Code，Jon 只用 30 个小时就构建出了 Elisa<em></em>，提交了 76 次 commit，包含超过 39000 行代码和 1500 多个测试。"我懂系统架构，懂硬件集成，也知道如何定义和测试软件，"他说，"Claude Code 帮我在短短六天里把这些知识变成了一款可以发布的产品。"</p><p>已有教育工作者主动联系希望在课堂上使用 Elisa，Jon 正在利用他获得第二名所得的 3 万美元 Claude API 额度为这项工作筹集资金。他相信，软件开发者很快就会完全不再手写源代码，而是与定义良好的测试和规格说明打交道。<em>Elisa</em> 把这个理念包在了一个对孩子友好的可视化界面里。"我用女儿的名字命名这个项目，"Jon 说，"因为它正是为她这样的人做的。"</p><p><a href="https://github.com/zoidbergclawd/elisa"><em>在 GitHub 上查看 Elisa。</em></a></p><h2>第三名：<a href="https://youtu.be/V29UCOii2jE">PostVisit.ai</a>，Michał Nedoszytko</h2><figure style="max-width:1174px" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69e453686a5b08ad802e98f2_image1.png" loading="lazy"></div><figcaption>图片由 Michał Nedoszytko 提供。</figcaption></figure><p>Michał Nedoszytko 是一位常驻布鲁塞尔的心脏病专科医生，在行医之余已经做了 20 年医疗软件。他此前的项目 Previsit.AI 是一套已在比利时、希腊和波兰部署的 AI 患者预诊系统。而过去两年他真正想做的，是它的对侧：就诊之后发生什么。"我在导管室做过数千台手术，"他说，"但真正的困难是在患者走出诊室的那一刻开始的。"</p><p>PostVisit 是一套工具集：用通俗语言解释诊断、分析就诊记录和 AI 病历助手的转写文本，并在医生的监督下，从科研资源和完整健康档案中呈现相关的临床证据。患者能更清楚地了解自己的诊疗情况，医生也能掌握患者在两次就诊之间的状态。这个助手围绕隐私、安全和临床最佳实践而构建。</p><p>为了开发 PostVisit，Michał 给自己安排了一场黑客松公路旅行，在从布鲁塞尔开往旧金山的路上边走边开发。"我最好的想法都是在路上诞生的，"他说。一周、几千英里之后，他做出了这个设想多年的产品。"医学以证据为基础，"他说，"而现在，通过把健康档案、临床证据和就诊数据结合在一起，患者可以完全掌控并理解就诊之后发生的一切。"</p><p><a href="http://postvisit.ai"><em>了解更多请访问 postvisit.ai。</em></a></p><h2>"Keep Thinking"（持续思考）奖：<a href="https://www.youtube.com/watch?v=GFCrXehS1DE" target="_blank">TARA</a>，Kyeyune Kazibwe</h2><figure class="w-richtext-align-center w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69e4550a09fb338e86755644_image4.png" loading="lazy"></div><figcaption>图片由 Kyeyune Kazibwe 提供。</figcaption></figure><p>乌干达的道路基础设施需求远超预算所能覆盖，而传统可行性研究帮不上忙：一次研究要花费 100 万到 400 万美元、耗时 9 到 14 个月，而且只关注经济预测，完全没有考虑道路本应服务的社区。当时在乌干达工程与交通部工作的 Kyeyune Kazibwe 构建了 TARA，希望改变这类决策的制定方式。</p><p>TARA 能把行车记录仪拍下的道路影像转化为一份完整的投资评估报告。该工具利用 Opus 4.6 的视觉能力分析每一帧画面，识别路面状况、病害模式，以及道路沿线的活动——包括行人、骑行者和市场摊位。系统将道路切分为不同路况区段，自动填入养护干预成本，并生成完整的经济评估，包括净现值（NPV）、现金流预测和敏感性分析。它还会给出一个公平性得分，评估这项投资究竟让谁受益，并将沿途识别到的邻近设施和重点关注区域纳入考量。</p><p>参加黑客松时，Kyeyune 上传了 Kira 至 Matugga 公路的真实行车记录仪录像，这条路目前在乌干达在建。"点一下就能生成一份完整的 PDF 报告：路况评估、经济分析、公平性发现、敏感性解读，全部在一个文档里，"他说，"这个过程过去要花好几周，TARA 只用五个小时。"</p><p><a href="https://github.com/Kye256/tara-transport-assessment" target="_blank">在 GitHub 上查看 <em>TARA</em>。</a></p><h2>特别奖——创意探索：<a href="https://www.youtube.com/watch?v=X6CqJoyj0kI" target="_blank">Conductr</a>，Asep Bagja Priandana</h2><figure class="w-richtext-align-center w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69e45536f6ba167d389c055f_image7.jpg" loading="lazy"></div><figcaption>图片由 Asep Bagja Priandana 提供。</figcaption></figure><p>Asep Bagja Priandana 构建了 Conductr，把 Claude 变成一位实时合奏的虚拟乐队搭档。这个基于浏览器的 MIDI 乐器会在你用控制器弹奏和弦时聆听、分析你的演奏，并实时生成鼓、贝斯、旋律与和声四条音轨。输入 <em>"make it funky"</em> 或 <em>"build to a climax"</em>，编曲就会在演奏中途改变。</p><p>他说，技术上的挑战在于让音乐不中断。一个编译为 WebAssembly 的 C 语言引擎每 15 毫秒生成一次音符，因此 AI 的决策可以重塑编曲而不打断律动。用 Asep 的话说，延迟低到"在音乐上不可察觉"。</p><p>Conductr 由大约 4800 行 JavaScript 和 WebAssembly 构成：对一个能聆听、思考并与你实时合奏的乐器来说，这是一次相当精炼的实现。</p><p><a href="https://github.com/nanassound/conductr"><em>在 GitHub 上查看 Conductr。</em></a></p><p>请持续关注 Built with Opus 4.7 黑客松获胜者的后续消息。</p><p><a href="http://claude.com/community" target="_blank"><strong><em>了解</em></strong></a><strong><em>我们的 Claude 社区计划，包括线下聚会、黑客松等更多活动。</em></strong></p><p>‍</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/meet-the-winners-of-our-built-with-opus-4-6-claude-code-hackathon" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

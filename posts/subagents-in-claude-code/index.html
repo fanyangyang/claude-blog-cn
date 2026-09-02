@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>如何以及何时在 Claude Code 中使用 subagent — Claude Blog 中文翻译</title>
+  <meta name="description" content="如何以及何时在 Claude Code 中使用 subagent">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/subagents-in-claude-code" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Claude Code</span>
+            <span class="article-date">April 7, 2026</span>
+            
+          </div>
+          <h1 class="article-title">如何以及何时在 Claude Code 中使用 subagent</h1>
+          <a href="/posts/subagents-in-claude-code/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p><a href="https://claude.com/product/claude-code" target="_blank">Claude Code</a> 擅长处理复杂的多步骤项目，但长会话会不断累积负担。读过的每个文件、走过的每条岔路、每个没想完的念头，都留在上下文窗口里，拖慢响应速度、推高 token 成本。</p><p>假设在一个大型 TypeScript monorepo 中开发一个新功能。主线工作是写实现，但支线任务层出不穷：查一下现有服务是怎么处理认证的、找一下格式化日期的共享工具函数、看看设计系统里有没有现成可用的相近组件。这些都不需要完整的项目上下文，放在主会话里执行只会增加噪音。要是能让它们并行运行呢？</p><p><a href="https://code.claude.com/docs/en/sub-agents" target="_blank">subagent</a>（子代理）应运而生。subagent 是一个拥有独立上下文窗口的隔离 Claude 实例。它接到任务、完成工作，然后只返回结果。可以把 subagent 理解为 Claude Code 会话的浏览器标签页：一个可以追踪岔路而不丢主线的去处。</p><p>在本文中，我们会讨论什么时候适合用 subagent、如何调用它们，以及什么时候不值得付出这点开销。</p><h2>什么是 subagent？&nbsp;</h2><p>subagent 是拥有各自上下文窗口、可独立运作的 agent。当 Claude 派生出一个 subagent 时，这个助手会独立地读文件、探索代码或进行修改。任务完成后，subagent 只把相关结果返回给主对话。</p><p>每个 subagent 都从头开始，不受会话历史或已调用 skills 的拖累。多个 subagent 可以并行运行，而且各自可以有不同的权限：一个研究型 subagent 可能只有只读权限，而一个实现型 subagent 则拥有完整的编辑能力。</p><p>Claude Code 内置了若干 subagent 类型，包括：</p><ul><li><strong>通用 agent（General-purpose）</strong>，用于复杂的多步骤任务</li><li><strong>计划 agent（Plan）</strong>，在给出实现策略之前先研究代码库</li><li><strong>探索 agent（Explore）</strong>，针对快速、只读的代码检索做了优化&nbsp;</li></ul><p>Claude Code 常会自行派生 subagent 来处理分配的任务。你也可以显式地引导这一行为，定义可复用的专家角色，让 Claude 自动把任务委派过去。知道什么时候该用 subagent，才能真正发挥这个功能的价值。&nbsp;</p><h2>什么时候应该用 subagent？&nbsp;</h2><p>有几类工作明显受益于 subagent 委派。学会识别它们，能让这个功能的效果大幅提升。</p><h3>研究密集型任务</h3><p>当理解某件事的运作方式是修改它的前提时，subagent 可以探索代码库并返回一份摘要，而不是把几十个文件一股脑塞进对话。</p><p><strong>信号：</strong>收集上下文需要读几十个文件。</p><p><strong>收益：</strong>主对话保持干净，收到的是提炼后的结论而非原始内容。</p><h3>多个相互独立的任务</h3><p>修复多个文件中的错误、更新多个组件里的模式，或者做彼此不依赖的修改时，并行 subagent 能更快完成任务。</p><p><strong>信号：</strong>子任务之间没有依赖关系。</p><p><strong>收益：</strong>三个 subagent 同时工作，通常总耗时更短。</p><h3>需要全新视角</h3><p>当目标是获得对某份实现不带偏见的评审时，subagent 能提供一张白纸，因为它不继承主对话中的假设、上下文或盲区。</p><p><strong>信号：</strong>需要验证，但不想让会话历史影响分析。</p><p><strong>收益：</strong>更干净、更客观的反馈。</p><p><strong>小技巧：</strong>/clear 命令同样会重置上下文和会话历史，提供类似的 unbiased 白纸，但代价是完全丢失这些历史。而 subagent 在获得同样全新视角的同时，主对话原封不动。</p><h3>提交前的验证</h3><p>在最终确定修改之前，一个独立的 subagent 可以验证实现是否存在过拟合测试或遗漏边缘情况的问题。</p><p><strong>信号：</strong>提交代码前需要第二意见。</p><p><strong>收益：</strong>能抓住因熟悉代码而被忽略的问题。</p><h3>流水线式工作流</h3><p>当任务有明显阶段划分（比如先设计、再实现、后测试）时，每个阶段都能从专注投入中受益。</p><p><strong>信号：</strong>阶段按序推进，且有清晰的交接。</p><p><strong>收益：</strong>每个 subagent 专注于自己的阶段，不被其他阶段的上下文干扰。</p><p>‍<strong>小技巧：</strong>当一项任务需要探索十个以上的文件，或包含三块以上相互独立的工作时，这就是让 Claude 转向 subagent 的强烈信号。</p><h2>如何引导 subagent 的使用</h2><p>调用 subagent 的方法有好几种，从简单对话到自动化工作流不等。正确的起点取决于你的工作流，随着模式逐渐清晰，可以逐步叠加更精细的手段。</p><h3>对话式调用</h3><p>最灵活的方式就是在对话中直接让 Claude 使用 subagent。这在所有 Claude Code 界面上都可行：终端、VS Code、JetBrains、网页版和桌面应用。&nbsp;</p><p>能可靠触发 subagent 的自然语言表达包括：</p><ul><li>“用一个 subagent 探索这个代码库里认证是怎么实现的”</li><li>“让一个单独的 agent 评审这段代码的安全问题”</li><li>“并行研究这个问题。同时检查 API 路由、数据库模型和前端组件”</li><li>“派几个 subagent 把不同 package 里的这些 TypeScript 错误修掉”</li></ul><p>表达明确很重要。界定清楚范围，任务独立时明确要求并行执行，并描述期望的输出。</p><p>下面是一个有效的提示词结构：</p><pre></pre><p>这段提示词之所以有效，是因为它清晰定义了三个独立任务，明确要求并行执行，并指定了输出格式。Claude 理解意图后就会派出合适的 subagent。</p><p>对话式调用的实用技巧包括：</p><ul><li><strong>清晰界定任务范围。</strong>“探索支付功能是怎么实现的”胜过“探索一切”。</li><li><strong>明确要求并行。</strong>说“这些可以并行跑”或“同时处理这三件事”。</li><li><strong>指定返回什么。</strong>是摘要、具体发现还是建议。说清输出格式能帮 Claude 交付到位。</li><li><strong>在需要无偏见分析时要求全新上下文。</strong>“用一个看不到我们之前讨论内容的 subagent”能保证干净的评估。</li></ul><p><strong>小技巧：</strong>当某个 subagent 运行较久时，Ctrl+B 可以把它转入后台。对话可以继续进行，它完成后结果会自动浮现。/tasks 命令可以查看后台正在运行的所有任务。</p><h3>自定义 subagent</h3><p>当同一类 subagent 被反复需要（一个安全评审员、一个测试编写者、一个文档校对员），就可以把它一次性定义为自定义 subagent。&nbsp;</p><p>之后只要任务匹配其描述，Claude 就会自动委派给它，无需额外提示。</p><p>自定义 subagent 以 markdown 文件的形式存在，放在 <code>.claude/agents/ </code>（项目级，与团队共享）或 <code>~/.claude/agents/ </code>（用户级，跨所有项目可用）。每个 subagent 拥有自己的系统提示词、工具权限，还可以配置专属模型。</p><p>创建自定义 subagent 最简单的方式是 /agents 命令，它会引导你交互式完成配置，还能根据一段描述生成初稿。也可以手写文件，例如：</p><pre></pre><p>配置就绪后，Claude 会自动把匹配的工作路由给该 subagent。也可以按名字调用：“让 security-reviewer 看看暂存区的改动。”</p><p>自定义 subagent 在以下情况效果最好：</p><ul><li>希望有一位专家角色，任务匹配时 Claude 自动委派</li><li>工作受益于范围严格的系统提示词和受限的工具集</li><li>配置需要在团队间共享或跨项目复用</li></ul><p><strong>小技巧：</strong>description 字段是 Claude 判断何时委派的依据。要把触发条件写具体，而不只是能力描述。“在提交前评审代码的安全问题”比“安全专家”路由得更准。</p><p>完整的配置参考（包括权限模式以及项目级与用户级 subagent 的交互方式），请查阅我们的 <a href="https://code.claude.com/docs/en/sub-agents" target="_blank">Claude Code subagents 文档</a>。</p><h3>CLAUDE.md 指令</h3><p>自定义 subagent 定义了专家是谁，CLAUDE.md 文件则定义了 Claude 何时应该启用他们的规则。如果每次代码评审都应经过一个只读 subagent，或每个架构问题都应先触发一轮研究，CLAUDE.md 就是这条策略的安身之处。Claude 在每次对话开始时都会读取它，因此这一行为在会话之间、团队成员之间保持一致，谁都不必记得开口要求。</p><p>当满足以下情况时，CLAUDE.md 适合用来放置 subagent 指令：</p><ul><li>代码评审应始终使用只读 subagent</li><li>项目有 Claude 应遵循的特定研究模式</li><li>需要在各成员和各会话之间保持行为一致</li></ul><p>下面是一个简单的 CLAUDE.md 文件示例，在特定条件下触发一个 subagent：</p><pre></pre><p>有了上面的 CLAUDE.md 文件，每次代码评审请求都会自动套用定义好的模式，无需每次重复说明。</p><p>关于 CLAUDE.md 文件的更多内容，参见<a href="https://preview.claude.ai/chat/link" target="_blank">《为你的代码库定制 Claude Code：配置 CLAUDE.md 文件》</a>以及我们的 Claude Code <a href="http://claude.md">CLAUDE.md</a><a href="https://code.claude.com/docs/en/memory#claude-md-files" target="_blank"> 文件文档</a>。&nbsp;</p><h3>Skills</h3><p>对于反复运行的复杂多步骤工作流，skills 提供了可复用的接口。在 .claude/skills/ 中定义一次 skill，之后用 /skill-name 调用，或者在任务匹配其描述时让 Claude 自动加载。</p><p>Skills 与 CLAUDE.md 文件的区别在于作用范围。CLAUDE.md 文件始终加载，塑造每一次交互；而 skill 按需加载——要么被显式调用，要么是 Claude 把当前任务与 skill 的 description 字段匹配上了。因此，那些“应该可用、但不必应用于每个提示词”的工作流，更适合放进 skills。</p><p>Skills 适合以下场景：</p><ul><li>某些操作会定期执行</li><li>不同团队成员需要使用同一套复杂操作</li><li>需要在团队内标准化某些任务的执行方式</li></ul><p>下面是一个用于全面代码评审的 deep-review skill 示例：</p><pre></pre><p>在上面的代码片段中，/deep-review 按需触发一次三段式 subagent 分析。由于 description 中提到了在提交前评审暂存区改动，当该场景出现时，Claude 也能自动启用这个 skill。</p><p>skill 是一个目录，不是单个文件。除了 <code>SKILL.md</code>，它还可以存放供 Claude 填充的模板、展示期望格式的示例输出，或 Claude 在工作流中执行的脚本。旧式的 <code>.claude/commands/ </code>格式是单个扁平文件，所有内容只能写进提示词本身。</p><p>关于在 Claude Code 中使用 skills 的更多内容，参见我们的 <a href="https://code.claude.com/docs/en/skills#extend-claude-with-skills" target="_blank">Claude Code skills 文档</a>。</p><h3>Hooks</h3><p>Hooks 是用户自定义的 shell 命令、HTTP 端点或 LLM 提示词，会在 Claude Code 生命周期的特定节点自动执行。<a href="https://code.claude.com/docs/en/hooks-guide" target="_blank">Hooks</a> 可以基于事件自动化 subagent 工作流。Hooks 在特定动作上触发，无需手动调用即可运行 subagent 任务。</p><p>Hooks 适合以下场景：</p><ul><li>每次提交在创建之前都应被自动评审</li><li>安全检查应该自动运行，不依赖任何人记得开口</li><li>希望把 CI 式的质量门禁纳入本地开发流程</li></ul><p>下面是一个 Stop hook 示例，它会在测试通过之前阻止 Claude 结束回合：</p><pre></pre><p>以及位于 <code>.claude/hooks/check-tests.sh</code> 的脚本：</p><pre></pre><p>当 Claude 结束回合时，Stop 事件触发。脚本运行测试套件——如果测试失败，它返回带有 <code>decision: "block"</code> 和 <code>reason</code> 的 JSON。Claude Code 读到之后不让 Claude 停下来，而是把 reason 作为继续工作的指令回馈到对话中。脚本开头的 <code>stop_hook_active</code> 守卫用于防止无限循环：如果 Claude 已经因为上一个 stop-hook 的阻止而继续工作，脚本就放行让它退出。</p><p>Hooks 代表了 subagent 编排中最自动化的方式。对话式调用或 CLAUDE.md 指令是更好的起点；hooks 可以等工作流成熟之后再上。</p><p>完整的 hooks 配置，参见<a href="https://claude.com/blog/how-to-configure-hooks" target="_blank">《Claude Code 高级用户定制：如何配置 hooks》</a>或我们的 <a href="https://code.claude.com/docs/en/hooks" target="_blank">Claude Code hooks 文档</a>。</p><h2>使用 subagent 的实用模式</h2><p>以下模式展示了如何把 subagent 引导应用到常见场景。</p><h3>先研究，后实现</h3><p>在不熟悉的代码上添加功能时，先把研究委派给 subagent，可以让实现讨论建立在充分信息之上而非边做边探索，例如：&nbsp;</p><pre></pre><p>你收到的是一份提炼过的摘要，而不是二十个文件的原始上下文，实现讨论从一开始就站在坚实的地基上。</p><h3>并行修改</h3><p>当同一模式需要在多个文件中更新时，并行 subagent 完成得更快且更专注，例如： </p><pre></pre><p>三个并行工作的 subagent 大约只需单个 subagent 的时间即可完成。每个 subagent 专注于自己的文件，不会因其他文件的上下文产生混乱或不一致。</p><h3>独立评审</h3><p>实现完复杂功能后，由一个未受实现过程影响的 subagent 来验证，能抓住熟悉感所遮蔽的问题，例如：&nbsp;</p><pre></pre><p>评审 subagent 在评估代码时，并不知道当初权衡过哪些方案、否决过哪些思路、做过哪些假设。这种外部视角能暴露主对话可能遗漏的问题。</p><h3>流水线工作流</h3><p>对于多阶段任务，把 subagent 串联起来并在阶段之间显式交接，可以让每个阶段保持专注，例如：&nbsp;</p><pre></pre><p>采用流水线工作流后，任务的每个阶段都获得专注的上下文。设计 subagent 不会被实现问题分心，实现 subagent 基于干净的规格工作，测试 subagent 则独立评估结果。&nbsp;</p><h2>什么时候不该用 subagent？&nbsp;</h2><p>subagent 固然有用，但也有开销。每个 subagent 都要启动自己的上下文、消耗 token，并在开发者和工作之间增加一层间接。只有当上下文隔离、并行或全新视角确实有帮助时，才值得付出这份成本。&nbsp;</p><p>对于较小的或严格串行的任务，通常留在主对话里更简单，例如：&nbsp;</p><ul><li><strong>串行的、相互依赖的工作。</strong>当第二步需要第一步的完整输出、第三步又需要前两者时，用一个会话串完整个链条，通常比让一串 subagent 通过文件传递状态更干净。</li><li><strong>同一文件的编辑。</strong>两个 subagent 并行编辑同一个文件是冲突的温床。这种场景下，把紧密耦合的修改放在同一个上下文窗口里。</li><li><strong>小任务。</strong>对于快速修复或一个聚焦的问题，委派的开销超过了收益。直接在主对话里提问或下达指令即可。&nbsp;&nbsp;</li><li><strong>专家 agent 太多。</strong>为所有事都定义一个自定义 subagent 很有诱惑力，但给 Claude 太多选项反而让自动委派变得不可靠。大多数团队最终只会留下少数几个边界清晰的 agent，而不是一张臃肿的花名册。</li><li><strong>需要 agent 之间相互协调的工作。</strong>subagent 只能向主对话汇报，彼此之间无法交流。如果任务要求 subagent 之间通信，请使用 <a href="https://code.claude.com/docs/en/agent-teams" target="_blank">agent teams</a>。在 agent teams 中，subagent 在各自独立的会话之间协调，而非在同一会话内，因此更重、更贵。关于何时用 subagent、何时用 Agent Teams 的更多指引，请查阅我们的 <a href="https://code.claude.com/docs/en/agent-teams" target="_blank">Claude Code agent teams 文档</a>。</li></ul><p>前文提到的那些信号（需要第二意见、子任务之间没有依赖、需要大量研究）可以清楚地告诉你什么时候值得委派给 subagent。</p><h2>从对话开始，之后再自动化</h2><p>subagent 的全部价值在于有意识地使用。Claude 提供的自动调用固然有用，但知道何时委派研究、并行推进工作、请求全新视角，比听天由命能产出更好的结果。</p><p>使用 subagent 时，先从对话式提示词开始。留意哪些请求反复出现，随着模式明朗再逐步构建自动化。目标是让 subagent 委派变得毫不费力，让你的注意力始终集中在真正重要的工作上。</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/subagents-in-claude-code" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

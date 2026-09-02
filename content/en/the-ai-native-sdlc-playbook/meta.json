@@ -5,5 +5,13 @@
   "category": "Enterprise AI",
   "url": "https://claude.com/blog/the-ai-native-sdlc-playbook",
   "fetchedAt": "2026-09-01T11:10:32.672Z",
-  "translated": false
+  "translated": true,
+  "translatedTitle": "AI 原生 SDLC 实战手册",
+  "translatedAt": "2026-09-02T06:27:53.000Z",
+  "translateLang": "zh-CN",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/the-ai-native-sdlc-playbook.svg",
+  "illustrationBg": "Plum"
 }

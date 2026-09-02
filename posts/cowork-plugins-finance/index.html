@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>面向金融的 Cowork 与 plugins — Claude Blog 中文翻译</title>
+  <meta name="description" content="面向金融的 Cowork 与 plugins">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/cowork-plugins-finance" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Enterprise AI</span>
+            <span class="article-date">February 24, 2026</span>
+            
+          </div>
+          <h1 class="article-title">面向金融的 Cowork 与 plugins</h1>
+          <a href="/posts/cowork-plugins-finance/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>今天我们宣布 Cowork 的一系列更新，其中包括新的 plugins，让企业各部门的团队都能按照自己期望的方式塑造 Claude。作为其中一部分，我们继续在<a href="https://claude.com/blog/opus-4-6-finance" target="_blank">此前的更新</a>之上扩展 Claude 在金融服务领域能做的事。</p><p>Claude 现在可以跨 Excel 和 PowerPoint 工作——在应用之间携带上下文，端到端地完成多步骤金融任务。我们还推出了五个新的金融 plugins、面向 FactSet 和 MSCI 的新 MCP 连接器，以及由 LSEG 和 S&amp;P Global 打造的合作伙伴 plugins。</p><p>对金融从业者而言，这意味着一个端到端的工作流——跨多个市场数据提供商进行研究，再到更新模型、制作演示材料——现在可以在单个会话中完成，无需切换工具，也不会在路上丢失上下文。</p><h2>从数据到交付物</h2><p>金融工作散落在许多不同的地方。一份交易备忘录来自某个模型，模型来自数据，而数据又会回流到演示材料中。Claude 现在可以在 Excel 和 PowerPoint 之间流转而不丢失上下文——把取数、更新模型、制作交付物当作一个连续任务来完成。</p><p>一位股票分析师可以让 Claude 分析财报、更新财务模型并制作一页摘要幻灯片——全程无需切换工具。当输入发生变化时，Claude 会自动更新工作流的其余部分。</p><p>Claude 跨 Excel 和 PowerPoint 工作的能力现以 research preview 形式，面向 Mac 和 Windows 的所有付费计划开放。<br></p><figure style="max-width:2560px" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/699e3f480ae40e9e292d36f1_image%20(49).png" loading="lazy"></div></figure><h2>新的金融 plugins</h2><p>我们推出五个由 Anthropic 构建的 plugins，以及若干由合作伙伴构建的 plugins。每一个都带有与相应职能实际运作方式相符的领域专长、预期输出质量和工作流模式。</p><p>这 5 个由 Anthropic 开发的 plugins 现已全部在我们的<a href="https://github.com/anthropics/financial-services-plugins" target="_blank">公开仓库</a>中提供。</p><ul role="list"><li>首先是<strong>金融分析（financial analysis）</strong>插件，覆盖所有金融分析师都需要的基础工作流，包括市场与竞争研究、财务建模，以及 PowerPoint 模板创建和质量检查。</li></ul><p>其他插件则支持关键金融职能特有的工作流：</p><ul role="list"><li><strong>投资银行（Investment banking）</strong>帮助银行从业者处理交易工作流：审阅交易文件、构建可比公司分析、准备路演材料。</li><li><strong>股票研究（Equity research）</strong>加速研究工作流——解析财报电话会议纪要、用新指引更新财务模型、起草研究简报。</li><li><strong>私募股权（Private equity）</strong>为项目寻源和尽职调查而构建。Claude 可以审阅大量文档集、提取标准化财务数据、对情景建模，并按投资标准为机会打分。<strong>‍</strong></li><li><strong>财富管理（Wealth management）</strong>帮助理财顾问分析投资组合、识别偏离度和税务敞口，并大规模生成再平衡建议。</li></ul><p>除了这五个插件，金融从业者还依赖专有数据和专业化平台，这是任何通用插件都无法复制的。我们的合作伙伴构建了自己的连接器和 plugins，把机构数据直接带入 Claude 的上下文，让用户的工作流建立在他们团队本就信任的确切数据源之上。</p><h2>合作伙伴主导的连接器与 plugins</h2><p>在已支持的金融类 MCP <a href="https://claude.com/connectors#connectors" target="_blank">连接器</a>之外，两个新的 MCP 连接器让 Claude 可以直接访问机构数据平台。</p><ul role="list"><li><strong>FactSet</strong> 连接器将实时市场数据、基本面分析、盈利预估和研究洞见带入 Claude，用值得信赖的机构级数据增强用户的金融分析与投资研究工作流。</li><li><strong>MSCI</strong> 连接器把 MSCI 广受信赖的指数数据带入 Claude，让用户能够访问 MSCI 的专有指数数据，快速洞悉指数表现、敞口、成分和方法论。</li></ul><p>多家合作伙伴也发布了各自的 plugins，可以在上面提到的同一个<a href="https://github.com/anthropics/financial-services-plugins" target="_blank">金融服务 plugins 仓库</a>中找到。</p><ul role="list"><li><strong>S&amp;P Global</strong> 插件把 Capital IQ Pro 带入 Claude 的上下文。Skills 包括公司概览页（tear sheet）、行业交易摘要和财报电话会议前瞻。</li><li><strong>LSEG</strong> 插件让金融专业人士可以直接在 Claude 中使用 LSEG 的市场数据与分析能力。可以用实时收益率曲线构建 DCF 模型、用实时新闻撰写晨报、用最新的跨资产定价再平衡投资组合、用真实融资经济性分析交易。面向拥有有效 LSEG 数据授权的用户提供。</li></ul><h2>开始使用</h2><p>所有由 Anthropic 开发的 plugins——金融分析、投资银行、股票研究、私募股权和财富管理——今天即可使用，可在我们的<a href="https://github.com/anthropics/financial-services-plugins" target="_blank">公开金融插件仓库</a>中找到；LSEG 和 S&amp;P Global 由合作伙伴开发的 plugins 也在同一仓库。你可以直接安装，也可以把它们作为起点，按照你们公司的特定工作流、术语和需求进行定制。</p><p>要把 Claude 连接到 FactSet、MSCI 或其他企业数据源，请前往 Claude 设置中的连接器目录。在那里，管理员可以授权连接，并把它们打包成给团队使用的 plugins。</p><p>想让 Claude 跨 Excel 和 PowerPoint 工作，请下载 Claude in Excel 和 Claude in PowerPoint 加载项。想要更全面地了解 Cowork 和各个职能的 plugin 更新，请参阅<a href="https://claude.com/blog/cowork-plugins-across-enterprise" target="_blank">配套的博客文章</a>。</p><p>‍</p><p>‍</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/cowork-plugins-finance" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

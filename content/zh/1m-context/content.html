@@ -1,0 +1,24 @@
+<div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p><strong><em>更新：</em></strong><em>现已在 Google Cloud 的 Vertex AI 上提供（2025 年 8 月 26 日）</em></p><p>Claude Sonnet 4 现已在 Anthropic API 上支持最多 100 万 token 的上下文——这是 5 倍的提升，让你可以在单次请求中处理超过 75,000 行代码的整个代码库，或数十篇研究论文。</p><p>Sonnet 4 的长上下文支持目前在 Claude Developer Platform 原生环境中处于公开测试阶段，同时也可在 Amazon Bedrock 和 Google Cloud 的 Vertex AI 中使用。</p><h3>更长的上下文，更多的使用场景</h3><p>借助更长的上下文，开发者可以用 Claude 运行更全面、数据更密集的任务，包括：</p><ul role="list"><li><strong>大规模代码分析：</strong>加载包含源码、测试和文档在内的整个代码库。Claude 能够理解项目架构、识别跨文件依赖，并基于完整系统设计提出改进建议。</li><li><strong>文档综合：</strong>处理法律合同、研究论文或技术规格等大规模文档集。在保持完整上下文的同时，分析数百份文档之间的关系。</li><li><strong>具备上下文感知的智能体：</strong>构建能在数百次工具调用和多步骤工作流中保持上下文的智能体。纳入完整的 API 文档、工具定义和交互历史而不失连贯性。</li></ul><h3>API 定价</h3><p>考虑到计算需求的增加，超过 200K token 的提示词<a href="https://www.anthropic.com/pricing#api">定价</a>有所调整：</p><div class="w-embed"><figure>
+  <div role="region" tabindex="0">
+    <table>
+      <tbody>
+        <tr>
+          <th></th>
+          <th>输入</th>
+          <th>输出</th>
+        </tr>
+        <tr>
+          <td>提示词 ≤ 200K</td>
+          <td>$3 / MTok</td>
+          <td>$15 / MTok</td>
+        </tr>
+        <tr>
+          <td>提示词 &gt; 200K</td>
+          <td>$6 / MTok</td>
+          <td>$22.50 / MTok</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <figcaption>Claude Sonnet 4 在 Anthropic API 上的定价</figcaption>
+</figure></div><p>与 <a target="_blank" href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching">prompt caching</a> 结合使用时，用户可以降低 Claude Sonnet 4 长上下文的延迟和成本。100 万 token 的上下文窗口还可以配合<a target="_blank" href="https://docs.anthropic.com/en/docs/build-with-claude/batch-processing">批处理</a>使用，额外节省 50% 的成本。</p><h3>客户聚焦：Bolt.new</h3><p>Bolt.new 通过将 Claude 集成到其基于浏览器的开发平台中，正在改变 Web 开发的方式。</p><p>“Claude Sonnet 4 仍然是我们代码生成工作流的首选模型，在生产环境中持续领先于其他主流模型。有了 100 万 token 的上下文窗口，开发者如今可以处理规模大得多的项目，同时保持我们在真实编程场景中所需的高准确率，” Bolt.new 联合创始人兼 CEO Eric Simons 表示。</p><h3>客户聚焦：iGent AI</h3><p>总部位于伦敦的 iGent AI 正在通过 Maestro 推进软件开发领域的进步——这是一个将对话转化为可执行代码的 AI 伙伴。</p><p>“曾经不可能的事如今成为现实：具备 100 万 token 上下文的 Claude Sonnet 4 为 Maestro——我们在 iGent AI 的软件工程智能体——注入了强大的自主能力。这一飞跃解锁了真正的生产级工程——在真实代码库上进行持续多天的会话——确立了智能体软件工程的新范式，” iGent AI 联合创始人兼 CEO Sean Ward 表示。</p><h3>开始使用</h3><p>Sonnet 4 的长上下文支持目前在 Claude Developer Platform 上向 Tier 4 及自定义速率限制的客户开放公开测试，未来几周内将逐步扩大可用范围。长上下文同样可在 Amazon Bedrock 和 Google Cloud 的 Vertex AI 上使用。我们也在探索将长上下文引入其他 Claude 产品。</p><p>要了解有关 Sonnet 4 和 100 万 token 上下文窗口的更多信息，请参阅我们的<a target="_blank" href="https://docs.anthropic.com/en/docs/build-with-claude/context-windows#1m-token-context-window">文档</a>和<a target="_blank" href="https://www.anthropic.com/pricing#api">定价页面</a>。</p></div>

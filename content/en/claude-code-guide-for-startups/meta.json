@@ -1,9 +1,17 @@
 {
   "slug": "claude-code-guide-for-startups",
-  "title": "The Claude Code Guide For Startups",
+  "title": "The Claude Code guide for startups",
   "date": "August 20, 2026",
-  "category": "Enterprise AI",
+  "category": "Claude Code",
   "url": "https://claude.com/blog/claude-code-guide-for-startups",
   "fetchedAt": "2026-09-01T11:10:38.536Z",
-  "translated": false
+  "translated": true,
+  "translatedTitle": "面向创业公司的 Claude Code 指南",
+  "translatedAt": "2026-09-02T05:12:42.000Z",
+  "translateLang": "zh-CN",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/claude-code-guide-for-startups.svg",
+  "illustrationBg": "Sky"
 }

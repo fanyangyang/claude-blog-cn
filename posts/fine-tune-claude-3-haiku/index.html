@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>在 Amazon Bedrock 中微调 Claude 3 Haiku — Claude Blog 中文翻译</title>
+  <meta name="description" content="在 Amazon Bedrock 中微调 Claude 3 Haiku">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/fine-tune-claude-3-haiku" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Product announcements</span>
+            <span class="article-date">July 10, 2024</span>
+            
+          </div>
+          <h1 class="article-title">在 Amazon Bedrock 中微调 Claude 3 Haiku</h1>
+          <a href="/posts/fine-tune-claude-3-haiku/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><figure style="max-width:2880pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="展示 Claude 3 Haiku 微调效果的图表" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e95d9554e6002385ccd593_aaf4aaf19584a566ab3687e64cd31da018b17b44-2880x1620.png"></div></figure><p><strong><em>更新：</em></strong><em>在 Amazon Bedrock 中微调 Claude 3 Haiku 现已正式发布（GA）。（2024 年 11 月 1 日）</em></p><p>客户现在可以在 <a href="https://aws.amazon.com/bedrock/claude/" target="_blank">Amazon Bedrock</a> 中微调 Claude 3 Haiku——我们速度最快、性价比最高的模型——根据自身业务定制其知识和能力，使模型在专业任务上表现更出色。</p><h2>微调概述</h2><p>微调（fine-tuning）是提升模型性能的常用技术。通过创建定制版模型，你可以训练模型在高度定制化的工作流中表现出色。</p><p>要微调 Claude 3 Haiku，你首先需要准备一组高质量的提示词-补全对（prompt-completion pairs）——即你希望 Claude 在给定任务中给出的理想输出。现已开放预览的微调 API 将使用你的数据创建你专属的 Claude 3 Haiku。你可以通过 Amazon Bedrock 控制台或 API 对自定义的 Claude 3 Haiku 模型进行测试和调优，直到它达到你的性能目标并可以部署上线。</p><h2>优势</h2><p>微调让你能够定制 Claude 3 Haiku，使其掌握专业业务知识，从而提升准确性和一致性。优势包括：</p><ul role="list"><li><strong>在专业任务上取得更好结果</strong>：提升分类、与自定义 API 交互或行业特定数据解读等领域的表现。微调通过编码公司和领域知识，使 Claude 3 Haiku 在对你业务至关重要的领域比更通用的模型表现更出色。</li><li><strong>更低成本、更快速度</strong>：在可以用 Claude 3 Haiku 替代 Sonnet 或 Opus 的生产部署中降低成本，同时更快返回结果。</li><li><strong>一致且符合品牌规范的格式</strong>：生成严格遵循你精确规格的一致结构化输出，如标准化报告或自定义 schema，确保符合监管要求和内部规范。</li><li><strong>易用的 API</strong>：各种规模的公司都无需深厚的内部 AI 专业知识或资源即可高效创新。任何人都能无缝完成模型微调，不需要高深的技术专长。</li><li><strong>安全可靠</strong>：专有训练数据始终保留在客户自己的 AWS 环境中。Anthropic 的微调技术保持了 Claude 3 模型家族较低的有害输出风险。</li></ul><p>我们曾对 Haiku 进行微调，用于审核互联网论坛上的评论<sup>1</sup>，包括识别侮辱、威胁和露骨内容。微调将分类准确率从 81.5% 提升到 99.6%，同时将每次查询的 token 消耗降低了 85%。</p><figure style="max-width:2200pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="展示 Claude 3 Haiku 微调效果的图表" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e95d9454e6002385ccd587_7e7063ef5b33399cf7f891b43b343ab2692a2e14-2200x1936.png"></div></figure><h2>客户聚焦</h2><p><a href="https://www.claude.com/customers/skt" target="_blank">SK Telecom</a> 是韩国最大的电信运营商之一，他们训练了一个定制的 Claude 模型，借助自身行业专业知识改进客服工作流，为客户带来更好的体验。</p><p>"在客服运营中引入微调后的 Claude，显著改善了我们的内部流程和整体客户满意度。<strong>通过定制 Claude，我们客服人员回复的好评率提升了 73%，电信相关任务的关键绩效指标改善了 37%</strong>。微调后的模型现在可以高效地从客户通话记录中生成话题、行动项和摘要，并将复杂的客户问题拆解为可管理的步骤，帮助更高效地解决问题，"AI Tech Collaboration Group 副总裁 Eric Davis 表示。</p><p><a href="https://www.claude.com/customers/thomson-reuters" target="_blank">Thomson Reuters</a> 是一家全球性的内容与科技公司，已在使用 Claude 3 Haiku 中获得了积极成效。这家服务于法律、税务、会计、合规、政府和媒体领域专业人士的公司，期望通过结合自身行业专业知识对 Claude 进行微调，获得更快、更相关的 AI 结果。</p><p>"我们很高兴能在 Amazon Bedrock 中微调 Anthropic 的 Claude 3 Haiku 模型，以进一步增强我们基于 Claude 的解决方案。Thomson Reuters 致力于提供准确、快速且一致的用户体验。通过围绕我们的行业专业知识和特定需求优化 Claude，我们预期将获得可衡量的改进，以更快的速度交付高质量结果。<strong>我们已经在 Claude 3 Haiku 上看到了积极成效，微调将使我们能够更精准地定制 AI 助手</strong>，"Thomson Reuters AI and Labs 负责人 Joel Hron 表示。<br></p><h2>如何开始</h2><p>Claude 3 Haiku 在 Amazon Bedrock 中的微调功能现已在 AWS 美国西部（俄勒冈）区域开放预览。发布之初，我们支持上下文长度最高 32K token 的文本微调，并计划在未来引入视觉能力。更多详情请参阅 <a href="https://aws.amazon.com/blogs/machine-learning/fine-tune-anthropics-claude-3-haiku-in-amazon-bedrock-to-boost-model-accuracy-and-quality/" target="_blank">AWS 发布博客</a>和<a href="https://docs.aws.amazon.com/bedrock/latest/userguide/custom-model-supported.html" target="_blank">文档</a>。</p><p>如需申请访问权限，请联系你的 AWS 客户团队，或在 <a href="https://console.aws.amazon.com/bedrock/" target="_blank">AWS Management Console</a> 中提交支持工单。</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/fine-tune-claude-3-haiku" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

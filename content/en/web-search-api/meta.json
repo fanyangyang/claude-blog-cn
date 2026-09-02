@@ -1,0 +1,17 @@
+{
+  "slug": "web-search-api",
+  "title": "Introducing web search on the Anthropic API",
+  "date": "May 7, 2025",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/web-search-api",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/web-search-api.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.789Z",
+  "translatedTitle": "Anthropic API 网页搜索功能上线",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:44:54.905Z",
+  "translateLang": "zh-CN"
+}

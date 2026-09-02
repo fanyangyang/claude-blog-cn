@@ -1,0 +1,17 @@
+{
+  "slug": "claude-for-chrome",
+  "title": "Piloting Claude in Chrome",
+  "date": "August 25, 2025",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/claude-for-chrome",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/claude-for-chrome.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.789Z",
+  "translated": true,
+  "translatedTitle": "Claude in Chrome 试点",
+  "translatedAt": "2026-09-02T12:31:00.000Z",
+  "translateLang": "zh-CN"
+}

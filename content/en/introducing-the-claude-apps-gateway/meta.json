@@ -1,0 +1,17 @@
+{
+  "slug": "introducing-the-claude-apps-gateway",
+  "title": "Introducing the Claude apps gateway for Amazon Bedrock and Google Cloud",
+  "date": "June 29, 2026",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/introducing-the-claude-apps-gateway",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/introducing-the-claude-apps-gateway.svg",
+  "illustrationBg": "Clay",
+  "fetchedAt": "2026-09-02T03:50:17.784Z",
+  "translatedTitle": "面向 Amazon Bedrock 和 Google Cloud 的 Claude apps gateway 正式发布",
+  "translated": true,
+  "translatedAt": "2026-09-02T05:00:00.000Z",
+  "translateLang": "zh-CN"
+}

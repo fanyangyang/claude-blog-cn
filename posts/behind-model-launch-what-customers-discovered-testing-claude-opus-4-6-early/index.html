@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>模型发布幕后：客户在提前测试 Claude Opus 4.6 时发现了什么 — Claude Blog 中文翻译</title>
+  <meta name="description" content="模型发布幕后：客户在提前测试 Claude Opus 4.6 时发现了什么">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="nav-link">首页</a>
+          <a href="https://claude.com/blog/behind-model-launch-what-customers-discovered-testing-claude-opus-4-6-early" class="nav-link" target="_blank">原文 →</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+<main class="main">
+    <div class="container article-container">
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="tag">Enterprise AI</span>
+            <span class="article-date">February 9, 2026</span>
+            
+          </div>
+          <h1 class="article-title">模型发布幕后：客户在提前测试 Claude Opus 4.6 时发现了什么</h1>
+          <a href="/posts/behind-model-launch-what-customers-discovered-testing-claude-opus-4-6-early/en.html" class="lang-toggle">阅读英文原文 →</a>
+        </header>
+        <div class="article-content u-rich-text">
+          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>每当<a href="https://www.anthropic.com/news/claude-opus-4-6" target="_blank">新的 Claude 模型上线</a>之前，都会有一小群客户比全世界早几天拿到访问权限。他们使用尚未投入生产的研究版模型，用真实工作负载进行测试，弄清模型擅长什么、在哪里会出问题，以及在 Anthropic 正式公开发布的那一刻，它是否已经准备好交付给他们自己的用户。他们坦诚的评估——既包括好用的地方，<em>也包括</em>不好用的地方——直接塑造了 Anthropic 最终发布的模型版本。</p><p>评审窗口非常紧张。各团队清空日程、拉起作战室，开始把他们最难的问题一股脑抛给模型。幕后是深夜加班、一杯接一杯的咖啡，以及在奇怪时间点不断亮起的 Slack 频道。客户最终看到的是打磨完善的产品——但抵达那里的过程要混乱得多，也有趣得多。</p><p>在这篇文章里，我们想掀开这层帷幕。<a href="https://www.harvey.ai/" target="_blank">Harvey</a>、<a href="https://bolt.new/" target="_blank">bolt.new</a>、<a href="https://www.shopify.com/" target="_blank">Shopify</a> 和 <a href="https://lovable.dev/" target="_blank">Lovable</a> 都向我们展示了他们与 Claude Opus 4.6 早期访问期间的内部情况：他们采用了什么方法、发现了哪些突破，以及在其他所有人之前学到了什么。</p><h2><strong>为模型测试做准备</strong></h2><p>各团队如何开局，很大程度上取决于他们在做什么。&nbsp;</p><p><a href="https://claude.com/customers/stackblitz" target="_blank">bolt.new</a> 拉起了一个专门的 Slack 频道，并且刻意不提前分享各自的印象，以免互相产生偏见。&nbsp;</p><p><a href="https://claude.com/customers/harvey" target="_blank">Harvey</a> 的研究团队请来了经验丰富的律师在法律任务上测试模型，同时让它跑 BigLaw Bench——他们衡量真实法律工作的基准。</p><p><a href="https://claude.com/customers/shopify" target="_blank">Shopify</a> 的工程师们则开始把模型接入他们围绕 Claude 已经搭好的迭代规划循环。&nbsp;</p><p>在 <a href="https://claude.com/customers/lovable" target="_blank">Lovable</a>，负责模型与评测的团队立刻行动起来——一边跑基准测试，工程师们一边预约时间做他们所谓的“感觉检查”（vibe checks）：用新模型实际构建应用，感受它在哪里更强。Lovable 的工程负责人 Alexandre Pesant 说：“这有点像圣诞节。”&nbsp;</p><p>方法各不相同，但直觉一致：先把最难的问题抛给模型。</p><h2><strong>当结果开始陆续出炉</strong></h2><p>测试一旦铺开，各团队会紧盯两件事：模型在基准测试中的得分，以及它在实践中的<em>实际手感</em>。两者都重要，而且它们告诉你的不一定是同一件事。</p><p>Harvey 的 BigLaw Bench 结果是 90.2%——这是第一个在该基准上突破 90% 的 Anthropic 模型，40% 的任务拿到了满分。但真正让人印象深刻的，是定性层面的反应。&nbsp;</p><p>他们的一位内部律师只跑了一条查询，就回来说输出给人的感觉“聪明而有分析力，就像真的在思考”。当你的结构化评测和领域专家说的是同一件事时，这就是一个强烈的信号。</p><p>bolt.new 将自动化评测平台——测试构建质量、Bug 修复、代码库理解和设计美学——与上手压力测试相结合。第一天结束时，他们就有了一份共享文档，里面全是已部署的测试应用和具体观察。&nbsp;</p><p>有位开发者遇到了一个瀑布图 Bug，用上一个模型尝试了五次以上都没修好。Opus 4.6 第一次尝试就诊断出了问题：它发现有八个并行的 HubSpot API 搜索同时发起，还有一些查询绕过了限流保护——因为这些查询用的是原生 fetch，而不是项目里那个带限流封装的调用方式。&nbsp;</p><p>在 Shopify，主任工程师 Paulo Arruda 描述了一个颠倒了以往模式的瞬间：“我让 Opus 4.6 把一个东西从某个页面移到另一个菜单项里——我只说了这一句，没有指定任何细节。它不仅完成了移动，还做得远超预期，创造了很多我在看到之前根本没想到自己想要的细节。它预判了我的下一个要求，然后直接做了。我发现自己对 AI 说‘你说得完全对’，而不是反过来——以前可一直是反过来的那种模式。”</p><p>Shopify Assistants 团队的主任工程师 Ben Lafferty 则从另一个方向发力。他让 Opus 4.6 为一个内部原型把一个大型库从 TypeScript 移植到 Ruby。“它创建了一个 shim 来跑仓库里已有的测试用例，然后在对照原始测试集验证的同时，几乎一口气移植完了整个规格，”他说。“指令遵循能力显著提升。这是我经历的第一个几乎提不出什么实质性反馈的早期访问期。”</p><p>在 Lovable，测试分两条线进行。&nbsp;</p><p>团队运行设计基准和复杂任务评测来获得结构化的画像，但他们也做了所谓的“感觉检查”——工程师用新模型构建应用，感受它在哪里更强、在哪里会崩。&nbsp;</p><p>“发现新的毛边总归像是一场竞赛。”Alexandre Pesant 说。</p><p>他自己的压力测试是一个业余项目，涉及复杂的地铁线路图和行程规划逻辑，之前用多个模型尝试过，都碰了壁。在 Opus 4.6 开到最高强度（max effort）之后，模型突破了他预期会停滞的那个点。&nbsp;</p><p>“我大概能感觉到什么时候行不通、什么时候碰到了极限，”他说。“它比其他模型走得更远。”他还注意到一个更广的变化：模型能够在 Lovable 里自己使用浏览器并自行测试，“你能感觉到自主性上的差别。”</p><h2><strong>另一侧的体验</strong></h2><p>等到早期访问收尾时，各团队对自己手里的东西已经有了清晰的认识。我们访谈的每个团队都不断回到同一个话题：与模型的关系正在改变。</p><p>“Opus 4.6 第一次尝试就诊断出了我们用之前的模型尝试五次以上都没修好的 Bug。推理深度的跃升是实打实的。”bolt.new 的营销副总裁 Garrett Serviss 说。</p><p>“对我来说，Opus 4.6 是 Anthropic 第一个在日常工作里感觉像真正协作者的模型。”Shopify 的 Ben Lafferty 说。“我能交给模型完成的任务时间跨度还在持续变长。”</p><p>“Claude Opus 4.6 在设计质量上是一次提升。”Lovable 联合创始人 Fabian Hedin 说。“它更自主了，而这正是 Lovable 价值观的核心。人们应该去创造真正重要的东西，而不是微观管理 AI。”</p><p>当然，并非所有反馈都是赞美，而这恰恰是关键所在。早期测试者直接决定了 Anthropic 最终发布的模型版本。整个过程之所以成立，是因为各团队对“哪里不行”和对“哪里行”一样坦诚，而且他们知道这份坦诚真的会被听见。</p><p>“我们得以塑造工程组织未来将使用的工具。”Shopify 的 Paulo Arruda 说。“我们不只是被动的测试者——我们是开发伙伴。当我们发现问题或模式时，Anthropic 会倾听并迭代。”</p><p>‍</p><p>‍</p></div>
+        </div>
+        <footer class="article-footer">
+          <hr>
+          <p><a href="https://claude.com/blog/behind-model-launch-what-customers-discovered-testing-claude-opus-4-6-early" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+          <p><a href="/">← 返回首页</a></p>
+        </footer>
+      </article>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+    </div>
+  </footer>
+
+</body>
+</html>

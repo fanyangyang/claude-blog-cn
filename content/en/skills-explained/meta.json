@@ -1,0 +1,17 @@
+{
+  "slug": "skills-explained",
+  "title": "Skills explained: How Skills compares to prompts, Projects, MCP, and subagents",
+  "date": "March 5, 2026",
+  "category": "Agents",
+  "url": "https://claude.com/blog/skills-explained",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/skills-explained.svg",
+  "illustrationBg": "Olive",
+  "fetchedAt": "2026-09-02T03:50:17.788Z",
+  "translatedTitle": "深入理解 Skills：它与提示词、Projects、MCP 和 subagents 的对比",
+  "translated": true,
+  "translatedAt": "2026-09-02T04:17:12.000Z",
+  "translateLang": "zh-CN"
+}
