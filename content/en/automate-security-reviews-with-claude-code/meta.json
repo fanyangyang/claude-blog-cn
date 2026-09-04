@@ -13,5 +13,19 @@
   "translated": true,
   "translatedTitle": "用 Claude Code 自动化安全审查",
   "translatedAt": "2026-09-02T12:40:00.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": []
+  },
+  "subtitle": "Meta Description (238 characters): \"Introducing automated security reviews in Claude Code. Use the new /security-review command and GitHub Actions integration to identify and fix vulnerabilities before they reach production. Catch SQL injection, XSS, and authentication flaws automatically.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/product/claude-code"
 }

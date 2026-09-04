@@ -4,54 +4,261 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>用 MCP 构建能触达生产系统的 agent — Claude Blog 中文翻译</title>
-  <meta name="description" content="用 MCP 构建能触达生产系统的 agent">
+  <meta name="description" content="Patterns for building effective MCP integrations: server design, OAuth with CIMD and vaults, context-efficient clients, and skills. Plus where MCP fits alongside direct API calls and CLIs for connecting agents to your systems.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/building-agents-that-reach-production-systems-with-mcp" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>用 MCP 构建能触达生产系统的 agent</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/building-agents-that-reach-production-systems-with-mcp" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/building-agents-that-reach-production-systems-with-mcp/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># 用 MCP 构建能触达生产系统的 agent
+
+Patterns for building effective MCP integrations: server design, OAuth with CIMD and vaults, context-efficient clients, and skills. Plus where MCP fits alongside direct API calls and CLIs for connecting agents to your systems.
+
+Agent 的价值取决于它能触达的系统。团队在将 agent 连接到外部系统时，往往会收敛到三种方式——直接 API 调用、CLI 和 MCP。这篇文章将梳理各自的适用场景、为什么生产级 agent 最终往往落在 MCP 上，以及构建这类集成的一些有效模式。
+
+## 将 agent 连接到外部系统
+
+我们大体上看到三种连接 agent 与外部系统的路径：直接 API 调用、CLI 和 MCP。每种都有其合理的使用场景，取决于你在构建什么。关键的区别在于：agent 与服务之间是否存在一个公共层，以及这个层能覆盖多远。
+
+### 直接 API 调用
+
+Agent 直接调用你的 API——要么在代码执行沙箱中编写发出 HTTP 请求的代码，要么通过一个通用的函数调用工具。这是大多数团队的起点，在单个 agent 对接单个服务、或者少量无需跨 agent 平台复用的集成场景下运转良好。
+规模一大，问题就来了。由于 agent 与服务之间没有公共层，每一对 agent 与服务的组合都成了一次定制集成，各自需要处理认证、工具描述和边界情况——这就是 M×N 集成难题。
+
+### 命令行界面（CLI）
+
+Agent 在 shell 中运行你的命令行工具。这种方式快速、轻量，还能复用既有的工具链。它非常适合本地环境和沙箱容器——任何有文件系统和 shell 的地方。这提供了一个公共层，但这个层很薄。
+在触达那些不提供容器的移动端、Web 或云端托管平台时，CLI 会遇到硬性限制；认证则依赖 CLI 自身的机制——通常是磁盘上的凭证文件。这种方式最适合本地环境中快速、权限宽松的集成。
+
+### 模型上下文协议（MCP）
+
+MCP 以协议的形式提供这个公共层。Agent 连接到一个暴露你系统能力的服务器，认证、能力发现和丰富的语义都是标准化的。一个远程服务器可以触达任何兼容的客户端（Claude、ChatGPT、Cursor、VS Code 等），适用于任何部署环境。
+
+它需要一些前期投入，回报则是集成的可移植性，以及功能丰富的 agent 集成所需的语义能力。
+
+## 生产级 agent 运行在云端
+
+越来越多的生产级 agent 运行在云端，以便能够弹性扩缩并持续运转。它们需要触达的系统也在云端：数据存放的地方、工作被跟踪的地方、基础设施运行的地方。这些系统往往是远程的、需要认证的，而这正是 MCP 提供公共层的地方。 当这些系统位于私有网络而非公共互联网上时，[Claude Managed Agents 中的 MCP 隧道](https://claude.com/blog/claude-managed-agents-updates)可以通过仅出站（outbound-only）连接将 agent 接入它们——无需暴露任何端口或公共端点。
+
+我们已经从实际采用中看到了这一点。[MCP SDK](https://modelcontextprotocol.io/docs/sdk) 的月下载量最近突破了 3 亿次，而年初只有 1 亿次，企业和主流 agentic 平台都在大量采用。每天有数百万人通过 Claude 使用 MCP，该协议也是我们最近发布的众多产品的基础，包括 [Claude Cowork](https://claude.com/product/cowork)、[Claude Managed Agents](https://claude.com/blog/claude-managed-agents)，以及 [Claude Code 中的 channels](https://code.claude.com/docs/en/channels)。 
+‍
+随着 MCP 持续支撑生产级 agentic 系统，我们在这里分享一些把这些集成做好的模式：从构建高级服务器到上下文高效的客户端，以及 skills 在哪些方面与协议互补。
+
+## 构建高效的 MCP 服务器
+
+我们的[目录](https://claude.ai/directory/connectors)中有超过 200 个 MCP 服务器，每天有数百万人使用。通过与在该协议上构建的企业和开发者密切合作，我们总结出了几个决定 agent 能否可靠使用一个服务器的设计模式。
+
+### 构建远程服务器以获得最大触达
+
+远程服务器才能真正带来分发能力——这是唯一能在 Web、移动端和云端托管 agent 上运行的形态，也是所有主流客户端优化对接的目标。构建远程服务器，让 agent 在任何运行环境中都能使用你的系统。 
+
+### 按意图而非端点组织工具
+
+数量更少、描述清晰的工具，效果始终好于一整套 API 的镜像。不要把 API 一比一地包装成 MCP 服务器——按意图组织工具，让 agent 用两三次调用就能完成一项任务，而不是把一堆原语拼接起来。一个 create_issue_from_thread 工具胜过 get_thread + parse_messages + create_issue + link_attachment。完整模式的更多内容请参阅[为 agent 编写高效的工具](https://www.anthropic.com/engineering/writing-tools-for-agents)。
+
+### 当操作面很大时，为代码编排而设计
+
+如果你的服务需要数百种不同的操作——比如 Cloudflare、AWS 或 Kubernetes——按意图分组的工具集很可能覆盖不过来。此时应暴露一个接受代码的薄工具面：agent 编写一段简短的脚本，你的服务器在沙箱中针对你的 API 运行它，只返回结果。[Cloudflare 的 MCP 服务器](https://github.com/cloudflare/mcp)是参考范例——两个工具（search 和 execute）用约 1K token 覆盖了约 2500 个端点。
+
+### 在有价值的地方提供丰富语义
+
+[MCP Apps](https://modelcontextprotocol.io/extensions/apps/overview) 是第一个官方协议扩展，它允许工具返回交互式界面——如图表、表单或仪表盘——并直接内嵌渲染在聊天界面中。提供 MCP apps 的服务器，其采用率和留存率往往明显高于只返回纯文本的服务器。用它把你的产品 UI 在关键时刻呈现给 agent 或最终用户——该扩展已在 Claude.ai、Claude Cowork 和许多其他主流 AI 工具中获得支持。
+
+‍[Elicitation](https://modelcontextprotocol.io/specification/2025-11-25/client/elicitation) 允许你的服务器在工具调用中途暂停，向用户征求输入。[Form 模式](https://modelcontextprotocol.io/specification/2025-11-25/client/elicitation#form-mode-elicitation-requests)发送一个简单的 schema，由客户端渲染原生表单——用它来补齐缺失的参数、确认破坏性操作或澄清选项。[URL 模式](https://modelcontextprotocol.io/specification/2025-11-25/client/elicitation#url-mode-elicitation-requests)则把用户引导到浏览器——用它来完成下游 OAuth、支付，或收集任何绝不应经过 MCP 客户端的凭证。这两种模式都让用户留在原有流程中，而不是被甩到一个设置页面。Form 模式已被广泛支持；URL 模式已在 Claude Code 中获得支持，更多客户端正在跟进。
+
+### 依赖标准化认证
+
+标准化认证让 MCP 对云端托管的 agent 切实可行。如果你的服务器需要 OAuth，最新的 [MCP 规范](https://modelcontextprotocol.io/specification/2025-11-25)支持 [CIMD](https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization#client-id-metadata-documents)（Client ID Metadata Documents）用于客户端注册——它给用户带来快速的首次认证流程，也大幅减少了出人意料的重复认证提示。这是我们推荐的认证方式，该能力已在 MCP SDK、Claude.ai 和 Claude Code 中获得支持，并正在业界得到广泛采用。
+用户完成授权后，下一个问题是云端托管的 agent 如何在运行时持有并复用这些令牌。[Claude Managed Agents](https://platform.claude.com/docs/en/managed-agents/overview) 中的 [Vaults](https://platform.claude.com/docs/en/managed-agents/vaults#mcp-oauth-credential) 解决了这个问题：只需注册一次用户的 OAuth 令牌，在创建会话时按 ID 引用 vault，平台就会向每个 MCP 连接注入正确的凭证并代你刷新——不需要自建密钥存储，也不需要在每次调用时传递令牌。
+
+## 让 MCP 客户端更省上下文
+
+MCP 标准化了 AI agent（[*客户端*](https://modelcontextprotocol.io/docs/develop/build-client#python)）连接并使用所需工具和数据源（[*服务器*](https://modelcontextprotocol.io/docs/develop/build-server)）的方式。服务器安全地暴露一系列能力，客户端则负责编排这些能力并管理上下文。如果你在构建 MCP 客户端，可以用渐进式披露（progressive disclosure）的模式让它更省上下文。
+
+### 用工具搜索按需加载工具定义
+
+[工具搜索（Tool search）](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool)不预先加载所有工具，而是推迟把它们装入上下文的时机，让 agent 在运行时检索工具目录，按需拉取相关工具。在我们的[测试](https://www.anthropic.com/engineering/advanced-tool-use)中，工具搜索通常能减少 85% 以上的工具定义 token，同时保持很高的选择准确率。 
+
+通过工具搜索降低上下文占用。来源：[advanced tool use
+](https://www.anthropic.com/engineering/advanced-tool-use)
+### 用程序化工具调用在代码中处理工具结果
+
+[程序化工具调用（Programmatic tool calling）](https://www.anthropic.com/engineering/code-execution-with-mcp)在代码执行沙箱中处理工具结果，而不是把原始结果直接返回给模型。这让 agent 可以用代码在多次调用之间循环、过滤和聚合，只有最终输出进入上下文。在我们的测试中，这在复杂的多步骤工作流上能减少约 [37%](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling) 的 token 用量。
+
+这些模式可以自然地组合并跨多个服务器发挥作用：更精简的上下文、更少的往返、更快的响应。完整分析请参阅[ *advanced tool use*](https://www.anthropic.com/engineering/advanced-tool-use)。
+
+## 将 MCP 服务器与 skills 搭配使用
+
+[Skills 与 MCP 是互补的](https://claude.com/blog/skills-explained)。MCP 让 agent 能够访问外部系统的工具和数据，而 skills 则教给 agent*如何*用好这些工具来完成实际工作的过程性知识。最强大的 agent 会同时使用两者，而 skills 能让 MCP 服务器的价值扩展到远不止几条连接。组合它们有两种通用模式：
+
+### 将 skills 和 MCP 服务器打包为插件
+
+Claude 的 [插件（Plugins）](https://code.claude.com/docs/en/plugins-reference#plugin-components-reference)是一个有用的抽象，让开发者可以把 skills、MCP 服务器、hooks、LSP 服务器和专用 subagent 打包成一种易于消费的分发方式。采用这种方式，是以最小摩擦统一多个上下文提供方的最佳途径。
+把 MCP 服务器与 skills 结合起来，能让 Claude 的表现更像一位领域专家：通过 MCP 获得工具，再通过 skills 让 Claude 端到端地编排工作流。可以参考我们为 Cowork 提供的[数据插件](https://claude.ai/directory/plugins/data%40knowledge-work-plugins)作为示例，它由 10 个 skills 和 8 个 MCP 服务器组成，覆盖 Snowflake、Databricks、BigQuery、Hex 等应用。
+
+将 skills 与 MCP 结合。来源：[Extending Claude's capabilities with skills and MCP servers](https://claude.com/blog/extending-claude-capabilities-with-skills-mcp-servers)
+### 通过 MCP 服务器分发 skills
+
+越来越常见的做法是服务提供方在发布 MCP 服务器的同时附带一个 skill，这样 agent 既能获得原始能力，也能得到一份用好这些能力的最佳实践手册。[Canva](https://claude.com/connectors/atlassian)、[Notion](https://claude.com/connectors/notion)、[Sentry](https://claude.com/connectors/sentry) 等都已在 Claude 中这样做了，在我们的[网页目录](https://claude.com/connectors)中，skill 就列在它们的连接器旁边。
+
+为了让这种搭配在每个客户端间都可移植，MCP 社区正在积极推进一项[扩展](https://github.com/modelcontextprotocol/experimental-ext-skills)，支持直接从服务器分发 skills。这样客户端就能自动继承相关的专业知识，并随其依赖的 API 一起进行版本管理。我们预计随着该扩展趋于稳定，这种模式会得到广泛采用。
+
+## 复利累积的那一层
+
+文章开头我们讲了连接 agent 与外部系统的三条路径。实践中，成熟的集成会三者兼有：以 API 为基础，为本地优先环境提供 CLI，用 MCP 服务云端 agent。
+
+随着生产级 agent 迁移到云端，MCP 成为关键的一层，而且是能够复利累积的一层。今天，一个远程服务器可以触达任何部署环境中的所有兼容客户端，认证、交互性和丰富语义都由协议处理。随着更多客户端采用规范、更多扩展落地，同一个服务器无需你发布任何新东西就会变得更强。
+
+在构建集成时，如果你的目标是让云端的生产级 agent 触达你的系统，那就构建一个 MCP 服务器，并用上述模式把它做到出色。每一个构建在 MCP 之上的集成都在强化这个生态：需要独自解决的边界情况更少，需要维护的定制集成也更少。
+
+### 致谢
+
+感谢 Den Delimarsky、David Soria Parra、Henry Shi、Felix Rieseberg、Conor Kelly、Molly Vorwerck、Andy Schumeister、Kevin Garcia、Amie Rotherham、Matt Samuels、Angela Jiang、Katelyn Lesse、AJ Rebeiro 和 Jess Yan****对本文的贡献。</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Agents</span>
-            <span class="article-date">April 22, 2026</span>
-            
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-heather);">
+            <img class="hero-illo-img" src="/assets/illustrations/building-agents-that-reach-production-systems-with-mcp.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">用 MCP 构建能触达生产系统的 agent</h1>
-          <a href="/posts/building-agents-that-reach-production-systems-with-mcp/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>Agent 的价值取决于它能触达的系统。团队在将 agent 连接到外部系统时，往往会收敛到三种方式——直接 API 调用、CLI 和 MCP。这篇文章将梳理各自的适用场景、为什么生产级 agent 最终往往落在 MCP 上，以及构建这类集成的一些有效模式。</p><h2>将 agent 连接到外部系统</h2><p>我们大体上看到三种连接 agent 与外部系统的路径：直接 API 调用、CLI 和 MCP。每种都有其合理的使用场景，取决于你在构建什么。关键的区别在于：agent 与服务之间是否存在一个公共层，以及这个层能覆盖多远。</p><h3>直接 API 调用</h3><p>Agent 直接调用你的 API——要么在代码执行沙箱中编写发出 HTTP 请求的代码，要么通过一个通用的函数调用工具。这是大多数团队的起点，在单个 agent 对接单个服务、或者少量无需跨 agent 平台复用的集成场景下运转良好。<br>规模一大，问题就来了。由于 agent 与服务之间没有公共层，每一对 agent 与服务的组合都成了一次定制集成，各自需要处理认证、工具描述和边界情况——这就是 M×N 集成难题。</p><h3>命令行界面（CLI）</h3><p>Agent 在 shell 中运行你的命令行工具。这种方式快速、轻量，还能复用既有的工具链。它非常适合本地环境和沙箱容器——任何有文件系统和 shell 的地方。这提供了一个公共层，但这个层很薄。<br>在触达那些不提供容器的移动端、Web 或云端托管平台时，CLI 会遇到硬性限制；认证则依赖 CLI 自身的机制——通常是磁盘上的凭证文件。这种方式最适合本地环境中快速、权限宽松的集成。</p><h3>模型上下文协议（MCP）</h3><p>MCP 以协议的形式提供这个公共层。Agent 连接到一个暴露你系统能力的服务器，认证、能力发现和丰富的语义都是标准化的。一个远程服务器可以触达任何兼容的客户端（Claude、ChatGPT、Cursor、VS Code 等），适用于任何部署环境。</p><p>它需要一些前期投入，回报则是集成的可移植性，以及功能丰富的 agent 集成所需的语义能力。</p><h2>生产级 agent 运行在云端</h2><p>越来越多的生产级 agent 运行在云端，以便能够弹性扩缩并持续运转。它们需要触达的系统也在云端：数据存放的地方、工作被跟踪的地方、基础设施运行的地方。这些系统往往是远程的、需要认证的，而这正是 MCP 提供公共层的地方。&nbsp;当这些系统位于私有网络而非公共互联网上时，<a href="https://claude.com/blog/claude-managed-agents-updates">Claude Managed Agents 中的 MCP 隧道</a>可以通过仅出站（outbound-only）连接将 agent 接入它们——无需暴露任何端口或公共端点。</p><p>我们已经从实际采用中看到了这一点。<a href="https://modelcontextprotocol.io/docs/sdk">MCP SDK</a> 的月下载量最近突破了 3 亿次，而年初只有 1 亿次，企业和主流 agentic 平台都在大量采用。每天有数百万人通过 Claude 使用 MCP，该协议也是我们最近发布的众多产品的基础，包括 <a href="https://claude.com/product/cowork">Claude Cowork</a>、<a href="https://claude.com/blog/claude-managed-agents">Claude Managed Agents</a>，以及 <a href="https://code.claude.com/docs/en/channels">Claude Code 中的 channels</a>。&nbsp;<br>‍<br>随着 MCP 持续支撑生产级 agentic 系统，我们在这里分享一些把这些集成做好的模式：从构建高级服务器到上下文高效的客户端，以及 skills 在哪些方面与协议互补。</p><h2>构建高效的 MCP 服务器</h2><p>我们的<a href="https://claude.ai/directory/connectors">目录</a>中有超过 200 个 MCP 服务器，每天有数百万人使用。通过与在该协议上构建的企业和开发者密切合作，我们总结出了几个决定 agent 能否可靠使用一个服务器的设计模式。</p><h3>构建远程服务器以获得最大触达</h3><p>远程服务器才能真正带来分发能力——这是唯一能在 Web、移动端和云端托管 agent 上运行的形态，也是所有主流客户端优化对接的目标。构建远程服务器，让 agent 在任何运行环境中都能使用你的系统。&nbsp;</p><h3>按意图而非端点组织工具</h3><p>数量更少、描述清晰的工具，效果始终好于一整套 API 的镜像。不要把 API 一比一地包装成 MCP 服务器——按意图组织工具，让 agent 用两三次调用就能完成一项任务，而不是把一堆原语拼接起来。一个 create_issue_from_thread 工具胜过 get_thread + parse_messages + create_issue + link_attachment。完整模式的更多内容请参阅<a href="https://www.anthropic.com/engineering/writing-tools-for-agents">为 agent 编写高效的工具</a>。</p><h3>当操作面很大时，为代码编排而设计</h3><p>如果你的服务需要数百种不同的操作——比如 Cloudflare、AWS 或 Kubernetes——按意图分组的工具集很可能覆盖不过来。此时应暴露一个接受代码的薄工具面：agent 编写一段简短的脚本，你的服务器在沙箱中针对你的 API 运行它，只返回结果。<a href="https://github.com/cloudflare/mcp">Cloudflare 的 MCP 服务器</a>是参考范例——两个工具（search 和 execute）用约 1K token 覆盖了约 2500 个端点。</p><h3>在有价值的地方提供丰富语义</h3><p><a href="https://modelcontextprotocol.io/extensions/apps/overview">MCP Apps</a> 是第一个官方协议扩展，它允许工具返回交互式界面——如图表、表单或仪表盘——并直接内嵌渲染在聊天界面中。提供 MCP apps 的服务器，其采用率和留存率往往明显高于只返回纯文本的服务器。用它把你的产品 UI 在关键时刻呈现给 agent 或最终用户——该扩展已在 Claude.ai、Claude Cowork 和许多其他主流 AI 工具中获得支持。</p><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/bluAmTHoEow" title="MCP Apps in Claude" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><p>‍<a href="https://modelcontextprotocol.io/specification/2025-11-25/client/elicitation">Elicitation</a> 允许你的服务器在工具调用中途暂停，向用户征求输入。<a href="https://modelcontextprotocol.io/specification/2025-11-25/client/elicitation#form-mode-elicitation-requests">Form 模式</a>发送一个简单的 schema，由客户端渲染原生表单——用它来补齐缺失的参数、确认破坏性操作或澄清选项。<a href="https://modelcontextprotocol.io/specification/2025-11-25/client/elicitation#url-mode-elicitation-requests">URL 模式</a>则把用户引导到浏览器——用它来完成下游 OAuth、支付，或收集任何绝不应经过 MCP 客户端的凭证。这两种模式都让用户留在原有流程中，而不是被甩到一个设置页面。Form 模式已被广泛支持；URL 模式已在 Claude Code 中获得支持，更多客户端正在跟进。</p><h3>依赖标准化认证</h3><p>标准化认证让 MCP 对云端托管的 agent 切实可行。如果你的服务器需要 OAuth，最新的 <a href="https://modelcontextprotocol.io/specification/2025-11-25">MCP 规范</a>支持 <a href="https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization#client-id-metadata-documents">CIMD</a>（Client ID Metadata Documents）用于客户端注册——它给用户带来快速的首次认证流程，也大幅减少了出人意料的重复认证提示。这是我们推荐的认证方式，该能力已在 MCP SDK、Claude.ai 和 Claude Code 中获得支持，并正在业界得到广泛采用。<br>用户完成授权后，下一个问题是云端托管的 agent 如何在运行时持有并复用这些令牌。<a href="https://platform.claude.com/docs/en/managed-agents/overview">Claude Managed Agents</a> 中的 <a href="https://platform.claude.com/docs/en/managed-agents/vaults#mcp-oauth-credential">Vaults</a> 解决了这个问题：只需注册一次用户的 OAuth 令牌，在创建会话时按 ID 引用 vault，平台就会向每个 MCP 连接注入正确的凭证并代你刷新——不需要自建密钥存储，也不需要在每次调用时传递令牌。</p><h2>让 MCP 客户端更省上下文</h2><p>MCP 标准化了 AI agent（<a href="https://modelcontextprotocol.io/docs/develop/build-client#python"><em>客户端</em></a>）连接并使用所需工具和数据源（<a href="https://modelcontextprotocol.io/docs/develop/build-server"><em>服务器</em></a>）的方式。服务器安全地暴露一系列能力，客户端则负责编排这些能力并管理上下文。如果你在构建 MCP 客户端，可以用渐进式披露（progressive disclosure）的模式让它更省上下文。</p><h3>用工具搜索按需加载工具定义</h3><p><a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool">工具搜索（Tool search）</a>不预先加载所有工具，而是推迟把它们装入上下文的时机，让 agent 在运行时检索工具目录，按需拉取相关工具。在我们的<a href="https://www.anthropic.com/engineering/advanced-tool-use">测试</a>中，工具搜索通常能减少 85% 以上的工具定义 token，同时保持很高的选择准确率。&nbsp;</p><figure style="max-width:1999pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69e920e636fbec575e46319c_context-usage.webp" loading="lazy"></div><figcaption>通过工具搜索降低上下文占用。来源：<a href="https://www.anthropic.com/engineering/advanced-tool-use">advanced tool use<br></a></figcaption></figure><h3>用程序化工具调用在代码中处理工具结果</h3><p><a href="https://www.anthropic.com/engineering/code-execution-with-mcp">程序化工具调用（Programmatic tool calling）</a>在代码执行沙箱中处理工具结果，而不是把原始结果直接返回给模型。这让 agent 可以用代码在多次调用之间循环、过滤和聚合，只有最终输出进入上下文。在我们的测试中，这在复杂的多步骤工作流上能减少约 <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling">37%</a> 的 token 用量。</p><p>这些模式可以自然地组合并跨多个服务器发挥作用：更精简的上下文、更少的往返、更快的响应。完整分析请参阅<a href="https://www.anthropic.com/engineering/advanced-tool-use"> <em>advanced tool use</em></a>。</p><h2>将 MCP 服务器与 skills 搭配使用</h2><p><a href="https://claude.com/blog/skills-explained">Skills 与 MCP 是互补的</a>。MCP 让 agent 能够访问外部系统的工具和数据，而 skills 则教给 agent<em>如何</em>用好这些工具来完成实际工作的过程性知识。最强大的 agent 会同时使用两者，而 skills 能让 MCP 服务器的价值扩展到远不止几条连接。组合它们有两种通用模式：</p><h3>将 skills 和 MCP 服务器打包为插件</h3><p>Claude 的 <a href="https://code.claude.com/docs/en/plugins-reference#plugin-components-reference">插件（Plugins）</a>是一个有用的抽象，让开发者可以把 skills、MCP 服务器、hooks、LSP 服务器和专用 subagent 打包成一种易于消费的分发方式。采用这种方式，是以最小摩擦统一多个上下文提供方的最佳途径。<br>把 MCP 服务器与 skills 结合起来，能让 Claude 的表现更像一位领域专家：通过 MCP 获得工具，再通过 skills 让 Claude 端到端地编排工作流。可以参考我们为 Cowork 提供的<a href="https://claude.ai/directory/plugins/data%40knowledge-work-plugins">数据插件</a>作为示例，它由 10 个 skills 和 8 个 MCP 服务器组成，覆盖 Snowflake、Databricks、BigQuery、Hex 等应用。</p><figure style="max-width:2880pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6945b3dfa8f134d0104e4e23_How%20Skills%20and%20MCP%20work%20together%20-%20v3B%402x%20(2).png" loading="lazy"></div><figcaption>将 skills 与 MCP 结合。来源：<a href="https://claude.com/blog/extending-claude-capabilities-with-skills-mcp-servers">Extending Claude's capabilities with skills and MCP servers</a></figcaption></figure><h3>通过 MCP 服务器分发 skills</h3><p>越来越常见的做法是服务提供方在发布 MCP 服务器的同时附带一个 skill，这样 agent 既能获得原始能力，也能得到一份用好这些能力的最佳实践手册。<a href="https://claude.com/connectors/atlassian">Canva</a>、<a href="https://claude.com/connectors/notion">Notion</a>、<a href="https://claude.com/connectors/sentry">Sentry</a> 等都已在 Claude 中这样做了，在我们的<a href="https://claude.com/connectors">网页目录</a>中，skill 就列在它们的连接器旁边。</p><p>为了让这种搭配在每个客户端间都可移植，MCP 社区正在积极推进一项<a href="https://github.com/modelcontextprotocol/experimental-ext-skills">扩展</a>，支持直接从服务器分发 skills。这样客户端就能自动继承相关的专业知识，并随其依赖的 API 一起进行版本管理。我们预计随着该扩展趋于稳定，这种模式会得到广泛采用。</p><h2>复利累积的那一层</h2><p>文章开头我们讲了连接 agent 与外部系统的三条路径。实践中，成熟的集成会三者兼有：以 API 为基础，为本地优先环境提供 CLI，用 MCP 服务云端 agent。</p><p>随着生产级 agent 迁移到云端，MCP 成为关键的一层，而且是能够复利累积的一层。今天，一个远程服务器可以触达任何部署环境中的所有兼容客户端，认证、交互性和丰富语义都由协议处理。随着更多客户端采用规范、更多扩展落地，同一个服务器无需你发布任何新东西就会变得更强。</p><p>在构建集成时，如果你的目标是让云端的生产级 agent 触达你的系统，那就构建一个 MCP 服务器，并用上述模式把它做到出色。每一个构建在 MCP 之上的集成都在强化这个生态：需要独自解决的边界情况更少，需要维护的定制集成也更少。</p><h3>致谢</h3><p>感谢 Den Delimarsky、David Soria Parra、Henry Shi、Felix Rieseberg、Conor Kelly、Molly Vorwerck、Andy Schumeister、Kevin Garcia、Amie Rotherham、Matt Samuels、Angela Jiang、Katelyn Lesse、AJ Rebeiro 和 Jess Yan<strong></strong>对本文的贡献。</p></div>
+            <h1 class="article-title u-text-style-h1">用 MCP 构建能触达生产系统的 agent</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>Patterns for building effective MCP integrations: server design, OAuth with CIMD and vaults, context-efficient clients, and skills. Plus where MCP fits alongside direct API calls and CLIs for connecting agents to your systems.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/agents" target="_blank" rel="noopener noreferrer">Agents</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/platform/api" target="_blank" rel="noopener noreferrer">Claude Platform</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">April 22, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/building-agents-that-reach-production-systems-with-mcp/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/building-agents-that-reach-production-systems-with-mcp" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>Agent 的价值取决于它能触达的系统。团队在将 agent 连接到外部系统时，往往会收敛到三种方式——直接 API 调用、CLI 和 MCP。这篇文章将梳理各自的适用场景、为什么生产级 agent 最终往往落在 MCP 上，以及构建这类集成的一些有效模式。</p><h2>将 agent 连接到外部系统</h2><p>我们大体上看到三种连接 agent 与外部系统的路径：直接 API 调用、CLI 和 MCP。每种都有其合理的使用场景，取决于你在构建什么。关键的区别在于：agent 与服务之间是否存在一个公共层，以及这个层能覆盖多远。</p><h3>直接 API 调用</h3><p>Agent 直接调用你的 API——要么在代码执行沙箱中编写发出 HTTP 请求的代码，要么通过一个通用的函数调用工具。这是大多数团队的起点，在单个 agent 对接单个服务、或者少量无需跨 agent 平台复用的集成场景下运转良好。<br>规模一大，问题就来了。由于 agent 与服务之间没有公共层，每一对 agent 与服务的组合都成了一次定制集成，各自需要处理认证、工具描述和边界情况——这就是 M×N 集成难题。</p><h3>命令行界面（CLI）</h3><p>Agent 在 shell 中运行你的命令行工具。这种方式快速、轻量，还能复用既有的工具链。它非常适合本地环境和沙箱容器——任何有文件系统和 shell 的地方。这提供了一个公共层，但这个层很薄。<br>在触达那些不提供容器的移动端、Web 或云端托管平台时，CLI 会遇到硬性限制；认证则依赖 CLI 自身的机制——通常是磁盘上的凭证文件。这种方式最适合本地环境中快速、权限宽松的集成。</p><h3>模型上下文协议（MCP）</h3><p>MCP 以协议的形式提供这个公共层。Agent 连接到一个暴露你系统能力的服务器，认证、能力发现和丰富的语义都是标准化的。一个远程服务器可以触达任何兼容的客户端（Claude、ChatGPT、Cursor、VS Code 等），适用于任何部署环境。</p><p>它需要一些前期投入，回报则是集成的可移植性，以及功能丰富的 agent 集成所需的语义能力。</p><h2>生产级 agent 运行在云端</h2><p>越来越多的生产级 agent 运行在云端，以便能够弹性扩缩并持续运转。它们需要触达的系统也在云端：数据存放的地方、工作被跟踪的地方、基础设施运行的地方。这些系统往往是远程的、需要认证的，而这正是 MCP 提供公共层的地方。&nbsp;当这些系统位于私有网络而非公共互联网上时，<a href="https://claude.com/blog/claude-managed-agents-updates">Claude Managed Agents 中的 MCP 隧道</a>可以通过仅出站（outbound-only）连接将 agent 接入它们——无需暴露任何端口或公共端点。</p><p>我们已经从实际采用中看到了这一点。<a href="https://modelcontextprotocol.io/docs/sdk">MCP SDK</a> 的月下载量最近突破了 3 亿次，而年初只有 1 亿次，企业和主流 agentic 平台都在大量采用。每天有数百万人通过 Claude 使用 MCP，该协议也是我们最近发布的众多产品的基础，包括 <a href="https://claude.com/product/cowork">Claude Cowork</a>、<a href="https://claude.com/blog/claude-managed-agents">Claude Managed Agents</a>，以及 <a href="https://code.claude.com/docs/en/channels">Claude Code 中的 channels</a>。&nbsp;<br>‍<br>随着 MCP 持续支撑生产级 agentic 系统，我们在这里分享一些把这些集成做好的模式：从构建高级服务器到上下文高效的客户端，以及 skills 在哪些方面与协议互补。</p><h2>构建高效的 MCP 服务器</h2><p>我们的<a href="https://claude.ai/directory/connectors">目录</a>中有超过 200 个 MCP 服务器，每天有数百万人使用。通过与在该协议上构建的企业和开发者密切合作，我们总结出了几个决定 agent 能否可靠使用一个服务器的设计模式。</p><h3>构建远程服务器以获得最大触达</h3><p>远程服务器才能真正带来分发能力——这是唯一能在 Web、移动端和云端托管 agent 上运行的形态，也是所有主流客户端优化对接的目标。构建远程服务器，让 agent 在任何运行环境中都能使用你的系统。&nbsp;</p><h3>按意图而非端点组织工具</h3><p>数量更少、描述清晰的工具，效果始终好于一整套 API 的镜像。不要把 API 一比一地包装成 MCP 服务器——按意图组织工具，让 agent 用两三次调用就能完成一项任务，而不是把一堆原语拼接起来。一个 create_issue_from_thread 工具胜过 get_thread + parse_messages + create_issue + link_attachment。完整模式的更多内容请参阅<a href="https://www.anthropic.com/engineering/writing-tools-for-agents">为 agent 编写高效的工具</a>。</p><h3>当操作面很大时，为代码编排而设计</h3><p>如果你的服务需要数百种不同的操作——比如 Cloudflare、AWS 或 Kubernetes——按意图分组的工具集很可能覆盖不过来。此时应暴露一个接受代码的薄工具面：agent 编写一段简短的脚本，你的服务器在沙箱中针对你的 API 运行它，只返回结果。<a href="https://github.com/cloudflare/mcp">Cloudflare 的 MCP 服务器</a>是参考范例——两个工具（search 和 execute）用约 1K token 覆盖了约 2500 个端点。</p><h3>在有价值的地方提供丰富语义</h3><p><a href="https://modelcontextprotocol.io/extensions/apps/overview">MCP Apps</a> 是第一个官方协议扩展，它允许工具返回交互式界面——如图表、表单或仪表盘——并直接内嵌渲染在聊天界面中。提供 MCP apps 的服务器，其采用率和留存率往往明显高于只返回纯文本的服务器。用它把你的产品 UI 在关键时刻呈现给 agent 或最终用户——该扩展已在 Claude.ai、Claude Cowork 和许多其他主流 AI 工具中获得支持。</p><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/bluAmTHoEow" title="MCP Apps in Claude" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><p>‍<a href="https://modelcontextprotocol.io/specification/2025-11-25/client/elicitation">Elicitation</a> 允许你的服务器在工具调用中途暂停，向用户征求输入。<a href="https://modelcontextprotocol.io/specification/2025-11-25/client/elicitation#form-mode-elicitation-requests">Form 模式</a>发送一个简单的 schema，由客户端渲染原生表单——用它来补齐缺失的参数、确认破坏性操作或澄清选项。<a href="https://modelcontextprotocol.io/specification/2025-11-25/client/elicitation#url-mode-elicitation-requests">URL 模式</a>则把用户引导到浏览器——用它来完成下游 OAuth、支付，或收集任何绝不应经过 MCP 客户端的凭证。这两种模式都让用户留在原有流程中，而不是被甩到一个设置页面。Form 模式已被广泛支持；URL 模式已在 Claude Code 中获得支持，更多客户端正在跟进。</p><h3>依赖标准化认证</h3><p>标准化认证让 MCP 对云端托管的 agent 切实可行。如果你的服务器需要 OAuth，最新的 <a href="https://modelcontextprotocol.io/specification/2025-11-25">MCP 规范</a>支持 <a href="https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization#client-id-metadata-documents">CIMD</a>（Client ID Metadata Documents）用于客户端注册——它给用户带来快速的首次认证流程，也大幅减少了出人意料的重复认证提示。这是我们推荐的认证方式，该能力已在 MCP SDK、Claude.ai 和 Claude Code 中获得支持，并正在业界得到广泛采用。<br>用户完成授权后，下一个问题是云端托管的 agent 如何在运行时持有并复用这些令牌。<a href="https://platform.claude.com/docs/en/managed-agents/overview">Claude Managed Agents</a> 中的 <a href="https://platform.claude.com/docs/en/managed-agents/vaults#mcp-oauth-credential">Vaults</a> 解决了这个问题：只需注册一次用户的 OAuth 令牌，在创建会话时按 ID 引用 vault，平台就会向每个 MCP 连接注入正确的凭证并代你刷新——不需要自建密钥存储，也不需要在每次调用时传递令牌。</p><h2>让 MCP 客户端更省上下文</h2><p>MCP 标准化了 AI agent（<a href="https://modelcontextprotocol.io/docs/develop/build-client#python"><em>客户端</em></a>）连接并使用所需工具和数据源（<a href="https://modelcontextprotocol.io/docs/develop/build-server"><em>服务器</em></a>）的方式。服务器安全地暴露一系列能力，客户端则负责编排这些能力并管理上下文。如果你在构建 MCP 客户端，可以用渐进式披露（progressive disclosure）的模式让它更省上下文。</p><h3>用工具搜索按需加载工具定义</h3><p><a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool">工具搜索（Tool search）</a>不预先加载所有工具，而是推迟把它们装入上下文的时机，让 agent 在运行时检索工具目录，按需拉取相关工具。在我们的<a href="https://www.anthropic.com/engineering/advanced-tool-use">测试</a>中，工具搜索通常能减少 85% 以上的工具定义 token，同时保持很高的选择准确率。&nbsp;</p><figure style="max-width:1999pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69e920e636fbec575e46319c_context-usage.webp" loading="lazy"></div><figcaption>通过工具搜索降低上下文占用。来源：<a href="https://www.anthropic.com/engineering/advanced-tool-use">advanced tool use<br></a></figcaption></figure><h3>用程序化工具调用在代码中处理工具结果</h3><p><a href="https://www.anthropic.com/engineering/code-execution-with-mcp">程序化工具调用（Programmatic tool calling）</a>在代码执行沙箱中处理工具结果，而不是把原始结果直接返回给模型。这让 agent 可以用代码在多次调用之间循环、过滤和聚合，只有最终输出进入上下文。在我们的测试中，这在复杂的多步骤工作流上能减少约 <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling">37%</a> 的 token 用量。</p><p>这些模式可以自然地组合并跨多个服务器发挥作用：更精简的上下文、更少的往返、更快的响应。完整分析请参阅<a href="https://www.anthropic.com/engineering/advanced-tool-use"> <em>advanced tool use</em></a>。</p><h2>将 MCP 服务器与 skills 搭配使用</h2><p><a href="https://claude.com/blog/skills-explained">Skills 与 MCP 是互补的</a>。MCP 让 agent 能够访问外部系统的工具和数据，而 skills 则教给 agent<em>如何</em>用好这些工具来完成实际工作的过程性知识。最强大的 agent 会同时使用两者，而 skills 能让 MCP 服务器的价值扩展到远不止几条连接。组合它们有两种通用模式：</p><h3>将 skills 和 MCP 服务器打包为插件</h3><p>Claude 的 <a href="https://code.claude.com/docs/en/plugins-reference#plugin-components-reference">插件（Plugins）</a>是一个有用的抽象，让开发者可以把 skills、MCP 服务器、hooks、LSP 服务器和专用 subagent 打包成一种易于消费的分发方式。采用这种方式，是以最小摩擦统一多个上下文提供方的最佳途径。<br>把 MCP 服务器与 skills 结合起来，能让 Claude 的表现更像一位领域专家：通过 MCP 获得工具，再通过 skills 让 Claude 端到端地编排工作流。可以参考我们为 Cowork 提供的<a href="https://claude.ai/directory/plugins/data%40knowledge-work-plugins">数据插件</a>作为示例，它由 10 个 skills 和 8 个 MCP 服务器组成，覆盖 Snowflake、Databricks、BigQuery、Hex 等应用。</p><figure style="max-width:2880pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6945b3dfa8f134d0104e4e23_How%20Skills%20and%20MCP%20work%20together%20-%20v3B%402x%20(2).png" loading="lazy"></div><figcaption>将 skills 与 MCP 结合。来源：<a href="https://claude.com/blog/extending-claude-capabilities-with-skills-mcp-servers">Extending Claude's capabilities with skills and MCP servers</a></figcaption></figure><h3>通过 MCP 服务器分发 skills</h3><p>越来越常见的做法是服务提供方在发布 MCP 服务器的同时附带一个 skill，这样 agent 既能获得原始能力，也能得到一份用好这些能力的最佳实践手册。<a href="https://claude.com/connectors/atlassian">Canva</a>、<a href="https://claude.com/connectors/notion">Notion</a>、<a href="https://claude.com/connectors/sentry">Sentry</a> 等都已在 Claude 中这样做了，在我们的<a href="https://claude.com/connectors">网页目录</a>中，skill 就列在它们的连接器旁边。</p><p>为了让这种搭配在每个客户端间都可移植，MCP 社区正在积极推进一项<a href="https://github.com/modelcontextprotocol/experimental-ext-skills">扩展</a>，支持直接从服务器分发 skills。这样客户端就能自动继承相关的专业知识，并随其依赖的 API 一起进行版本管理。我们预计随着该扩展趋于稳定，这种模式会得到广泛采用。</p><h2>复利累积的那一层</h2><p>文章开头我们讲了连接 agent 与外部系统的三条路径。实践中，成熟的集成会三者兼有：以 API 为基础，为本地优先环境提供 CLI，用 MCP 服务云端 agent。</p><p>随着生产级 agent 迁移到云端，MCP 成为关键的一层，而且是能够复利累积的一层。今天，一个远程服务器可以触达任何部署环境中的所有兼容客户端，认证、交互性和丰富语义都由协议处理。随着更多客户端采用规范、更多扩展落地，同一个服务器无需你发布任何新东西就会变得更强。</p><p>在构建集成时，如果你的目标是让云端的生产级 agent 触达你的系统，那就构建一个 MCP 服务器，并用上述模式把它做到出色。每一个构建在 MCP 之上的集成都在强化这个生态：需要独自解决的边界情况更少，需要维护的定制集成也更少。</p><h3>致谢</h3><p>感谢 Den Delimarsky、David Soria Parra、Henry Shi、Felix Rieseberg、Conor Kelly、Molly Vorwerck、Andy Schumeister、Kevin Garcia、Amie Rotherham、Matt Samuels、Angela Jiang、Katelyn Lesse、AJ Rebeiro 和 Jess Yan<strong></strong>对本文的贡献。</p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/building-agents-that-reach-production-systems-with-mcp" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

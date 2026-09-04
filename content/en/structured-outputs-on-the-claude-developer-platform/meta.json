@@ -13,5 +13,19 @@
   "translatedTitle": "Claude 开发者平台上的结构化输出",
   "translated": true,
   "translatedAt": "2026-09-02T04:54:25.809Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Platform"
+    ],
+    "usecase": []
+  },
+  "subtitle": "Guarantee responses match your JSON schemas and tool definitions with structured outputs.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/platform/api"
 }

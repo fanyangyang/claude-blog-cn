@@ -13,5 +13,19 @@
   "translatedTitle": "AI agent 的常见工作流模式及其适用场景",
   "translated": true,
   "translatedAt": "2026-09-02T04:15:21.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Agents"
+    ],
+    "product": [
+      "Claude Platform"
+    ],
+    "usecase": []
+  },
+  "subtitle": "Practical guidance on how to structure agent tasks using three common workflow patterns, with tradeoffs and benefits for each.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/agents",
+  "productUrl": "https://claude.com/platform/api"
 }

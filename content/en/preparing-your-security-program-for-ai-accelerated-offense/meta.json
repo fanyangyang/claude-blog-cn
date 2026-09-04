@@ -13,5 +13,19 @@
   "heroIndex": 9,
   "inGrid": true,
   "illustration": "assets/illustrations/preparing-your-security-program-for-ai-accelerated-offense.svg",
-  "illustrationBg": "Olive"
+  "illustrationBg": "Olive",
+  "facets": {
+    "category": [
+      "Agents"
+    ],
+    "product": [
+      "Claude Enterprise"
+    ],
+    "usecase": []
+  },
+  "subtitle": "AI is changing the speed at which vulnerabilities are found and exploited. We're publishing an initial set of recommendations to shore up your defenses based on our own findings and security practices.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/agents",
+  "productUrl": "https://claude.com/solutions/enterprise"
 }

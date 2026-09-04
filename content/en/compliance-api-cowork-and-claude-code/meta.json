@@ -13,5 +13,25 @@
   "translatedTitle": "Compliance API 覆盖范围扩展至 Claude Cowork 和 Claude Code",
   "translated": true,
   "translatedAt": "2026-09-02T04:30:13.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI",
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Enterprise",
+      "Claude Code",
+      "Claude Cowork",
+      "Claude apps"
+    ],
+    "usecase": [
+      "Business"
+    ]
+  },
+  "subtitle": "Claude's Compliance API now covers Cowork across the desktop app, web, and mobile, as well as Claude Code in the CLI and desktop app. Coverage is in beta for Claude Enterprise customers.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/solutions/enterprise"
 }

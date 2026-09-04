@@ -13,5 +13,21 @@
   "translatedTitle": "Claude Code 中的动态工作流（dynamic workflows）介绍",
   "translated": true,
   "translatedAt": "2026-09-02T04:16:06Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": [
+      "Coding"
+    ]
+  },
+  "subtitle": "Dynamic workflows in Claude Code let Claude tackle the most challenging tasks by executing across 10s to 100s of parallel subagents, and checking its work before anything reaches you.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/product/claude-code"
 }

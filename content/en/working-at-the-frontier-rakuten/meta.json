@@ -13,5 +13,24 @@
   "translatedTitle": "奋战前沿：乐天如何用 Claude Fable 5 让智能体通宵工作",
   "translated": true,
   "translatedAt": "2026-09-02T04:14:34.101Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Code",
+      "Claude Cowork",
+      "Claude Platform"
+    ],
+    "usecase": [
+      "Coding",
+      "Agents"
+    ]
+  },
+  "subtitle": "Yusuke Kaji, General Manager of AI for Business at Rakuten, has been testing Claude models since Sep 2024. Here’s why he thinks Claude Fable 5 is a step change for long-running enterprise agents.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/product/claude-code"
 }

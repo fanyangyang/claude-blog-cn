@@ -13,5 +13,24 @@
   "translatedTitle": "Claude Design：日常工作中始终保持品牌一致",
   "translated": true,
   "translatedAt": "2026-09-02T00:00:00.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Design",
+      "Claude Code"
+    ],
+    "usecase": [
+      "Design",
+      "Productivity",
+      "Work"
+    ]
+  },
+  "subtitle": "Claude Design now sticks to your design system across projects, works fluidly with Claude Code, lets you edit directly on the canvas, and connects to more tools you already use. It has a new home in the sidebar on the Claude desktop app; you can also find it at claude.ai/design.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/product/design"
 }

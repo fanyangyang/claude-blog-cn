@@ -13,5 +13,27 @@
   "translatedTitle": "Claude 模型详解：如何为你的场景选择最合适的模型",
   "translated": true,
   "translatedAt": "2026-09-02T04:10:15.615Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI",
+      "Agents",
+      "Claude Code"
+    ],
+    "product": [
+      "Claude Code",
+      "Claude Cowork",
+      "Claude Design",
+      "Claude Enterprise",
+      "Claude Platform"
+    ],
+    "usecase": []
+  },
+  "subtitle": "Anthropic's guide to choosing the best Claude model for your use case — how Fable, Opus, Sonnet, and Haiku differ in intelligence, speed, and cost, and when to use each.",
+  "authors": [
+    "Michael Segner"
+  ],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/product/claude-code"
 }

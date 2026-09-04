@@ -13,5 +13,21 @@
   "translatedTitle": "Anthropic API 网页搜索功能上线",
   "translated": true,
   "translatedAt": "2026-09-02T04:44:54.905Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Platform"
+    ],
+    "usecase": [
+      "Coding"
+    ]
+  },
+  "subtitle": "Claude can now search the web through the API, giving users access to real-time information with citations for building up-to-date AI applications.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/platform/api"
 }

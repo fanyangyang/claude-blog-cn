@@ -4,39 +4,598 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>如何创建 Skills：关键步骤、限制与示例 — Claude Blog 中文翻译</title>
-  <meta name="description" content="如何创建 Skills：关键步骤、限制与示例">
+  <meta name="description" content="Learn how to write tailored skills that deliver stronger, more effective outputs from Claude.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/how-to-create-skills-key-steps-limitations-and-examples" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>如何创建 Skills：关键步骤、限制与示例</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/how-to-create-skills-key-steps-limitations-and-examples" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/how-to-create-skills-key-steps-limitations-and-examples/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># 如何创建 Skills：关键步骤、限制与示例
+
+Learn how to write tailored skills that deliver stronger, more effective outputs from Claude.
+
+[Skills](https://www.claude.com/blog/skills) 是扩展 Claude 在特定任务或领域能力的自定义指令。
+
+当你通过 [SKILL.md](http://skill.md) 文件创建一个 Skill 时，你是在教 Claude 更有效地处理特定场景。Skills 的力量在于它们能沉淀机构知识、标准化输出，并处理那些原本需要反复解释、或需要投入成本构建定制智能体的复杂多步骤工作流。
+
+了解如何创建 Skills，把 Claude 从通用助手变为你专属工作流中的领域专家——你可以使用我们的 [skill-creator](https://github.com/anthropics/skills/tree/main/skill-creator) 模板，也可以手动创建。（小提示：为了省事，我们建议用这个模板搭建你的 [SKILL.md](http://skill.md) 文件，再在其基础上修改。）
+
+## **五步创建一个 Skill**
+
+遵循这套结构化方法，构建触发更可靠的 Skills。
+
+### **1. 理解核心需求**
+
+动笔之前，先想清楚你的 Skill 解决什么问题。强大的 Skill 针对具体需求、产出可衡量的结果。&quot;从 PDF 中提取财务数据并格式化为 CSV&quot;胜过&quot;帮我处理财务相关的东西&quot;，因为前者明确了输入格式、操作和期望输出。
+
+先问自己：这个 Skill 完成什么具体任务？什么情况应该触发它？成功是什么样子？有哪些边界情况或限制？
+
+### **2. 编写名称**
+
+你的 Skill 需要三个核心组成部分：**名称**（清晰的标识符）、**描述**（何时激活）和**指令**（如何执行）。事实上，名称和描述是 [SKILL.md](http://skill.md) 文件中唯二影响触发的部分——所谓触发，就是 Claude 为专门的知识或工作流调用某个 Skill 的能力。
+
+名称应该直白且具描述性。使用小写字母加连字符（例如 pdf-editor、brand-guidelines）。保持简短清晰。
+
+### **3. 编写描述字段**
+
+描述决定了你的 Skill 何时激活，是最关键的组成部分。请站在 Claude 的视角来写，聚焦触发场景、能力和用例。
+
+一段强有力的描述会平衡多个要素：具体的能力、清晰的触发条件、相关的上下文，以及能力边界。
+
+**较弱的描述**：
+
+`This skill helps with PDFs and documents.`**较强的描述**：
+
+`Comprehensive PDF manipulation toolkit for extracting text and tables, creating new PDFs, merging/splitting documents, and handling forms. When Claude needs to fill in a PDF form or programmatically process, generate, or analyze PDF documents at scale. Use for document workflows and batch operations. Not for simple PDF viewing or basic conversions.`更强的版本给 Claude 提供了多个数据点：具体的动词（提取、创建、合并）、具体的使用场景（填写表单、批量操作），以及清晰的边界（不适用于简单查看）。
+
+### **4. 编写主体指令**
+
+你的指令应该结构化、易扫读、可执行。使用 markdown 标题、用项目符号列出选项、用代码块给出示例。
+
+用清晰的层级来组织：概述、前置条件、执行步骤、示例、错误处理和限制。把复杂工作流拆分为输入输出明确的离散阶段。
+
+给出展示正确用法的具体示例。写明 Skill 做不到什么，以防止误用并管理预期。你的 [SKILL.md](http://skill.md) 文件还可以包含额外的参考文件和资源，为 Skill 触发时你要求智能体执行的操作提供更清晰的指引。
+
+### **5. 上传你的 Skill**
+
+根据你构建所基于的 Claude 界面，按以下方式上传你的 Skill 以供使用：
+
+- [Claude.ai](http://claude.ai)（Claude 应用）：进入 **Settings**，在那里添加你的自定义 Skill。自定义 Skills 需要开启代码执行功能的 Pro、Max、Team 或 Enterprise 计划。此处上传的 Skills 归每个用户私有——不会在全组织内共享，也无法由管理员集中管理。
+- [Claude Code](https://www.claude.com/product/claude-code)：在你的插件或项目根目录创建 skills/ 目录，并添加包含 SKILL.md 文件的 Skill 文件夹。插件安装后，Claude 会自动发现并使用它们。示例结构：
+
+`my-project/
+├── skills/
+│   └── my-skill/
+│       └── SKILL.md`
+- [Claude 开发者平台](https://www.claude.com/platform/api)：通过 Skills API（/v1/skills 端点）上传 Skills。使用带所需 beta 请求头的 POST 请求：
+
+`curl -X POST &quot;https://api.anthropic.com/v1/skills&quot; \
+  -H &quot;x-api-key: $ANTHROPIC_API_KEY&quot; \
+  -H &quot;anthropic-version: 2023-06-01&quot; \
+  -H &quot;anthropic-beta: skills-2025-10-02&quot; \
+  -F &quot;display_title=My Skill Name&quot; \
+  -F &quot;files[]=@my-skill/SKILL.md;filename=my-skill/SKILL.md&quot;`
+### **4. 测试与验证**
+
+部署之前，用贴近现实的场景测试你的 Skill。系统化的测试能暴露指令中的缺口、描述中的歧义，以及只有实际使用中才会浮现的意外边界情况。
+
+创建覆盖三类场景的测试矩阵：
+
+- **正常操作**：用 Skill 应完美处理的典型请求来测试。如果你构建的是财务分析 Skill，试试&quot;分析微软最新财报&quot;或&quot;为这份 10-K 文件制作数据包&quot;。这些基线测试确认你的指令按预期工作。
+- **边界情况**：用不完整或异常的输入测试。数据缺失时会怎样？文件格式出乎意料时会怎样？用户给出含糊指令时会怎样？你的 Skill 应当优雅应对——要么产出降级但有用的结果，要么说明需要什么才能继续。
+- **超出范围的请求**：用看似相关但不应触发你的 Skill 的任务来测试。如果你构建的是 NDA 审查 Skill，试试&quot;审查这份雇佣协议&quot;或&quot;分析这份租约&quot;。Skill 应保持沉默，让其他 Skills 或 Claude 的通用能力去处理请求。
+
+如需更深入的验证，可以考虑实施以下测试：
+
+- **触发测试：**Skill 会在预期时激活吗？用显式请求（&quot;用财务数据包 Skill 分析这家公司&quot;）和自然请求（&quot;帮我理解这家公司的财务状况&quot;）分别测试。无关时它是否保持不激活？范围界定良好的 Skill 知道何时不该启动。测试相近但不同的请求来验证边界。
+- **功能测试：**包括输出一致性（相似输入的多次运行是否产生可比的结果？）、易用性（不熟悉该领域的人能否成功使用？）和文档准确性（你的示例与实际行为是否相符？）。
+
+### **5. 基于使用情况迭代**
+
+监测你的 Skill 在实际使用中的表现。触发不稳定就打磨描述。输出意外波动就澄清指令。与提示词一样，最好的 Skills 是在实际应用中进化出来的。
+
+## **创建 Skills 的一般最佳实践**
+
+这些原则帮你创建可维护、可复用、真正有用的 Skills，而不是纸上谈兵。
+
+### **从用例出发**
+
+不要凭空揣测着去写 Skills。当你有真实、反复出现的任务时再去构建。最好的 Skills 解决你经常遇到的问题。
+
+创建 Skill 之前先问：这个任务我做过至少五次了吗？未来我还会做至少十次吗？如果都是，那一个 Skill 就值得。
+
+### **定义成功标准——并写进 Skill 里**
+
+告诉 Claude 什么样的产出算好。如果你在创建财务报告，写明必需的章节、格式标准、校验检查和质量阈值。把这些标准写进指令，让 Claude 能够自查。
+
+### **使用 Skill-Creator Skill**
+
+[skill-creator Skill](https://github.com/anthropics/skills/tree/main/skill-creator) 会引导你创建结构良好的 Skills。它会提出澄清性问题、给出描述改进建议，并帮助正确组织指令格式。它可在 [GitHub 的 Skills 仓库](https://github.com/anthropics/skills)获取，也可以直接在 [Claude.ai](http://claude.ai) 上使用，对最初几个 Skills 尤其有价值。
+
+## **Skill 的限制与注意事项**
+
+理解 Skills 的工作方式及其边界，能帮你设计出更有效的 Skills，并设定合理预期。
+
+### **Skill 触发**
+
+Claude 会把 Skill 描述与你的请求对照评估相关性。这不是关键词匹配——Claude 理解语义关系。但模糊的描述会降低触发准确性。
+
+如果多个 Skills 分别处理复杂任务的不同侧面，它们可以同时激活。过于宽泛的描述导致不当激活，缺失的使用场景则导致漏触发。
+
+### **合适的文件大小**
+
+编写 Skills 时，避免用不必要的内容撑爆上下文窗口。想想每条信息是每次都需要加载，还是仅按条件加载。
+
+采用&quot;菜单&quot;式方法：如果你的 Skill 覆盖多个不同的流程或选项，SKILL.md 应描述有哪些可用内容，并用相对路径引用每个流程的独立文件。Claude 随后只读取与用户任务相关的文件，其余的在该次对话中保持不动。
+
+这些独立文件不必互斥。关键原则是把内容切分成合理大小的块，让 Claude 根据手头任务选择所需内容。
+
+## ‍**真实世界的 Skills 示例**
+
+### **Skill 示例 #1：**[**docx 创建 Skill**](https://github.com/anthropics/skills/tree/main/document-skills/docx)
+
+`#---
+name: docx
+description: &quot;Comprehensive document creation, editing, and analysis with support for tracked changes, comments, formatting preservation, and text extraction. When Claude needs to work with professional documents (.docx files) for: (1) Creating new documents, (2) Modifying or editing content, (3) Working with tracked changes, (4) Adding comments, or any other document tasks&quot;
+license: Proprietary. LICENSE.txt has complete terms
+---
+
+# DOCX creation, editing, and analysis
+
+A user may ask you to create, edit, or analyze the contents of a .docx file. A .docx file is essentially a ZIP archive containing XML files and other resources that you can read or edit. You have different tools and workflows available for different tasks.
+
+## Workflow Decision Tree
+
+### Reading/Analyzing Content
+Use &quot;Text extraction&quot; or &quot;Raw XML access&quot; sections below
+
+### Creating New Document
+Use &quot;Creating a new Word document&quot; workflow
+
+### Editing Existing Document
+- **Your own document + simple changes**
+  Use &quot;Basic OOXML editing&quot; workflow
+
+- **Someone else's document**
+  Use **&quot;Redlining workflow&quot;** (recommended default)
+
+- **Legal, academic, business, or government docs**
+  Use **&quot;Redlining workflow&quot;** (required)
+
+## Reading and analyzing content
+
+### Text extraction
+If you just need to read the text contents of a document, you should convert the document to markdown using pandoc. Pandoc provides excellent support for preserving document structure and can show tracked changes:
+
+```bash
+# Convert document to markdown with tracked changes
+pandoc --track-changes=all path-to-file.docx -o output.md
+# Options: --track-changes=accept/reject/all
+```
+
+### Raw XML access
+You need raw XML access for: comments, complex formatting, document structure, embedded media, and metadata. For any of these features, you'll need to unpack a document and read its raw XML contents.
+
+#### Unpacking a file
+`python ooxml/scripts/unpack.py &lt;office_file&gt; &lt;output_directory&gt;`
+
+#### Key file structures
+* `word/document.xml` - Main document contents
+* `word/comments.xml` - Comments referenced in document.xml
+* `word/media/` - Embedded images and media files
+* Tracked changes use `&lt;w:ins&gt;` (insertions) and `&lt;w:del&gt;` (deletions) tags
+
+## Creating a new Word document
+
+When creating a new Word document from scratch, use **docx-js**, which allows you to create Word documents using JavaScript/TypeScript.
+
+### Workflow
+1. **MANDATORY - READ ENTIRE FILE**: Read [`docx-js.md`](docx-js.md) (~500 lines) completely from start to finish. **NEVER set any range limits when reading this file.** Read the full file content for detailed syntax, critical formatting rules, and best practices before proceeding with document creation.
+2. Create a JavaScript/TypeScript file using Document, Paragraph, TextRun components (You can assume all dependencies are installed, but if not, refer to the dependencies section below)
+3. Export as .docx using Packer.toBuffer()
+
+## Editing an existing Word document
+
+When editing an existing Word document, use the **Document library** (a Python library for OOXML manipulation). The library automatically handles infrastructure setup and provides methods for document manipulation. For complex scenarios, you can access the underlying DOM directly through the library.
+
+### Workflow
+1. **MANDATORY - READ ENTIRE FILE**: Read [`ooxml.md`](ooxml.md) (~600 lines) completely from start to finish. **NEVER set any range limits when reading this file.** Read the full file content for the Document library API and XML patterns for directly editing document files.
+2. Unpack the document: `python ooxml/scripts/unpack.py &lt;office_file&gt; &lt;output_directory&gt;`
+3. Create and run a Python script using the Document library (see &quot;Document Library&quot; section in ooxml.md)
+4. Pack the final document: `python ooxml/scripts/pack.py &lt;input_directory&gt; &lt;office_file&gt;`
+
+The Document library provides both high-level methods for common operations and direct DOM access for complex scenarios.
+
+## Redlining workflow for document review
+
+This workflow allows you to plan comprehensive tracked changes using markdown before implementing them in OOXML. **CRITICAL**: For complete tracked changes, you must implement ALL changes systematically.
+
+**Batching Strategy**: Group related changes into batches of 3-10 changes. This makes debugging manageable while maintaining efficiency. Test each batch before moving to the next.
+
+**Principle: Minimal, Precise Edits**
+When implementing tracked changes, only mark text that actually changes. Repeating unchanged text makes edits harder to review and appears unprofessional. Break replacements into: [unchanged text] + [deletion] + [insertion] + [unchanged text]. Preserve the original run's RSID for unchanged text by extracting the `&lt;w:r&gt;` element from the original and reusing it.
+
+Example - Changing &quot;30 days&quot; to &quot;60 days&quot; in a sentence:
+```python
+# BAD - Replaces entire sentence
+'&lt;w:del&gt;&lt;w:r&gt;&lt;w:delText&gt;The term is 30 days.&lt;/w:delText&gt;&lt;/w:r&gt;&lt;/w:del&gt;&lt;w:ins&gt;&lt;w:r&gt;&lt;w:t&gt;The term is 60 days.&lt;/w:t&gt;&lt;/w:r&gt;&lt;/w:ins&gt;'
+
+# GOOD - Only marks what changed, preserves original &lt;w:r&gt; for unchanged text
+'&lt;w:r w:rsidR=&quot;00AB12CD&quot;&gt;&lt;w:t&gt;The term is &lt;/w:t&gt;&lt;/w:r&gt;&lt;w:del&gt;&lt;w:r&gt;&lt;w:delText&gt;30&lt;/w:delText&gt;&lt;/w:r&gt;&lt;/w:del&gt;&lt;w:ins&gt;&lt;w:r&gt;&lt;w:t&gt;60&lt;/w:t&gt;&lt;/w:r&gt;&lt;/w:ins&gt;&lt;w:r w:rsidR=&quot;00AB12CD&quot;&gt;&lt;w:t&gt; days.&lt;/w:t&gt;&lt;/w:r&gt;'
+```
+
+### Tracked changes workflow
+
+1. **Get markdown representation**: Convert document to markdown with tracked changes preserved:
+   ```bash
+   pandoc --track-changes=all path-to-file.docx -o current.md
+   ```
+
+2. **Identify and group changes**: Review the document and identify ALL changes needed, organizing them into logical batches:
+
+   **Location methods** (for finding changes in XML):
+   - Section/heading numbers (e.g., &quot;Section 3.2&quot;, &quot;Article IV&quot;)
+   - Paragraph identifiers if numbered
+   - Grep patterns with unique surrounding text
+   - Document structure (e.g., &quot;first paragraph&quot;, &quot;signature block&quot;)
+   - **DO NOT use markdown line numbers** - they don't map to XML structure
+
+   **Batch organization** (group 3-10 related changes per batch):
+   - By section: &quot;Batch 1: Section 2 amendments&quot;, &quot;Batch 2: Section 5 updates&quot;
+   - By type: &quot;Batch 1: Date corrections&quot;, &quot;Batch 2: Party name changes&quot;
+   - By complexity: Start with simple text replacements, then tackle complex structural changes
+   - Sequential: &quot;Batch 1: Pages 1-3&quot;, &quot;Batch 2: Pages 4-6&quot;
+
+3. **Read documentation and unpack**:
+   - **MANDATORY - READ ENTIRE FILE**: Read [`ooxml.md`](ooxml.md) (~600 lines) completely from start to finish. **NEVER set any range limits when reading this file.** Pay special attention to the &quot;Document Library&quot; and &quot;Tracked Change Patterns&quot; sections.
+   - **Unpack the document**: `python ooxml/scripts/unpack.py &lt;file.docx&gt; &lt;dir&gt;`
+   - **Note the suggested RSID**: The unpack script will suggest an RSID to use for your tracked changes. Copy this RSID for use in step 4b.
+
+4. **Implement changes in batches**: Group changes logically (by section, by type, or by proximity) and implement them together in a single script. This approach:
+   - Makes debugging easier (smaller batch = easier to isolate errors)
+   - Allows incremental progress
+   - Maintains efficiency (batch size of 3-10 changes works well)
+
+   **Suggested batch groupings:**
+   - By document section (e.g., &quot;Section 3 changes&quot;, &quot;Definitions&quot;, &quot;Termination clause&quot;)
+   - By change type (e.g., &quot;Date changes&quot;, &quot;Party name updates&quot;, &quot;Legal term replacements&quot;)
+   - By proximity (e.g., &quot;Changes on pages 1-3&quot;, &quot;Changes in first half of document&quot;)
+
+   For each batch of related changes:
+
+   **a. Map text to XML**: Grep for text in `word/document.xml` to verify how text is split across `&lt;w:r&gt;` elements.
+
+   **b. Create and run script**: Use `get_node` to find nodes, implement changes, then `doc.save()`. See **&quot;Document Library&quot;** section in ooxml.md for patterns.
+
+   **Note**: Always grep `word/document.xml` immediately before writing a script to get current line numbers and verify text content. Line numbers change after each script run.
+
+5. **Pack the document**: After all batches are complete, convert the unpacked directory back to .docx:
+   ```bash
+   python ooxml/scripts/pack.py unpacked reviewed-document.docx
+   ```
+
+6. **Final verification**: Do a comprehensive check of the complete document:
+   - Convert final document to markdown:
+     ```bash
+     pandoc --track-changes=all reviewed-document.docx -o verification.md
+     ```
+   - Verify ALL changes were applied correctly:
+     ```bash
+     grep &quot;original phrase&quot; verification.md  # Should NOT find it
+     grep &quot;replacement phrase&quot; verification.md  # Should find it
+     ```
+   - Check that no unintended changes were introduced
+
+## Converting Documents to Images
+
+To visually analyze Word documents, convert them to images using a two-step process:
+
+1. **Convert DOCX to PDF**:
+   ```bash
+   soffice --headless --convert-to pdf document.docx
+   ```
+
+2. **Convert PDF pages to JPEG images**:
+   ```bash
+   pdftoppm -jpeg -r 150 document.pdf page
+   ```
+   This creates files like `page-1.jpg`, `page-2.jpg`, etc.
+
+Options:
+- `-r 150`: Sets resolution to 150 DPI (adjust for quality/size balance)
+- `-jpeg`: Output JPEG format (use `-png` for PNG if preferred)
+- `-f N`: First page to convert (e.g., `-f 2` starts from page 2)
+- `-l N`: Last page to convert (e.g., `-l 5` stops at page 5)
+- `page`: Prefix for output files
+
+Example for specific range:
+```bash
+pdftoppm -jpeg -r 150 -f 2 -l 5 document.pdf page  # Converts only pages 2-5
+```
+
+## Code Style Guidelines
+**IMPORTANT**: When generating code for DOCX operations:
+- Write concise code
+- Avoid verbose variable names and redundant operations
+- Avoid unnecessary print statements
+
+## Dependencies
+
+Required dependencies (install if not available):
+
+- **pandoc**: `sudo apt-get install pandoc` (for text extraction)
+- **docx**: `npm install -g docx` (for creating new documents)
+- **LibreOffice**: `sudo apt-get install libreoffice` (for PDF conversion)
+- **Poppler**: `sudo apt-get install poppler-utils` (for pdftoppm to convert PDF to images)
+- **defusedxml**: `pip install defusedxml` (for secure XML parsing)`**它的强项**：提供了清晰的决策树，根据任务类型把 Claude 引向正确的工作流；使用渐进式披露让主文件保持精简，仅在需要时引用详细实现文件；并包含具体的正反示例，准确展示如何实现修订记录这类复杂模式。
+
+### **Skill 示例 #2：**[**品牌规范**](https://github.com/anthropics/skills/blob/main/brand-guidelines/SKILL.md?plain=1)
+
+`#name: brand-guidelines
+description: Applies Anthropic's official brand colors and typography to any sort of artifact that may benefit from having Anthropic's look-and-feel. Use it when brand colors or style guidelines, visual formatting, or company design standards apply.
+license: Complete terms in LICENSE.txt
+---
+
+# Anthropic Brand Styling
+
+## Overview
+
+To access Anthropic's official brand identity and style resources, use this skill.
+
+**Keywords**: branding, corporate identity, visual identity, post-processing, styling, brand colors, typography, Anthropic brand, visual formatting, visual design
+
+## Brand Guidelines
+
+### Colors
+
+**Main Colors:**
+
+- Dark: `#141413` - Primary text and dark backgrounds
+- Light: `#faf9f5` - Light backgrounds and text on dark
+- Mid Gray: `#b0aea5` - Secondary elements
+- Light Gray: `#e8e6dc` - Subtle backgrounds
+
+**Accent Colors:**
+
+- Orange: `#d97757` - Primary accent
+- Blue: `#6a9bcc` - Secondary accent
+- Green: `#788c5d` - Tertiary accent
+
+### Typography
+
+- **Headings**: Poppins (with Arial fallback)
+- **Body Text**: Lora (with Georgia fallback)
+- **Note**: Fonts should be pre-installed in your environment for best results
+
+## Features
+
+### Smart Font Application
+
+- Applies Poppins font to headings (24pt and larger)
+- Applies Lora font to body text
+- Automatically falls back to Arial/Georgia if custom fonts unavailable
+- Preserves readability across all systems
+
+### Text Styling
+
+- Headings (24pt+): Poppins font
+- Body text: Lora font
+- Smart color selection based on background
+- Preserves text hierarchy and formatting
+
+### Shape and Accent Colors
+
+- Non-text shapes use accent colors
+- Cycles through orange, blue, and green accents
+- Maintains visual interest while staying on-brand
+
+## Technical Details
+
+### Font Management
+
+- Uses system-installed Poppins and Lora fonts when available
+- Provides automatic fallback to Arial (headings) and Georgia (body)
+- No font installation required - works with existing system fonts
+- For best results, pre-install Poppins and Lora fonts in your environment
+
+### Color Application
+
+- Uses RGB color values for precise brand matching
+- Applied via python-pptx's RGBColor class
+- Maintains color fidelity across different systems`**它的强项**：提供了 Claude 本身并不具备的精确、可操作信息（确切的色号、字体名称、字号阈值），描述清晰，既告诉 Claude 它能做什么，也告诉它何时触发。
+
+**它的强项**：兼具创造能力与清晰边界，内置版权保护，为非音乐人提供技术脚手架，并有明确的质量标准。
+
+### **Skill 示例 #3：**[**前端设计 Skill**](https://www.claude.com/blog/improving-frontend-design-through-skills)
+
+`name: frontend-design
+description: Create distinctive, production-grade frontend interfaces with high design quality. Use this skill when the user asks to build web components, pages, or applications. Generates creative, polished code that avoids generic AI aesthetics.
+license: Complete terms in LICENSE.txt
+---
+
+This skill guides creation of distinctive, production-grade frontend interfaces that avoid generic &quot;AI slop&quot; aesthetics. Implement real working code with exceptional attention to aesthetic details and creative choices.
+
+The user provides frontend requirements: a component, page, application, or interface to build. They may include context about the purpose, audience, or technical constraints.
+
+## Design Thinking
+
+Before coding, understand the context and commit to a BOLD aesthetic direction:
+- **Purpose**: What problem does this interface solve? Who uses it?
+- **Tone**: Pick an extreme: brutally minimal, maximalist chaos, retro-futuristic, organic/natural, luxury/refined, playful/toy-like, editorial/magazine, brutalist/raw, art deco/geometric, soft/pastel, industrial/utilitarian, etc. There are so many flavors to choose from. Use these for inspiration but design one that is true to the aesthetic direction.
+- **Constraints**: Technical requirements (framework, performance, accessibility).
+- **Differentiation**: What makes this UNFORGETTABLE? What's the one thing someone will remember?
+
+**CRITICAL**: Choose a clear conceptual direction and execute it with precision. Bold maximalism and refined minimalism both work - the key is intentionality, not intensity.
+
+Then implement working code (HTML/CSS/JS, React, Vue, etc.) that is:
+- Production-grade and functional
+- Visually striking and memorable
+- Cohesive with a clear aesthetic point-of-view
+- Meticulously refined in every detail
+
+## Frontend Aesthetics Guidelines
+
+Focus on:
+- **Typography**: Choose fonts that are beautiful, unique, and interesting. Avoid generic fonts like Arial and Inter; opt instead for distinctive choices that elevate the frontend's aesthetics; unexpected, characterful font choices. Pair a distinctive display font with a refined body font.
+- **Color &amp; Theme**: Commit to a cohesive aesthetic. Use CSS variables for consistency. Dominant colors with sharp accents outperform timid, evenly-distributed palettes.
+- **Motion**: Use animations for effects and micro-interactions. Prioritize CSS-only solutions for HTML. Use Motion library for React when available. Focus on high-impact moments: one well-orchestrated page load with staggered reveals (animation-delay) creates more delight than scattered micro-interactions. Use scroll-triggering and hover states that surprise.
+- **Spatial Composition**: Unexpected layouts. Asymmetry. Overlap. Diagonal flow. Grid-breaking elements. Generous negative space OR controlled density.
+- **Backgrounds &amp; Visual Details**: Create atmosphere and depth rather than defaulting to solid colors. Add contextual effects and textures that match the overall aesthetic. Apply creative forms like gradient meshes, noise textures, geometric patterns, layered transparencies, dramatic shadows, decorative borders, custom cursors, and grain overlays.
+
+NEVER use generic AI-generated aesthetics like overused font families (Inter, Roboto, Arial, system fonts), cliched color schemes (particularly purple gradients on white backgrounds), predictable layouts and component patterns, and cookie-cutter design that lacks context-specific character.
+
+Interpret creatively and make unexpected choices that feel genuinely designed for the context. No design should be the same. Vary between light and dark themes, different fonts, different aesthetics. NEVER converge on common choices (Space Grotesk, for example) across generations.
+
+**IMPORTANT**: Match implementation complexity to the aesthetic vision. Maximalist designs need elaborate code with extensive animations and effects. Minimalist or refined designs need restraint, precision, and careful attention to spacing, typography, and subtle details. Elegance comes from executing the vision well.
+
+Remember: Claude is capable of extraordinary creative work. Don't hold back, show what can truly be created when thinking outside the box and committing fully to a distinctive vision.`**它的强项**：兼具创造能力与清晰边界，内置版权保护，为非音乐人提供技术脚手架，并有明确的质量标准。
+
+## **常见问题**
+
+### **怎么写描述才能真正触发？**
+
+聚焦能力和场景，而不是泛泛的关键词。加入动作动词、具体的文件类型和明确的用例。不要写&quot;文档处理 Skill&quot;，而要写&quot;从 PDF 中提取表格并转换为 CSV 格式，用于数据分析工作流&quot;。
+
+### **Claude 如何决定调用哪些 Skills？**
+
+Claude 会用语义理解把你的请求与 Skill 描述对照评估。这不是关键词匹配——Claude 判断的是语境相关性。如果多个 Skills 分别处理你请求的不同侧面，它们可以同时激活。
+
+### **描述的粒度怎么把握？**
+
+以单一职责的 Skills 为目标。&quot;博客文章的 SEO 优化&quot;够聚焦，既能承载具体指令，又足够宽泛可复用。太宽泛：&quot;内容营销助手&quot;。太狭窄：&quot;添加 meta 描述&quot;。
+
+### **如何在组织内共享 Skills？**
+
+无论团队规模如何，我们都建议创建一个共享的文档库来存放 Skill 规格。
+
+**对于较小的团队**，使用包含名称、描述、指令和版本信息的模板格式。
+
+**对于中大型团队**，建立 Skills 治理流程：
+
+- 为每个领域（财务、法务、营销）指定 Skill 负责人
+- 维护一个中心 wiki 或共享网盘作为 Skill 库
+- 为每个 Skill 附上用法示例和常见故障排查
+- 为 Skills 做版本管理，并在变更日志中记录修改
+- 安排季度评审，更新或淘汰过时的 Skills
+
+**适合所有团队规模的最佳实践**：
+
+- 记录每个 Skill 的业务目的
+- 为维护和更新分配明确的责任人
+- 制作入职材料，向新成员展示如何使用共享 Skills
+- 追踪哪些 Skills 带来的价值最大，以排定维护优先级
+- 使用一致的命名规范，方便查找 Skills
+
+企业客户可以与 Anthropic 的客户成功团队合作，探索更多部署选项和治理框架。
+
+### **如何调试 Skills？**
+
+把触发和执行分开测试。如果 Skills 不激活，扩展描述并补充使用场景。如果结果不稳定，为指令增加具体性并加入验证步骤。建立覆盖正常使用、边界情况和超范围请求的测试用例库。
+
+### **如何在组织内共享 Skills？**
+
+**‍**在 [Claude.ai](http://claude.ai/) 中，Skills 目前归每个用户私有，不过组织级管理和共享功能即将推出。在此期间，无论团队规模如何，我们都建议创建一个共享的文档库来存放 Skill 规格。这既为即将推出的功能做好了准备，也能从今天起建立良好的治理实践。
+
+## **开始使用**
+
+准备好构建 Skills 了吗？按以下步骤开始：
+
+[Claude.ai](https://claude.ai/) 用户：
+
+- 在 Settings → Features 中启用 Skills
+- 在 claude.ai/projects 创建你的第一个项目
+- 在下一次分析任务中，尝试把项目知识与 Skills 结合使用
+
+API 开发者：
+
+- 在[文档](https://docs.anthropic.com/)中探索 Skills 端点
+- 查看我们的 [Skills cookbook](https://platform.claude.com/cookbook/skills-notebooks-01-skills-introduction)
+
+Claude Code 用户：
+
+- 通过[插件市场](https://code.claude.com/docs/en/plugin-marketplaces)安装 Skills
+- 查看我们的 [Skills cookbook](https://platform.claude.com/cookbook/skills-notebooks-01-skills-introduction)</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Claude Code</span>
-            <span class="article-date">November 19, 2025</span>
-            
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-olive);">
+            <img class="hero-illo-img" src="/assets/illustrations/how-to-create-skills-key-steps-limitations-and-examples.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">如何创建 Skills：关键步骤、限制与示例</h1>
-          <a href="/posts/how-to-create-skills-key-steps-limitations-and-examples/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p><a href="https://www.claude.com/blog/skills" target="_blank">Skills</a> 是扩展 Claude 在特定任务或领域能力的自定义指令。</p><p>当你通过 <a href="http://skill.md" target="_blank">SKILL.md</a> 文件创建一个 Skill 时，你是在教 Claude 更有效地处理特定场景。Skills 的力量在于它们能沉淀机构知识、标准化输出，并处理那些原本需要反复解释、或需要投入成本构建定制智能体的复杂多步骤工作流。</p><p>了解如何创建 Skills，把 Claude 从通用助手变为你专属工作流中的领域专家——你可以使用我们的 <a href="https://github.com/anthropics/skills/tree/main/skill-creator" target="_blank">skill-creator</a> 模板，也可以手动创建。（小提示：为了省事，我们建议用这个模板搭建你的 <a href="http://skill.md" target="_blank">SKILL.md</a> 文件，再在其基础上修改。）</p><h2><strong>五步创建一个 Skill</strong></h2><p>遵循这套结构化方法，构建触发更可靠的 Skills。</p><h3><strong>1. 理解核心需求</strong></h3><p>动笔之前，先想清楚你的 Skill 解决什么问题。强大的 Skill 针对具体需求、产出可衡量的结果。"从 PDF 中提取财务数据并格式化为 CSV"胜过"帮我处理财务相关的东西"，因为前者明确了输入格式、操作和期望输出。</p><p>先问自己：这个 Skill 完成什么具体任务？什么情况应该触发它？成功是什么样子？有哪些边界情况或限制？</p><h3><strong>2. 编写名称</strong></h3><p>你的 Skill 需要三个核心组成部分：<strong>名称</strong>（清晰的标识符）、<strong>描述</strong>（何时激活）和<strong>指令</strong>（如何执行）。事实上，名称和描述是 <a href="http://skill.md" target="_blank">SKILL.md</a> 文件中唯二影响触发的部分——所谓触发，就是 Claude 为专门的知识或工作流调用某个 Skill 的能力。</p><p>名称应该直白且具描述性。使用小写字母加连字符（例如 pdf-editor、brand-guidelines）。保持简短清晰。</p><h3><strong>3. 编写描述字段</strong></h3><p>描述决定了你的 Skill 何时激活，是最关键的组成部分。请站在 Claude 的视角来写，聚焦触发场景、能力和用例。</p><p>一段强有力的描述会平衡多个要素：具体的能力、清晰的触发条件、相关的上下文，以及能力边界。</p><p><strong>较弱的描述</strong>：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-markdown" style="white-space:pre-wrap"><span><span>This skill helps with PDFs and documents.</span></span></code></pre><p><strong>较强的描述</strong>：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-markdown" style="white-space:pre-wrap"><span><span>Comprehensive PDF manipulation toolkit for extracting text and tables, creating new PDFs, merging/splitting documents, and handling forms. When Claude needs to fill in a PDF form or programmatically process, generate, or analyze PDF documents at scale. Use for document workflows and batch operations. Not for simple PDF viewing or basic conversions.</span></span></code></pre><p>更强的版本给 Claude 提供了多个数据点：具体的动词（提取、创建、合并）、具体的使用场景（填写表单、批量操作），以及清晰的边界（不适用于简单查看）。</p><h3><strong>4. 编写主体指令</strong></h3><p>你的指令应该结构化、易扫读、可执行。使用 markdown 标题、用项目符号列出选项、用代码块给出示例。</p><p>用清晰的层级来组织：概述、前置条件、执行步骤、示例、错误处理和限制。把复杂工作流拆分为输入输出明确的离散阶段。</p><p>给出展示正确用法的具体示例。写明 Skill 做不到什么，以防止误用并管理预期。你的 <a href="http://skill.md" target="_blank">SKILL.md</a> 文件还可以包含额外的参考文件和资源，为 Skill 触发时你要求智能体执行的操作提供更清晰的指引。</p><h3><strong>5. 上传你的 Skill</strong></h3><p>根据你构建所基于的 Claude 界面，按以下方式上传你的 Skill 以供使用：</p><ul role="list"><li><a href="http://claude.ai" target="_blank">Claude.ai</a>（Claude 应用）：进入 <strong>Settings</strong>，在那里添加你的自定义 Skill。自定义 Skills 需要开启代码执行功能的 Pro、Max、Team 或 Enterprise 计划。此处上传的 Skills 归每个用户私有——不会在全组织内共享，也无法由管理员集中管理。</li><li><a href="https://www.claude.com/product/claude-code" target="_blank">Claude Code</a>：在你的插件或项目根目录创建 skills/ 目录，并添加包含 SKILL.md 文件的 Skill 文件夹。插件安装后，Claude 会自动发现并使用它们。示例结构：</li></ul><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-markdown" style="white-space:pre-wrap"><span><span>my-project/
+            <h1 class="article-title u-text-style-h1">如何创建 Skills：关键步骤、限制与示例</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>Learn how to write tailored skills that deliver stronger, more effective outputs from Claude.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <div class="hero-detail-value-stack"><a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a><div class="hero-detail-value u-text-style-body-3">Agents</div></div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <div class="hero-detail-value u-text-style-body-3">Claude apps</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">November 19, 2025</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/how-to-create-skills-key-steps-limitations-and-examples/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p><a href="https://www.claude.com/blog/skills" target="_blank">Skills</a> 是扩展 Claude 在特定任务或领域能力的自定义指令。</p><p>当你通过 <a href="http://skill.md" target="_blank">SKILL.md</a> 文件创建一个 Skill 时，你是在教 Claude 更有效地处理特定场景。Skills 的力量在于它们能沉淀机构知识、标准化输出，并处理那些原本需要反复解释、或需要投入成本构建定制智能体的复杂多步骤工作流。</p><p>了解如何创建 Skills，把 Claude 从通用助手变为你专属工作流中的领域专家——你可以使用我们的 <a href="https://github.com/anthropics/skills/tree/main/skill-creator" target="_blank">skill-creator</a> 模板，也可以手动创建。（小提示：为了省事，我们建议用这个模板搭建你的 <a href="http://skill.md" target="_blank">SKILL.md</a> 文件，再在其基础上修改。）</p><h2><strong>五步创建一个 Skill</strong></h2><p>遵循这套结构化方法，构建触发更可靠的 Skills。</p><h3><strong>1. 理解核心需求</strong></h3><p>动笔之前，先想清楚你的 Skill 解决什么问题。强大的 Skill 针对具体需求、产出可衡量的结果。"从 PDF 中提取财务数据并格式化为 CSV"胜过"帮我处理财务相关的东西"，因为前者明确了输入格式、操作和期望输出。</p><p>先问自己：这个 Skill 完成什么具体任务？什么情况应该触发它？成功是什么样子？有哪些边界情况或限制？</p><h3><strong>2. 编写名称</strong></h3><p>你的 Skill 需要三个核心组成部分：<strong>名称</strong>（清晰的标识符）、<strong>描述</strong>（何时激活）和<strong>指令</strong>（如何执行）。事实上，名称和描述是 <a href="http://skill.md" target="_blank">SKILL.md</a> 文件中唯二影响触发的部分——所谓触发，就是 Claude 为专门的知识或工作流调用某个 Skill 的能力。</p><p>名称应该直白且具描述性。使用小写字母加连字符（例如 pdf-editor、brand-guidelines）。保持简短清晰。</p><h3><strong>3. 编写描述字段</strong></h3><p>描述决定了你的 Skill 何时激活，是最关键的组成部分。请站在 Claude 的视角来写，聚焦触发场景、能力和用例。</p><p>一段强有力的描述会平衡多个要素：具体的能力、清晰的触发条件、相关的上下文，以及能力边界。</p><p><strong>较弱的描述</strong>：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-markdown" style="white-space:pre-wrap"><span><span>This skill helps with PDFs and documents.</span></span></code></pre><p><strong>较强的描述</strong>：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-markdown" style="white-space:pre-wrap"><span><span>Comprehensive PDF manipulation toolkit for extracting text and tables, creating new PDFs, merging/splitting documents, and handling forms. When Claude needs to fill in a PDF form or programmatically process, generate, or analyze PDF documents at scale. Use for document workflows and batch operations. Not for simple PDF viewing or basic conversions.</span></span></code></pre><p>更强的版本给 Claude 提供了多个数据点：具体的动词（提取、创建、合并）、具体的使用场景（填写表单、批量操作），以及清晰的边界（不适用于简单查看）。</p><h3><strong>4. 编写主体指令</strong></h3><p>你的指令应该结构化、易扫读、可执行。使用 markdown 标题、用项目符号列出选项、用代码块给出示例。</p><p>用清晰的层级来组织：概述、前置条件、执行步骤、示例、错误处理和限制。把复杂工作流拆分为输入输出明确的离散阶段。</p><p>给出展示正确用法的具体示例。写明 Skill 做不到什么，以防止误用并管理预期。你的 <a href="http://skill.md" target="_blank">SKILL.md</a> 文件还可以包含额外的参考文件和资源，为 Skill 触发时你要求智能体执行的操作提供更清晰的指引。</p><h3><strong>5. 上传你的 Skill</strong></h3><p>根据你构建所基于的 Claude 界面，按以下方式上传你的 Skill 以供使用：</p><ul role="list"><li><a href="http://claude.ai" target="_blank">Claude.ai</a>（Claude 应用）：进入 <strong>Settings</strong>，在那里添加你的自定义 Skill。自定义 Skills 需要开启代码执行功能的 Pro、Max、Team 或 Enterprise 计划。此处上传的 Skills 归每个用户私有——不会在全组织内共享，也无法由管理员集中管理。</li><li><a href="https://www.claude.com/product/claude-code" target="_blank">Claude Code</a>：在你的插件或项目根目录创建 skills/ 目录，并添加包含 SKILL.md 文件的 Skill 文件夹。插件安装后，Claude 会自动发现并使用它们。示例结构：</li></ul><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-markdown" style="white-space:pre-wrap"><span><span>my-project/
 </span></span><span>├── skills/
 </span></span><span>│   └── my-skill/
 </span></span><span>│       └── SKILL.md</span></code></pre><ul role="list"><li><a href="https://www.claude.com/platform/api" target="_blank">Claude 开发者平台</a>：通过 Skills API（/v1/skills 端点）上传 Skills。使用带所需 beta 请求头的 POST 请求：</li></ul><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-markdown" style="white-space:pre-wrap"><span style="font-style:italic"><span>curl -X POST "https://api.anthropic.com/v1/skills" \
@@ -350,21 +909,70 @@
 </span></span><span><span></span><span style="font-weight:bold">**IMPORTANT**</span><span>: Match implementation complexity to the aesthetic vision. Maximalist designs need elaborate code with extensive animations and effects. Minimalist or refined designs need restraint, precision, and careful attention to spacing, typography, and subtle details. Elegance comes from executing the vision well.
 </span></span><span>
 </span></span><span>Remember: Claude is capable of extraordinary creative work. Don't hold back, show what can truly be created when thinking outside the box and committing fully to a distinctive vision.</span></code></pre><p><strong>它的强项</strong>：兼具创造能力与清晰边界，内置版权保护，为非音乐人提供技术脚手架，并有明确的质量标准。</p><h2><strong>常见问题</strong></h2><h3><strong>怎么写描述才能真正触发？</strong></h3><p>聚焦能力和场景，而不是泛泛的关键词。加入动作动词、具体的文件类型和明确的用例。不要写"文档处理 Skill"，而要写"从 PDF 中提取表格并转换为 CSV 格式，用于数据分析工作流"。</p><h3><strong>Claude 如何决定调用哪些 Skills？</strong></h3><p>Claude 会用语义理解把你的请求与 Skill 描述对照评估。这不是关键词匹配——Claude 判断的是语境相关性。如果多个 Skills 分别处理你请求的不同侧面，它们可以同时激活。</p><h3><strong>描述的粒度怎么把握？</strong></h3><p>以单一职责的 Skills 为目标。"博客文章的 SEO 优化"够聚焦，既能承载具体指令，又足够宽泛可复用。太宽泛："内容营销助手"。太狭窄："添加 meta 描述"。</p><h3><strong>如何在组织内共享 Skills？</strong></h3><p>无论团队规模如何，我们都建议创建一个共享的文档库来存放 Skill 规格。</p><p><strong>对于较小的团队</strong>，使用包含名称、描述、指令和版本信息的模板格式。</p><p><strong>对于中大型团队</strong>，建立 Skills 治理流程：</p><ul role="list"><li>为每个领域（财务、法务、营销）指定 Skill 负责人</li><li>维护一个中心 wiki 或共享网盘作为 Skill 库</li><li>为每个 Skill 附上用法示例和常见故障排查</li><li>为 Skills 做版本管理，并在变更日志中记录修改</li><li>安排季度评审，更新或淘汰过时的 Skills</li></ul><p><strong>适合所有团队规模的最佳实践</strong>：</p><ul role="list"><li>记录每个 Skill 的业务目的</li><li>为维护和更新分配明确的责任人</li><li>制作入职材料，向新成员展示如何使用共享 Skills</li><li>追踪哪些 Skills 带来的价值最大，以排定维护优先级</li><li>使用一致的命名规范，方便查找 Skills</li></ul><p>企业客户可以与 Anthropic 的客户成功团队合作，探索更多部署选项和治理框架。</p><h3><strong>如何调试 Skills？</strong></h3><p>把触发和执行分开测试。如果 Skills 不激活，扩展描述并补充使用场景。如果结果不稳定，为指令增加具体性并加入验证步骤。建立覆盖正常使用、边界情况和超范围请求的测试用例库。</p><h3><strong>如何在组织内共享 Skills？</strong></h3><p><strong>‍</strong>在 <a href="http://claude.ai/" target="_blank">Claude.ai</a> 中，Skills 目前归每个用户私有，不过组织级管理和共享功能即将推出。在此期间，无论团队规模如何，我们都建议创建一个共享的文档库来存放 Skill 规格。这既为即将推出的功能做好了准备，也能从今天起建立良好的治理实践。</p><h2><strong>开始使用</strong></h2><p>准备好构建 Skills 了吗？按以下步骤开始：</p><p><a href="https://claude.ai/" target="_blank">Claude.ai</a> 用户：</p><ul role="list"><li>在 Settings → Features 中启用 Skills</li><li>在 claude.ai/projects 创建你的第一个项目</li><li>在下一次分析任务中，尝试把项目知识与 Skills 结合使用</li></ul><p>API 开发者：</p><ul role="list"><li>在<a href="https://docs.anthropic.com/" target="_blank">文档</a>中探索 Skills 端点</li><li>查看我们的 <a href="https://platform.claude.com/cookbook/skills-notebooks-01-skills-introduction" target="_blank">Skills cookbook</a></li></ul><p>Claude Code 用户：</p><ul role="list"><li>通过<a href="https://code.claude.com/docs/en/plugin-marketplaces" target="_blank">插件市场</a>安装 Skills</li><li>查看我们的 <a href="https://platform.claude.com/cookbook/skills-notebooks-01-skills-introduction" target="_blank">Skills cookbook</a></li></ul></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/how-to-create-skills-key-steps-limitations-and-examples" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/how-to-create-skills-key-steps-limitations-and-examples" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

@@ -4,54 +4,200 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Claude in Chrome 现已全面可用 — Claude Blog 中文翻译</title>
-  <meta name="description" content="Claude in Chrome 现已全面可用">
+  <meta name="description" content="Give Claude a task in your browser, work across tabs, and continue the conversation in the desktop, mobile, and web apps.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/claude-in-chrome-generally-available" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>Claude in Chrome 现已全面可用</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/claude-in-chrome-generally-available" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/claude-in-chrome-generally-available/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># Claude in Chrome 现已全面可用
+
+Give Claude a task in your browser, work across tabs, and continue the conversation in the desktop, mobile, and web apps.
+
+Claude in Chrome 现在在所有付费 Claude 计划中全面可用。Claude 现在还可以在浏览器中自主执行操作，而无需每步都请求批准。一个安全分类器会在每个操作执行前进行验证，确保操作安全且符合你的请求。
+
+许多你日常使用的工具已经[与 Claude 连接](http://claude.com/connectors)。但还有更多工具没有，比如内部仪表盘、遗留系统和供应商门户。Claude in Chrome 让 Claude 也能访问这些工具。它可以查看你当前所在的页面，并执行阅读和输入文本、点击链接、页面间导航、填写表单等操作，使用你现有的登录状态。
+
+我们去年首次以预览形式发布了 Claude in Chrome，以便在测试的同时加强我们对[提示注入](https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks)的防御：隐藏在网站、邮件或文档中的恶意指令，试图诱骗 AI 代理做出违背用户意愿的行为。下文描述的这些防御措施，给了我们让 Claude in Chrome 全面可用的信心。
+
+## 防范提示注入
+
+正如我们发布预览时[所述](https://claude.com/blog/claude-for-chrome)，在浏览器中工作的 AI 代理也容易受到提示注入攻击。因此，在更广泛地发布 Claude in Chrome 之前，我们一直在改进安全防护措施。
+
+在提示注入攻击中，恶意行为者将指令隐藏在网页、邮件或表单字段等网络内容中。你可能永远看不到这些指令，但它们可以指示代理执行你从未要求过的操作。例如，如果你让 Claude 起草邮件回复，一条消息中的隐藏指令可以告诉 Claude 将你的其他邮件转发给攻击者。
+
+在发布时，我们描述了如何测试 Claude 对这些攻击的防御能力以及当时已有的防护措施；后来我们发布了关于[浏览器使用安全防护](https://www.anthropic.com/research/prompt-injection-defenses)的更详细描述。自那以后，我们改进了对模型和我们的[探测器](https://www.anthropic.com/research/next-generation-constitutional-classifiers)的训练方法，并增加了一组额外的分类器，使 Claude 能够在 Chrome 中更安全地执行更多自主操作。在下一节中，我们将讨论评估结果，这些结果展示了这些防护措施的有效性。
+
+**Claude 能识别更多攻击。**我们针对不断增长的提示注入攻击库对 Claude 进行训练，这些攻击来自我们的内部自动化攻击器、外部红队测试和真实世界监控。当一种新的攻击在当前模型上成功时，它会被添加到攻击库中，用于指导未来模型的训练和我们部署的防御措施，使它们学会识别这种攻击。自 2025 年 11 月我们首次撰写关于[浏览器使用的提示注入防御](https://www.anthropic.com/research/prompt-injection-defenses)以来，我们已经使 Claude 对这些攻击的抵抗力大幅提升。
+
+**探测器在 Claude 对网络内容采取行动前进行筛查。**网络内容通过工具结果到达 Claude。为了执行阅读页面或打开邮件等操作，模型会进行工具调用；工具结果让模型读取输出（本例中为页面或邮件的内容）。我们训练探测器扫描这些结果，寻找潜在的提示注入。当探测器检测到可能的攻击时，Claude 会收到警告，要求对内容保持怀疑，并在必要时在采取行动前与你确认。我们最初在 Claude Opus 4.5 中部署了这些探测器，此后扩展了它们覆盖的攻击类型。
+
+**操作在执行前经过验证。**在 Claude in Chrome 中，Claude 现在会自动批准它判断为安全的操作，使用与 Claude Code 中的[自动模式](https://claude.com/blog/auto-mode-default-in-claude-code)相同的机制。（如果你希望继续手动批准 Claude 的操作，可以在设置中关闭此功能。）一个分类器会审查 Claude 即将执行的操作，例如导航到新网站或在页面中输入文本，并与你最初的请求进行核对。如果操作与你的请求不匹配，它会被阻止。
+
+## 衡量 Claude 对提示注入的鲁棒性
+
+我们已经测试了这些防护措施，以确保 Claude in Chrome 在浏览器端工作时的安全性。以下是我们最新评估的结果。
+
+在我们对 Claude Cowork 抵抗提示注入攻击能力的[初始评估](https://claude.com/blog/claude-for-chrome)中（首次开发于我们发布 Claude in Chrome 预览时），在 [Cowork 框架](https://claude.com/blog/cowork-chrome-side-panel)中，即使没有上面讨论的探测器和分类器，也没有任何攻击能成功针对 Claude Fable 5、Claude Opus 5 或 Claude Sonnet 5。
+
+*针对 Claude Opus 4.5、Sonnet 5、Opus 5 和 Fable 5 的提示注入攻击成功率。Opus 4.5 使用了扩展思考模式，因为它不支持我们较新的默认自适应思考模式。所有其他模型默认使用中等努力的自适应思考模式。2025 年 11 月[博文](https://www.anthropic.com/research/prompt-injection-defenses)中讨论的结果是在未启用扩展思考的情况下运行的，但由于 Fable 5 无法禁用思考功能，我们在此报告的是启用思考的结果。2025 年 11 月使用的评分模型也不再可用，因此我们转而使用更强大的评分管道，并结合对成功攻击的人工审查，这产生了更少的误报。*由于该评估已经饱和（0% 的成功率证明了这一点），我们决定停止使用它。在我们的[当前评估](https://www-cdn.anthropic.com/b514064af1408018e64b1ad24e7d5e75850b4ffd/Claude%20Opus%205%20System%20Card.pdf#page=76.73)中，使用了由专业红队人员提供的更强攻击，在没有任何额外防护措施的情况下，到达模型的攻击对 Opus 4.5 的成功率为 17.6%，对 Opus 5 为 3.8%。在 2025 年 11 月可用的最强防护措施下，运行探测器的 Opus 4.5 攻击成功率为 16.7%。而对于从 Opus 4.8 开始的每个模型，当运行探测器和安全分类器时，没有任何攻击能成功针对 Claude Sonnet 5、Claude Opus 5 或 Claude Mythos 5。我们观察到对 Fable 5 的攻击成功率为 0.3%。我们已经人工验证所有成功的突破都属于低严重性场景，并正在努力缓解这些问题。
+
+*在启用探测器加上自动批准安全分类器的情况下，没有任何攻击能成功针对 Claude Sonnet 5 或 Opus 5，而对 Fable 5 的攻击成功率为 0.3%。Opus 4.5 的模型行为导致实际到达模型的攻击数量较少，但其成功攻击的百分比仍然最高。*提示注入仍然是一个不断变化的威胁。虽然这种方法可以防御当前的攻击，但我们还需要确保我们的防护措施领先于攻击者不断演化的方法。随着每个模型的发布，我们持续投资于开发更复杂的自动化攻击发现系统、红队测试，以及构建更强的分类器。
+
+## 开始使用
+
+要开始使用 Claude in Chrome，请从 [Chrome Web Store](https://chromewebstore.google.com/detail/claude/fcoeoabgfenejglbffodgkkbkcdhcgfn) 安装。在 Enterprise 计划中，管理员可以在组织设置中管理它，并将其限制在批准的域名范围内。请参阅[管理员设置指南](https://support.claude.com/en/articles/13065128-claude-in-chrome-admin-controls#h_bdb63199e1)。
+
+你仍然需要使用 Claude 桌面应用程序来处理计算机上的文件或其他应用程序。Claude in Chrome 目前不支持其他 Chromium 浏览器，也不支持移动端。
+
+‍
+
+*¹ 并非所有攻击都能到达模型——即被模型看到。在某些情况下，Claude 执行的操作导致它从未遇到恶意指令。*</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Product announcements</span>
-            <span class="article-date">August 26, 2026</span>
-            
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-clay);">
+            <img class="hero-illo-img" src="/assets/illustrations/claude-in-chrome-generally-available.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">Claude in Chrome 现已全面可用</h1>
-          <a href="/posts/claude-in-chrome-generally-available/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>Claude in Chrome 现在在所有付费 Claude 计划中全面可用。Claude 现在还可以在浏览器中自主执行操作，而无需每步都请求批准。一个安全分类器会在每个操作执行前进行验证，确保操作安全且符合你的请求。</p><figure style="max-width:1920pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a8e8c30f077b615a7429ea1_a9d1d161.png" loading="lazy"></div></figure><p>许多你日常使用的工具已经<a href="http://claude.com/connectors" target="_blank">与 Claude 连接</a>。但还有更多工具没有，比如内部仪表盘、遗留系统和供应商门户。Claude in Chrome 让 Claude 也能访问这些工具。它可以查看你当前所在的页面，并执行阅读和输入文本、点击链接、页面间导航、填写表单等操作，使用你现有的登录状态。</p><p>我们去年首次以预览形式发布了 Claude in Chrome，以便在测试的同时加强我们对<a href="https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks" target="_blank">提示注入</a>的防御：隐藏在网站、邮件或文档中的恶意指令，试图诱骗 AI 代理做出违背用户意愿的行为。下文描述的这些防御措施，给了我们让 Claude in Chrome 全面可用的信心。</p><h2>防范提示注入</h2><p>正如我们发布预览时<a href="https://claude.com/blog/claude-for-chrome" target="_blank">所述</a>，在浏览器中工作的 AI 代理也容易受到提示注入攻击。因此，在更广泛地发布 Claude in Chrome 之前，我们一直在改进安全防护措施。</p><p>在提示注入攻击中，恶意行为者将指令隐藏在网页、邮件或表单字段等网络内容中。你可能永远看不到这些指令，但它们可以指示代理执行你从未要求过的操作。例如，如果你让 Claude 起草邮件回复，一条消息中的隐藏指令可以告诉 Claude 将你的其他邮件转发给攻击者。</p><p>在发布时，我们描述了如何测试 Claude 对这些攻击的防御能力以及当时已有的防护措施；后来我们发布了关于<a href="https://www.anthropic.com/research/prompt-injection-defenses" target="_blank">浏览器使用安全防护</a>的更详细描述。自那以后，我们改进了对模型和我们的<a href="https://www.anthropic.com/research/next-generation-constitutional-classifiers" target="_blank">探测器</a>的训练方法，并增加了一组额外的分类器，使 Claude 能够在 Chrome 中更安全地执行更多自主操作。在下一节中，我们将讨论评估结果，这些结果展示了这些防护措施的有效性。</p><p><strong>Claude 能识别更多攻击。</strong>我们针对不断增长的提示注入攻击库对 Claude 进行训练，这些攻击来自我们的内部自动化攻击器、外部红队测试和真实世界监控。当一种新的攻击在当前模型上成功时，它会被添加到攻击库中，用于指导未来模型的训练和我们部署的防御措施，使它们学会识别这种攻击。自 2025 年 11 月我们首次撰写关于<a href="https://www.anthropic.com/research/prompt-injection-defenses" target="_blank">浏览器使用的提示注入防御</a>以来，我们已经使 Claude 对这些攻击的抵抗力大幅提升。</p><p><strong>探测器在 Claude 对网络内容采取行动前进行筛查。</strong>网络内容通过工具结果到达 Claude。为了执行阅读页面或打开邮件等操作，模型会进行工具调用；工具结果让模型读取输出（本例中为页面或邮件的内容）。我们训练探测器扫描这些结果，寻找潜在的提示注入。当探测器检测到可能的攻击时，Claude 会收到警告，要求对内容保持怀疑，并在必要时在采取行动前与你确认。我们最初在 Claude Opus 4.5 中部署了这些探测器，此后扩展了它们覆盖的攻击类型。</p><p><strong>操作在执行前经过验证。</strong>在 Claude in Chrome 中，Claude 现在会自动批准它判断为安全的操作，使用与 Claude Code 中的<a href="https://claude.com/blog/auto-mode-default-in-claude-code" target="_blank">自动模式</a>相同的机制。（如果你希望继续手动批准 Claude 的操作，可以在设置中关闭此功能。）一个分类器会审查 Claude 即将执行的操作，例如导航到新网站或在页面中输入文本，并与你最初的请求进行核对。如果操作与你的请求不匹配，它会被阻止。</p><h2>衡量 Claude 对提示注入的鲁棒性</h2><p>我们已经测试了这些防护措施，以确保 Claude in Chrome 在浏览器端工作时的安全性。以下是我们最新评估的结果。</p><p>在我们对 Claude Cowork 抵抗提示注入攻击能力的<a href="https://claude.com/blog/claude-for-chrome" target="_blank">初始评估</a>中（首次开发于我们发布 Claude in Chrome 预览时），在 <a href="https://claude.com/blog/cowork-chrome-side-panel" target="_blank">Cowork 框架</a>中，即使没有上面讨论的探测器和分类器，也没有任何攻击能成功针对 Claude Fable 5、Claude Opus 5 或 Claude Sonnet 5。</p><figure style="max-width:2048pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a8e8c30f077b615a7429ea7_8477d7f5.png" loading="lazy"></div><figcaption><em>针对 Claude Opus 4.5、Sonnet 5、Opus 5 和 Fable 5 的提示注入攻击成功率。Opus 4.5 使用了扩展思考模式，因为它不支持我们较新的默认自适应思考模式。所有其他模型默认使用中等努力的自适应思考模式。2025 年 11 月<a href="https://www.anthropic.com/research/prompt-injection-defenses" target="_blank">博文</a>中讨论的结果是在未启用扩展思考的情况下运行的，但由于 Fable 5 无法禁用思考功能，我们在此报告的是启用思考的结果。2025 年 11 月使用的评分模型也不再可用，因此我们转而使用更强大的评分管道，并结合对成功攻击的人工审查，这产生了更少的误报。</em></figcaption></figure><p>由于该评估已经饱和（0% 的成功率证明了这一点），我们决定停止使用它。在我们的<a href="https://www-cdn.anthropic.com/b514064af1408018e64b1ad24e7d5e75850b4ffd/Claude%20Opus%205%20System%20Card.pdf#page=76.73" target="_blank">当前评估</a>中，使用了由专业红队人员提供的更强攻击，在没有任何额外防护措施的情况下，到达模型的攻击对 Opus 4.5 的成功率为 17.6%，对 Opus 5 为 3.8%。在 2025 年 11 月可用的最强防护措施下，运行探测器的 Opus 4.5 攻击成功率为 16.7%。而对于从 Opus 4.8 开始的每个模型，当运行探测器和安全分类器时，没有任何攻击能成功针对 Claude Sonnet 5、Claude Opus 5 或 Claude Mythos 5。我们观察到对 Fable 5 的攻击成功率为 0.3%。我们已经人工验证所有成功的突破都属于低严重性场景，并正在努力缓解这些问题。</p><figure style="max-width:2048pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a8e8c30f077b615a7429ea4_b8a100e7.png" loading="lazy"></div><figcaption><em>在启用探测器加上自动批准安全分类器的情况下，没有任何攻击能成功针对 Claude Sonnet 5 或 Opus 5，而对 Fable 5 的攻击成功率为 0.3%。Opus 4.5 的模型行为导致实际到达模型的攻击数量较少，但其成功攻击的百分比仍然最高。</em></figcaption></figure><p>提示注入仍然是一个不断变化的威胁。虽然这种方法可以防御当前的攻击，但我们还需要确保我们的防护措施领先于攻击者不断演化的方法。随着每个模型的发布，我们持续投资于开发更复杂的自动化攻击发现系统、红队测试，以及构建更强的分类器。</p><h2>开始使用</h2><p>要开始使用 Claude in Chrome，请从 <a href="https://chromewebstore.google.com/detail/claude/fcoeoabgfenejglbffodgkkbkcdhcgfn" target="_blank">Chrome Web Store</a> 安装。在 Enterprise 计划中，管理员可以在组织设置中管理它，并将其限制在批准的域名范围内。请参阅<a href="https://support.claude.com/en/articles/13065128-claude-in-chrome-admin-controls#h_bdb63199e1" target="_blank">管理员设置指南</a>。</p><p>你仍然需要使用 Claude 桌面应用程序来处理计算机上的文件或其他应用程序。Claude in Chrome 目前不支持其他 Chromium 浏览器，也不支持移动端。</p><p>‍</p><p><em>¹ 并非所有攻击都能到达模型——即被模型看到。在某些情况下，Claude 执行的操作导致它从未遇到恶意指令。</em></p></div>
+            <h1 class="article-title u-text-style-h1">Claude in Chrome 现已全面可用</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>Give Claude a task in your browser, work across tabs, and continue the conversation in the desktop, mobile, and web apps.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/announcements" target="_blank" rel="noopener noreferrer">Product announcements</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <div class="hero-detail-value-stack"><a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/product/cowork" target="_blank" rel="noopener noreferrer">Claude Cowork</a><div class="hero-detail-value u-text-style-body-3">Claude apps</div></div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">August 26, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/claude-in-chrome-generally-available/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/claude-in-chrome-generally-available" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>Claude in Chrome 现在在所有付费 Claude 计划中全面可用。Claude 现在还可以在浏览器中自主执行操作，而无需每步都请求批准。一个安全分类器会在每个操作执行前进行验证，确保操作安全且符合你的请求。</p><figure style="max-width:1920pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a8e8c30f077b615a7429ea1_a9d1d161.png" loading="lazy"></div></figure><p>许多你日常使用的工具已经<a href="http://claude.com/connectors" target="_blank">与 Claude 连接</a>。但还有更多工具没有，比如内部仪表盘、遗留系统和供应商门户。Claude in Chrome 让 Claude 也能访问这些工具。它可以查看你当前所在的页面，并执行阅读和输入文本、点击链接、页面间导航、填写表单等操作，使用你现有的登录状态。</p><p>我们去年首次以预览形式发布了 Claude in Chrome，以便在测试的同时加强我们对<a href="https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks" target="_blank">提示注入</a>的防御：隐藏在网站、邮件或文档中的恶意指令，试图诱骗 AI 代理做出违背用户意愿的行为。下文描述的这些防御措施，给了我们让 Claude in Chrome 全面可用的信心。</p><h2>防范提示注入</h2><p>正如我们发布预览时<a href="https://claude.com/blog/claude-for-chrome" target="_blank">所述</a>，在浏览器中工作的 AI 代理也容易受到提示注入攻击。因此，在更广泛地发布 Claude in Chrome 之前，我们一直在改进安全防护措施。</p><p>在提示注入攻击中，恶意行为者将指令隐藏在网页、邮件或表单字段等网络内容中。你可能永远看不到这些指令，但它们可以指示代理执行你从未要求过的操作。例如，如果你让 Claude 起草邮件回复，一条消息中的隐藏指令可以告诉 Claude 将你的其他邮件转发给攻击者。</p><p>在发布时，我们描述了如何测试 Claude 对这些攻击的防御能力以及当时已有的防护措施；后来我们发布了关于<a href="https://www.anthropic.com/research/prompt-injection-defenses" target="_blank">浏览器使用安全防护</a>的更详细描述。自那以后，我们改进了对模型和我们的<a href="https://www.anthropic.com/research/next-generation-constitutional-classifiers" target="_blank">探测器</a>的训练方法，并增加了一组额外的分类器，使 Claude 能够在 Chrome 中更安全地执行更多自主操作。在下一节中，我们将讨论评估结果，这些结果展示了这些防护措施的有效性。</p><p><strong>Claude 能识别更多攻击。</strong>我们针对不断增长的提示注入攻击库对 Claude 进行训练，这些攻击来自我们的内部自动化攻击器、外部红队测试和真实世界监控。当一种新的攻击在当前模型上成功时，它会被添加到攻击库中，用于指导未来模型的训练和我们部署的防御措施，使它们学会识别这种攻击。自 2025 年 11 月我们首次撰写关于<a href="https://www.anthropic.com/research/prompt-injection-defenses" target="_blank">浏览器使用的提示注入防御</a>以来，我们已经使 Claude 对这些攻击的抵抗力大幅提升。</p><p><strong>探测器在 Claude 对网络内容采取行动前进行筛查。</strong>网络内容通过工具结果到达 Claude。为了执行阅读页面或打开邮件等操作，模型会进行工具调用；工具结果让模型读取输出（本例中为页面或邮件的内容）。我们训练探测器扫描这些结果，寻找潜在的提示注入。当探测器检测到可能的攻击时，Claude 会收到警告，要求对内容保持怀疑，并在必要时在采取行动前与你确认。我们最初在 Claude Opus 4.5 中部署了这些探测器，此后扩展了它们覆盖的攻击类型。</p><p><strong>操作在执行前经过验证。</strong>在 Claude in Chrome 中，Claude 现在会自动批准它判断为安全的操作，使用与 Claude Code 中的<a href="https://claude.com/blog/auto-mode-default-in-claude-code" target="_blank">自动模式</a>相同的机制。（如果你希望继续手动批准 Claude 的操作，可以在设置中关闭此功能。）一个分类器会审查 Claude 即将执行的操作，例如导航到新网站或在页面中输入文本，并与你最初的请求进行核对。如果操作与你的请求不匹配，它会被阻止。</p><h2>衡量 Claude 对提示注入的鲁棒性</h2><p>我们已经测试了这些防护措施，以确保 Claude in Chrome 在浏览器端工作时的安全性。以下是我们最新评估的结果。</p><p>在我们对 Claude Cowork 抵抗提示注入攻击能力的<a href="https://claude.com/blog/claude-for-chrome" target="_blank">初始评估</a>中（首次开发于我们发布 Claude in Chrome 预览时），在 <a href="https://claude.com/blog/cowork-chrome-side-panel" target="_blank">Cowork 框架</a>中，即使没有上面讨论的探测器和分类器，也没有任何攻击能成功针对 Claude Fable 5、Claude Opus 5 或 Claude Sonnet 5。</p><figure style="max-width:2048pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a8e8c30f077b615a7429ea7_8477d7f5.png" loading="lazy"></div><figcaption><em>针对 Claude Opus 4.5、Sonnet 5、Opus 5 和 Fable 5 的提示注入攻击成功率。Opus 4.5 使用了扩展思考模式，因为它不支持我们较新的默认自适应思考模式。所有其他模型默认使用中等努力的自适应思考模式。2025 年 11 月<a href="https://www.anthropic.com/research/prompt-injection-defenses" target="_blank">博文</a>中讨论的结果是在未启用扩展思考的情况下运行的，但由于 Fable 5 无法禁用思考功能，我们在此报告的是启用思考的结果。2025 年 11 月使用的评分模型也不再可用，因此我们转而使用更强大的评分管道，并结合对成功攻击的人工审查，这产生了更少的误报。</em></figcaption></figure><p>由于该评估已经饱和（0% 的成功率证明了这一点），我们决定停止使用它。在我们的<a href="https://www-cdn.anthropic.com/b514064af1408018e64b1ad24e7d5e75850b4ffd/Claude%20Opus%205%20System%20Card.pdf#page=76.73" target="_blank">当前评估</a>中，使用了由专业红队人员提供的更强攻击，在没有任何额外防护措施的情况下，到达模型的攻击对 Opus 4.5 的成功率为 17.6%，对 Opus 5 为 3.8%。在 2025 年 11 月可用的最强防护措施下，运行探测器的 Opus 4.5 攻击成功率为 16.7%。而对于从 Opus 4.8 开始的每个模型，当运行探测器和安全分类器时，没有任何攻击能成功针对 Claude Sonnet 5、Claude Opus 5 或 Claude Mythos 5。我们观察到对 Fable 5 的攻击成功率为 0.3%。我们已经人工验证所有成功的突破都属于低严重性场景，并正在努力缓解这些问题。</p><figure style="max-width:2048pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a8e8c30f077b615a7429ea4_b8a100e7.png" loading="lazy"></div><figcaption><em>在启用探测器加上自动批准安全分类器的情况下，没有任何攻击能成功针对 Claude Sonnet 5 或 Opus 5，而对 Fable 5 的攻击成功率为 0.3%。Opus 4.5 的模型行为导致实际到达模型的攻击数量较少，但其成功攻击的百分比仍然最高。</em></figcaption></figure><p>提示注入仍然是一个不断变化的威胁。虽然这种方法可以防御当前的攻击，但我们还需要确保我们的防护措施领先于攻击者不断演化的方法。随着每个模型的发布，我们持续投资于开发更复杂的自动化攻击发现系统、红队测试，以及构建更强的分类器。</p><h2>开始使用</h2><p>要开始使用 Claude in Chrome，请从 <a href="https://chromewebstore.google.com/detail/claude/fcoeoabgfenejglbffodgkkbkcdhcgfn" target="_blank">Chrome Web Store</a> 安装。在 Enterprise 计划中，管理员可以在组织设置中管理它，并将其限制在批准的域名范围内。请参阅<a href="https://support.claude.com/en/articles/13065128-claude-in-chrome-admin-controls#h_bdb63199e1" target="_blank">管理员设置指南</a>。</p><p>你仍然需要使用 Claude 桌面应用程序来处理计算机上的文件或其他应用程序。Claude in Chrome 目前不支持其他 Chromium 浏览器，也不支持移动端。</p><p>‍</p><p><em>¹ 并非所有攻击都能到达模型——即被模型看到。在某些情况下，Claude 执行的操作导致它从未遇到恶意指令。</em></p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/claude-in-chrome-generally-available" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

@@ -13,5 +13,19 @@
   "translatedTitle": "Claude Tag 中的智能体身份：面向自主、团队协作 AI 的新型访问模型",
   "translated": true,
   "translatedAt": "2026-09-02T00:00:00.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Claude Code"
+    ],
+    "product": [
+      "Claude Tag"
+    ],
+    "usecase": []
+  },
+  "subtitle": "How Claude Tag’s agent identity access model works, and best practices for configuring it in your team’s workspace.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/claude-code",
+  "productUrl": "https://claude.com/product/tag"
 }

@@ -13,5 +13,21 @@
   "translatedTitle": "Claude Code 与 Slack",
   "translated": true,
   "translatedAt": "2026-09-02T04:54:25.809Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": [
+      "Coding"
+    ]
+  },
+  "subtitle": "Now you can tag @Claude in Slack to spin up Claude Code sessions automatically. Turn bug reports and feature requests into code fixes, get status updates in your thread, and open pull requests—all without leaving Slack.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/product/claude-code"
 }

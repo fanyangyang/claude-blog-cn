@@ -13,5 +13,21 @@
   "translatedTitle": "用插件自定义 Claude Code",
   "translated": true,
   "translatedAt": "2026-09-02T04:40:02.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": [
+      "Coding"
+    ]
+  },
+  "subtitle": "Claude Code now supports plugins: custom collections of slash commands, agents, MCP servers, and hooks that install with a single command.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/product/claude-code"
 }

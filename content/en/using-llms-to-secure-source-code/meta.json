@@ -13,5 +13,17 @@
   "translatedTitle": "使用 LLM 保护源代码安全",
   "translated": true,
   "translatedAt": "2026-09-02T05:12:42.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [],
+    "usecase": []
+  },
+  "subtitle": "We share best practices for how you can work with Claude Opus to build a threat model, discover vulnerabilities in your codebase, then verify, triage, and patch them.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": ""
 }

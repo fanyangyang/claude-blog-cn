@@ -13,5 +13,23 @@
   "translatedTitle": "让 Claude Cowork 为企业级使用做好准备",
   "translated": true,
   "translatedAt": "2026-09-02T04:47:04Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Enterprise"
+    ],
+    "usecase": [
+      "Business",
+      "Productivity",
+      "Work"
+    ]
+  },
+  "subtitle": "Claude Cowork from Anthropic is now generally available on all paid plans. Within companies, Claude Cowork has become a key part of how teams operate: handling tasks, drafting project deliverables, and keeping teams up to date.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/solutions/enterprise"
 }

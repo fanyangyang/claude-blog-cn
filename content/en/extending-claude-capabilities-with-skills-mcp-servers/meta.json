@@ -13,5 +13,20 @@
   "translatedTitle": "用 Skills 和 MCP 服务器扩展 Claude 的能力",
   "translated": true,
   "translatedAt": "2026-09-02T04:54:25.809Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Agents"
+    ],
+    "product": [
+      "Claude Platform",
+      "Claude apps"
+    ],
+    "usecase": []
+  },
+  "subtitle": "Learn how skills and MCP work together to build agents that follow your workflows and use external systems and platforms effectively.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/agents",
+  "productUrl": "https://claude.com/platform/api"
 }

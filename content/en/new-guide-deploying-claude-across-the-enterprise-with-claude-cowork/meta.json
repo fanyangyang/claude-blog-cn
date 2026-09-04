@@ -13,5 +13,19 @@
   "translatedTitle": "新指南：用 Claude Cowork 在企业内全面部署智能体式 AI",
   "translated": true,
   "translatedAt": "2026-09-02T04:19:19.723Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [],
+    "product": [
+      "Claude Cowork"
+    ],
+    "usecase": [
+      "Work"
+    ]
+  },
+  "subtitle": "Learn how organizations are using Claude Cowork to transform their day-to-day work, including use cases and best practices from Anthropic’s own teams.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "",
+  "productUrl": "https://claude.com/product/cowork"
 }

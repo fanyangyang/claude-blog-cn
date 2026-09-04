@@ -13,5 +13,21 @@
   "translatedTitle": "用语音模式想清楚难题",
   "translated": true,
   "translatedAt": "2026-09-02T04:10:15.615Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude apps"
+    ],
+    "usecase": [
+      "Productivity"
+    ]
+  },
+  "subtitle": "Starting today, voice mode runs on Claude Opus, Claude Sonnet, and Claude Haiku, reaches the tools you’ve connected like Gmail and Slack, and speaks many more languages.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": ""
 }

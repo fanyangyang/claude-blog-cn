@@ -4,39 +4,302 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>用 Skills 和 MCP 服务器扩展 Claude 的能力 — Claude Blog 中文翻译</title>
-  <meta name="description" content="用 Skills 和 MCP 服务器扩展 Claude 的能力">
+  <meta name="description" content="Learn how skills and MCP work together to build agents that follow your workflows and use external systems and platforms effectively.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/extending-claude-capabilities-with-skills-mcp-servers" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>用 Skills 和 MCP 服务器扩展 Claude 的能力</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/extending-claude-capabilities-with-skills-mcp-servers" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/extending-claude-capabilities-with-skills-mcp-servers/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># 用 Skills 和 MCP 服务器扩展 Claude 的能力
+
+Learn how skills and MCP work together to build agents that follow your workflows and use external systems and platforms effectively.
+
+***更新：****我们已将 *[*Agent Skills*](https://agentskills.io)*发布为开放标准，以实现跨平台可移植性。（2025 年 12 月 18 日）*
+自[发布 Skills](https://claude.com/blog/skills) 以来，我们从客户那里听到的最常见的两个问题是：&quot;Skills 和 MCP 如何协同工作？什么时候该用哪一个？&quot;
+
+[Model Context Protocol（MCP）](https://modelcontextprotocol.io/docs/getting-started/intro)负责将 Claude 连接到第三方工具，而 Skills 则教会 Claude 如何用好这些工具。将两者结合，你就可以构建遵循团队工作流的智能体，而不是那些需要不断纠正的通用流程。
+
+例如，一个连接到 Notion 的 MCP 可以让 Claude 搜索你的工作区。再加上一个会议准备 Skill，Claude 就知道该从*哪些*页面获取内容、*如何*组织准备文档的格式，以及你的团队交付会议纪要*遵循什么*标准。这个连接因此从&quot;可用&quot;变成了&quot;好用&quot;。
+
+在本文中，我们将拆解 Skills 与 MCP 之间的关系、如何将两者结合以构建遵循你工作流、产出一致结果的智能体，并通过几个真实案例演示它们在实践中如何配合。
+
+## **理解 Skills 和 MCP**
+
+假设你走进一家五金店，想修理一个坏掉的柜子。店里应有尽有（木工胶、夹具、替换铰链），但该买哪些材料、怎么用，是另一个问题。
+
+MCP 就像是获得了店内所有货架的通行权，而 Skills 则像是一位经验丰富的店员。如果你不知道需要哪些材料、也不知道怎么用，再全的库存也帮不上忙。Skill 就像那位热心店员，带你走完整个修理流程，指出正确的耗材，并演示规范的操作手法。
+
+更具体地说：MCP 服务器让 Claude 能访问你的外部系统、服务和平台，而 Skills 则提供 Claude 有效使用这些连接所需的上下文，教会 Claude 在拥有访问权限之后该做什么。
+没有 Skills 提供的上下文，Claude 只能猜测你想要什么。有了 Skill，Claude 就可以按照你的既定打法行事。
+
+## **为什么 Skills 和 MCP 是绝配**
+
+MCP 负责连接：以安全、标准化的方式访问外部系统。无论你要连接 GitHub、Salesforce、Notion，还是自己的内部 API，MCP 服务器都赋予 Claude 触达你的工具和数据的能力。
+
+Skills 负责专长：把原始的工具访问转化为可靠结果的领域知识和工作流逻辑。一个 Skill 知道何时查询 CRM、在结果中寻找什么、如何格式化输出，以及哪些边界情况需要特殊处理。
+这种分离让架构保持了可组合性。一个 Skill 可以编排多个 MCP 服务器，而一个 MCP 服务器也可以支撑数十个不同的 Skill。新增一个连接，已有的 Skills 就能将其纳入；优化一个 Skill，它便适用于所有已连接的工具。
+
+#### **将 Skills 和 MCP 结合，你会得到：**
+
+**清晰的发现路径**：Claude 不再瞎猜去哪里找。一个会议准备 Skill 可以指定：先看项目页面，再看此前的会议纪要，最后看干系人档案。一个研究 Skill 可以规定：先从共享网盘开始，与 CRM 交叉比对，再用网络搜索补齐缺口。Skill 把&quot;哪类任务该用哪些信息源&quot;这类机构知识沉淀了下来。
+
+**可靠的编排**：多步骤工作流变得可预期。没有 Skill 时，Claude 可能在还没确认信息齐全之前就先拉取数据并排版。Skills 显式定义了执行顺序，因此 Claude 每次都会以相同的方式执行工作流。
+
+**稳定的输出质量**：产出真正符合标准。泛泛而出的结果总需要返工修改。Skills 为你的团队定义了什么叫&quot;完成&quot;：正确的结构、恰当的详略程度、面向受众的正确语气。
+
+随着时间推移，团队会积累出一系列相互关联的 Skills 和连接，赋予 Claude 在其特定领域的专业能力。
+
+**延伸阅读**：Tim O'Reilly 谈 [MCP 与 Skills 对开源 AI 的启示](https://www.oreilly.com/radar/what-mcp-and-claude-skills-teach-us-about-open-source-for-ai/)
+
+*Skills 与 MCP 如何协同：MCP 提供工具访问，Skills 提供工作流逻辑。
+#### **Skills 与 MCP 可能重叠之处**‍
+
+MCP 服务器中可能包含指令，形式为工具使用提示和常见任务的提示词。这让工具相关的知识贴近工具本身。不过，这些指令在设计上应保持通用。
+
+经验法则：MCP 中的指令负责如何正确使用该服务器及其工具；Skill 中的指令负责在特定流程或多服务器工作流中如何使用它们。
+
+例如，一个 Salesforce MCP 服务器可以规定查询语法和 API 格式。而一个 Skill 则会规定先查哪些记录、如何与 Slack 对话交叉比对近期上下文，以及如何为团队的 pipeline 评审组织输出格式。
+组合 MCP 服务器与 Skills 时，要当心指令冲突。如果 MCP 服务器要求返回 JSON，而你的 Skill 要求格式化为 markdown 表格，Claude 就只能靠猜。让 MCP 负责连接，让 Skills 负责呈现、顺序和工作流逻辑。
+
+**延伸阅读：**了解 Skills 如何利用[渐进式披露](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills)按需加载上下文，以及如何通过[程序化工具调用](https://www.anthropic.com/engineering/advanced-tool-use)高效编排 MCP 工具。
+
+## **Skills 与 MCP 结合使用的真实案例**
+
+接下来看看 Skills 和 MCP 在真实工作流中如何组合。我们将走两个例子：金融分析师为公司估值拉取实时市场数据，以及项目经理使用 Notion 的 Meeting Intelligence Skill 做会议准备。
+
+在这两个案例中，MCP 服务器提供了工具的访问能力，而 Skills 定义了用这些工具做什么。
+
+#### **金融分析：公司估值自动化 Skill**
+
+[Anthropic 发布了一组预构建 Skills](https://www.anthropic.com/news/advancing-claude-for-financial-services)，覆盖常见的金融工作流，其中包括可比公司分析（comparable company analysis）。可比公司分析是一种标准估值方法。做可比公司分析的分析师要花数小时从多个来源拉取财务指标、套用同一套估值方法论，并按合规标准排版输出。这项工作重复、易错，正是那种最能受益于 Skills 与 MCP 协同的工作流。
+
+**Skill**：[可比公司分析](https://www.anthropic.com/news/advancing-claude-for-financial-services)自动完成这一估值工作流，从多个数据源拉取数据、统一套用方法论，并按特定标准排版输出。
+
+**MCP 服务器**：连接 S&amp;P Capital IQ、Daloopa 和 Morningstar 获取实时市场数据
+
+**工作流**：
+
+- Skill 确定要查询哪些数据源（发现）
+- MCP 连接拉取实时财务数据
+- Skill 套用方法论并排版输出（编排）
+- Skill 依据合规要求进行校验（质量）
+
+#### **会议准备：Notion 的 Meeting Intelligence Skill**
+
+会议准备很繁琐。你需要从多个地方拉取上下文——项目文档、此前的会议纪要、干系人信息——然后综合成一份预读材料和一份议程。这类多步骤流程，往往每次都要重新向人解释一遍。
+
+**Skill**：[Meeting Intelligence](https://notiondevs.notion.site/notion-skills-for-claude) 定义了要搜索哪些页面、如何组织输出、包含哪些章节
+
+**MCP 服务器**：Notion 连接，可搜索、读取和创建页面
+
+**工作流**：
+
+- Skill 确定要搜索的相关页面，包括项目、历次会议、干系人信息（发现）
+- MCP 连接在 Notion 中检索并获取内容
+- Skill 组织两份文档：内部预读材料和对外议程（编排）
+- MCP 连接将两份文档保存到 Notion，结构清晰并相互链接
+- Skill 确保输出符合格式规范（质量）
+
+## **何时用 Skills，何时用 MCP**
+
+**‍**Skills 和 MCP 解决的是不同的问题，但面对一个具体工作流要选哪个，并不总是一目了然。
+
+#### **什么情况用 Skills**
+
+Skills 用来沉淀那些原本只存在于你脑子里、或者每当新人加入团队就要重新讲一遍的知识。它们最适合：
+
+- **涉及工具的多步骤工作流**：从多个来源拉取内容再生成结构化文档的会议准备
+- **对一致性要求高的流程**：每次都必须遵循相同方法论的季度财务分析、设有强制检查点的合规审查
+- **希望沉淀并分享的领域专长**：研究方法论、代码评审标准、写作规范
+- **希望在人员流动后仍能延续的工作流**：以可复用指令形式沉淀下来的机构知识
+
+#### **什么情况用 MCP 服务器**
+
+MCP 拓展了 Claude 可以访问和使用的范围。当你需要以下能力时，请使用 MCP：
+
+- **实时数据访问**：搜索 Notion 页面、读取 Slack 消息、查询数据库
+- **在外部系统中执行操作**：创建 GitHub issue、更新项目管理工具、发送通知
+- **文件操作**：读写 Google Drive、访问本地文件系统
+- **API 集成**：连接尚无 Claude 原生支持的服务
+
+如果你要解释的是如何做某件事，那是 Skill。如果你要的是让 Claude 访问某个东西，那是 MCP。
+
+‍
+
+#### **速查表：Skills 与 MCP 的区别**
+
+  
+    
+      
+        
+          
+          Skills
+          MCP
+        
+      
+      
+        
+          **是什么**
+          流程性知识
+          工具连接能力
+        
+        
+          **做什么**
+          教 Claude 如何*做某件事
+          让 Claude *访问*某个东西
+        
+        
+          **何时加载**
+          按需，在相关时加载
+          连接后始终可用
+        
+        
+          **包含内容**
+          指令、脚本、模板、资源文件
+          工具、资源、提示词
+        
+        
+          **Token 行为**
+          按需加载，节省上下文
+          定义预先全部加载
+        
+        
+          **最适合**
+          工作流、规范、方法论
+          数据访问、API 调用、外部操作
+        
+      
+    
+  
+
+## **常见问题**
+
+#### **Skills 会取代 MCP 吗？**
+
+不会。Skills 和 MCP 解决不同的问题。MCP 提供与外部工具和数据的连接，Skills 提供如何有效使用这些连接的流程性知识。最强大的工作流往往两者都用。
+
+#### **一个 Skill 可以使用多个 MCP 服务器吗？**
+
+可以。单个 Skill 可以同时协调多个 MCP 服务器。一个技术竞争分析 Skill 可以同时在 Google Drive 中搜索内部研究、从 GitHub 拉取竞争对手的代码仓库，并通过网络搜索收集市场数据。
+
+#### **一个 MCP 服务器可以配套多个 Skills 吗？**
+
+可以。一个 Skill 可以放大单个 MCP 连接的价值。Notion 就展示了这种模式：会议准备、研究、知识沉淀、从规格到实现，各有独立的 Skills——[在此](https://claude.com/connectors/notion)查看。
+
+## **开始使用**
+
+准备好同时用上 Skills *和* MCP 了吗？按以下步骤开始：
+
+**Skills：**
+
+- 在[ claude.ai](https://claude.ai) 的 Settings → Capabilities 中启用 Skills
+- 浏览[ Skills 库](https://github.com/anthropics/skills)，查看预构建的示例
+- 阅读[ Skills 文档](https://docs.anthropic.com/en/docs/agents-and-tools/agent-skills)
+
+**MCP：**
+
+- 为你的工具浏览[ MCP 服务器](https://github.com/modelcontextprotocol/servers)
+- 阅读[ MCP 文档](https://modelcontextprotocol.io/introduction)
+- 通过[ MCP 快速入门](https://modelcontextprotocol.io/quickstart)构建你自己的服务器
+
+**两者结合：**
+
+- 连接一个 MCP 服务器，然后添加一个使用它的 Skill
+
+## **相关文章**
+
+探索更多关于构建 Claude 智能体能力的洞见。
+
+- [Skills 解析：Skills 与提示词、Projects、MCP、子智能体的对比](https://www.claude.com/blog/skills-explained)
+- [通过 Skills 改进前端设计](https://www.claude.com/blog/improving-frontend-design-through-skills)
+- [用 Agent Skills 武装智能体应对真实世界](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills)
+
+‍
+
+‍
+
+‍</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Agents</span>
-            <span class="article-date">December 19, 2025</span>
-            
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-sky);">
+            <img class="hero-illo-img" src="/assets/illustrations/extending-claude-capabilities-with-skills-mcp-servers.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">用 Skills 和 MCP 服务器扩展 Claude 的能力</h1>
-          <a href="/posts/extending-claude-capabilities-with-skills-mcp-servers/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p><strong><em>更新：</em></strong><em>我们已将 </em><a href="https://agentskills.io" target="_blank"><em>Agent Skills</em></a><em>发布为开放标准，以实现跨平台可移植性。（2025 年 12 月 18 日）</em><br>自<a href="https://claude.com/blog/skills" target="_blank">发布 Skills</a> 以来，我们从客户那里听到的最常见的两个问题是："Skills 和 MCP 如何协同工作？什么时候该用哪一个？"</p><p><a href="https://modelcontextprotocol.io/docs/getting-started/intro" target="_blank">Model Context Protocol（MCP）</a>负责将 Claude 连接到第三方工具，而 Skills 则教会 Claude 如何用好这些工具。将两者结合，你就可以构建遵循团队工作流的智能体，而不是那些需要不断纠正的通用流程。</p><p>例如，一个连接到 Notion 的 MCP 可以让 Claude 搜索你的工作区。再加上一个会议准备 Skill，Claude 就知道该从<em>哪些</em>页面获取内容、<em>如何</em>组织准备文档的格式，以及你的团队交付会议纪要<em>遵循什么</em>标准。这个连接因此从"可用"变成了"好用"。</p><p>在本文中，我们将拆解 Skills 与 MCP 之间的关系、如何将两者结合以构建遵循你工作流、产出一致结果的智能体，并通过几个真实案例演示它们在实践中如何配合。</p><h2><strong>理解 Skills 和 MCP</strong></h2><p>假设你走进一家五金店，想修理一个坏掉的柜子。店里应有尽有（木工胶、夹具、替换铰链），但该买哪些材料、怎么用，是另一个问题。</p><p>MCP 就像是获得了店内所有货架的通行权，而 Skills 则像是一位经验丰富的店员。如果你不知道需要哪些材料、也不知道怎么用，再全的库存也帮不上忙。Skill 就像那位热心店员，带你走完整个修理流程，指出正确的耗材，并演示规范的操作手法。</p><p>更具体地说：MCP 服务器让 Claude 能访问你的外部系统、服务和平台，而 Skills 则提供 Claude 有效使用这些连接所需的上下文，教会 Claude 在拥有访问权限之后该做什么。<br>没有 Skills 提供的上下文，Claude 只能猜测你想要什么。有了 Skill，Claude 就可以按照你的既定打法行事。</p><h2><strong>为什么 Skills 和 MCP 是绝配</strong></h2><p>MCP 负责连接：以安全、标准化的方式访问外部系统。无论你要连接 GitHub、Salesforce、Notion，还是自己的内部 API，MCP 服务器都赋予 Claude 触达你的工具和数据的能力。</p><p>Skills 负责专长：把原始的工具访问转化为可靠结果的领域知识和工作流逻辑。一个 Skill 知道何时查询 CRM、在结果中寻找什么、如何格式化输出，以及哪些边界情况需要特殊处理。<br>这种分离让架构保持了可组合性。一个 Skill 可以编排多个 MCP 服务器，而一个 MCP 服务器也可以支撑数十个不同的 Skill。新增一个连接，已有的 Skills 就能将其纳入；优化一个 Skill，它便适用于所有已连接的工具。</p><h4><strong>将 Skills 和 MCP 结合，你会得到：</strong></h4><p><strong>清晰的发现路径</strong>：Claude 不再瞎猜去哪里找。一个会议准备 Skill 可以指定：先看项目页面，再看此前的会议纪要，最后看干系人档案。一个研究 Skill 可以规定：先从共享网盘开始，与 CRM 交叉比对，再用网络搜索补齐缺口。Skill 把"哪类任务该用哪些信息源"这类机构知识沉淀了下来。</p><p><strong>可靠的编排</strong>：多步骤工作流变得可预期。没有 Skill 时，Claude 可能在还没确认信息齐全之前就先拉取数据并排版。Skills 显式定义了执行顺序，因此 Claude 每次都会以相同的方式执行工作流。</p><p><strong>稳定的输出质量</strong>：产出真正符合标准。泛泛而出的结果总需要返工修改。Skills 为你的团队定义了什么叫"完成"：正确的结构、恰当的详略程度、面向受众的正确语气。</p><p>随着时间推移，团队会积累出一系列相互关联的 Skills 和连接，赋予 Claude 在其特定领域的专业能力。</p><p><strong>延伸阅读</strong>：Tim O'Reilly 谈 <a href="https://www.oreilly.com/radar/what-mcp-and-claude-skills-teach-us-about-open-source-for-ai/" target="_blank">MCP 与 Skills 对开源 AI 的启示</a></p><figure style="max-width:2880pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6945b3dfa8f134d0104e4e23_How%20Skills%20and%20MCP%20work%20together%20-%20v3B%402x%20(2).png" loading="lazy"></div><figcaption>Skills 与 MCP 如何协同：MCP 提供工具访问，Skills 提供工作流逻辑。</figcaption></figure><h4><strong>Skills 与 MCP 可能重叠之处</strong>‍</h4><p>MCP 服务器中可能包含指令，形式为工具使用提示和常见任务的提示词。这让工具相关的知识贴近工具本身。不过，这些指令在设计上应保持通用。</p><p>经验法则：MCP 中的指令负责如何正确使用该服务器及其工具；Skill 中的指令负责在特定流程或多服务器工作流中如何使用它们。</p><p>例如，一个 Salesforce MCP 服务器可以规定查询语法和 API 格式。而一个 Skill 则会规定先查哪些记录、如何与 Slack 对话交叉比对近期上下文，以及如何为团队的 pipeline 评审组织输出格式。<br>组合 MCP 服务器与 Skills 时，要当心指令冲突。如果 MCP 服务器要求返回 JSON，而你的 Skill 要求格式化为 markdown 表格，Claude 就只能靠猜。让 MCP 负责连接，让 Skills 负责呈现、顺序和工作流逻辑。</p><p><strong>延伸阅读：</strong>了解 Skills 如何利用<a href="https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills" target="_blank">渐进式披露</a>按需加载上下文，以及如何通过<a href="https://www.anthropic.com/engineering/advanced-tool-use" target="_blank">程序化工具调用</a>高效编排 MCP 工具。</p><h2><strong>Skills 与 MCP 结合使用的真实案例</strong></h2><p>接下来看看 Skills 和 MCP 在真实工作流中如何组合。我们将走两个例子：金融分析师为公司估值拉取实时市场数据，以及项目经理使用 Notion 的 Meeting Intelligence Skill 做会议准备。</p><p>在这两个案例中，MCP 服务器提供了工具的访问能力，而 Skills 定义了用这些工具做什么。</p><h4><strong>金融分析：公司估值自动化 Skill</strong></h4><p><a href="https://www.anthropic.com/news/advancing-claude-for-financial-services" target="_blank">Anthropic 发布了一组预构建 Skills</a>，覆盖常见的金融工作流，其中包括可比公司分析（comparable company analysis）。可比公司分析是一种标准估值方法。做可比公司分析的分析师要花数小时从多个来源拉取财务指标、套用同一套估值方法论，并按合规标准排版输出。这项工作重复、易错，正是那种最能受益于 Skills 与 MCP 协同的工作流。</p><p><strong>Skill</strong>：<a href="https://www.anthropic.com/news/advancing-claude-for-financial-services" target="_blank">可比公司分析</a>自动完成这一估值工作流，从多个数据源拉取数据、统一套用方法论，并按特定标准排版输出。</p><p><strong>MCP 服务器</strong>：连接 S&amp;P Capital IQ、Daloopa 和 Morningstar 获取实时市场数据</p><p><strong>工作流</strong>：</p><ol role="list"><li>Skill 确定要查询哪些数据源（发现）</li><li>MCP 连接拉取实时财务数据</li><li>Skill 套用方法论并排版输出（编排）</li><li>Skill 依据合规要求进行校验（质量）</li></ol><h4><strong>会议准备：Notion 的 Meeting Intelligence Skill</strong></h4><p>会议准备很繁琐。你需要从多个地方拉取上下文——项目文档、此前的会议纪要、干系人信息——然后综合成一份预读材料和一份议程。这类多步骤流程，往往每次都要重新向人解释一遍。</p><p><strong>Skill</strong>：<a href="https://notiondevs.notion.site/notion-skills-for-claude" target="_blank">Meeting Intelligence</a> 定义了要搜索哪些页面、如何组织输出、包含哪些章节</p><p><strong>MCP 服务器</strong>：Notion 连接，可搜索、读取和创建页面</p><p><strong>工作流</strong>：</p><ol role="list"><li>Skill 确定要搜索的相关页面，包括项目、历次会议、干系人信息（发现）</li><li>MCP 连接在 Notion 中检索并获取内容</li><li>Skill 组织两份文档：内部预读材料和对外议程（编排）</li><li>MCP 连接将两份文档保存到 Notion，结构清晰并相互链接</li><li>Skill 确保输出符合格式规范（质量）</li></ol><h2><strong>何时用 Skills，何时用 MCP</strong></h2><p><strong>‍</strong>Skills 和 MCP 解决的是不同的问题，但面对一个具体工作流要选哪个，并不总是一目了然。</p><h4><strong>什么情况用 Skills</strong></h4><p>Skills 用来沉淀那些原本只存在于你脑子里、或者每当新人加入团队就要重新讲一遍的知识。它们最适合：</p><ul role="list"><li><strong>涉及工具的多步骤工作流</strong>：从多个来源拉取内容再生成结构化文档的会议准备</li><li><strong>对一致性要求高的流程</strong>：每次都必须遵循相同方法论的季度财务分析、设有强制检查点的合规审查</li><li><strong>希望沉淀并分享的领域专长</strong>：研究方法论、代码评审标准、写作规范</li><li><strong>希望在人员流动后仍能延续的工作流</strong>：以可复用指令形式沉淀下来的机构知识</li></ul><h4><strong>什么情况用 MCP 服务器</strong></h4><p>MCP 拓展了 Claude 可以访问和使用的范围。当你需要以下能力时，请使用 MCP：</p><ul role="list"><li><strong>实时数据访问</strong>：搜索 Notion 页面、读取 Slack 消息、查询数据库</li><li><strong>在外部系统中执行操作</strong>：创建 GitHub issue、更新项目管理工具、发送通知</li><li><strong>文件操作</strong>：读写 Google Drive、访问本地文件系统</li><li><strong>API 集成</strong>：连接尚无 Claude 原生支持的服务</li></ul><p>如果你要解释的是<em>如何做</em>某件事，那是 Skill。如果你要的是让 Claude <em>访问</em>某个东西，那是 MCP。</p><p>‍</p><h4><strong><em>速查表：Skills 与 MCP 的区别</em></strong></h4><div class="w-embed"><figure>
+            <h1 class="article-title u-text-style-h1">用 Skills 和 MCP 服务器扩展 Claude 的能力</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>Learn how skills and MCP work together to build agents that follow your workflows and use external systems and platforms effectively.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/agents" target="_blank" rel="noopener noreferrer">Agents</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <div class="hero-detail-value-stack"><a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/platform/api" target="_blank" rel="noopener noreferrer">Claude Platform</a><div class="hero-detail-value u-text-style-body-3">Claude apps</div></div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">December 19, 2025</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/extending-claude-capabilities-with-skills-mcp-servers/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p><strong><em>更新：</em></strong><em>我们已将 </em><a href="https://agentskills.io" target="_blank"><em>Agent Skills</em></a><em>发布为开放标准，以实现跨平台可移植性。（2025 年 12 月 18 日）</em><br>自<a href="https://claude.com/blog/skills" target="_blank">发布 Skills</a> 以来，我们从客户那里听到的最常见的两个问题是："Skills 和 MCP 如何协同工作？什么时候该用哪一个？"</p><p><a href="https://modelcontextprotocol.io/docs/getting-started/intro" target="_blank">Model Context Protocol（MCP）</a>负责将 Claude 连接到第三方工具，而 Skills 则教会 Claude 如何用好这些工具。将两者结合，你就可以构建遵循团队工作流的智能体，而不是那些需要不断纠正的通用流程。</p><p>例如，一个连接到 Notion 的 MCP 可以让 Claude 搜索你的工作区。再加上一个会议准备 Skill，Claude 就知道该从<em>哪些</em>页面获取内容、<em>如何</em>组织准备文档的格式，以及你的团队交付会议纪要<em>遵循什么</em>标准。这个连接因此从"可用"变成了"好用"。</p><p>在本文中，我们将拆解 Skills 与 MCP 之间的关系、如何将两者结合以构建遵循你工作流、产出一致结果的智能体，并通过几个真实案例演示它们在实践中如何配合。</p><h2><strong>理解 Skills 和 MCP</strong></h2><p>假设你走进一家五金店，想修理一个坏掉的柜子。店里应有尽有（木工胶、夹具、替换铰链），但该买哪些材料、怎么用，是另一个问题。</p><p>MCP 就像是获得了店内所有货架的通行权，而 Skills 则像是一位经验丰富的店员。如果你不知道需要哪些材料、也不知道怎么用，再全的库存也帮不上忙。Skill 就像那位热心店员，带你走完整个修理流程，指出正确的耗材，并演示规范的操作手法。</p><p>更具体地说：MCP 服务器让 Claude 能访问你的外部系统、服务和平台，而 Skills 则提供 Claude 有效使用这些连接所需的上下文，教会 Claude 在拥有访问权限之后该做什么。<br>没有 Skills 提供的上下文，Claude 只能猜测你想要什么。有了 Skill，Claude 就可以按照你的既定打法行事。</p><h2><strong>为什么 Skills 和 MCP 是绝配</strong></h2><p>MCP 负责连接：以安全、标准化的方式访问外部系统。无论你要连接 GitHub、Salesforce、Notion，还是自己的内部 API，MCP 服务器都赋予 Claude 触达你的工具和数据的能力。</p><p>Skills 负责专长：把原始的工具访问转化为可靠结果的领域知识和工作流逻辑。一个 Skill 知道何时查询 CRM、在结果中寻找什么、如何格式化输出，以及哪些边界情况需要特殊处理。<br>这种分离让架构保持了可组合性。一个 Skill 可以编排多个 MCP 服务器，而一个 MCP 服务器也可以支撑数十个不同的 Skill。新增一个连接，已有的 Skills 就能将其纳入；优化一个 Skill，它便适用于所有已连接的工具。</p><h4><strong>将 Skills 和 MCP 结合，你会得到：</strong></h4><p><strong>清晰的发现路径</strong>：Claude 不再瞎猜去哪里找。一个会议准备 Skill 可以指定：先看项目页面，再看此前的会议纪要，最后看干系人档案。一个研究 Skill 可以规定：先从共享网盘开始，与 CRM 交叉比对，再用网络搜索补齐缺口。Skill 把"哪类任务该用哪些信息源"这类机构知识沉淀了下来。</p><p><strong>可靠的编排</strong>：多步骤工作流变得可预期。没有 Skill 时，Claude 可能在还没确认信息齐全之前就先拉取数据并排版。Skills 显式定义了执行顺序，因此 Claude 每次都会以相同的方式执行工作流。</p><p><strong>稳定的输出质量</strong>：产出真正符合标准。泛泛而出的结果总需要返工修改。Skills 为你的团队定义了什么叫"完成"：正确的结构、恰当的详略程度、面向受众的正确语气。</p><p>随着时间推移，团队会积累出一系列相互关联的 Skills 和连接，赋予 Claude 在其特定领域的专业能力。</p><p><strong>延伸阅读</strong>：Tim O'Reilly 谈 <a href="https://www.oreilly.com/radar/what-mcp-and-claude-skills-teach-us-about-open-source-for-ai/" target="_blank">MCP 与 Skills 对开源 AI 的启示</a></p><figure style="max-width:2880pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6945b3dfa8f134d0104e4e23_How%20Skills%20and%20MCP%20work%20together%20-%20v3B%402x%20(2).png" loading="lazy"></div><figcaption>Skills 与 MCP 如何协同：MCP 提供工具访问，Skills 提供工作流逻辑。</figcaption></figure><h4><strong>Skills 与 MCP 可能重叠之处</strong>‍</h4><p>MCP 服务器中可能包含指令，形式为工具使用提示和常见任务的提示词。这让工具相关的知识贴近工具本身。不过，这些指令在设计上应保持通用。</p><p>经验法则：MCP 中的指令负责如何正确使用该服务器及其工具；Skill 中的指令负责在特定流程或多服务器工作流中如何使用它们。</p><p>例如，一个 Salesforce MCP 服务器可以规定查询语法和 API 格式。而一个 Skill 则会规定先查哪些记录、如何与 Slack 对话交叉比对近期上下文，以及如何为团队的 pipeline 评审组织输出格式。<br>组合 MCP 服务器与 Skills 时，要当心指令冲突。如果 MCP 服务器要求返回 JSON，而你的 Skill 要求格式化为 markdown 表格，Claude 就只能靠猜。让 MCP 负责连接，让 Skills 负责呈现、顺序和工作流逻辑。</p><p><strong>延伸阅读：</strong>了解 Skills 如何利用<a href="https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills" target="_blank">渐进式披露</a>按需加载上下文，以及如何通过<a href="https://www.anthropic.com/engineering/advanced-tool-use" target="_blank">程序化工具调用</a>高效编排 MCP 工具。</p><h2><strong>Skills 与 MCP 结合使用的真实案例</strong></h2><p>接下来看看 Skills 和 MCP 在真实工作流中如何组合。我们将走两个例子：金融分析师为公司估值拉取实时市场数据，以及项目经理使用 Notion 的 Meeting Intelligence Skill 做会议准备。</p><p>在这两个案例中，MCP 服务器提供了工具的访问能力，而 Skills 定义了用这些工具做什么。</p><h4><strong>金融分析：公司估值自动化 Skill</strong></h4><p><a href="https://www.anthropic.com/news/advancing-claude-for-financial-services" target="_blank">Anthropic 发布了一组预构建 Skills</a>，覆盖常见的金融工作流，其中包括可比公司分析（comparable company analysis）。可比公司分析是一种标准估值方法。做可比公司分析的分析师要花数小时从多个来源拉取财务指标、套用同一套估值方法论，并按合规标准排版输出。这项工作重复、易错，正是那种最能受益于 Skills 与 MCP 协同的工作流。</p><p><strong>Skill</strong>：<a href="https://www.anthropic.com/news/advancing-claude-for-financial-services" target="_blank">可比公司分析</a>自动完成这一估值工作流，从多个数据源拉取数据、统一套用方法论，并按特定标准排版输出。</p><p><strong>MCP 服务器</strong>：连接 S&amp;P Capital IQ、Daloopa 和 Morningstar 获取实时市场数据</p><p><strong>工作流</strong>：</p><ol role="list"><li>Skill 确定要查询哪些数据源（发现）</li><li>MCP 连接拉取实时财务数据</li><li>Skill 套用方法论并排版输出（编排）</li><li>Skill 依据合规要求进行校验（质量）</li></ol><h4><strong>会议准备：Notion 的 Meeting Intelligence Skill</strong></h4><p>会议准备很繁琐。你需要从多个地方拉取上下文——项目文档、此前的会议纪要、干系人信息——然后综合成一份预读材料和一份议程。这类多步骤流程，往往每次都要重新向人解释一遍。</p><p><strong>Skill</strong>：<a href="https://notiondevs.notion.site/notion-skills-for-claude" target="_blank">Meeting Intelligence</a> 定义了要搜索哪些页面、如何组织输出、包含哪些章节</p><p><strong>MCP 服务器</strong>：Notion 连接，可搜索、读取和创建页面</p><p><strong>工作流</strong>：</p><ol role="list"><li>Skill 确定要搜索的相关页面，包括项目、历次会议、干系人信息（发现）</li><li>MCP 连接在 Notion 中检索并获取内容</li><li>Skill 组织两份文档：内部预读材料和对外议程（编排）</li><li>MCP 连接将两份文档保存到 Notion，结构清晰并相互链接</li><li>Skill 确保输出符合格式规范（质量）</li></ol><h2><strong>何时用 Skills，何时用 MCP</strong></h2><p><strong>‍</strong>Skills 和 MCP 解决的是不同的问题，但面对一个具体工作流要选哪个，并不总是一目了然。</p><h4><strong>什么情况用 Skills</strong></h4><p>Skills 用来沉淀那些原本只存在于你脑子里、或者每当新人加入团队就要重新讲一遍的知识。它们最适合：</p><ul role="list"><li><strong>涉及工具的多步骤工作流</strong>：从多个来源拉取内容再生成结构化文档的会议准备</li><li><strong>对一致性要求高的流程</strong>：每次都必须遵循相同方法论的季度财务分析、设有强制检查点的合规审查</li><li><strong>希望沉淀并分享的领域专长</strong>：研究方法论、代码评审标准、写作规范</li><li><strong>希望在人员流动后仍能延续的工作流</strong>：以可复用指令形式沉淀下来的机构知识</li></ul><h4><strong>什么情况用 MCP 服务器</strong></h4><p>MCP 拓展了 Claude 可以访问和使用的范围。当你需要以下能力时，请使用 MCP：</p><ul role="list"><li><strong>实时数据访问</strong>：搜索 Notion 页面、读取 Slack 消息、查询数据库</li><li><strong>在外部系统中执行操作</strong>：创建 GitHub issue、更新项目管理工具、发送通知</li><li><strong>文件操作</strong>：读写 Google Drive、访问本地文件系统</li><li><strong>API 集成</strong>：连接尚无 Claude 原生支持的服务</li></ul><p>如果你要解释的是<em>如何做</em>某件事，那是 Skill。如果你要的是让 Claude <em>访问</em>某个东西，那是 MCP。</p><p>‍</p><h4><strong><em>速查表：Skills 与 MCP 的区别</em></strong></h4><div class="w-embed"><figure>
   <div role="region" tabindex="0">
     <table>
       <thead>
@@ -81,21 +344,70 @@
     </table>
   </div>
 </figure></div><h2><strong>常见问题</strong></h2><h4><strong>Skills 会取代 MCP 吗？</strong></h4><p>不会。Skills 和 MCP 解决不同的问题。MCP 提供与外部工具和数据的连接，Skills 提供如何有效使用这些连接的流程性知识。最强大的工作流往往两者都用。</p><h4><strong>一个 Skill 可以使用多个 MCP 服务器吗？</strong></h4><p>可以。单个 Skill 可以同时协调多个 MCP 服务器。一个技术竞争分析 Skill 可以同时在 Google Drive 中搜索内部研究、从 GitHub 拉取竞争对手的代码仓库，并通过网络搜索收集市场数据。</p><h4><strong>一个 MCP 服务器可以配套多个 Skills 吗？</strong></h4><p>可以。一个 Skill 可以放大单个 MCP 连接的价值。Notion 就展示了这种模式：会议准备、研究、知识沉淀、从规格到实现，各有独立的 Skills——<a href="https://claude.com/connectors/notion" target="_blank">在此</a>查看。</p><h2><strong>开始使用</strong></h2><p>准备好同时用上 Skills <em>和</em> MCP 了吗？按以下步骤开始：</p><p><strong>Skills：</strong></p><ul role="list"><li>在<a href="https://claude.ai" target="_blank"> claude.ai</a> 的 Settings → Capabilities 中启用 Skills</li><li>浏览<a href="https://github.com/anthropics/skills" target="_blank"> Skills 库</a>，查看预构建的示例</li><li>阅读<a href="https://docs.anthropic.com/en/docs/agents-and-tools/agent-skills" target="_blank"> Skills 文档</a></li></ul><p><strong>MCP：</strong></p><ul role="list"><li>为你的工具浏览<a href="https://github.com/modelcontextprotocol/servers" target="_blank"> MCP 服务器</a></li><li>阅读<a href="https://modelcontextprotocol.io/introduction" target="_blank"> MCP 文档</a></li><li>通过<a href="https://modelcontextprotocol.io/quickstart" target="_blank"> MCP 快速入门</a>构建你自己的服务器</li></ul><p><strong>两者结合：</strong></p><ul role="list"><li>连接一个 MCP 服务器，然后添加一个使用它的 Skill</li></ul><h2><strong>相关文章</strong></h2><p>探索更多关于构建 Claude 智能体能力的洞见。</p><ul role="list"><li><a href="https://www.claude.com/blog/skills-explained" target="_blank">Skills 解析：Skills 与提示词、Projects、MCP、子智能体的对比</a></li><li><a href="https://www.claude.com/blog/improving-frontend-design-through-skills" target="_blank">通过 Skills 改进前端设计</a></li><li><a href="https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills" target="_blank">用 Agent Skills 武装智能体应对真实世界</a></li></ul><p>‍</p><p>‍</p><p>‍</p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/extending-claude-capabilities-with-skills-mcp-servers" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/extending-claude-capabilities-with-skills-mcp-servers" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

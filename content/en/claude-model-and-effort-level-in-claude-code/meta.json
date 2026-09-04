@@ -13,5 +13,23 @@
   "translatedTitle": "在 Claude Code 中选择 Claude 模型与投入档位",
   "translated": true,
   "translatedAt": "2026-09-02T04:30:00.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Claude Code"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": [
+      "Coding"
+    ]
+  },
+  "subtitle": "Anthropic's guide to the Claude Code effort level and model selection: when to raise or lower effort—low, medium, high, and max—and how to choose between Claude Fable, Opus, and Sonnet.",
+  "authors": [
+    "Lydia Hallie"
+  ],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/claude-code",
+  "productUrl": "https://claude.com/product/claude-code"
 }

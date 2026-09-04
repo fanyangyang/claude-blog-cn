@@ -13,5 +13,21 @@
   "translatedTitle": "Claude Cowork 产品指南",
   "translated": true,
   "translatedAt": "2026-09-02T04:24:57Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Cowork"
+    ],
+    "usecase": [
+      "Work"
+    ]
+  },
+  "subtitle": "We share how to get started with Claude Cowork, including the workflows, habits, and plugins that turn your ideas into polished deliverables.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/product/cowork"
 }

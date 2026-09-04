@@ -4,58 +4,300 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>快速优化代码性能 — Claude Blog 中文翻译</title>
-  <meta name="description" content="快速优化代码性能">
+  <meta name="description" content="Go from reactive profiling to proactive optimization. Find and fix bottlenecks in your codebase before they slow down production.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/optimize-code-performance-quickly" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>快速优化代码性能</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/optimize-code-performance-quickly" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/optimize-code-performance-quickly/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># 快速优化代码性能
+
+Go from reactive profiling to proactive optimization. Find and fix bottlenecks in your codebase before they slow down production.
+
+性能瓶颈总是悄然而至。上周你的 API 还很快，现在却开始超时。原本瞬间加载的用户仪表盘突然变得缓慢无比。在测试中运行良好的支付流程，一到真实流量下就不堪重负。
+
+传统的代码优化需要深厚的专业知识：读懂性能分析器（profiler）的输出、分析算法复杂度、把性能指标与业务逻辑关联起来。每个优化周期都意味着性能分析、诊断、实现、测试——性能改进往往要横跨多个冲刺才能完成。
+
+下面介绍如何把被动的性能修复转变为主动优化，在瓶颈影响用户之前就将其化解。
+
+## 大多数性能优化的常规流程
+
+### 性能分析与瓶颈诊断
+
+性能优化通常始于用户抱怨或监控告警。开发者会使用 Chrome DevTools、New Relic 或 Datadog 等性能分析工具来定位应用耗时所在。你查看火焰图、找出 CPU 热点、把慢函数与业务逻辑关联起来。
+
+性能分析能揭示时间花在了哪里，却无法解释特定代码路径为何低效。生产环境的性能分析需要谨慎采样，以免进一步影响性能，最终你拿到的数据只是指向慢函数，却没有清晰的优化路径。
+
+### 人工审查算法
+
+接下来是系统地审查代码，寻找嵌套循环、低效数据结构和冗余操作。这包括计算时间复杂度，并用优化过的实现替换暴力解法。
+
+问题在于这要求对代码库有很深的了解，而现代代码库的规模动辄数十万行以上。关键瓶颈往往藏在意想不到的地方，初次审查很难发现。
+
+### 负载测试与基准测试
+
+为了更好地对应用进行压力测试，开发者会创建流量模拟来建立性能基线，实施改进后，再在模拟的生产负载下测量吞吐量和延迟的变化。
+
+准确的负载测试需要复杂的环境搭建和逼真的数据生成。实现改动、部署到测试环境、收集指标的不断循环，会把优化项目拖长到多个冲刺周期。
+
+### 渐进式重构
+
+渐进式重构通过优化数据库查询、引入缓存、重构算法，用经过验证的方案替换低效代码。
+
+这种方式能将部署风险降到最低，但需要多位工程师协同配合并进行大量测试。大规模优化会横跨多个代码仓库，还要求理解系统组件之间复杂的交互。
+
+## 用 Claude 进行系统性优化
+
+许多开发团队正在从被动的性能分析工具，转向借助 Claude 这类 AI 编程助手进行主动的性能工程。这些工具可以即时分析函数、识别算法瓶颈，并提供改进代码的方法。你可以通过两种方式使用 Claude：
+
+- [**Claude.ai**](https://claude.ai)：免费的网络界面。粘贴慢函数，即可获得复杂度分析和优化建议。任何浏览器都能使用，无需任何配置。
+- [**Claude Code**](https://claude.com/product/claude-code)：可与开发环境集成的智能体式终端编程工具。能够分析项目级的性能模式，直接跨多个文件实施优化。通过 npm 安装。
+
+## 从 Claude.ai 开始
+
+在搭建复杂的性能分析环境或编写基准测试套件之前，先把简短的代码片段粘贴到 [Claude.ai](https://claude.ai)，快速判断性能问题出在算法、结构还是配置上。传统性能分析器只能显示时间花在了哪里，而 Claude 能解释代码为什么慢以及如何修复。这个初步分析能帮你决定是做一次快速代码修改，还是进行一次全面的架构评审。
+
+### 快速获取优化思路
+
+使用 Claude.ai 最直接的方式，就是复制有问题的函数并寻求帮助。开发者通常会粘贴从几行代码到整个函数不等的、在应用中造成瓶颈的代码。Claude 会分析代码结构，识别嵌套循环或冗余操作等低效模式，并给出具体的优化建议。
+
+`User: &quot;This function is slowing down our user dashboard. How can I make it faster?&quot;
+
+[pastes 20-line function with nested loops]
+
+Claude: &quot;I see two main bottlenecks here: 1. The nested loop creates O(n²) complexity 2. You're making a database call inside the inner loop Here's an optimized version using a single query and hash map lookup...&quot;`以下这类问题通常效果很好：
+
+- [&quot;Why are my code functions slow with large datasets?&quot;](https://claude.ai/new?q=Why+are+my+code+functions+slow+with+large+datasets%3F)
+- [&quot;Can you rewrite my code to be more efficient?&quot;](https://claude.ai/new?q=Can+you+help+me+rewrite+my+code+to+be+more+efficient%3F)
+- [&quot;What's wrong with this algorithm performance-wise?&quot;](https://claude.ai/new?q=What%27s+wrong+with+this+algorithm+performance-wise%3F)
+
+### 理解代码为什么慢
+
+有时候，你需要先弄清根因再动手优化。Claude.ai 擅长用通俗易懂的语言拆解性能问题，准确解释某些代码模式为何会随着应用规模扩大而成为瓶颈。你可以粘贴消耗过多内存、导致 API 超时或在负载下性能劣化的代码，然后让 Claude 解释发生了什么。 
+
+## 用 Claude Code 承载规模化优化
+
+对于横跨多个文件或需要架构调整的性能难题，[Claude Code](https://claude.com/product/claude-code) 能以智能体方式提供传统性能分析工具无法企及的项目级优化能力。
+
+安装：
+
+`npm install -g @anthropic-ai/claude-code`在你的项目中启动：
+
+`claude`然后开始向 Claude 询问优化代码的方法：
+
+Claude Code 会自主分析你的整个代码库，把最近的改动与性能劣化关联起来，并针对根因而非表面症状给出具体的优化建议。
+
+### 结合自动化测试实施
+
+Claude Code 一旦识别出瓶颈，就会自动创建一套循序渐进的工作流，包括生成测试、验证改进效果并防止回归，从而统筹实施有针对性的修复。
+
+`&gt; Optimize this payment processing function and benchmark results`Claude Code 能识别低效算法、建议优化实现，还可以编写基准测试代码，帮助你衡量性能改进的效果。
+
+### 应对企业级规模的改进
+
+Claude Code 可以在大型代码库中优化工作流，通过更新代码来提升效率：
+
+**聚焦关键路径**：在性能关键的目录（api/、core/）中运行 Claude Code，避免分析那些不影响性能的静态资源或配置文件。
+
+**应用系统性模式**：Claude Code 会识别反复出现的低效之处，并建议能够同时解决多个瓶颈的架构改进：连接池、策略性缓存、优化的数据库查询模式等。
+
+### 示例：消除 N+1 数据库查询
+
+Claude Code 会扫描代码库中触发数据库查询的循环，定位导致 N+1 问题的具体 ORM 模式，实现预加载（eager loading）或批量查询方案，测量查询次数和响应时间的改进，并生成防止 N+1 回归的测试。
+
+Claude Code 通常还会发现其他优化点，例如为频繁查询的列添加复合索引，或为重复查询引入 Redis 缓存。
+
+## 选择适合你的优化方式
+
+[**Claude.ai**](https://claude.ai)：当你需要排查某个具体的慢函数、验证某个优化思路，或无需搭建环境就快速获得分析时，使用 Claude.ai。浏览器界面让它非常适合与他人分享优化想法，或就性能权衡征求第二意见。
+
+[**Claude Code**](https://claude.com/product/claude-code)：当性能问题横跨多个文件、需要跨服务协同修改，或需要自动化测试来验证改进时，使用 Claude Code。对于涉及数据库模式、API 契约或缓存层的优化，终端集成是必不可少的。 
+
+## **Ramp 的真实成效**
+
+[Ramp](https://claude.com/customers/ramp) 使用 Claude Code 加速了数百个服务的交付。
+
+成效：
+
+- **30 天内 AI 建议代码超过 100 万行**
+- **事件分诊时间缩短 80%**
+- **工程团队每周活跃使用率达 50%**
+
+&quot;当我们发现 Claude Code 时，团队立刻意识到它的潜力，并把它融入了我们的工作流&quot;—— Ramp 高级软件工程师 Austin Ray
+
+## 开始系统性优化
+
+**立即进行性能分析**：访问 [Claude.ai](https://claude.ai)，粘贴慢函数，即时获得复杂度分析和优化建议。
+
+**全面优化**：安装 [Claude Code](https://claude.com/product/claude-code)：
+
+`npm install -g @anthropic-ai/claude-code`无论你的目标是把 API 响应时间压到 100 毫秒以内、降低内存消耗，还是消除数据库瓶颈，Claude 都能成为你的思考伙伴，帮你交付更快、更高效的软件，而无需靠人工优化的反复试错拉长开发周期。今天就行动起来吧。
+
+## FAQ
+
+### 是什么导致 API 响应变慢？
+
+常见原因包括算法瓶颈，例如嵌套循环带来的 O(n²) 复杂度；在循环内发起数据库调用导致的 N+1 查询问题；没有正确使用索引的低效数据库查询；对重复操作缺少缓存；以及冗余的数据处理。
+
+### 怎样找出代码里的性能瓶颈？
+
+你可以把可疑函数粘贴到 Claude.ai 做即时分析，或用 Claude Code 扫描整个代码库查找性能问题。传统做法是用 Chrome DevTools、New Relic 或 Datadog 等性能分析工具查看火焰图和 CPU 热点，但这些工具只能显示时间花在哪里，无法解释代码为何低效。
+
+### 代码优化应该用性能分析工具还是 AI？
+
+最好把两种方法一起用。Chrome DevTools 或 Datadog 这类传统性能分析工具能显示应用把时间花在哪里，并帮助你在生产环境中找出热点。Claude 这类 AI 工具则能解释特定代码为什么慢，并给出具体的优化建议。在搭建复杂的性能分析环境之前，先用 Claude.ai 快速判断问题出在算法、结构还是配置上。
+
+### 代码优化大概能带来多大的性能提升？
+
+这取决于你的起点。消除 N+1 查询可以把响应时间从数秒降到毫秒，常常有 10 到 100 倍的改进。用 O(n) 实现替换 O(n²) 算法，在大数据集上提升非常明显，在小数据集上差异则很小。Claude Code 这类工具可以生成基准测试，客观衡量改进效果，帮你验证优化是否真的达到了预期收益。</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Claude Code</span>
-            <span class="article-date">October 6, 2025</span>
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
             
+            <h1 class="article-title u-text-style-h1">快速优化代码性能</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>Go from reactive profiling to proactive optimization. Find and fix bottlenecks in your codebase before they slow down production.</p></div>
           </div>
-          <h1 class="article-title">快速优化代码性能</h1>
-          <a href="/posts/optimize-code-performance-quickly/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>性能瓶颈总是悄然而至。上周你的 API 还很快，现在却开始超时。原本瞬间加载的用户仪表盘突然变得缓慢无比。在测试中运行良好的支付流程，一到真实流量下就不堪重负。</p><p>传统的代码优化需要深厚的专业知识：读懂性能分析器（profiler）的输出、分析算法复杂度、把性能指标与业务逻辑关联起来。每个优化周期都意味着性能分析、诊断、实现、测试——性能改进往往要横跨多个冲刺才能完成。</p><p>下面介绍如何把被动的性能修复转变为主动优化，在瓶颈影响用户之前就将其化解。</p><h2>大多数性能优化的常规流程</h2><h3>性能分析与瓶颈诊断</h3><p>性能优化通常始于用户抱怨或监控告警。开发者会使用 Chrome DevTools、New Relic 或 Datadog 等性能分析工具来定位应用耗时所在。你查看火焰图、找出 CPU 热点、把慢函数与业务逻辑关联起来。</p><p>性能分析能揭示时间花在了哪里，却无法解释特定代码路径为何低效。生产环境的性能分析需要谨慎采样，以免进一步影响性能，最终你拿到的数据只是指向慢函数，却没有清晰的优化路径。</p><h3>人工审查算法</h3><p>接下来是系统地审查代码，寻找嵌套循环、低效数据结构和冗余操作。这包括计算时间复杂度，并用优化过的实现替换暴力解法。</p><p>问题在于这要求对代码库有很深的了解，而现代代码库的规模动辄数十万行以上。关键瓶颈往往藏在意想不到的地方，初次审查很难发现。</p><h3>负载测试与基准测试</h3><p>为了更好地对应用进行压力测试，开发者会创建流量模拟来建立性能基线，实施改进后，再在模拟的生产负载下测量吞吐量和延迟的变化。</p><p>准确的负载测试需要复杂的环境搭建和逼真的数据生成。实现改动、部署到测试环境、收集指标的不断循环，会把优化项目拖长到多个冲刺周期。</p><h3>渐进式重构</h3><p>渐进式重构通过优化数据库查询、引入缓存、重构算法，用经过验证的方案替换低效代码。</p><p>这种方式能将部署风险降到最低，但需要多位工程师协同配合并进行大量测试。大规模优化会横跨多个代码仓库，还要求理解系统组件之间复杂的交互。</p><h2>用 Claude 进行系统性优化</h2><p>许多开发团队正在从被动的性能分析工具，转向借助 Claude 这类 AI 编程助手进行主动的性能工程。这些工具可以即时分析函数、识别算法瓶颈，并提供改进代码的方法。你可以通过两种方式使用 Claude：</p><ul role="list"><li><a href="https://claude.ai"><strong>Claude.ai</strong></a>：免费的网络界面。粘贴慢函数，即可获得复杂度分析和优化建议。任何浏览器都能使用，无需任何配置。</li><li><a href="https://claude.com/product/claude-code"><strong>Claude Code</strong></a>：可与开发环境集成的智能体式终端编程工具。能够分析项目级的性能模式，直接跨多个文件实施优化。通过 npm 安装。</li></ul><h2>从 Claude.ai 开始</h2><p>在搭建复杂的性能分析环境或编写基准测试套件之前，先把简短的代码片段粘贴到 <a href="https://claude.ai">Claude.ai</a>，快速判断性能问题出在算法、结构还是配置上。传统性能分析器只能显示时间花在了哪里，而 Claude 能解释代码为什么慢以及如何修复。这个初步分析能帮你决定是做一次快速代码修改，还是进行一次全面的架构评审。</p><h3>快速获取优化思路</h3><p>使用 Claude.ai 最直接的方式，就是复制有问题的函数并寻求帮助。开发者通常会粘贴从几行代码到整个函数不等的、在应用中造成瓶颈的代码。Claude 会分析代码结构，识别嵌套循环或冗余操作等低效模式，并给出具体的优化建议。</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>User: </span><span style="color:#008000">"This function is slowing down our user dashboard. How can I make it faster?"</span><span>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/product/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">October 6, 2025</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/optimize-code-performance-quickly/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>性能瓶颈总是悄然而至。上周你的 API 还很快，现在却开始超时。原本瞬间加载的用户仪表盘突然变得缓慢无比。在测试中运行良好的支付流程，一到真实流量下就不堪重负。</p><p>传统的代码优化需要深厚的专业知识：读懂性能分析器（profiler）的输出、分析算法复杂度、把性能指标与业务逻辑关联起来。每个优化周期都意味着性能分析、诊断、实现、测试——性能改进往往要横跨多个冲刺才能完成。</p><p>下面介绍如何把被动的性能修复转变为主动优化，在瓶颈影响用户之前就将其化解。</p><h2>大多数性能优化的常规流程</h2><h3>性能分析与瓶颈诊断</h3><p>性能优化通常始于用户抱怨或监控告警。开发者会使用 Chrome DevTools、New Relic 或 Datadog 等性能分析工具来定位应用耗时所在。你查看火焰图、找出 CPU 热点、把慢函数与业务逻辑关联起来。</p><p>性能分析能揭示时间花在了哪里，却无法解释特定代码路径为何低效。生产环境的性能分析需要谨慎采样，以免进一步影响性能，最终你拿到的数据只是指向慢函数，却没有清晰的优化路径。</p><h3>人工审查算法</h3><p>接下来是系统地审查代码，寻找嵌套循环、低效数据结构和冗余操作。这包括计算时间复杂度，并用优化过的实现替换暴力解法。</p><p>问题在于这要求对代码库有很深的了解，而现代代码库的规模动辄数十万行以上。关键瓶颈往往藏在意想不到的地方，初次审查很难发现。</p><h3>负载测试与基准测试</h3><p>为了更好地对应用进行压力测试，开发者会创建流量模拟来建立性能基线，实施改进后，再在模拟的生产负载下测量吞吐量和延迟的变化。</p><p>准确的负载测试需要复杂的环境搭建和逼真的数据生成。实现改动、部署到测试环境、收集指标的不断循环，会把优化项目拖长到多个冲刺周期。</p><h3>渐进式重构</h3><p>渐进式重构通过优化数据库查询、引入缓存、重构算法，用经过验证的方案替换低效代码。</p><p>这种方式能将部署风险降到最低，但需要多位工程师协同配合并进行大量测试。大规模优化会横跨多个代码仓库，还要求理解系统组件之间复杂的交互。</p><h2>用 Claude 进行系统性优化</h2><p>许多开发团队正在从被动的性能分析工具，转向借助 Claude 这类 AI 编程助手进行主动的性能工程。这些工具可以即时分析函数、识别算法瓶颈，并提供改进代码的方法。你可以通过两种方式使用 Claude：</p><ul role="list"><li><a href="https://claude.ai"><strong>Claude.ai</strong></a>：免费的网络界面。粘贴慢函数，即可获得复杂度分析和优化建议。任何浏览器都能使用，无需任何配置。</li><li><a href="https://claude.com/product/claude-code"><strong>Claude Code</strong></a>：可与开发环境集成的智能体式终端编程工具。能够分析项目级的性能模式，直接跨多个文件实施优化。通过 npm 安装。</li></ul><h2>从 Claude.ai 开始</h2><p>在搭建复杂的性能分析环境或编写基准测试套件之前，先把简短的代码片段粘贴到 <a href="https://claude.ai">Claude.ai</a>，快速判断性能问题出在算法、结构还是配置上。传统性能分析器只能显示时间花在了哪里，而 Claude 能解释代码为什么慢以及如何修复。这个初步分析能帮你决定是做一次快速代码修改，还是进行一次全面的架构评审。</p><h3>快速获取优化思路</h3><p>使用 Claude.ai 最直接的方式，就是复制有问题的函数并寻求帮助。开发者通常会粘贴从几行代码到整个函数不等的、在应用中造成瓶颈的代码。Claude 会分析代码结构，识别嵌套循环或冗余操作等低效模式，并给出具体的优化建议。</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>User: </span><span style="color:#008000">"This function is slowing down our user dashboard. How can I make it faster?"</span><span>
 </span></span><span>
 </span><span><span>[pastes 20-line </span><span style="color:#7928a1">function</span><span> with nested loops]
 </span></span><span>
-</span><span><span>Claude: </span><span style="color:#008000">"I see two main bottlenecks here: 1. The nested loop creates O(n²) complexity 2. You're making a database call inside the inner loop Here's an optimized version using a single query and hash map lookup..."</span></span></code></pre><p>以下这类问题通常效果很好：</p><ul role="list"><li><a href="https://claude.ai/new?q=Why+are+my+code+functions+slow+with+large+datasets%3F">"Why are my code functions slow with large datasets?"</a></li><li><a href="https://claude.ai/new?q=Can+you+help+me+rewrite+my+code+to+be+more+efficient%3F">"Can you rewrite my code to be more efficient?"</a></li><li><a href="https://claude.ai/new?q=What%27s+wrong+with+this+algorithm+performance-wise%3F">"What's wrong with this algorithm performance-wise?"</a></li></ul><h3>理解代码为什么慢</h3><p>有时候，你需要先弄清根因再动手优化。Claude.ai 擅长用通俗易懂的语言拆解性能问题，准确解释某些代码模式为何会随着应用规模扩大而成为瓶颈。你可以粘贴消耗过多内存、导致 API 超时或在负载下性能劣化的代码，然后让 Claude 解释发生了什么。</p><figure style="max-width:1700pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68f13857ee0625a58a13a7bd____.png"></div></figure><h2>用 Claude Code 承载规模化优化</h2><p>对于横跨多个文件或需要架构调整的性能难题，<a href="https://claude.com/product/claude-code">Claude Code</a> 能以智能体方式提供传统性能分析工具无法企及的项目级优化能力。</p><p>安装：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>npm install -g @anthropic-ai/claude-code</span></span></code></pre><p>在你的项目中启动：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>claude</span></span></code></pre><p>然后开始向 Claude 询问优化代码的方法：</p><figure style="max-width:3840pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e9533ec45c4d79d1a6c54d_5.png"></div></figure><p>Claude Code 会自主分析你的整个代码库，把最近的改动与性能劣化关联起来，并针对根因而非表面症状给出具体的优化建议。</p><h3>结合自动化测试实施</h3><p>Claude Code 一旦识别出瓶颈，就会自动创建一套循序渐进的工作流，包括生成测试、验证改进效果并防止回归，从而统筹实施有针对性的修复。</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>&gt; Optimize this payment processing </span><span style="color:#7928a1">function</span><span> and benchmark results</span></span></code></pre><p>Claude Code 能识别低效算法、建议优化实现，还可以编写基准测试代码，帮助你衡量性能改进的效果。</p><h3>应对企业级规模的改进</h3><p>Claude Code 可以在大型代码库中优化工作流，通过更新代码来提升效率：</p><p><strong>聚焦关键路径</strong>：在性能关键的目录（api/、core/）中运行 Claude Code，避免分析那些不影响性能的静态资源或配置文件。</p><p><strong>应用系统性模式</strong>：Claude Code 会识别反复出现的低效之处，并建议能够同时解决多个瓶颈的架构改进：连接池、策略性缓存、优化的数据库查询模式等。</p><h3>示例：消除 N+1 数据库查询</h3><figure style="max-width:3840pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e95463e1157246ac222647_6.png"></div></figure><p>Claude Code 会扫描代码库中触发数据库查询的循环，定位导致 N+1 问题的具体 ORM 模式，实现预加载（eager loading）或批量查询方案，测量查询次数和响应时间的改进，并生成防止 N+1 回归的测试。</p><p>Claude Code 通常还会发现其他优化点，例如为频繁查询的列添加复合索引，或为重复查询引入 Redis 缓存。</p><h2>选择适合你的优化方式</h2><p><a href="https://claude.ai"><strong>Claude.ai</strong></a>：当你需要排查某个具体的慢函数、验证某个优化思路，或无需搭建环境就快速获得分析时，使用 Claude.ai。浏览器界面让它非常适合与他人分享优化想法，或就性能权衡征求第二意见。</p><p><a href="https://claude.com/product/claude-code"><strong>Claude Code</strong></a>：当性能问题横跨多个文件、需要跨服务协同修改，或需要自动化测试来验证改进时，使用 Claude Code。对于涉及数据库模式、API 契约或缓存层的优化，终端集成是必不可少的。</p><h2><strong>Ramp 的真实成效</strong></h2><p><a href="https://claude.com/customers/ramp">Ramp</a> 使用 Claude Code 加速了数百个服务的交付。</p><p>成效：</p><ul role="list"><li><strong>30 天内 AI 建议代码超过 100 万行</strong></li><li><strong>事件分诊时间缩短 80%</strong></li><li><strong>工程团队每周活跃使用率达 50%</strong></li></ul><blockquote>"When we discovered Claude Code, our teams immediately recognized its potential and integrated it into our workflows"</blockquote><p>—— Ramp 高级软件工程师 Austin Ray</p><h2>开始系统性优化</h2><p><strong>立即进行性能分析</strong>：访问 <a href="https://claude.ai">Claude.ai</a>，粘贴慢函数，即时获得复杂度分析和优化建议。</p><p><strong>全面优化</strong>：安装 <a href="https://claude.com/product/claude-code">Claude Code</a>：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>npm install -g @anthropic-ai/claude-code</span></span></code></pre><p>无论你的目标是把 API 响应时间压到 100 毫秒以内、降低内存消耗，还是消除数据库瓶颈，Claude 都能成为你的思考伙伴，帮你交付更快、更高效的软件，而无需靠人工优化的反复试错拉长开发周期。今天就行动起来吧。</p></div>
+</span><span><span>Claude: </span><span style="color:#008000">"I see two main bottlenecks here: 1. The nested loop creates O(n²) complexity 2. You're making a database call inside the inner loop Here's an optimized version using a single query and hash map lookup..."</span></span></code></pre><p>以下这类问题通常效果很好：</p><ul role="list"><li><a href="https://claude.ai/new?q=Why+are+my+code+functions+slow+with+large+datasets%3F">"Why are my code functions slow with large datasets?"</a></li><li><a href="https://claude.ai/new?q=Can+you+help+me+rewrite+my+code+to+be+more+efficient%3F">"Can you rewrite my code to be more efficient?"</a></li><li><a href="https://claude.ai/new?q=What%27s+wrong+with+this+algorithm+performance-wise%3F">"What's wrong with this algorithm performance-wise?"</a></li></ul><h3>理解代码为什么慢</h3><p>有时候，你需要先弄清根因再动手优化。Claude.ai 擅长用通俗易懂的语言拆解性能问题，准确解释某些代码模式为何会随着应用规模扩大而成为瓶颈。你可以粘贴消耗过多内存、导致 API 超时或在负载下性能劣化的代码，然后让 Claude 解释发生了什么。&nbsp;</p><figure style="max-width:1700pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68f13857ee0625a58a13a7bd____.png"></div></figure><h2>用 Claude Code 承载规模化优化</h2><p>对于横跨多个文件或需要架构调整的性能难题，<a href="https://claude.com/product/claude-code">Claude Code</a> 能以智能体方式提供传统性能分析工具无法企及的项目级优化能力。</p><p>安装：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>npm install -g @anthropic-ai/claude-code</span></span></code></pre><p>在你的项目中启动：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>claude</span></span></code></pre><p>然后开始向 Claude 询问优化代码的方法：</p><figure style="max-width:3840pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e9533ec45c4d79d1a6c54d_5.png"></div></figure><p>Claude Code 会自主分析你的整个代码库，把最近的改动与性能劣化关联起来，并针对根因而非表面症状给出具体的优化建议。</p><h3>结合自动化测试实施</h3><p>Claude Code 一旦识别出瓶颈，就会自动创建一套循序渐进的工作流，包括生成测试、验证改进效果并防止回归，从而统筹实施有针对性的修复。</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>&gt; Optimize this payment processing </span><span style="color:#7928a1">function</span><span> and benchmark results</span></span></code></pre><p>Claude Code 能识别低效算法、建议优化实现，还可以编写基准测试代码，帮助你衡量性能改进的效果。</p><h3>应对企业级规模的改进</h3><p>Claude Code 可以在大型代码库中优化工作流，通过更新代码来提升效率：</p><p><strong>聚焦关键路径</strong>：在性能关键的目录（api/、core/）中运行 Claude Code，避免分析那些不影响性能的静态资源或配置文件。</p><p><strong>应用系统性模式</strong>：Claude Code 会识别反复出现的低效之处，并建议能够同时解决多个瓶颈的架构改进：连接池、策略性缓存、优化的数据库查询模式等。</p><h3>示例：消除 N+1 数据库查询</h3><figure style="max-width:3840pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e95463e1157246ac222647_6.png"></div></figure><p>Claude Code 会扫描代码库中触发数据库查询的循环，定位导致 N+1 问题的具体 ORM 模式，实现预加载（eager loading）或批量查询方案，测量查询次数和响应时间的改进，并生成防止 N+1 回归的测试。</p><p>Claude Code 通常还会发现其他优化点，例如为频繁查询的列添加复合索引，或为重复查询引入 Redis 缓存。</p><h2>选择适合你的优化方式</h2><p><a href="https://claude.ai"><strong>Claude.ai</strong></a>：当你需要排查某个具体的慢函数、验证某个优化思路，或无需搭建环境就快速获得分析时，使用 Claude.ai。浏览器界面让它非常适合与他人分享优化想法，或就性能权衡征求第二意见。</p><p><a href="https://claude.com/product/claude-code"><strong>Claude Code</strong></a>：当性能问题横跨多个文件、需要跨服务协同修改，或需要自动化测试来验证改进时，使用 Claude Code。对于涉及数据库模式、API 契约或缓存层的优化，终端集成是必不可少的。&nbsp;</p><h2><strong>Ramp 的真实成效</strong></h2><p><a href="https://claude.com/customers/ramp">Ramp</a> 使用 Claude Code 加速了数百个服务的交付。</p><p>成效：</p><ul role="list"><li><strong>30 天内 AI 建议代码超过 100 万行</strong></li><li><strong>事件分诊时间缩短 80%</strong></li><li><strong>工程团队每周活跃使用率达 50%</strong></li></ul><blockquote>"当我们发现 Claude Code 时，团队立刻意识到它的潜力，并把它融入了我们的工作流"</blockquote><p>—— Ramp 高级软件工程师 Austin Ray</p><h2>开始系统性优化</h2><p><strong>立即进行性能分析</strong>：访问 <a href="https://claude.ai">Claude.ai</a>，粘贴慢函数，即时获得复杂度分析和优化建议。</p><p><strong>全面优化</strong>：安装 <a href="https://claude.com/product/claude-code">Claude Code</a>：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>npm install -g @anthropic-ai/claude-code</span></span></code></pre><p>无论你的目标是把 API 响应时间压到 100 毫秒以内、降低内存消耗，还是消除数据库瓶颈，Claude 都能成为你的思考伙伴，帮你交付更快、更高效的软件，而无需靠人工优化的反复试错拉长开发周期。今天就行动起来吧。</p><h2>FAQ</h2><div class="article-faq"><h3>是什么导致 API 响应变慢？</h3><p>常见原因包括算法瓶颈，例如嵌套循环带来的 O(n²) 复杂度；在循环内发起数据库调用导致的 N+1 查询问题；没有正确使用索引的低效数据库查询；对重复操作缺少缓存；以及冗余的数据处理。</p><h3>怎样找出代码里的性能瓶颈？</h3><p>你可以把可疑函数粘贴到 Claude.ai 做即时分析，或用 Claude Code 扫描整个代码库查找性能问题。传统做法是用 Chrome DevTools、New Relic 或 Datadog 等性能分析工具查看火焰图和 CPU 热点，但这些工具只能显示时间花在哪里，无法解释代码为何低效。</p><h3>代码优化应该用性能分析工具还是 AI？</h3><p>最好把两种方法一起用。Chrome DevTools 或 Datadog 这类传统性能分析工具能显示应用把时间花在哪里，并帮助你在生产环境中找出热点。Claude 这类 AI 工具则能解释特定代码为什么慢，并给出具体的优化建议。在搭建复杂的性能分析环境之前，先用 Claude.ai 快速判断问题出在算法、结构还是配置上。</p><h3>代码优化大概能带来多大的性能提升？</h3><p>这取决于你的起点。消除 N+1 查询可以把响应时间从数秒降到毫秒，常常有 10 到 100 倍的改进。用 O(n) 实现替换 O(n²) 算法，在大数据集上提升非常明显，在小数据集上差异则很小。Claude Code 这类工具可以生成基准测试，客观衡量改进效果，帮你验证优化是否真的达到了预期收益。</p></div></div>
+
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/optimize-code-performance-quickly" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/optimize-code-performance-quickly" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

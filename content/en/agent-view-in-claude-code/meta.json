@@ -13,5 +13,22 @@
   "translatedTitle": "Claude Code 中的 Agent View（智能体视图）",
   "translated": true,
   "translatedAt": "2026-09-02T04:19:19.723Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": [
+      "Coding",
+      "Productivity"
+    ]
+  },
+  "subtitle": "Today we're introducing agent view in Claude Code: one place to manage all your Claude Code sessions.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/product/claude-code"
 }

@@ -13,5 +13,21 @@
   "translated": true,
   "translatedTitle": "用 Claude 构建并分享 AI 驱动的应用",
   "translatedAt": "2026-09-02T12:42:00.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude apps"
+    ],
+    "usecase": [
+      "Work"
+    ]
+  },
+  "subtitle": "Build and share AI-powered apps directly in Claude.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": ""
 }

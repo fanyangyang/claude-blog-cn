@@ -13,5 +13,21 @@
   "translatedTitle": "在 Claude Cowork 中使用 Claude Fable 5",
   "translated": true,
   "translatedAt": "2026-09-02T04:34:18.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Cowork"
+    ],
+    "usecase": [
+      "Work"
+    ]
+  },
+  "subtitle": "Claude Fable 5 can carry long, complex work on its own. Here’s how to get the most out of it in Claude Cowork, starting with as little as an idea and getting to finished work.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/product/cowork"
 }

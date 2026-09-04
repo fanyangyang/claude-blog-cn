@@ -4,46 +4,180 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Building commerce agents with Claude — Claude Blog CN</title>
-  <meta name="description" content="Building commerce agents with Claude">
+  <meta name="description" content="Retailers running shopping agents on Claude have seen carts up to 35% larger and shoppers 60% more likely to complete a purchase.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="/posts/claude-for-commerce-agents/" class="nav-link">中文版 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>Building commerce agents with Claude</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/claude-for-commerce-agents" target="_blank" rel="noopener noreferrer">Ask questions about this page</a>
+        <button type="button" class="explore-item" data-copy-markdown>Copy as markdown</button>
+        <a class="explore-item" href="/posts/claude-for-commerce-agents/">阅读中文翻译 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># Building commerce agents with Claude
+
+Retailers running shopping agents on Claude have seen carts up to 35% larger and shoppers 60% more likely to complete a purchase.
+
+Many of the world’s largest retailers, marketplaces, e-commerce platforms, and travel companies use Claude to build agents that make shopping easier. Enterprise customers like Shopify, Priceline, and others have agents that let consumers use AI to search for what they want in plain language, find it, compare it, and buy it.
+
+Today, we're launching a blueprint to help build commerce agents on Claude. It contains the harnesses, patterns, and guardrails an engineering team needs to get a commerce agent running in days, with reference implementations of a shopping agent and a merchant agent for retail, travel, telecom, and ticketing platforms. It also includes a Claude Code plugin to get you started.
+
+The code deploys where you already build with Claude, including the Claude API, Amazon Bedrock, Microsoft Foundry, or Google Cloud Vertex AI. You can also work with our solutions and ecosystem partners such as Accenture, Mastercard, and Visa, who are working with us to enable clients and merchant communities to leverage the blueprints.
+
+It’s [available today](https://github.com/anthropics/commerce-agents), with [live demos](https://claude.com/solutions/commerce) for each vertical and an [engineering deep-dive](http://claude.com/blog/the-anatomy-of-effective-commerce-agents) on how it was built, just in time for holiday season planning.
+
+*The shopping agent running in the ACME *[*retail example*.](https://claude.com/solutions/commerce)
+## What's in the blueprint
+
+The repository contains complete, working implementations of a shopping agent and merchant agent that can be built using the [Messages API](https://platform.claude.com/docs/en/intro), [Agent SDK](https://code.claude.com/docs/en/agent-sdk), or [Claude Managed Agents](https://platform.claude.com/docs/en/managed-agents/overview) (beta). You can see them running in a self-guided demo before writing any code, and then work with Claude Code to customize them to your catalogs, policies, brand, and more.
+
+### The shopping agent
+
+The shopping agent lives inside your app or website. The blueprint includes the integration points for catalog, cart, checkout, customer preferences, and order history, and leaves payment to you, whether that is your existing checkout or an agentic payments provider.
+
+A customer can say “I need a tent, sleeping bag, and stove for a weekend trip with two kids,” and the agent can take it from there. Here’s what it can do:
+
+- Search the catalog and assemble the right set of items, including multi-item requests.
+- Remember the customer's preferences and tailor what it suggests.
+- Show products, comparisons, and the cart right in the conversation, not just as text.
+- Build the cart and hand it to checkout.
+- Answer customer service questions in the same conversation, like where an order is, how to return or exchange an item, and what the refund policy says, instead of sending the customer to a support page.
+
+The agent features guardrails designed to constrain prices and products to actual catalog data, and avoids manipulative upsell patterns. In the repository, these are skills and tools for catalog search, multi-item planning, deep research, personalization, customer care, and in-conversation UI.
+
+### The merchant agent
+
+The merchant agent supports the people running the store. A user can ask “what should we discount to clear last season’s inventory?” and get an answer based on their own data. Here’s what it can do:
+
+- Answer questions about sales performance like what's selling and what isn't.
+- Track inventory and proactively flag problems, like an item about to sell out before a promotion starts.
+- Recommend pricing and promotions based on the store's own sales history.
+- Draft marketing campaigns to move the products that need moving.
+
+When the agent proactively suggests a change, a person approves it before anything goes live, meaning users get the final say while their agent watches the store. In the repository, these capabilities ship as skills for sales analytics, catalog and inventory management, marketing and promotions, and in-portal UI such as charts and dashboards.
+
+## Trusted across the industry
+
+Companies that serve shoppers, travelers, subscribers, and merchants build and run agents on Claude. Here's what they have to say about building commerce agents with Claude: 
+
+“AI will fundamentally reshape commerce, but trust must remain at the center of every transaction. Merchants are telling us they want more control over how AI engages their customers. Our collaboration with Anthropic on their commerce blueprint helps bring together the intelligence of Claude with the trust, security, and global reach of the Visa network, empowering merchants to deliver better customer experiences while maintaining the relationships that drive their businesses forward.”
+
+Jack Forestell, Chief Product and Strategy Officer“Trust is the currency of commerce, and it is even more critical in the agentic era. With Anthropic's commerce blueprint, we're helping merchants build their own agents with Claude to drive their growth. By combining AI innovation with trusted payments and commerce infrastructure, we're helping connect consumers, merchants and AI agents securely, seamlessly and at scale.”
+
+Sherri Haymond, Executive Vice President, Global Head of Digital Commercialization“Commerce agents are quickly becoming a critical capability for organizations seeking to deliver the personalized, intelligent customer experiences that today’s consumers expect. Our latest research revealed that 85% are now open to collaboration with an AI agent and nearly three in four would trust a personal AI agent more than their best friend to make a purchase on their behalf. This is more than a shift in how people shop. Agentic commerce is rewriting the rules of brand value – fundamentally shaping what gets purchased, when, where and by whom. Anthropic’s commerce agent blueprint provides a proven starting point that can help organizations accelerate deployment and build differentiated experiences that increase customer satisfaction, loyalty, and growth. Combined with Accenture's deep retail and consumer goods expertise, we can help clients move from concept to production and realize value from agentic AI faster.”
+
+Kath Gramling, Global Consumer Goods, Retail and Travel lead“A trip is one of the most complex things a person buys: flights, hotels, cars, and dozens of options to weigh against each other. Penny, our AI assistant, navigates all of that in one conversation and surfaces the best options and best value. We built the latest generation of Penny on Claude because that kind of reasoning is exactly what Claude models are good at.”
+
+Cobus Kok, Vice President, AI Experiences“Millions of consumers, businesses and accountants run their finances on Intuit. Working with partners like Anthropic, we're building highly personalized experiences that provide customers with a clear understanding of what's shifting in their business and why, so they can take action with complete confidence. We are creating a financial system of intelligence by combining frontier AI reasoning, including Claude, with our proprietary data, capabilities, intelligence, and human expertise that powers the next level of prosperity for our customers.”
+
+Chris Kasten, Intuit’s Chief Architect and SVP of Engineering, Platform and Development Xceleration Group“We want our merchants to be everywhere customers are shopping, and increasingly that means a conversation with an agent. We're building on Anthropic's blueprints with a reference storefront implementation that connects them to a merchant's store through Catalog, UCP and Shop Sign-in. Merchants can use Claude to build agents that help customers find products, check out, and answer questions about their orders.”
+
+Vanessa Lee, VP Product“Commerce and stunning customer experiences require personalization, and every brand on Klaviyo sits on more customer data and decisions than any team could act on by hand. Claude closes that gap, turning consumer preferences and performance data into the insights, campaigns and personalization that drive revenue. That's why we keep building with Anthropic: agents do complex analysis, design and decision making, and businesses can focus on delighting customers.”
+
+Andrew Bialecki, Founder and Co-CEO“Wix’s mission has always been to make complex technology simple and accessible for our users. For merchants, that means providing powerful commerce capabilities without adding operational complexity, and agents are a natural next step. Our engineers had a working commerce agent taking prompts within fifteen minutes, and the pilot showed the potential of combining Anthropic’s AI capabilities with Wix’s commerce platform and deep expertise in commerce for SMB.”
+
+Dror Zalika, Head of Commerce at Wix“Our engineers had the blueprint running with no blockers; the setup worked exactly as documented. The practices it bakes in, from tool iteration limits to prompt caching, are the ones we recognized from building Zomato's own agent. Teams standing up their first agent on Claude will skip weeks of trial and error.”
+
+Akhil Bansal, Senior Engineering Manager“Our engineers had both commerce agents from Anthropic's blueprint running locally in well under an hour, with live conversations working on the first attempt. We ran the Claude Code workflow twice and got two different architectures back, each designed to what we'd asked for. For a team starting from scratch, that turns days of agent scaffolding into hours.”
+
+Ashley Nader, Staff Product Manager“Much of what we build at Square is about giving sellers time back, and agents are a big leap in our ability to do that. We're building agentic tools that watch sales, labor, and inventory and come back with real next steps, not just an answer, while keeping sellers in control. Trust is the hardest part of that work, and Claude helps us meet a high standard.”
+
+Willem Avé, Head of Product
+## Getting started
+
+The blueprint is available today. [Contact our sales team](https://claude.com/contact-sales) to learn more, schedule a demonstration, or discuss how to implement for your organization.
+
+- Fork the repository at [github.com/anthropics/commerce-agents](https://github.com/anthropics/commerce-agents).
+- Read the engineering deep-dive at [claude.com/blog/the-anatomy-of-effective-commerce-agents.](http://claude.com/blog/the-anatomy-of-effective-commerce-agents)
+- See the vertical demos and request a working session at [claude.com/solutions/commerce](https://claude.com/solutions/commerce).
+
+Register for our [webinar](http://anthropic.com/webinars/building-claude-commerce-agents) to see the deep dive where we'll share live walkthroughs, demos, and cover how commerce builders can get the most out of Claude.</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Product announcements</span>
-            <span class="article-date">September 2, 2026</span>
-            <span class="lang-badge-large">EN</span>
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-clay);">
+            <img class="hero-illo-img" src="/assets/illustrations/claude-for-commerce-agents.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">Building commerce agents with Claude</h1>
-          <a href="/posts/claude-for-commerce-agents/" class="lang-toggle">阅读中文翻译 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>Many of the world’s largest retailers, marketplaces, e-commerce platforms, and travel companies use Claude to build agents that make shopping easier. Enterprise customers like Shopify, Priceline, and others have agents that let consumers use AI to search for what they want in plain language, find it, compare it, and buy it.</p><p>Today, we're launching a blueprint to help build commerce agents on Claude. It contains the harnesses, patterns, and guardrails an engineering team needs to get a commerce agent running in days, with reference implementations of a shopping agent and a merchant agent for retail, travel, telecom, and ticketing platforms. It also includes a Claude Code plugin to get you started.</p><p>The code deploys where you already build with Claude, including the Claude API, Amazon Bedrock, Microsoft Foundry, or Google Cloud Vertex AI. You can also work with our solutions and ecosystem partners such as Accenture, Mastercard, and Visa, who are working with us to enable clients and merchant communities to leverage the blueprints.</p><p>It’s <a href="https://github.com/anthropics/commerce-agents">available today</a>, with <a href="https://claude.com/solutions/commerce">live demos</a> for each vertical and an <a href="http://claude.com/blog/the-anatomy-of-effective-commerce-agents">engineering deep-dive</a> on how it was built, just in time for holiday season planning.</p><figure style="max-width:2160pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a95f44f1757be75a0616bd0_demo-retail.webp" loading="lazy"></div><figcaption><em>The shopping agent running in the ACME </em><a href="https://claude.com/solutions/commerce"><em>retail example</em>.</a></figcaption></figure><h2>What's in the blueprint</h2><p>The repository contains complete, working implementations of a shopping agent and merchant agent that can be built using the <a href="https://platform.claude.com/docs/en/intro">Messages API</a>, <a href="https://code.claude.com/docs/en/agent-sdk">Agent SDK</a>, or <a href="https://platform.claude.com/docs/en/managed-agents/overview">Claude Managed Agents</a> (beta). You can see them running in a self-guided demo before writing any code, and then work with Claude Code to customize them to your catalogs, policies, brand, and more.</p><h3>The shopping agent</h3><p>The shopping agent lives inside your app or website. The blueprint includes the integration points for catalog, cart, checkout, customer preferences, and order history, and leaves payment to you, whether that is your existing checkout or an agentic payments provider.</p><p>A customer can say “I need a tent, sleeping bag, and stove for a weekend trip with two kids,” and the agent can take it from there. Here’s what it can do:</p><ul role="list"><li>Search the catalog and assemble the right set of items, including multi-item requests.</li><li>Remember the customer's preferences and tailor what it suggests.</li><li>Show products, comparisons, and the cart right in the conversation, not just as text.</li><li>Build the cart and hand it to checkout.</li><li>Answer customer service questions in the same conversation, like where an order is, how to return or exchange an item, and what the refund policy says, instead of sending the customer to a support page.</li></ul><p>The agent features guardrails designed to constrain prices and products to actual catalog data, and avoids manipulative upsell patterns. In the repository, these are skills and tools for catalog search, multi-item planning, deep research, personalization, customer care, and in-conversation UI.</p><h3>The merchant agent</h3><p>The merchant agent supports the people running the store. A user can ask “what should we discount to clear last season’s inventory?” and get an answer based on their own data. Here’s what it can do:</p><ul role="list"><li>Answer questions about sales performance like what's selling and what isn't.</li><li>Track inventory and proactively flag problems, like an item about to sell out before a promotion starts.</li><li>Recommend pricing and promotions based on the store's own sales history.</li><li>Draft marketing campaigns to move the products that need moving.</li></ul><p>When the agent proactively suggests a change, a person approves it before anything goes live, meaning users get the final say while their agent watches the store. In the repository, these capabilities ship as skills for sales analytics, catalog and inventory management, marketing and promotions, and in-portal UI such as charts and dashboards.</p><figure style="max-width:1440pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a972d45795f7bbae7ce272f_Retail%20%E2%80%94%20Merchant%20workspace.png" loading="lazy"></div></figure><h2>Trusted across the industry</h2><p>Companies that serve shoppers, travelers, subscribers, and merchants build and run agents on Claude. Here's what they have to say about building commerce agents with Claude:&nbsp;</p></div>
+            <h1 class="article-title u-text-style-h1">Building commerce agents with Claude</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>Retailers running shopping agents on Claude have seen carts up to 35% larger and shoppers 60% more likely to complete a purchase.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <div class="hero-detail-value-stack"><a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/announcements" target="_blank" rel="noopener noreferrer">Product announcements</a><div class="hero-detail-value u-text-style-body-3">Agents</div></div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/platform/api" target="_blank" rel="noopener noreferrer">Claude Platform</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">September 2, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>3</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/claude-for-commerce-agents/en.html">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/claude-for-commerce-agents" target="_blank">View original</a></p>
-          <p><a href="/">← Back to home</a></p>
-        </footer>
-      </article>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>Many of the world’s largest retailers, marketplaces, e-commerce platforms, and travel companies use Claude to build agents that make shopping easier. Enterprise customers like Shopify, Priceline, and others have agents that let consumers use AI to search for what they want in plain language, find it, compare it, and buy it.</p><p>Today, we're launching a blueprint to help build commerce agents on Claude. It contains the harnesses, patterns, and guardrails an engineering team needs to get a commerce agent running in days, with reference implementations of a shopping agent and a merchant agent for retail, travel, telecom, and ticketing platforms. It also includes a Claude Code plugin to get you started.</p><p>The code deploys where you already build with Claude, including the Claude API, Amazon Bedrock, Microsoft Foundry, or Google Cloud Vertex AI. You can also work with our solutions and ecosystem partners such as Accenture, Mastercard, and Visa, who are working with us to enable clients and merchant communities to leverage the blueprints.</p><p>It’s <a href="https://github.com/anthropics/commerce-agents">available today</a>, with <a href="https://claude.com/solutions/commerce">live demos</a> for each vertical and an <a href="http://claude.com/blog/the-anatomy-of-effective-commerce-agents">engineering deep-dive</a> on how it was built, just in time for holiday season planning.</p><figure style="max-width:2160pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a95f44f1757be75a0616bd0_demo-retail.webp" loading="lazy"></div><figcaption><em>The shopping agent running in the ACME </em><a href="https://claude.com/solutions/commerce"><em>retail example</em>.</a></figcaption></figure><h2>What's in the blueprint</h2><p>The repository contains complete, working implementations of a shopping agent and merchant agent that can be built using the <a href="https://platform.claude.com/docs/en/intro">Messages API</a>, <a href="https://code.claude.com/docs/en/agent-sdk">Agent SDK</a>, or <a href="https://platform.claude.com/docs/en/managed-agents/overview">Claude Managed Agents</a> (beta). You can see them running in a self-guided demo before writing any code, and then work with Claude Code to customize them to your catalogs, policies, brand, and more.</p><h3>The shopping agent</h3><p>The shopping agent lives inside your app or website. The blueprint includes the integration points for catalog, cart, checkout, customer preferences, and order history, and leaves payment to you, whether that is your existing checkout or an agentic payments provider.</p><p>A customer can say “I need a tent, sleeping bag, and stove for a weekend trip with two kids,” and the agent can take it from there. Here’s what it can do:</p><ul role="list"><li>Search the catalog and assemble the right set of items, including multi-item requests.</li><li>Remember the customer's preferences and tailor what it suggests.</li><li>Show products, comparisons, and the cart right in the conversation, not just as text.</li><li>Build the cart and hand it to checkout.</li><li>Answer customer service questions in the same conversation, like where an order is, how to return or exchange an item, and what the refund policy says, instead of sending the customer to a support page.</li></ul><p>The agent features guardrails designed to constrain prices and products to actual catalog data, and avoids manipulative upsell patterns. In the repository, these are skills and tools for catalog search, multi-item planning, deep research, personalization, customer care, and in-conversation UI.</p><h3>The merchant agent</h3><p>The merchant agent supports the people running the store. A user can ask “what should we discount to clear last season’s inventory?” and get an answer based on their own data. Here’s what it can do:</p><ul role="list"><li>Answer questions about sales performance like what's selling and what isn't.</li><li>Track inventory and proactively flag problems, like an item about to sell out before a promotion starts.</li><li>Recommend pricing and promotions based on the store's own sales history.</li><li>Draft marketing campaigns to move the products that need moving.</li></ul><p>When the agent proactively suggests a change, a person approves it before anything goes live, meaning users get the final say while their agent watches the store. In the repository, these capabilities ship as skills for sales analytics, catalog and inventory management, marketing and promotions, and in-portal UI such as charts and dashboards.</p><figure style="max-width:1440pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a972d45795f7bbae7ce272f_Retail%20%E2%80%94%20Merchant%20workspace.png" loading="lazy"></div></figure><h2>Trusted across the industry</h2><p>Companies that serve shoppers, travelers, subscribers, and merchants build and run agents on Claude. Here's what they have to say about building commerce agents with Claude:&nbsp;</p><div class="article-testimonials" role="list"><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68b5ae674813a930db5dcaf7_Visa_light.svg" alt="68b5ae674813a930db5dcaf7 Visa" loading="lazy"><blockquote><p>“AI will fundamentally reshape commerce, but trust must remain at the center of every transaction. Merchants are telling us they want more control over how AI engages their customers. Our collaboration with Anthropic on their commerce blueprint helps bring together the intelligence of Claude with the trust, security, and global reach of the Visa network, empowering merchants to deliver better customer experiences while maintaining the relationships that drive their businesses forward.”</p></blockquote><figcaption class="article-testimonial-caption">Jack Forestell, Chief Product and Strategy Officer</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a96d51f43f5c41132ff29ed_mastercard-logo.svg" alt="6a96d51f43f5c41132ff29ed mastercard" loading="lazy"><blockquote><p>“Trust is the currency of commerce, and it is even more critical in the agentic era. With Anthropic's commerce blueprint, we're helping merchants build their own agents with Claude to drive their growth. By combining AI innovation with trusted payments and commerce infrastructure, we're helping connect consumers, merchants and AI agents securely, seamlessly and at scale.”</p></blockquote><figcaption class="article-testimonial-caption">Sherri Haymond, Executive Vice President, Global Head of Digital Commercialization</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68f679a0b07cb25d6830bc76_accenture_logo.svg.svg" alt="68f679a0b07cb25d6830bc76 accenture .svg" loading="lazy"><blockquote><p>“Commerce agents are quickly becoming a critical capability for organizations seeking to deliver the personalized, intelligent customer experiences that today’s consumers expect. Our latest research revealed that 85% are now open to collaboration with an AI agent and nearly three in four would trust a personal AI agent more than their best friend to make a purchase on their behalf. This is more than a shift in how people shop. Agentic commerce is rewriting the rules of brand value – fundamentally shaping what gets purchased, when, where and by whom. Anthropic’s commerce agent blueprint provides a proven starting point that can help organizations accelerate deployment and build differentiated experiences that increase customer satisfaction, loyalty, and growth. Combined with Accenture's deep retail and consumer goods expertise, we can help clients move from concept to production and realize value from agentic AI faster.”</p></blockquote><figcaption class="article-testimonial-caption">Kath Gramling, Global Consumer Goods, Retail and Travel lead</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a95a7dc912b141697da7a0c_priceline-color.svg" alt="6a95a7dc912b141697da7a0c priceline" loading="lazy"><blockquote><p>“A trip is one of the most complex things a person buys: flights, hotels, cars, and dozens of options to weigh against each other. Penny, our AI assistant, navigates all of that in one conversation and surfaces the best options and best value. We built the latest generation of Penny on Claude because that kind of reasoning is exactly what Claude models are good at.”</p></blockquote><figcaption class="article-testimonial-caption">Cobus Kok, Vice President, AI Experiences</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a9771254c4225f0bc16623e_intuit-color.svg" alt="6a9771254c4225f0bc16623e intuit" loading="lazy"><blockquote><p>“Millions of consumers, businesses and accountants run their finances on Intuit. Working with partners like Anthropic, we're building highly personalized experiences that provide customers with a clear understanding of what's shifting in their business and why, so they can take action with complete confidence. We are creating a financial system of intelligence by combining frontier AI reasoning, including Claude, with our proprietary data, capabilities, intelligence, and human expertise that powers the next level of prosperity for our customers.”</p></blockquote><figcaption class="article-testimonial-caption">Chris Kasten, Intuit’s Chief Architect and SVP of Engineering, Platform and Development Xceleration Group</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68da9368f2bd228e7080695d_logo_shopify-light.svg" alt="68da9368f2bd228e7080695d shopify" loading="lazy"><blockquote><p>“We want our merchants to be everywhere customers are shopping, and increasingly that means a conversation with an agent. We're building on Anthropic's blueprints with a reference storefront implementation that connects them to a merchant's store through Catalog, UCP and Shop Sign-in. Merchants can use Claude to build agents that help customers find products, check out, and answer questions about their orders.”</p></blockquote><figcaption class="article-testimonial-caption">Vanessa Lee, VP Product</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a906156d04a91e09ce93cb7_klaviyo-black.svg" alt="6a906156d04a91e09ce93cb7 klaviyo" loading="lazy"><blockquote><p>“Commerce and stunning customer experiences require personalization, and every brand on Klaviyo sits on more customer data and decisions than any team could act on by hand. Claude closes that gap, turning consumer preferences and performance data into the insights, campaigns and personalization that drive revenue. That's why we keep building with Anthropic: agents do complex analysis, design and decision making, and businesses can focus on delighting customers.”</p></blockquote><figcaption class="article-testimonial-caption">Andrew Bialecki, Founder and Co-CEO</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a97717810bbbdeb232b1861_wix-black.svg" alt="6a97717810bbbdeb232b1861 wix" loading="lazy"><blockquote><p>“Wix’s mission has always been to make complex technology simple and accessible for our users. For merchants, that means providing powerful commerce capabilities without adding operational complexity, and agents are a natural next step. Our engineers had a working commerce agent taking prompts within fifteen minutes, and the pilot showed the potential of combining Anthropic’s AI capabilities with Wix’s commerce platform and deep expertise in commerce for SMB.”</p></blockquote><figcaption class="article-testimonial-caption">Dror Zalika, Head of Commerce at Wix</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a95a7436f6227c5015996a7_zomato-black.svg" alt="6a95a7436f6227c5015996a7 zomato" loading="lazy"><blockquote><p>“Our engineers had the blueprint running with no blockers; the setup worked exactly as documented. The practices it bakes in, from tool iteration limits to prompt caching, are the ones we recognized from building Zomato's own agent. Teams standing up their first agent on Claude will skip weeks of trial and error.”</p></blockquote><figcaption class="article-testimonial-caption">Akhil Bansal, Senior Engineering Manager</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a90644256c9ac773063e8e6_fetch-black.svg" alt="6a90644256c9ac773063e8e6 fetch" loading="lazy"><blockquote><p>“Our engineers had both commerce agents from Anthropic's blueprint running locally in well under an hour, with live conversations working on the first attempt. We ran the Claude Code workflow twice and got two different architectures back, each designed to what we'd asked for. For a team starting from scratch, that turns days of agent scaffolding into hours.”</p></blockquote><figcaption class="article-testimonial-caption">Ashley Nader, Staff Product Manager</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68b5aded6c2824c6159c1795_Square_light.svg" alt="68b5aded6c2824c6159c1795 Square" loading="lazy"><blockquote><p>“Much of what we build at Square is about giving sellers time back, and agents are a big leap in our ability to do that. We're building agentic tools that watch sales, labor, and inventory and come back with real next steps, not just an answer, while keeping sellers in control. Trust is the hardest part of that work, and Claude helps us meet a high standard.”</p></blockquote><figcaption class="article-testimonial-caption">Willem Avé, Head of Product</figcaption></figure></div><h2>Getting started</h2><p>The blueprint is available today. <a href="https://claude.com/contact-sales">Contact our sales team</a> to learn more, schedule a demonstration, or discuss how to implement for your organization.</p><ol role="list"><li>Fork the repository at <a href="https://github.com/anthropics/commerce-agents">github.com/anthropics/commerce-agents</a>.</li><li>Read the engineering deep-dive at <a href="http://claude.com/blog/the-anatomy-of-effective-commerce-agents">claude.com/blog/the-anatomy-of-effective-commerce-agents.</a></li><li>See the vertical demos and request a working session at <a href="https://claude.com/solutions/commerce">claude.com/solutions/commerce</a>.</li></ol><p>Register for our <a href="http://anthropic.com/webinars/building-claude-commerce-agents">webinar</a> to see the deep dive where we'll share live walkthroughs, demos, and cover how commerce builders can get the most out of Claude.</p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/claude-for-commerce-agents" target="_blank">View original</a></p>
+              <p><a href="/">← Back to home</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
     </div>
   </main>
 <footer class="footer">
@@ -51,6 +185,53 @@
       <p>Content from <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · Translation by AI</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

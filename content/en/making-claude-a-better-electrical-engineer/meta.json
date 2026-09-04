@@ -13,5 +13,19 @@
   "translatedTitle": "让 Claude 成为更好的电气工程师",
   "translated": true,
   "translatedAt": "2026-09-02T04:54:25.809Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Enterprise"
+    ],
+    "usecase": []
+  },
+  "subtitle": "How collaboration with domain experts, like custom circuit board manufacturers, helps us train Claude to handle specialized tasks more effectively.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/solutions/enterprise"
 }

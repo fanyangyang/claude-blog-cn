@@ -13,5 +13,21 @@
   "translatedTitle": "Claude 与你的生产力平台",
   "translated": true,
   "translatedAt": "2026-09-02T04:38:31.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Enterprise"
+    ],
+    "usecase": [
+      "Productivity"
+    ]
+  },
+  "subtitle": "Claude now integrates with Microsoft 365 and offers enterprise search across your connected tools. Claude works with the productivity tools you use every day, bringing context from your documents, emails, and calendar directly into your conversations.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/solutions/enterprise"
 }

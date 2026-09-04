@@ -4,54 +4,320 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Datadog 如何为 Claude Code 打造一把“万能机床” — Claude Blog 中文翻译</title>
-  <meta name="description" content="Datadog 如何为 Claude Code 打造一把“万能机床”">
+  <meta name="description" content="Datadog 让智能体写规格，再由确定性内核生成应用代码。">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/how-datadog-built-a-universal-machine-tool-for-claude-code" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>Datadog 如何为 Claude Code 打造一把“万能机床”</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/how-datadog-built-a-universal-machine-tool-for-claude-code" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/how-datadog-built-a-universal-machine-tool-for-claude-code/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># Datadog 如何为 Claude Code 打造一把“万能机床”
+
+Datadog 让智能体写规格，再由确定性内核生成应用代码。
+
+智能体、机械化与工业化
+
+Datadog 的所有工程师都在用 AI 编码工具写生产代码，其中至少三分之二由 Claude Code 驱动。借助 Claude Code，他们在自己的软件开发生命周期中形成了四类各具特色的个性化流程：
+
+- **定向修改： **数十个棘手的 bug 修复、性能优化，以及与现有服务的桥接。 
+- **大型重构：**三天内重构一个自研 protobuf 解析器，以及用不到三个月把一个指标控制面从 FoundationDB 迁移到 Postgres。 
+- **替换大型组件：**新的分片算法和自动扩缩容的重新设计。 
+- **构建整套系统**：用 Postgres 替换 MongoDB、BYOC 控制平面，以及从零搭建数据摄取管道。
+
+然而，随着工作沿着这张地图铺开，他们发现：一个轴线上，生成变得越来越复杂；另一个轴线上，验证变得越来越模糊。 
+
+## 心流问题
+
+对工程师而言，心流（flow）过去意味着意图与代码之间的直接联系。你理解问题、写代码、测试、审查、发布、运维，如此往复。有了智能体之后，这层抽象正在快速改变。 
+
+“你不再是写代码的人，而是塑造工作的人。你要决定智能体应该看到什么、该有哪些工具、成功是什么样子、失败该如何被发现……这就像所有人都被连升三级变成了管理者，而他们当初选择做工程师，可没打算干这个。”Datadog 工程副总裁 Sesh Nalla 说。
+
+借助 [Claude Managed Agents](https://platform.claude.com/docs/en/managed-agents/overview) 等方案，Datadog 的会话运行时间更长，有时长达数天。每个智能体都会发明自己的工具、自己的胶水代码和自己的约定。这些智能体变得有用得多，但需要人类来弥合智能体执行方式与为人类设计的工具之间的鸿沟。
+
+机床（machine tool）是制造业中常见的夹具、工装、量具和铣床。它们生产精确、可复用的零件，再由这些零件组装成更大、更复杂的机器——发动机、飞机、核反应堆、登月舱。零件变得可组合、可检查、可替换，正是工业化的突破点。
+
+Temper 是 Sesh 对 Datadog 尝试的描述——为智能体系统打造一把万能机床。换句话说，就是智能体以安全、精确的方式构建所需之物的最小内核。
+
+“正是在这个节点，我意识到我们需要一些更结构化的东西。”Sesh 说，“如果智能体将要构建和运营我们系统的大部分、我们数据库的大部分——这些都是关键任务系统——它们就需要有机床概念的等价物。对 Datadog 来说，Temper 就是那把机床。”
+
+## 通往 Temper 的路
+
+机械化意味着现在更多工作由智能体来做。工业化则意味着工作变得可重复、可验证、可控制和可规模化。在 Datadog，这并非一蹴而就：通往 Temper 的路上，先经过了 Courier、BitsEvolve 和 Helix 三个项目。每一个都暴露出下一个项目的瓶颈，也让他们敢于把野心再放大一档。
+
+2024 年，他们推出了 [**Courier**](https://www.datadoghq.com/blog/engineering/formal-modeling-and-simulation/)，一套分布式队列系统。完全手写、从零开始，花了一年。
+
+“难点不在于做出零件，而在于让零件之间的交互变得可观察、可测试、可验证。”Sesh 说，“所以我们在形式化建模和仿真上非常严格……找出那些一旦出错就代价高昂或难以回退的部分，并在那里提高严谨程度。” 
+
+2025 年 9 月，他们做了 [**BitsEvolve**](https://www.datadoghq.com/blog/engineering/self-optimizing-system/)，一套闭环进化优化 harness。一个模型委员会生成代码变体。一层层 [benchmark](https://www.datadoghq.com/blog/ai/production-grounded-code-optimization/)、测试和生产可观测性决定谁留下来。 
+
+“这是我第一次隐约看到，软件的某些部分可以像活的有机体一样被培育——通过带反馈的变异，以及适应，一点点长出来。”Sesh 说。 
+
+问题在于：进化只能和它所适应的环境一样好，而 BitsEvolve 的瓶颈就在这条反馈回路上。随后他们做了 [**Helix**](https://www.datadoghq.com/blog/ai/fully-autonomous-optimization/)，一套可与 Kafka 对标的流服务。大部分构建由 Claude Code 完成，一个人掌舵。 
+
+“让我们难以置信的是，几天之内我们就有了一套功能完整、可与 Kafka 对标的系统。”Sesh 说，“[它建得很快]，我们开始对它做影子流量，并看到了便宜 2 到 5 倍的机会。”
+
+但把它送进生产，还要走长得多的路：运维上的硬化只能靠时间、靠不止一个人积累，而这项工作至今仍在推出过程中。 
+
+“瓶颈又一次挪了位置：智能体已经能构建系统的大部分……但人类仍要通过为人类设计的工具和机制，协调把工作送进生产。”Sesh 说。
+
+Datadog 需要一种办法，让智能体在经过验证、由策略驱动的运行时环境里自己造工具。那个运行时就是 [**Temper**](https://github.com/nerdsane/temper)。
+
+## Temper
+
+智能体产出代码的速度，已经快过任何团队能手工审查的速度，但它们也会出错。 
+
+对 Sesh 来说，智能体生成的东西和通过验证的东西之间的缝隙，正是失败模式堆积的地方。不过，只是把智能体包在一套传统代码库外面，等于把这当成吞吐量问题，并没有真正合上验证这条缝。
+
+Temper 把这个等式反过来：智能体不再产出应用代码，而是产出规格。内核读每一份规格，经过四层分析验证，再部署规格所描述的运行系统。因为规格既是被证明的制品，也是被执行的制品，已验证的东西和正在运行的东西之间不会漂移。
+
+“Temper 改变了系统的*中心*。智能体不再需要为每个局部需求不断发明互不衔接的工具。相反，它把意图和问题域写成精确的规格描述。它是机床，和夹具或 CNC 机床是同一个意思：你给它们螺纹该是什么样的规格。它极其可重复。你可以跑它们，也可以用它们造飞机和这类复杂的东西。”Sesh 说。
+
+所以在这种情形下，智能体不会每次都即兴拼出最终机制。它可以先写出精确描述，再和 Temper（或类似 Temper 的机制）一起迭代，先让东西跑起来，再把它变成可重复、可检查、可复用的东西，这样你才能真正围着代码库建一座软件工厂。
+
+每一项能力由三份契约描述：
+
+- **行为**：必须成立的状态、转换、前置条件和安全属性。 
+- **数据契约**：实体类型、它们的属性，以及每种类型支持的动作，以机器可解析的形式发布，让智能体不必读文档就能发现完整 API。
+- **授权**：默认拒绝、基于范围的批准；拒绝会被记成待决决策，人类可以批准并热加载进策略引擎。
+
+每一份规格都要先通过四层彼此独立的检查，内核才会加载它。符号推理证明每条 guard 可满足、每条不变量是归纳的。穷尽状态探索会访问每一个可达状态。 
+
+确定性仿真用带种子的故障注入跑真实的生产代码路径——丢包、延迟、乱序、崩溃——这样同一颗种子下，失败可以精确复现。 
+
+随机属性测试大约会跑一千条伪随机动作序列，并把任何违规收缩成最小反例。对一份小规格，整条级联远不到一秒就能跑完。
+
+## Helix 的暗工厂
+
+Simon Willison 让 dark factory（暗工厂）这个词流行起来，指的是智能体在虚拟工厂地板上继续工作、现场没有人类的软件过程。在 Helix 的暗工厂里，Temper 扮演三个角色。 
+
+它是托管智能体的**智能体控制平面**——会话、角色、工作队列、生命周期。它是**造工具**层，让智能体能用小型 Temper 应用桥接 SDLC 工具链（Git、CI、部署）。它也是 **Helix 控制 API**，也就是数据平面周围那层用来驱动工作负载的生命周期表面。
+
+“让人意外的是，它开始显得比智能体基础设施更通用。很多软件，你眯着眼看，其实就是围着数据库 API 转的控制逻辑：状态、围绕变更的策略、生命周期转换、与外部系统的集成。Temper 可以是万能的，意思是它能用在任何具有我描述的那种形状的软件上。”Sesh 说。
+
+## 为什么不直接做一套 CRUD 应用？
+
+“Claude Code [用 TypeScript 或 Python 做 CRUD 应用] 做得非常好。不过在普通 CRUD 应用里，控制逻辑散落在路由、数据库约束、服务代码、后台任务和文档里。测试和覆盖率也许不错，但运维模式——通常以状态机的形式出现——在代码库里是隐式的。”Sesh 说。
+
+“Temper 把那台状态机变成显式的。智能体产出的是精确描述，而不是任意代码。编译步骤在 LLM 外面，就像你把 Rust 代码交给 Rust 编译器。转换表是数据，不是埋在服务方法里的意大利面控制流。智能体可以在安全约束下动态改它，并且热加载，不必走 CI。”他解释道。
+
+## 接下来往哪走
+
+Temper 背后的想法是：每一件制品都应当小到能装进你脑子里。航空和金融系统这类高保证软件，几十年来一直是这样做的；但在智能体出现之前，用人类去达到那种严谨程度，对一般软件来说成本太高。
+
+工业革命之所以成为可能，是因为机床让零件变得可组合、可检查、可替换，于是我们才能造出越来越大、越来越复杂的机器。 
+
+“如果智能体能够以这种纪律，在工厂里自主构建软件，也许我们不必停在暗工厂。这样做出的软件，开始像一个我们可以培育、栽培，并通过反馈、选择和适应来演化的有机体。”Sesh 说。
+
+  
+    
+      
+        
+          Datadog 团队的最佳实践
+        
+      
+      
+        
+          你真正的瓶颈是生成，还是验证？
+          默认先想验证。智能体产出代码的速度，已经快过任何团队能审查的速度；生成出来的东西和被证明的东西之间的缝隙，正是失败模式堆积的地方。把投入放在这里，而不是再加吞吐量。
+        
+        
+          智能体真正该吐出什么？
+          控制逻辑用规格（而不是代码），任意代码则带着证明走。把编译和证明放在 LLM 外面——把规格交给确定性内核，这样被验证的制品就是跑起来的制品。
+        
+        
+          你的控制逻辑是显式的，还是散落在代码库里？
+          把状态机从路由、服务方法和后台任务里抽出来，做成数据：一张智能体可以在策略约束下读取、修改并热加载的转换表。
+        
+        
+          人能不能把每一件制品装进脑子里理解？
+          如果不能，你又回到了起点。让每一块生成出来的东西都小到能推理。
+        
+      
+    
+  
+[*观看完整场次*](https://www.youtube.com/watch?v=EdmuYPBt_EM&amp;list=PLmWCw1CzcFim2obQ-w3ohbULOfwp5lApR&amp;index=9)*，看现场演示，以及更深入的讨论：Datadog 如何做出 Temper 这套受约束的框架，把一次性的智能体工具变成安全、可复用的组件，并在会话和团队之间复利。*
+
+‍</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Claude Code</span>
-            <span class="article-date">July 21, 2026</span>
-            
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-peach);">
+            <img class="hero-illo-img" src="/assets/illustrations/how-datadog-built-a-universal-machine-tool-for-claude-code.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">Datadog 如何为 Claude Code 打造一把“万能机床”</h1>
-          <a href="/posts/how-datadog-built-a-universal-machine-tool-for-claude-code/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>智能体、机械化与工业化</p><p>Datadog 的所有工程师都在用 AI 编码工具写生产代码，其中至少三分之二由 Claude Code 驱动。借助 Claude Code，他们在自己的软件开发生命周期中形成了四类各具特色的个性化流程：</p><ul role="list"><li><strong>定向修改：</strong>数十个棘手的 bug 修复、性能优化，以及与现有服务的桥接。&nbsp;</li><li><strong>大型重构：</strong>三天内重构一个自研 protobuf 解析器，以及用不到三个月把一个指标控制面从 FoundationDB 迁移到 Postgres。&nbsp;</li><li><strong>替换大型组件：</strong>新的分片算法和自动扩缩容的重新设计。&nbsp;</li><li><strong>构建整套系统</strong>：用 Postgres 替换 MongoDB、BYOC 控制平面，以及从零搭建数据摄取管道。</li></ul><p>然而，随着工作沿着这张地图铺开，他们发现：一个轴线上，生成变得越来越复杂；另一个轴线上，验证变得越来越模糊。&nbsp;</p><h2>心流问题</h2><p>对工程师而言，心流（flow）过去意味着意图与代码之间的直接联系。你理解问题、写代码、测试、审查、发布、运维，如此往复。有了智能体之后，这层抽象正在快速改变。&nbsp;</p><p>"你不再是写代码的人，而是塑造工作的人。你要决定智能体应该看到什么、该有哪些工具、成功是什么样子、失败该如何被发现……这就像所有人都被连升三级变成了管理者，而他们当初选择做工程师，可没打算干这个。"Datadog 工程副总裁 Sesh Nalla 说。</p><p>借助 <a href="https://platform.claude.com/docs/en/managed-agents/overview">Claude Managed Agents</a> 等方案，Datadog 的会话运行时间更长，有时长达数天。每个智能体都会发明自己的工具、自己的胶水代码和自己的约定。这些智能体变得有用得多，但需要人类来弥合智能体执行方式与为人类设计的工具之间的鸿沟。</p><p>机床（machine tool）是制造业中常见的夹具、工装、量具和铣床。它们生产精确、可复用的零件，再由这些零件组装成更大、更复杂的机器——发动机、飞机、核反应堆、登月舱。零件变得可组合、可检查、可替换，正是工业化的突破点。</p><p>Temper 是 Sesh 对 Datadog 尝试的描述——为智能体系统打造一把万能机床。换句话说，就是智能体以安全、精确的方式构建所需之物的最小内核。</p><p>"正是在这个节点，我意识到我们需要一些更结构化的东西。"Sesh 说，"如果智能体将要构建和运营我们系统的大部分、我们数据库的大部分——这些都是关键任务系统——它们就需要有机床概念的等价物。对 Datadog 来说，Temper 就是那把机床。"</p></div>
+            <h1 class="article-title u-text-style-h1">Datadog 如何为 Claude Code 打造一把“万能机床”</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>Datadog 让智能体写规格，再由确定性内核生成应用代码。</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <div class="hero-detail-value-stack"><a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a><div class="hero-detail-value u-text-style-body-3">Enterprise AI</div></div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/product/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">July 21, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/how-datadog-built-a-universal-machine-tool-for-claude-code/">Copy link</button>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M15.5117 1.99707C15.9213 2.0091 16.3438 2.13396 16.6768 2.46679C17.0278 2.81814 17.1209 3.26428 17.0801 3.68261C17.0404 4.08745 16.8765 4.49344 16.6787 4.85058C16.3934 5.36546 15.9941 5.85569 15.6348 6.20898C15.7682 6.41421 15.8912 6.66414 15.9551 6.9453C16.0804 7.4977 15.9714 8.13389 15.4043 8.70116C14.8566 9.24884 13.974 9.54823 13.1943 9.71679C12.7628 9.81003 12.3303 9.86698 11.9473 9.90233C12.0596 10.2558 12.0902 10.7051 11.8779 11.2012L11.8223 11.3203C11.5396 11.8854 11.0275 12.2035 10.4785 12.3965C9.93492 12.5875 9.29028 12.6792 8.65332 12.75C7.99579 12.8231 7.34376 12.8744 6.70117 12.9775C6.14371 13.067 5.63021 13.1903 5.18652 13.3818L5.00585 13.4658C4.53515 14.2245 4.13745 14.9658 3.80957 15.6465C4.43885 15.2764 5.1935 15 5.99999 15C6.27614 15 6.49999 15.2238 6.49999 15.5C6.49999 15.7761 6.27613 16 5.99999 16C5.35538 16 4.71132 16.2477 4.15039 16.6103C3.58861 16.9736 3.14957 17.427 2.91601 17.7773C2.91191 17.7835 2.90568 17.788 2.90136 17.7939C2.88821 17.8119 2.8746 17.8289 2.85937 17.8447C2.85117 17.8533 2.84268 17.8612 2.83398 17.8691C2.81803 17.8835 2.80174 17.897 2.78417 17.9092C2.774 17.9162 2.76353 17.9225 2.75292 17.9287C2.73854 17.9372 2.72412 17.9451 2.70898 17.9521C2.69079 17.9605 2.6723 17.9675 2.65332 17.9736C2.6417 17.9774 2.63005 17.9805 2.61816 17.9834C2.60263 17.9872 2.5871 17.9899 2.57128 17.9922C2.55312 17.9948 2.53511 17.9974 2.5166 17.998C2.50387 17.9985 2.49127 17.9976 2.47851 17.9971C2.45899 17.9962 2.43952 17.9954 2.41992 17.9922C2.40511 17.9898 2.39062 17.9862 2.37597 17.9824C2.36477 17.9795 2.35294 17.9783 2.34179 17.9746C2.33697 17.973 2.33286 17.9695 2.32812 17.9678C2.31042 17.9612 2.29351 17.953 2.27636 17.9443C2.26332 17.9378 2.25053 17.9314 2.23828 17.9238C2.23339 17.9208 2.22747 17.9192 2.22265 17.916C2.21414 17.9103 2.20726 17.9026 2.19921 17.8965C2.18396 17.8849 2.16896 17.8735 2.15527 17.8603C2.14518 17.8507 2.13609 17.8404 2.12695 17.8301C2.11463 17.8161 2.10244 17.8023 2.09179 17.7871C2.08368 17.7756 2.07736 17.7631 2.07031 17.751C2.06168 17.7362 2.05297 17.7216 2.04589 17.706C2.03868 17.6901 2.03283 17.6738 2.02734 17.6572C2.0228 17.6436 2.01801 17.6302 2.01464 17.6162C2.01117 17.6017 2.009 17.587 2.00683 17.5722C2.00411 17.5538 2.00161 17.5354 2.00097 17.5166C2.00054 17.5039 2.00141 17.4912 2.00195 17.4785C2.00279 17.459 2.00364 17.4395 2.00683 17.4199C2.00902 17.4064 2.01327 17.3933 2.0166 17.3799C2.01973 17.3673 2.02123 17.3543 2.02539 17.3418C2.41772 16.1648 3.18163 14.466 4.30468 12.7012C4.31908 12.5557 4.34007 12.3582 4.36914 12.1201C4.43379 11.5907 4.53836 10.8564 4.69921 10.0381C5.0174 8.41955 5.56814 6.39783 6.50585 4.9912L6.73242 4.66894C7.27701 3.93277 7.93079 3.30953 8.61035 2.85156C9.3797 2.33311 10.2221 2 11.001 2C11.7951 2.00025 12.3531 2.35795 12.7012 2.70605C12.7723 2.77723 12.8348 2.84998 12.8896 2.91796C13.2829 2.66884 13.7917 2.39502 14.3174 2.21191C14.6946 2.08056 15.1094 1.98537 15.5117 1.99707ZM17.04 15.5537C17.1486 15.3 17.4425 15.1818 17.6963 15.29C17.95 15.3986 18.0683 15.6925 17.96 15.9463C17.4827 17.0612 16.692 18 15.5 18C14.6309 17.9999 13.9764 17.5003 13.5 16.7978C13.0236 17.5003 12.3691 18 11.5 18C10.6309 17.9999 9.97639 17.5003 9.49999 16.7978C9.02359 17.5003 8.36911 18 7.49999 18C7.22391 17.9999 7 17.7761 6.99999 17.5C6.99999 17.2239 7.22391 17 7.49999 17C8.07039 17 8.6095 16.5593 9.04003 15.5537L9.07421 15.4873C9.16428 15.3412 9.32494 15.25 9.49999 15.25C9.70008 15.25 9.88121 15.3698 9.95996 15.5537L10.042 15.7353C10.4581 16.6125 10.9652 16.9999 11.5 17C12.0704 17 12.6095 16.5593 13.04 15.5537L13.0742 15.4873C13.1643 15.3412 13.3249 15.25 13.5 15.25C13.7001 15.25 13.8812 15.3698 13.96 15.5537L14.042 15.7353C14.4581 16.6125 14.9652 16.9999 15.5 17C16.0704 17 16.6095 16.5593 17.04 15.5537ZM15.4824 2.99707C15.247 2.99022 14.9608 3.04682 14.6465 3.15624C14.0173 3.37541 13.389 3.76516 13.0498 4.01953C12.9277 4.11112 12.7697 4.14131 12.6221 4.10253C12.4745 4.06357 12.3522 3.9591 12.291 3.81933V3.81835C12.2892 3.81468 12.2861 3.80833 12.2822 3.80078C12.272 3.78092 12.2541 3.7485 12.2295 3.70898C12.1794 3.62874 12.1011 3.52019 11.9941 3.41308C11.7831 3.2021 11.4662 3.00024 11.001 2.99999C10.4904 2.99999 9.84173 3.22729 9.16894 3.68066C8.58685 4.07297 8.01568 4.61599 7.5371 5.26269L7.33789 5.54589C6.51634 6.77827 5.99475 8.63369 5.68066 10.2314C5.63363 10.4707 5.5913 10.7025 5.55371 10.9238C7.03031 9.01824 8.94157 7.19047 11.2812 6.05077C11.5295 5.92989 11.8283 6.03301 11.9492 6.28124C12.0701 6.52949 11.967 6.82829 11.7187 6.94921C9.33153 8.11208 7.38648 10.0746 5.91406 12.1103C6.12313 12.0632 6.33385 12.0238 6.54296 11.9902C7.21709 11.8821 7.92723 11.8243 8.54296 11.7558C9.17886 11.6852 9.72123 11.6025 10.1465 11.4531C10.5662 11.3056 10.8063 11.1158 10.9277 10.873L10.9795 10.7549C11.0776 10.487 11.0316 10.2723 10.9609 10.1123C10.918 10.0155 10.8636 9.93595 10.8203 9.88183C10.7996 9.85598 10.7822 9.83638 10.7715 9.82518L10.7607 9.81542L10.7627 9.8164L10.7646 9.81835C10.6114 9.67972 10.5597 9.46044 10.6338 9.26757C10.7082 9.07475 10.8939 8.94726 11.1006 8.94726C11.5282 8.94719 12.26 8.8956 12.9834 8.73925C13.7297 8.5779 14.3654 8.32602 14.6973 7.99413C15.0087 7.68254 15.0327 7.40213 14.9795 7.16698C14.9332 6.96327 14.8204 6.77099 14.707 6.62792L14.5957 6.50195C14.4933 6.39957 14.4401 6.25769 14.4502 6.11327C14.4605 5.96888 14.5327 5.83599 14.6484 5.74902C14.9558 5.51849 15.4742 4.96086 15.8037 4.3662C15.9675 4.07048 16.0637 3.80137 16.085 3.58593C16.1047 3.38427 16.0578 3.26213 15.9697 3.17382C15.8631 3.06726 15.7102 3.00377 15.4824 2.99707Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Author(s)</div>
+                  <div class="hero-detail-value u-text-style-body-3">Michael Segner</div>
+                </div>
+              </li>
+            </ul>
+          </aside>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/how-datadog-built-a-universal-machine-tool-for-claude-code" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>智能体、机械化与工业化</p><p>Datadog 的所有工程师都在用 AI 编码工具写生产代码，其中至少三分之二由 Claude Code 驱动。借助 Claude Code，他们在自己的软件开发生命周期中形成了四类各具特色的个性化流程：</p><ul role="list"><li><strong>定向修改： </strong>数十个棘手的 bug 修复、性能优化，以及与现有服务的桥接。&nbsp;</li><li><strong>大型重构：</strong>三天内重构一个自研 protobuf 解析器，以及用不到三个月把一个指标控制面从 FoundationDB 迁移到 Postgres。&nbsp;</li><li><strong>替换大型组件：</strong>新的分片算法和自动扩缩容的重新设计。&nbsp;</li><li><strong>构建整套系统</strong>：用 Postgres 替换 MongoDB、BYOC 控制平面，以及从零搭建数据摄取管道。</li></ul><p>然而，随着工作沿着这张地图铺开，他们发现：一个轴线上，生成变得越来越复杂；另一个轴线上，验证变得越来越模糊。&nbsp;</p><h2>心流问题</h2><p>对工程师而言，心流（flow）过去意味着意图与代码之间的直接联系。你理解问题、写代码、测试、审查、发布、运维，如此往复。有了智能体之后，这层抽象正在快速改变。&nbsp;</p><p>“你不再是写代码的人，而是塑造工作的人。你要决定智能体应该看到什么、该有哪些工具、成功是什么样子、失败该如何被发现……这就像所有人都被连升三级变成了管理者，而他们当初选择做工程师，可没打算干这个。”Datadog 工程副总裁 Sesh Nalla 说。</p><p>借助 <a href="https://platform.claude.com/docs/en/managed-agents/overview">Claude Managed Agents</a> 等方案，Datadog 的会话运行时间更长，有时长达数天。每个智能体都会发明自己的工具、自己的胶水代码和自己的约定。这些智能体变得有用得多，但需要人类来弥合智能体执行方式与为人类设计的工具之间的鸿沟。</p><p>机床（machine tool）是制造业中常见的夹具、工装、量具和铣床。它们生产精确、可复用的零件，再由这些零件组装成更大、更复杂的机器——发动机、飞机、核反应堆、登月舱。零件变得可组合、可检查、可替换，正是工业化的突破点。</p><p>Temper 是 Sesh 对 Datadog 尝试的描述——为智能体系统打造一把万能机床。换句话说，就是智能体以安全、精确的方式构建所需之物的最小内核。</p><p>“正是在这个节点，我意识到我们需要一些更结构化的东西。”Sesh 说，“如果智能体将要构建和运营我们系统的大部分、我们数据库的大部分——这些都是关键任务系统——它们就需要有机床概念的等价物。对 Datadog 来说，Temper 就是那把机床。”</p><h2>通往 Temper 的路</h2><p>机械化意味着现在更多工作由智能体来做。工业化则意味着工作变得可重复、可验证、可控制和可规模化。在 Datadog，这并非一蹴而就：通往 Temper 的路上，先经过了 Courier、BitsEvolve 和 Helix 三个项目。每一个都暴露出下一个项目的瓶颈，也让他们敢于把野心再放大一档。</p><p>2024 年，他们推出了 <a href="https://www.datadoghq.com/blog/engineering/formal-modeling-and-simulation/"><strong>Courier</strong></a>，一套分布式队列系统。完全手写、从零开始，花了一年。</p><p>“难点不在于做出零件，而在于让零件之间的交互变得可观察、可测试、可验证。”Sesh 说，“所以我们在形式化建模和仿真上非常严格……找出那些一旦出错就代价高昂或难以回退的部分，并在那里提高严谨程度。”&nbsp;</p><p>2025 年 9 月，他们做了 <a href="https://www.datadoghq.com/blog/engineering/self-optimizing-system/"><strong>BitsEvolve</strong></a>，一套闭环进化优化 harness。一个模型委员会生成代码变体。一层层 <a href="https://www.datadoghq.com/blog/ai/production-grounded-code-optimization/">benchmark</a>、测试和生产可观测性决定谁留下来。&nbsp;</p><p>“这是我第一次隐约看到，软件的某些部分可以像活的有机体一样被培育——通过带反馈的变异，以及适应，一点点长出来。”Sesh 说。&nbsp;</p><p>问题在于：进化只能和它所适应的环境一样好，而 BitsEvolve 的瓶颈就在这条反馈回路上。随后他们做了 <a href="https://www.datadoghq.com/blog/ai/fully-autonomous-optimization/"><strong>Helix</strong></a>，一套可与 Kafka 对标的流服务。大部分构建由 Claude Code 完成，一个人掌舵。&nbsp;</p><p>“让我们难以置信的是，几天之内我们就有了一套功能完整、可与 Kafka 对标的系统。”Sesh 说，“[它建得很快]，我们开始对它做影子流量，并看到了便宜 2 到 5 倍的机会。”</p><p>但把它送进生产，还要走长得多的路：运维上的硬化只能靠时间、靠不止一个人积累，而这项工作至今仍在推出过程中。&nbsp;</p><p>“瓶颈又一次挪了位置：智能体已经能构建系统的大部分……但人类仍要通过为人类设计的工具和机制，协调把工作送进生产。”Sesh 说。</p><p>Datadog 需要一种办法，让智能体在经过验证、由策略驱动的运行时环境里自己造工具。那个运行时就是 <a href="https://github.com/nerdsane/temper"><strong>Temper</strong></a>。</p><h2>Temper</h2><p>智能体产出代码的速度，已经快过任何团队能手工审查的速度，但它们也会出错。&nbsp;</p><p>对 Sesh 来说，智能体生成的东西和通过验证的东西之间的缝隙，正是失败模式堆积的地方。不过，只是把智能体包在一套传统代码库外面，等于把这当成吞吐量问题，并没有真正合上验证这条缝。</p><p>Temper 把这个等式反过来：智能体不再产出应用代码，而是产出规格。内核读每一份规格，经过四层分析验证，再部署规格所描述的运行系统。因为规格既是被证明的制品，也是被执行的制品，已验证的东西和正在运行的东西之间不会漂移。</p><figure class="w-richtext-align-center w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a5f892116fdac8cb7ef2661_17085ded.png" loading="lazy"></div></figure><p>“Temper 改变了系统的<em>中心</em>。智能体不再需要为每个局部需求不断发明互不衔接的工具。相反，它把意图和问题域写成精确的规格描述。它是机床，和夹具或 CNC 机床是同一个意思：你给它们螺纹该是什么样的规格。它极其可重复。你可以跑它们，也可以用它们造飞机和这类复杂的东西。”Sesh 说。</p><p>所以在这种情形下，智能体不会每次都即兴拼出最终机制。它可以先写出精确描述，再和 Temper（或类似 Temper 的机制）一起迭代，先让东西跑起来，再把它变成可重复、可检查、可复用的东西，这样你才能真正围着代码库建一座软件工厂。</p><p>每一项能力由三份契约描述：</p><ul role="list"><li><strong>行为</strong>：必须成立的状态、转换、前置条件和安全属性。&nbsp;</li><li><strong>数据契约</strong>：实体类型、它们的属性，以及每种类型支持的动作，以机器可解析的形式发布，让智能体不必读文档就能发现完整 API。</li><li><strong>授权</strong>：默认拒绝、基于范围的批准；拒绝会被记成待决决策，人类可以批准并热加载进策略引擎。</li></ul><p>每一份规格都要先通过四层彼此独立的检查，内核才会加载它。符号推理证明每条 guard 可满足、每条不变量是归纳的。穷尽状态探索会访问每一个可达状态。&nbsp;</p><p>确定性仿真用带种子的故障注入跑真实的生产代码路径——丢包、延迟、乱序、崩溃——这样同一颗种子下，失败可以精确复现。&nbsp;</p><p>随机属性测试大约会跑一千条伪随机动作序列，并把任何违规收缩成最小反例。对一份小规格，整条级联远不到一秒就能跑完。</p><h2>Helix 的暗工厂</h2><p>Simon Willison 让 dark factory（暗工厂）这个词流行起来，指的是智能体在虚拟工厂地板上继续工作、现场没有人类的软件过程。在 Helix 的暗工厂里，Temper 扮演三个角色。&nbsp;</p><p>它是托管智能体的<strong>智能体控制平面</strong>——会话、角色、工作队列、生命周期。它是<strong>造工具</strong>层，让智能体能用小型 Temper 应用桥接 SDLC 工具链（Git、CI、部署）。它也是 <strong>Helix 控制 API</strong>，也就是数据平面周围那层用来驱动工作负载的生命周期表面。</p><p>“让人意外的是，它开始显得比智能体基础设施更通用。很多软件，你眯着眼看，其实就是围着数据库 API 转的控制逻辑：状态、围绕变更的策略、生命周期转换、与外部系统的集成。Temper 可以是万能的，意思是它能用在任何具有我描述的那种形状的软件上。”Sesh 说。</p><h2>为什么不直接做一套 CRUD 应用？</h2><p>“Claude Code [用 TypeScript 或 Python 做 CRUD 应用] 做得非常好。不过在普通 CRUD 应用里，控制逻辑散落在路由、数据库约束、服务代码、后台任务和文档里。测试和覆盖率也许不错，但运维模式——通常以状态机的形式出现——在代码库里是隐式的。”Sesh 说。</p><p>“Temper 把那台状态机变成显式的。智能体产出的是精确描述，而不是任意代码。编译步骤在 LLM 外面，就像你把 Rust 代码交给 Rust 编译器。转换表是数据，不是埋在服务方法里的意大利面控制流。智能体可以在安全约束下动态改它，并且热加载，不必走 CI。”他解释道。</p><h2>接下来往哪走</h2><p>Temper 背后的想法是：每一件制品都应当小到能装进你脑子里。航空和金融系统这类高保证软件，几十年来一直是这样做的；但在智能体出现之前，用人类去达到那种严谨程度，对一般软件来说成本太高。</p><p>工业革命之所以成为可能，是因为机床让零件变得可组合、可检查、可替换，于是我们才能造出越来越大、越来越复杂的机器。&nbsp;</p><p>“如果智能体能够以这种纪律，在工厂里自主构建软件，也许我们不必停在暗工厂。这样做出的软件，开始像一个我们可以培育、栽培，并通过反馈、选择和适应来演化的有机体。”Sesh 说。</p><div class="w-embed"><figure>
+  <div role="region" tabindex="0" aria-labelledby="dd-table-title">
+    <table>
+      <thead>
+        <tr>
+          <th id="dd-table-title" colspan="2" scope="colgroup">Datadog 团队的最佳实践</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">你真正的瓶颈是生成，还是验证？</th>
+          <td>默认先想验证。智能体产出代码的速度，已经快过任何团队能审查的速度；生成出来的东西和被证明的东西之间的缝隙，正是失败模式堆积的地方。把投入放在这里，而不是再加吞吐量。</td>
+        </tr>
+        <tr>
+          <th scope="row">智能体真正该吐出什么？</th>
+          <td>控制逻辑用规格（而不是代码），任意代码则带着证明走。把编译和证明放在 LLM 外面——把规格交给确定性内核，这样被验证的制品就是跑起来的制品。</td>
+        </tr>
+        <tr>
+          <th scope="row">你的控制逻辑是显式的，还是散落在代码库里？</th>
+          <td>把状态机从路由、服务方法和后台任务里抽出来，做成数据：一张智能体可以在策略约束下读取、修改并热加载的转换表。</td>
+        </tr>
+        <tr>
+          <th scope="row">人能不能把每一件制品装进脑子里理解？</th>
+          <td>如果不能，你又回到了起点。让每一块生成出来的东西都小到能推理。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</figure></div><p><a href="https://www.youtube.com/watch?v=EdmuYPBt_EM&amp;list=PLmWCw1CzcFim2obQ-w3ohbULOfwp5lApR&amp;index=9"><em>观看完整场次</em></a><em>，看现场演示，以及更深入的讨论：Datadog 如何做出 Temper 这套受约束的框架，把一次性的智能体工具变成安全、可复用的组件，并在会话和团队之间复利。</em></p><p>‍</p></div>
+
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/how-datadog-built-a-universal-machine-tool-for-claude-code" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

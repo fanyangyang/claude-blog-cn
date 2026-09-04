@@ -13,5 +13,22 @@
   "translatedTitle": "为 Claude Code 带来 Code Review",
   "translated": true,
   "translatedAt": "2026-09-02T04:14:11.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Claude Code",
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": [
+      "Coding"
+    ]
+  },
+  "subtitle": "Practical guidance on how to structure agent tasks using three common workflow patterns, with tradeoffs and benefits for each.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/claude-code",
+  "productUrl": "https://claude.com/product/claude-code"
 }

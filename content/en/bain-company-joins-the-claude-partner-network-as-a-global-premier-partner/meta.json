@@ -13,5 +13,17 @@
   "illustrationBg": "Sky",
   "translatedTitle": "Bain & Company 加入 Claude Partner Network，成为全球优先合作伙伴",
   "translatedAt": "2026-09-02T05:12:35.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [],
+    "usecase": []
+  },
+  "subtitle": "Anthropic and Bain & Company are partnering to help enterprises deploy AI, building on Bain's rollout of Claude to its 19,000 employees.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": ""
 }

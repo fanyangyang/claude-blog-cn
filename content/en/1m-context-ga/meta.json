@@ -13,5 +13,24 @@
   "translatedTitle": "1M 上下文窗口正式发布，适用于 Opus 4.6 和 Sonnet 4.6",
   "translated": true,
   "translatedAt": "2026-09-02T04:12:09.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements",
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Platform",
+      "Claude Code"
+    ],
+    "usecase": [
+      "Agents",
+      "Coding"
+    ]
+  },
+  "subtitle": "Standard pricing now applies across the full 1M window for both models, with no long-context premium. Media limits expand to 600 images or PDF pages.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/platform/api"
 }

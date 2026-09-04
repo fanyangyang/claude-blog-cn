@@ -13,5 +13,22 @@
   "translatedTitle": "像 agent 一样去看：我们在 Claude Code 中如何设计工具",
   "translated": true,
   "translatedAt": "2026-09-02T04:32:12.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Claude Code"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": [
+      "Coding",
+      "Agents"
+    ]
+  },
+  "subtitle": "Learn how the Claude Code team designs, tests, and evolves tools by thinking from the model's point of view.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/claude-code",
+  "productUrl": "https://claude.com/product/claude-code"
 }

@@ -13,5 +13,26 @@
   "translatedTitle": "面向组织、合作伙伴与生态的 Skills",
   "translated": true,
   "translatedAt": "2026-09-02T04:54:25.809Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements",
+      "Enterprise AI",
+      "Agents"
+    ],
+    "product": [
+      "Claude Enterprise",
+      "Claude apps"
+    ],
+    "usecase": [
+      "Agents",
+      "Business",
+      "Work"
+    ]
+  },
+  "subtitle": "In October, we introduced skills—a way to teach Claude repeatable workflows tailored to how you work. Today we're making skills easier to deploy, discover, and build: organization-wide management for admins; a directory of partner-built skills from Notion, Canva, Figma, Atlassian, and others; and an open standard so skills work across AI platforms.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/solutions/enterprise"
 }

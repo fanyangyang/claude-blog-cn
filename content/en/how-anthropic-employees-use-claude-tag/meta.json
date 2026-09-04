@@ -13,5 +13,21 @@
   "illustrationBg": "Heather",
   "translatedTitle": "Anthropic 员工如何使用 Claude Tag",
   "translatedAt": "2026-09-01T11:19:19.936Z",
-  "translateLang": "zh"
+  "translateLang": "zh",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Tag"
+    ],
+    "usecase": []
+  },
+  "subtitle": "Producing customer-ready collateral, compiling weekly issue reports, and running legal review, all where the work already happens.",
+  "authors": [
+    "Aleksandra Todorova"
+  ],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/product/tag"
 }

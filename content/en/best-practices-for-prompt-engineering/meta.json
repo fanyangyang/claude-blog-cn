@@ -13,5 +13,22 @@
   "translatedTitle": "2026 年提示词工程最佳实践",
   "translated": true,
   "translatedAt": "2026-09-02T12:10:00.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Agents"
+    ],
+    "product": [
+      "Claude apps"
+    ],
+    "usecase": [
+      "Productivity",
+      "Agents"
+    ]
+  },
+  "subtitle": "Get better AI results with prompt engineering techniques from the team behind Claude.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/agents",
+  "productUrl": ""
 }

@@ -13,5 +13,21 @@
   "translatedTitle": "如何在工程组织中规模化推广智能体式编码",
   "translated": true,
   "translatedAt": "2026-09-02T04:56:38.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Claude Code"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": [
+      "Coding"
+    ]
+  },
+  "subtitle": "As Agentic coding tools mature, technical leaders are wrestling with a practical challenge: moving beyond isolated experiments to organization-wide adoption.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/claude-code",
+  "productUrl": "https://claude.com/product/claude-code"
 }

@@ -13,5 +13,22 @@
   "translatedTitle": "在金融服务业全面部署 Claude",
   "translated": true,
   "translatedAt": "2026-09-02T04:19:19.723Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Cowork",
+      "Claude Enterprise"
+    ],
+    "usecase": [
+      "Financial services"
+    ]
+  },
+  "subtitle": "In this guide, we share how financial services firms are using Claude to compress their most time-consuming work, including customer examples and a practical adoption roadmap.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/product/cowork"
 }

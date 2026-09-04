@@ -13,5 +13,20 @@
   "translatedTitle": "用 Skills 构建智能体：为专业工作武装智能体",
   "translated": true,
   "translatedAt": "2026-09-02T04:22:24.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Agents",
+      "Claude Code"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": []
+  },
+  "subtitle": "Skills package domain expertise in files agents can access and apply—turning general-purpose agents into knowledgeable specialists for real work.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/agents",
+  "productUrl": "https://claude.com/product/claude-code"
 }

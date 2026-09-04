@@ -13,5 +13,21 @@
   "translatedTitle": "Agent Skills 介绍",
   "translated": true,
   "translatedAt": "2026-09-02T04:40:02.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Platform"
+    ],
+    "usecase": [
+      "Agents"
+    ]
+  },
+  "subtitle": "Claude can now use Skills to improve how it performs specific tasks. Skills are folders that include instructions, scripts, and resources that Claude can load when needed. Claude will only access a skill when it's relevant to the task at hand.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/platform/api"
 }

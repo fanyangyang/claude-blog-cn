@@ -13,5 +13,22 @@
   "translatedTitle": "Claude 让研究进入新境界",
   "translated": true,
   "translatedAt": "2026-09-02T04:44:54.905Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude apps"
+    ],
+    "usecase": [
+      "Work",
+      "Productivity"
+    ]
+  },
+  "subtitle": "Claude can now conduct in-depth Research by searching across the web and your Google Workspace to deliver comprehensive answers in minutes.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": ""
 }

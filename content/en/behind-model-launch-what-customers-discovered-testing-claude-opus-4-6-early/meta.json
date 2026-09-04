@@ -13,5 +13,17 @@
   "translatedTitle": "模型发布幕后：客户在提前测试 Claude Opus 4.6 时发现了什么",
   "translated": true,
   "translatedAt": "2026-09-02T04:22:24.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [],
+    "usecase": []
+  },
+  "subtitle": "Inside the tight window between pre-production access and public launch, when customers race to test what a new Claude model can really do.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": ""
 }

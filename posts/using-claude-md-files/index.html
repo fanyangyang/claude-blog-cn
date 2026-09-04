@@ -4,39 +4,354 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>使用 CLAUDE.md 文件：为你的代码库定制 Claude Code — Claude Blog 中文翻译</title>
-  <meta name="description" content="使用 CLAUDE.md 文件：为你的代码库定制 Claude Code">
+  <meta name="description" content="A practical guide for using CLAUDE.md files to optimize your use of Claude Code.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/using-claude-md-files" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>使用 CLAUDE.md 文件：为你的代码库定制 Claude Code</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/using-claude-md-files" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/using-claude-md-files/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># 使用 CLAUDE.md 文件：为你的代码库定制 Claude Code
+
+A practical guide for using CLAUDE.md files to optimize your use of Claude Code.
+
+如果你在使用 AI 编程智能体，就绕不开同一个挑战：如何在不重复唠叨的前提下，给它足够的上下文去理解你的架构、约定和工作流？
+
+随着代码库增长，这个问题会不断放大。复杂的模块关系、领域特有的模式、团队约定都不容易浮现出来。你不得不在每次对话开始时，重新解释相同的架构决策、测试要求和代码风格偏好。
+
+[CLAUDE.md](https://www.anthropic.com/engineering/claude-code-best-practices) 文件解决了这个问题：它为 Claude 提供关于你项目的持久上下文。可以把它想象成一个配置文件，Claude 会自动将其纳入每次对话，确保它始终了解你的项目结构、编码标准和工作流偏好。
+
+在本文中，我们将讲解如何组织你的 [CLAUDE.md](http://claude.md)，分享最佳实践和使用技巧，帮助你把 Claude Code 的效能发挥到极致。
+
+## 什么是 CLAUDE.md 文件？
+
+CLAUDE.md 是一个存放在你仓库中的特殊配置文件，为 Claude 提供项目专属的上下文。你可以把它放在仓库根目录与团队共享，放在父目录以适配 monorepo 结构，或放在你的用户主目录下，对所有项目全局生效。
+
+下面是一份你可能会在仓库中看到的 CLAUDE.md 示例：
+
+`# Project Context
+
+When working with this codebase, prioritize readability over cleverness. Ask clarifying questions before making architectural changes.
+
+## About This Project
+
+FastAPI REST API for user authentication and profiles. Uses SQLAlchemy for database operations and Pydantic for validation.
+
+## Key Directories
+
+- `app/models/` - database models
+- `app/api/` - route handlers
+- `app/core/` - configuration and utilities
+
+## Standards
+
+- Type hints required on all functions
+- pytest for testing (fixtures in `tests/conftest.py`)
+- PEP 8 with 100 character lines
+
+## Common Commands
+```bash
+uvicorn app.main:app --reload  # dev server
+pytest tests/ -v               # run tests
+```
+
+## Notes
+
+All routes use `/api/v1` prefix. JWT tokens expire after 24 hours.
+`一份配置得当的 CLAUDE.md 会彻底改变 Claude 在你特定项目上的工作方式。这个文件承担多重职责：提供架构上下文、确立工作流、把 Claude 连接到你的开发工具。每一条新增内容都应该解决你实际遇到过的问题，而不是对&quot;Claude 也许需要什么&quot;的凭空猜测。
+
+这个文件可以记录常用 bash 命令、核心工具、代码风格指南、测试说明、仓库约定、开发环境配置和项目专属的警示信息。它没有规定的格式。我们的建议是保持文件简洁、人类可读，把它当作人和 Claude 都需要快速读懂的文档。
+
+你的 CLAUDE.md 文件会成为 Claude 系统提示词的一部分。每次对话一开始就已加载这些上下文，从此不必反复解释基本的项目信息。
+
+## **用 /init 快速上手**
+
+从零开始创建 CLAUDE.md 可能令人望而生畏，尤其是在一个陌生的代码库里。
+
+`/init` 命令可以自动化这个过程：分析你的项目并生成一份初始配置。
+
+在任意 Claude Code 会话中运行 `/init`：
+
+`cd your-project
+claude
+/init`Claude 会检查你的代码库——读取 package 文件、既有文档、配置文件和代码结构——然后生成一份为你的项目量身定制的 CLAUDE.md。生成的文件通常包括构建命令、测试说明、关键目录，以及它识别出的编码约定。
+
+把 `/init` 当作起点而非成品。生成的 CLAUDE.md 能捕捉显见的模式，但可能遗漏你工作流中的细微之处。请审阅 Claude 的产出，并根据团队的实际做法加以打磨。
+
+你也可以在已有 CLAUDE.md 的项目上运行 `/init`。Claude 会审阅当前文件，并根据它探索代码库所得，提出改进建议。
+
+运行 `/init` 之后，可以考虑这些后续步骤：
+
+- 审阅生成内容的准确性
+- 补充 Claude 无法推断的工作流指令（分支命名约定、部署流程、代码评审要求）
+- 删除不适用于你项目的泛泛之谈
+- 把文件提交到版本控制，让团队共同受益
+
+`/init` 命令适合快速建立方向感，但真正的价值来自对生成文件的持续打磨。在使用 Claude Code 的过程中，用 `#` 键把你发现自己反复重申的指令加进去——这些积累最终会沉淀为一份真正反映团队工作方式的 CLAUDE.md。
+
+## 如何组织你的 CLAUDE.md
+
+以下几节将展示如何组织内容以获得最大效果：在复杂架构中导航、跟踪多步骤任务的进展、集成自定义工具，以及通过一致的工作流避免返工。
+
+### 给 Claude 一张地图
+
+如果每个新任务都要重新解释项目架构、核心库和代码风格，会让人不胜其烦。你需要 Claude 对代码库结构保持一致的认知，而无需人工反复强化。
+
+在 CLAUDE.md 中加入项目概述和高层目录结构。这能让 Claude 在你的代码库中导航时立刻建立方向感。
+
+一个展示关键目录的简单树状输出，就能帮 Claude 理解各组件的位置：
+
+`main.py
+├── logs
+│   ├── application.log
+├── modules
+│   ├── cli.py
+│   ├── logging_utils.py
+│   ├── media_handler.py
+│   ├── player.py`写入关于主要依赖、架构模式以及任何非标准组织方式的信息。如果你采用了领域驱动设计、微服务或特定框架，请记录下来。Claude 会利用这张地图，更好地决定去哪里找代码、在哪里做修改。
+
+### 把 Claude 连接到你的工具
+
+Claude 会继承你完整的环境，但需要指引才能知道该用哪些自定义工具和脚本。你的团队多半有用于部署、测试或代码生成的专用工具，Claude 应该了解它们。
+
+在 CLAUDE.md 中记录你的自定义工具及用法示例。写明工具名称、基本用法模式和调用时机。如果你的工具通过 `--help` 标志提供帮助文档，请提及，让 Claude 知道可以查看。对于复杂工具，可以补充团队常用的调用示例。
+
+Claude 可以作为 MCP（Model Context Protocol）客户端运行，连接拓展其能力的 MCP 服务器。可以通过项目设置、全局配置或提交到仓库的 `.mcp.json` 文件来配置。当工具没有按预期出现时，`--mcp-debug` 标志有助于排查连接问题。
+
+例如，如果你的组织配置了 Slack MCP 服务器，并且需要 Claude 理解如何使用它，可以在 CLAUDE.md 中加入类似这样的内容：
+
+`### Slack MCP
+- Posts to #dev-notifications channel only
+- Use for deployment notifications and build failures
+- Do not use for individual PR updates (those go through GitHub webhooks)
+- Rate limited to 10 messages per hour`了解 MCP 的[基础知识和最佳实践](https://www.anthropic.com/engineering/building-effective-mcp-servers)。
+
+有关为 Claude Code 设置权限的更多信息，请查阅 [code.claude.com](https://code.claude.com/docs/en/settings) 上的 settings.json 文档。
+
+### **定义标准工作流**
+
+让 Claude 不做规划就直接改代码，往往带来返工。Claude 可能实现一个偏离需求的方案、选错架构路径，或者做出破坏既有功能的改动。
+
+你需要 Claude 先思考再行动。在 CLAUDE.md 中为不同类型的任务定义 Claude 应遵循的标准工作流。一个稳妥的默认工作流会在动手改动之前先回答四个问题：
+
+- 这是一个关于当前状态、需要先调查的问题吗？
+- 实现之前是否需要一份详细计划？
+- 还缺哪些信息？
+- 效果将如何验证？
+
+具体的工作流可以包括：面向功能开发的 explore-plan-code-commit（探索-规划-编码-提交）、面向算法工作的测试驱动开发、面向 UI 改动的可视化迭代。把你的测试要求、提交信息格式和必要的审批环节写清楚。当 Claude 预先了解你的工作流，它就会按照团队的真实流程组织工作，而不是靠猜。
+
+一条示例工作流指令可能长这样：
+
+`1) Before modifying code in the following locations: X, Y, Z
+	- Consider how it might affect A, B, C
+	- Construct an implementation plan
+	- Develop a test plan that will validate the following functions...`
+## ‍**使用 Claude Code 的更多技巧**
+
+除了配置 CLAUDE.md 文件之外，还有三种技巧可以改善你与 Claude Code 的协作。
+
+### **保持上下文新鲜**
+
+长期使用 Claude Code 会积累无关上下文。早先任务的文件内容、不再重要的命令输出、岔开的对话，都会填满 Claude 的上下文窗口。当信噪比下降，Claude 就难以专注于当前任务。
+
+在不同任务之间使用 `/clear` 重置上下文窗口。它会清除积累的历史，同时保留你的 CLAUDE.md 配置，让 Claude 能带着干净的上下文处理新问题。可以把它理解为关闭一个工作会话、开启另一个。
+
+当你调试完身份认证，转而去实现一个新的 API 端点时，请清空上下文。认证细节已经无关紧要，只会干扰新的工作。
+
+### **为不同阶段使用子智能体**
+
+冗长的对话会积累干扰新任务的上下文。你刚调试完一个复杂的认证流程，接着要对同一份代码做安全评审。调试的细节会给 Claude 的安全分析&quot;染色&quot;，可能让它忽略问题，或聚焦于已经解决的隐患。
+
+让 Claude 在工作的不同阶段使用[子智能体（subagent）](https://code.claude.com/docs/en/sub-agents)。子智能体维护隔离的上下文，防止早先任务的信息干扰新分析。实现完一个支付处理器后，指示 Claude&quot;使用子智能体对这段代码做安全评审&quot;，而不是在同一对话里继续。
+
+子智能体最适合每个阶段需要不同视角的多步骤工作流。实现需要架构上下文和功能需求；安全评审需要只盯着漏洞的全新眼光。上下文分离让两项分析都保持敏锐。
+
+### **创建自定义命令**
+
+重复的提示词浪费时间。你会发现自己一遍遍输入&quot;从安全角度评审这段代码&quot;或&quot;分析这段代码的性能问题&quot;。而且每次都要回忆能带来好结果的确切措辞。
+
+自定义斜杠命令以 markdown 文件的形式存放在你的 `.claude/commands/ `目录。创建一个名为 `performance-optimization.mm` 的文件，写入你偏好的性能优化提示词，它就会在任何对话中以 `/performance-optimization` 的形式可用。命令支持通过 $ARGUMENTS 或 `$1`、`$2` 这类编号占位符传入参数，方便你指定具体的文件或参数。
+
+例如，`performance-optimization.md` 可能长这样：
+
+`# Performance Optimization
+
+Analyze the provided code for performance bottlenecks and optimization opportunities. Conduct a thorough review covering:
+
+## Areas to Analyze
+
+### Database &amp; Data Access
+- N+1 query problems and missing eager loading
+- Lack of database indexes on frequently queried columns
+- Inefficient joins or subqueries
+- Missing pagination on large result sets
+- Absence of query result caching
+- Connection pooling issues
+
+### Algorithm Efficiency
+- Time complexity issues (O(n²) or worse when better exists)
+- Nested loops that could be optimized
+- Redundant calculations or repeated work
+- Inefficient data structure choices
+- Missing memoization or dynamic programming opportunities
+
+### Memory Management
+- Memory leaks or retained references
+- Loading entire datasets when streaming is possible
+- Excessive object instantiation in loops
+- Large data structures kept in memory unnecessarily
+- Missing garbage collection opportunities
+
+### Async &amp; Concurrency
+- Blocking I/O operations that should be async
+- Sequential operations that could run in parallel
+- Missing Promise.all() or concurrent execution patterns
+- Synchronous file operations
+- Unoptimized worker thread usage
+
+### Network &amp; I/O
+- Excessive API calls (missing request batching)
+- No response caching strategy
+- Large payloads without compression
+- Missing CDN usage for static assets
+- Lack of connection reuse
+
+### Frontend Performance
+- Render-blocking JavaScript or CSS
+- Missing code splitting or lazy loading
+- Unoptimized images or assets
+- Excessive DOM manipulations or reflows
+- Missing virtualization for long lists
+- No debouncing/throttling on expensive operations
+
+### Caching
+- Missing HTTP caching headers
+- No application-level caching layer
+- Absence of memoization for pure functions
+- Static assets without cache busting
+
+## Output Format
+
+For each issue identified:
+1. **Issue**: Describe the performance problem
+2. **Location**: Specify file/function/line numbers
+3. **Impact**: Rate severity (Critical/High/Medium/Low) and explain expected performance degradation
+4. **Current Complexity**: Include time/space complexity where applicable
+5. **Recommendation**: Provide specific optimization strategy
+6. **Code Example**: Show optimized version when possible
+7. **Expected Improvement**: Quantify performance gains if measurable
+
+If code is well-optimized:
+- Confirm optimization status
+- List performance best practices properly implemented
+- Note any minor improvements possible
+
+**Code to review:**
+```
+$ARGUMENTS
+````你不必手动编写自定义命令文件。让 Claude 替你创建：
+
+`Create a custom slash command called /performance-optimization that analyzes code for database query issues, algorithm efficiency, memory management, and caching opportunities.
+`Claude 会把 markdown 文件写入 `.claude/commands/performance-optimization.md`，该命令随即立即可用。
+
+## **从简单开始，再有的放矢地扩展**
+
+一上来就想写一份面面俱到的 CLAUDE.md？请克制这种冲动。
+
+CLAUDE.md 每次都会被加入 Claude Code 的上下文，所以从[上下文工程](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)和[提示词工程](https://www.anthropic.com/engineering/prompt-engineering-overview)的角度看，务必保持简洁。一种做法：把信息拆分到多个 markdown 文件中，然后在 CLAUDE.md 文件里引用它们。
+
+不要在文件中包含敏感信息、API 密钥、凭据、数据库连接串或详细的安全漏洞信息——尤其当你把它提交到版本控制时。既然 CLAUDE.md 会成为 Claude 系统提示词的一部分，就把它当作一份可能被公开分享的文档来对待。
+
+## **让 CLAUDE.md 为你所用**
+
+CLAUDE.md 文件能把 Claude Code 从通用助手变成专为你的代码库定制的工具。从基本的项目结构和构建文档起步，再依据工作流中的真实摩擦点逐步扩展。
+
+最有效的 CLAUDE.md 解决的是真实问题：它们记录你反复输入的命令、沉淀那些需要十分钟才能讲清的架构背景，并建立防止返工的工作流。你的文件应该反映团队实际的软件开发方式——而不是那些听起来漂亮却与现实脱节的理论最佳实践。
+
+把定制当作一项持续实践，而非一次性设置任务。项目在变，团队会学到更好的模式，新工具也会进入你的工作流。一份维护良好的 CLAUDE.md 会随代码库共同演进，持续降低在复杂软件上借助 AI 协作的摩擦。
+
+***立即开始使用 ***[***Claude Code***](https://www.claude.com/product/claude-code)***。***</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Claude Code</span>
-            <span class="article-date">November 25, 2025</span>
-            
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-heather);">
+            <img class="hero-illo-img" src="/assets/illustrations/using-claude-md-files.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">使用 CLAUDE.md 文件：为你的代码库定制 Claude Code</h1>
-          <a href="/posts/using-claude-md-files/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>如果你在使用 AI 编程智能体，就绕不开同一个挑战：如何在不重复唠叨的前提下，给它足够的上下文去理解你的架构、约定和工作流？</p><p>随着代码库增长，这个问题会不断放大。复杂的模块关系、领域特有的模式、团队约定都不容易浮现出来。你不得不在每次对话开始时，重新解释相同的架构决策、测试要求和代码风格偏好。</p><p><a href="https://www.anthropic.com/engineering/claude-code-best-practices">CLAUDE.md</a> 文件解决了这个问题：它为 Claude 提供关于你项目的持久上下文。可以把它想象成一个配置文件，Claude 会自动将其纳入每次对话，确保它始终了解你的项目结构、编码标准和工作流偏好。</p><p>在本文中，我们将讲解如何组织你的 <a href="http://claude.md">CLAUDE.md</a>，分享最佳实践和使用技巧，帮助你把 Claude Code 的效能发挥到极致。</p><h2>什么是 CLAUDE.md 文件？</h2><p>CLAUDE.md 是一个存放在你仓库中的特殊配置文件，为 Claude 提供项目专属的上下文。你可以把它放在仓库根目录与团队共享，放在父目录以适配 monorepo 结构，或放在你的用户主目录下，对所有项目全局生效。</p><p>下面是一份你可能会在仓库中看到的 CLAUDE.md 示例：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-markdown" style="white-space:pre-wrap"><span><span style="color:#007faa"># Project Context</span><span>
+            <h1 class="article-title u-text-style-h1">使用 CLAUDE.md 文件：为你的代码库定制 Claude Code</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>A practical guide for using CLAUDE.md files to optimize your use of Claude Code.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/product/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">November 25, 2025</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/using-claude-md-files/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>如果你在使用 AI 编程智能体，就绕不开同一个挑战：如何在不重复唠叨的前提下，给它足够的上下文去理解你的架构、约定和工作流？</p><p>随着代码库增长，这个问题会不断放大。复杂的模块关系、领域特有的模式、团队约定都不容易浮现出来。你不得不在每次对话开始时，重新解释相同的架构决策、测试要求和代码风格偏好。</p><p><a href="https://www.anthropic.com/engineering/claude-code-best-practices">CLAUDE.md</a> 文件解决了这个问题：它为 Claude 提供关于你项目的持久上下文。可以把它想象成一个配置文件，Claude 会自动将其纳入每次对话，确保它始终了解你的项目结构、编码标准和工作流偏好。</p><p>在本文中，我们将讲解如何组织你的 <a href="http://claude.md">CLAUDE.md</a>，分享最佳实践和使用技巧，帮助你把 Claude Code 的效能发挥到极致。</p><h2>什么是 CLAUDE.md 文件？</h2><p>CLAUDE.md 是一个存放在你仓库中的特殊配置文件，为 Claude 提供项目专属的上下文。你可以把它放在仓库根目录与团队共享，放在父目录以适配 monorepo 结构，或放在你的用户主目录下，对所有项目全局生效。</p><p>下面是一份你可能会在仓库中看到的 CLAUDE.md 示例：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-markdown" style="white-space:pre-wrap"><span><span style="color:#007faa"># Project Context</span><span>
 </span></span><span>
 </span></span><span>When working with this codebase, prioritize readability over cleverness. Ask clarifying questions before making architectural changes.
 </span></span><span>
@@ -158,21 +473,70 @@
 </span></span><span class="hljs-code">$ARGUMENTS
 </span></span><span class="hljs-code">```</span></code></pre><p>你不必手动编写自定义命令文件。让 Claude 替你创建：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-javascript" style="white-space:pre-wrap"><span><span>Create a custom slash command called /performance-optimization that analyzes code </span><span style="color:#7928a1">for</span><span> database query issues, algorithm efficiency, memory management, and caching opportunities.
 </span></span><span></span></code></pre><p>Claude 会把 markdown 文件写入 <code>.claude/commands/performance-optimization.md</code>，该命令随即立即可用。</p><h2><strong>从简单开始，再有的放矢地扩展</strong></h2><p>一上来就想写一份面面俱到的 CLAUDE.md？请克制这种冲动。</p><p>CLAUDE.md 每次都会被加入 Claude Code 的上下文，所以从<a target="_blank" href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">上下文工程</a>和<a target="_blank" href="https://www.anthropic.com/engineering/prompt-engineering-overview">提示词工程</a>的角度看，务必保持简洁。一种做法：把信息拆分到多个 markdown 文件中，然后在 CLAUDE.md 文件里引用它们。</p><p>不要在文件中包含敏感信息、API 密钥、凭据、数据库连接串或详细的安全漏洞信息——尤其当你把它提交到版本控制时。既然 CLAUDE.md 会成为 Claude 系统提示词的一部分，就把它当作一份可能被公开分享的文档来对待。</p><h2><strong>让 CLAUDE.md 为你所用</strong></h2><p>CLAUDE.md 文件能把 Claude Code 从通用助手变成专为你的代码库定制的工具。从基本的项目结构和构建文档起步，再依据工作流中的真实摩擦点逐步扩展。</p><p>最有效的 CLAUDE.md 解决的是真实问题：它们记录你反复输入的命令、沉淀那些需要十分钟才能讲清的架构背景，并建立防止返工的工作流。你的文件应该反映团队实际的软件开发方式——而不是那些听起来漂亮却与现实脱节的理论最佳实践。</p><p>把定制当作一项持续实践，而非一次性设置任务。项目在变，团队会学到更好的模式，新工具也会进入你的工作流。一份维护良好的 CLAUDE.md 会随代码库共同演进，持续降低在复杂软件上借助 AI 协作的摩擦。</p><p><strong><em>立即开始使用 </em></strong><a target="_blank" href="https://www.claude.com/product/claude-code"><strong><em>Claude Code</em></strong></a><strong><em>。</em></strong></p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/using-claude-md-files" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/using-claude-md-files" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

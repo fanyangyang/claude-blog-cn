@@ -13,5 +13,22 @@
   "translatedTitle": "用贡献指标了解 Claude Code 的影响",
   "translated": true,
   "translatedAt": "2026-09-02T04:22:24.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Claude Code",
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": [
+      "Coding"
+    ]
+  },
+  "subtitle": "Measure how Claude Code impacts your team's velocity. Track PRs shipped and code committed with GitHub integration—no extra tools required.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/claude-code",
+  "productUrl": "https://claude.com/product/claude-code"
 }

@@ -4,39 +4,524 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Claude Code 高阶自定义：如何配置 Hooks — Claude Blog 中文翻译</title>
-  <meta name="description" content="Claude Code 高阶自定义：如何配置 Hooks">
+  <meta name="description" content="Learn how to configure Claude Code hooks to automate repetitive tasks, enforce project rules, and inject dynamic context into your coding sessions.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/how-to-configure-hooks" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>Claude Code 高阶自定义：如何配置 Hooks</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/how-to-configure-hooks" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/how-to-configure-hooks/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># Claude Code 高阶自定义：如何配置 Hooks
+
+Learn how to configure Claude Code hooks to automate repetitive tasks, enforce project rules, and inject dynamic context into your coding sessions.
+
+即便是最顺畅的 [Claude Code](https://www.claude.com/product/claude-code) 工作流，也会随时间积累摩擦点。Claude 每次写完文件，你都要手动运行 [Prettier](https://prettier.io/)。每次运行 npm test，都会弹出同样的权限确认。每个会话都从往第一条消息里粘贴同样的项目背景样板开始。
+
+好消息是：[Hooks](https://code.claude.com/docs/en/hooks-guide) 可以消除这些摩擦点。它们相当于你可以配置的触发器，在特定操作之前或之后自动触发，让你把自定义逻辑、脚本和命令直接注入 Claude 的运行过程。
+
+本文面向已熟悉 Claude Code 基础用法的开发者，讲解高级配置。读完本文，你将了解八种 hook 类型、各自的使用时机、配置方法，以及出问题时如何调试。
+
+我们开始吧。
+
+## **什么是 hook？**
+
+Hook 是你创建的自定义 shell 命令，会在 Claude Code 会话中出现目标事件时自动执行，例如 Claude 即将写入文件，或你提交提示词时。Hook 的用途极其广泛：在操作执行前拦截、注入智能体上下文、自动审批，或在操作发生前阻断它。
+
+Hook 在你的设置文件中通过 JSON 结构配置，包含事件名称、匹配器（matcher，用于筛选哪些工具触发该 hook）以及要运行的命令。它们在你的本地环境中以你的用户权限执行，通过 stdin 接收触发事件的信息，并通过退出码和 stdout 回传结果。这让你无需修改工具本身，就能精确控制 Claude Code 的行为。
+
+## **为什么在 Claude Code 中使用 hooks？**
+
+Hooks 解决三类问题。
+
+第一，**它们消除重复的手动步骤**。不必在每次文件变更后手动运行格式化工具，PostToolUse hook 会自动完成。不必第一百次批准 npm test，PermissionRequest hook 会自动放行。
+
+第二，**hooks 自动执行项目专属规则**。你可以在危险命令执行前阻断它、在写入前校验文件路径、确保命名规范得到遵守。这些护栏每次都会生效，而不是仅在你记得检查时才有效。
+
+第三，**hooks 无需人工即可注入动态上下文。**SessionStart hook 可以把当前的 git 状态和 TODO 清单喂给 Claude。UserPromptSubmit hook 可以把冲刺优先级附加到每个请求上。你不必重复交代，Claude 也始终掌握最新信息。
+
+## **Claude Code 的 hook 类型及使用时机**
+
+Claude Code 提供八种 hook 事件，覆盖会话的完整生命周期——从启动、工具执行到结束。每种 hook 在特定时刻触发，让你精确控制自动化的运行时机。选择哪种 hook，取决于你想达成什么目标。
+
+**Hooks 速览**
+
+  
+    
+      
+        
+          Hook
+          触发时机
+          常见用途
+        
+      
+      
+        
+          PreToolUse
+          工具执行之前
+          阻断危险命令、校验文件路径、自动批准安全操作
+        
+        
+          PermissionRequest
+          权限对话框弹出之前
+          自动批准测试命令、阻止访问敏感文件
+        
+        
+          PostToolUse
+          工具完成之后
+          运行格式化工具、触发 linter、记录文件变更
+        
+        
+          PreCompact
+          上下文压缩之前
+          备份会话记录、保留重要决策
+        
+        
+          SessionStart
+          会话开始或恢复时
+          注入 git 状态、加载 TODO 清单、设置环境上下文
+        
+        
+          Stop
+          Claude 完成响应时
+          验证任务完成情况、运行测试、生成摘要
+        
+        
+          SubagentStop
+          子智能体完成时
+          校验子智能体输出、触发后续操作
+        
+        
+          UserPromptSubmit
+          你提交提示词时
+          注入冲刺上下文、校验请求、添加动态上下文
+        
+      
+    
+  
+  You can remove this line if a caption isn't needed
+
+### **PreToolUse**
+
+这是最常用的 hook，在 Claude 选定要使用的工具之后、工具实际执行之前触发。你的脚本可以检查计划执行的操作，然后批准、阻断、请求用户确认或修改参数，并可用匹配器筛选哪些工具触发该 hook。
+
+这个 PreToolUse hook 示例会在文件写入执行前进行评估。Claude 会依据指定标准审查计划操作，并根据其中的提示词逻辑决定批准、阻断或标记疑虑。
+
+`{
+  &quot;hooks&quot;: {
+    &quot;PreToolUse&quot;: [
+      {
+        &quot;matcher&quot;: &quot;Write&quot;,
+        &quot;hooks&quot;: [
+          {
+            &quot;type&quot;: &quot;command&quot;,
+            &quot;command&quot;: &quot;/path/to/validate-file-path.sh&quot;
+          }
+        ]
+      }
+    ]
+  }
+}`何时使用 PreToolUse：
+
+- 阻断 rm -rf 或强制推送等危险 Bash 命令
+- 自动批准安全、重复的操作，减少确认疲劳
+- 写入前校验文件路径，防止意外覆盖
+- 修改工具输入，注入项目专属默认值
+
+### **PermissionRequest**
+
+当 Claude 本应弹出权限对话框时，此 hook 触发。它会在你看到确认提示之前拦截这一刻，让你的脚本决定是允许、拒绝，还是仍然询问用户。
+
+`{
+  &quot;hooks&quot;: {
+    &quot;PermissionRequest&quot;: [
+      {
+        &quot;matcher&quot;: &quot;Bash(npm test*)&quot;,
+        &quot;hooks&quot;: [
+          {
+            &quot;type&quot;: &quot;command&quot;,
+            &quot;command&quot;: &quot;/path/to/validate-test-command.sh&quot;
+          }
+        ]
+      }
+    ]
+  }
+}`这个示例会自动批准任何以 npm test 开头的 Bash 命令。匹配器模式可以包含参数，以实现更精细的控制。
+
+何时使用 PermissionRequest：
+
+- 自动批准你每个会话要运行几十次的测试命令
+- 阻止对生产配置文件的写入
+- 允许对特定目录的读取操作免于确认
+- 拒绝任何匹配危险模式的命令
+
+### **PostToolUse**
+
+在工具成功完成后立即触发。你的脚本会收到关于发生了什么的信息（包括工具输出），并可用匹配器筛选哪些工具触发它。
+
+这个 PostToolUse 示例会对 Claude 写入或编辑的任何文件运行 Prettier。匹配器中的管道语法表示它对 Write 和 Edit 两种工具都生效。
+
+`{
+  &quot;hooks&quot;: {
+    &quot;PostToolUse&quot;: [
+      {
+        &quot;matcher&quot;: &quot;Write|Edit&quot;,
+        &quot;hooks&quot;: [
+          {
+            &quot;type&quot;: &quot;command&quot;,
+            &quot;command&quot;: &quot;prettier --write \&quot;$CLAUDE_TOOL_INPUT_FILE_PATH\&quot;&quot;
+          }
+        ]
+      }
+    ]
+  }
+}`何时使用 PostToolUse：
+
+- 在每次文件写入后运行 Prettier、Black 或 gofmt 以强制格式化
+- 将所有文件修改记录到审计日志
+- 代码变更后触发 linter 并显示警告
+- 特定操作完成时发送通知
+
+### **PreCompact**
+
+在 Claude 压缩对话上下文以释放空间之前触发。压缩会对对话的较早部分做摘要，这意味着一些细节会丢失。这个 hook 让你有机会在丢失前保留信息。
+
+这个 PreCompact 示例会在自动压缩前备份会话记录。匹配器可以设为 &quot;auto&quot; 或 &quot;manual&quot;，以便区分自动压缩和用户触发的压缩事件。
+
+`{
+  &quot;hooks&quot;: {
+    &quot;PreCompact&quot;: [
+      {
+        &quot;matcher&quot;: &quot;auto&quot;,
+        &quot;hooks&quot;: [
+          {
+            &quot;type&quot;: &quot;command&quot;,
+            &quot;command&quot;: &quot;/path/to/backup-transcript.sh&quot;
+          }
+        ]
+      }
+    ]
+  }
+}`何时使用 PreCompact：
+
+- 在摘要化之前把完整会话记录备份到文件
+- 提取并保存重要决策或代码片段
+- 记录会话里程碑，便于日后回顾
+
+### **SessionStart**
+
+当 Claude Code 启动新会话或恢复既有会话时触发。你的脚本输出的任何内容都会被加入对话上下文，因此 Claude 一开始就带着这些信息。
+
+`{
+  &quot;hooks&quot;: {
+    &quot;SessionStart&quot;: [
+      {
+        &quot;hooks&quot;: [
+          {
+            &quot;type&quot;: &quot;command&quot;,
+            &quot;command&quot;: &quot;git status --short &amp;&amp; echo '---' &amp;&amp; cat TODO.md&quot;
+          }
+        ]
+      }
+    ]
+  }
+}`每个会话开始时，Claude 都知道你当前的 git 状态和 TODO 清单。stdout 会自动成为上下文。
+
+何时使用 SessionStart：
+
+- 把当前 git 分支和最近的提交喂给 Claude
+- 加载 TODO 清单或冲刺待办的内容
+- 注入环境特定的配置信息
+
+### **Stop**
+
+当 Claude 完成响应、本应等待你下一次输入时触发。你的脚本可以检查 Claude 产出了什么，判断任务是否真正完成。
+
+脚本可以返回带 &quot;continue&quot;: true 的 JSON 让 Claude 继续工作，这在多步骤工作流中很有用：
+
+`{
+  &quot;hooks&quot;: {
+    &quot;Stop&quot;: [
+      {
+        &quot;hooks&quot;: [
+          {
+            &quot;type&quot;: &quot;prompt&quot;,
+            &quot;prompt&quot;: &quot;Review whether the task is complete. If all requirements are met, respond with 'complete'. If work remains, respond with 'continue' and specify what still needs to be done.&quot;
+          }
+        ]
+      }
+    ]
+  }
+}`何时使用 Stop：
+
+- 强制 Claude 继续工作，直到清单上所有事项完成
+- 在判定任务完成前验证测试通过
+- 在会话结束时触发摘要生成
+- 在停止前检查生成的代码能否编译
+
+### **SubagentStop**
+
+每当通过 Task 工具创建的子智能体完成时触发。工作方式与 Stop 相同，但专门在子智能体（而非主智能体）完成其操作时触发。SubagentStop 的配置与 Stop hook 的结构一致：
+
+`{
+  &quot;hooks&quot;: {
+    &quot;SubagentStop&quot;: [
+      {
+        &quot;hooks&quot;: [
+          {
+            &quot;type&quot;: &quot;prompt&quot;,
+            &quot;prompt&quot;: &quot;Evaluate the subagent's output. Verify the task was completed correctly and the results meet quality standards. If the output is satisfactory, respond with 'accept'. If issues exist, respond with 'reject' and explain what needs to be fixed.&quot;
+          }
+        ]
+      }
+          ]
+  }
+}
+`何时使用 SubagentStop：
+
+- 校验子智能体的输出是否达到质量标准
+- 根据子智能体的结果触发后续操作
+- 记录子智能体活动，用于调试或审计
+
+### **UserPromptSubmit**
+
+当你提交提示词时、Claude 处理之前触发。你的脚本通过 stdout 输出的任何内容都会随提示词一起加入 Claude 的上下文，这使得 UserPromptSubmit 非常适合动态注入希望 Claude 考虑的信息。
+
+在这个示例中，每次你提交提示词，Claude 都会收到你冲刺上下文文件的内容。这让你无需反复重申，Claude 也始终了解当前优先级。
+
+`{
+  &quot;hooks&quot;: {
+    &quot;UserPromptSubmit&quot;: [
+      {
+        &quot;hooks&quot;: [
+          {
+            &quot;type&quot;: &quot;command&quot;,
+            &quot;command&quot;: &quot;cat ./current-sprint-context.md&quot;
+          }
+        ]
+      }
+    ]
+  }
+}`何时使用 UserPromptSubmit：
+
+- 随每个提示词注入当前冲刺上下文或项目优先级
+- 在提示词到达 Claude 之前进行校验
+- 根据内容阻断某些类型的请求
+- 添加动态上下文，如最近的错误日志或测试结果
+
+## **配置与文件位置**
+
+Hooks 存放在三个层级的 JSON 设置文件中。项目级 hooks 位于仓库中的 .claude/settings.json，可与团队共享。用户级 hooks 位于 ~/.claude/settings.json，适用于你的所有项目。本地项目 hooks 位于 .claude/settings.local.json，用于存放你不想提交到仓库的个人配置。
+
+项目级设置优先于用户级设置。此外还有企业托管的政策设置，供组织统一管控。完整细节请参阅 Claude Code 的设置说明。
+
+**小贴士：**你也是在这个文件中为 Claude 的操作设置细粒度权限的，可分别在项目、用户或本地层级设置。例如，你可以明确允许 Claude 读取某个目录下的所有文件，免去每次确认；或禁止对敏感文件的任何修改。
+
+## **匹配器（matcher）语法**
+
+匹配器用于筛选哪些工具可以触发你的 hook。它们只适用于 PreToolUse、PostToolUse 和 PermissionRequest hooks。
+
+简单字符串匹配的行为和预期完全一致：&quot;Write&quot; 只匹配 Write 工具。
+
+例如：
+
+`{
+  &quot;hooks&quot;: {
+    &quot;PreToolUse&quot;: [
+      {
+        &quot;matcher&quot;: &quot;Write&quot;,
+        &quot;hooks&quot;: [
+          {
+            &quot;type&quot;: &quot;command&quot;,
+            &quot;command&quot;: &quot;your-command-here&quot;
+          }
+        ]
+      }
+    ]
+  }
+}`管道语法可以匹配多个工具：&quot;Write|Edit&quot; 对两者都生效；通配符则匹配一切：&quot;*&quot; 或空字符串匹配所有工具。
+
+**注意：**匹配器区分大小写，因此 &quot;bash&quot; 不会匹配到 Bash 工具。
+
+如需更精细的控制，&quot;Bash(npm test*)&quot; 这样的参数模式可以匹配特定命令参数。MCP 工具的模式遵循 &quot;mcp__memory__.*&quot; 这样的格式，用于 Model Context Protocol 工具。
+
+## **输入、输出与结构化响应**
+
+### **Hooks 收到什么**
+
+所有 hooks 都通过 stdin 接收 JSON，其中包含会话信息和事件专属数据。常见字段包括：session_id、transcript_path、cwd、permission_mode 和 hook_event_name。
+
+此外，与工具相关的 hooks 还会收到 tool_name 和 tool_input。这些数据让你的脚本能够就如何响应做出有依据的决策。
+
+### **Hooks 如何响应**
+
+退出码决定基本结果。退出码 0 表示成功，stdout 会被当作 JSON 处理或加入上下文。退出码 2 表示阻断性错误：stderr 成为错误消息，操作被阻止。
+
+其他退出码表示非阻断性错误，stderr 会在详细模式（verbose mode）下显示。
+
+除了退出码，hooks 还可以返回结构化 JSON 以获得更多控制。字段包括：decision（approve、block、allow 或 deny）、reason（展示给 Claude 的解释）、continue（供 Stop hooks 强制继续）和 updatedInput（在执行前修改工具参数）。
+
+## **环境与执行**
+
+Hooks 可以访问环境变量，包括：表示项目根目录路径的 CLAUDE_PROJECT_DIR、在网页环境中为 true 的 CLAUDE_CODE_REMOTE，以及供 SessionStart hooks 持久化变量的 CLAUDE_ENV_FILE。你的 shell 中的标准环境变量同样可以访问。
+
+还有一点值得注意：Hooks 默认有 60 秒超时，可按每个 hook 单独配置。当多个 hooks 匹配同一事件时，它们会并行运行。相同的命令会被自动去重。
+
+## **安全注意事项**
+
+Hooks 会以你的用户权限执行任意 shell 命令。Claude Code 内置了一道防线：对 hook 配置文件的直接修改必须先在 /hooks 菜单中经过审查才能生效。这可以防止恶意代码悄悄向你的配置中添加 hooks。
+
+不过，一旦你配置并批准了 hooks，它们就会以你的权限级别执行。
+
+**小贴士：**在任何环境中运行命令之前，都要考虑风险。如果你打算通过 hooks 运行命令，请遵循良好实践，例如：校验并清理来自 stdin 的输入、给 shell 变量加引号以防注入、为脚本使用绝对路径，以及避免处理 .env 或凭据等敏感文件。
+
+## **调试与测试**
+
+Claude Code 会把所有内容记录到会话记录（transcript）文件中，无需任何配置即可查看工具调用和响应。每个 hook 都会收到一个 transcript_path 字段，指向包含完整会话历史的 JSONL 文件。你可以用 SessionStart hook 记录每份会话记录的存放位置：
+
+`{
+  &quot;hooks&quot;: {
+    &quot;SessionStart&quot;: [
+      {
+        &quot;hooks&quot;: [
+          {
+            &quot;type&quot;: &quot;command&quot;,
+            &quot;command&quot;: &quot;jq -r '\&quot;Session: \&quot; + .transcript_path' &gt;&gt; ~/.claude/sessions.log&quot;
+          }
+        ]
+      }
+    ]
+  }
+}`然后追踪该记录文件，实时观察 Claude 的工作：`tail -f /path/to/transcript.jsonl | jq`。
+
+### **针对 hook 的调试**
+
+针对 hook 本身的调试，可以在 hook 脚本中添加日志。会话记录文件会显示 Claude 做了什么，但不会显示你的 hook 为什么批准或阻断了某项操作。
+
+只需稍加努力，你就可以写一个小的 bash 脚本来包装你的工具，并记录额外信息。例如 log-wrapper.sh：
+
+`#!/bin/bash
+LOG=~/.claude/hooks.log
+INPUT=$(cat)
+
+TOOL=$(echo &quot;$INPUT&quot; |
+ jq -r '.tool_name // &quot;n/a&quot;')
+EVENT=$(echo &quot;$INPUT&quot; | jq -r '.hook_event_name // &quot;n/a&quot;')
+
+echo &quot;=== $(date) | $EVENT | $TOOL ===&quot; &gt;&gt; &quot;$LOG&quot;
+
+echo &quot;$INPUT&quot; | &quot;$1&quot;
+CODE=$?
+
+echo &quot;Exit: $CODE&quot; &gt;&gt; &quot;$LOG&quot;
+exit $CODE`这个小小的包装脚本会把 stdin 捕获到变量中，记录时间戳和工具名，然后把输入通过管道传给你真正的工具。
+
+写好 log-wrapper.sh 之后，你只需把它加在 hook 中工具调用的前面：
+
+`{
+  &quot;hooks&quot;: {
+    &quot;PreToolUse&quot;: [
+      {
+        &quot;matcher&quot;: &quot;Bash&quot;,
+        &quot;hooks&quot;: [
+          {
+            &quot;type&quot;: &quot;command&quot;,
+            &quot;command&quot;: &quot;log-wrapper.sh your-tool-command.py&quot;
+          }
+        ]
+      }
+    ]
+  }
+}`**小贴士：**更多调试技巧，请查阅 Claude Code 调试文档。
+
+## **构建你自己的 hooks**
+
+从一个能解决工作流中真实摩擦点的简单 hook 开始。PostToolUse 格式化 hook 是不错的选择，因为反馈即时可见。跑通之后，再根据你的心得逐步扩展。
+
+完整的参考文档（包括所有可用字段和高级模式），请查阅官方 hooks 文档。
+
+Hooks 让你能够把 Claude Code 塑造成贴合你工作流的形态，而不是让工作流去迁就工具。在配置 hooks 上投入的时间，每个会话都会给你回报。
+
+*立即开始使用 hooks，定制你的 *[*Claude Code*](https://www.claude.com/product/claude-code)* 工作流。*</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Claude Code</span>
-            <span class="article-date">December 11, 2025</span>
-            
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-heather);">
+            <img class="hero-illo-img" src="/assets/illustrations/how-to-configure-hooks.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">Claude Code 高阶自定义：如何配置 Hooks</h1>
-          <a href="/posts/how-to-configure-hooks/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>即便是最顺畅的 <a href="https://www.claude.com/product/claude-code" target="_blank">Claude Code</a> 工作流，也会随时间积累摩擦点。Claude 每次写完文件，你都要手动运行 <a target="_blank" href="https://prettier.io/">Prettier</a>。每次运行 npm test，都会弹出同样的权限确认。每个会话都从往第一条消息里粘贴同样的项目背景样板开始。</p><p>好消息是：<a target="_blank" href="https://code.claude.com/docs/en/hooks-guide">Hooks</a> 可以消除这些摩擦点。它们相当于你可以配置的触发器，在特定操作之前或之后自动触发，让你把自定义逻辑、脚本和命令直接注入 Claude 的运行过程。</p><p>本文面向已熟悉 Claude Code 基础用法的开发者，讲解高级配置。读完本文，你将了解八种 hook 类型、各自的使用时机、配置方法，以及出问题时如何调试。</p><p>我们开始吧。</p><h2><strong>什么是 hook？</strong></h2><p>Hook 是你创建的自定义 shell 命令，会在 Claude Code 会话中出现目标事件时自动执行，例如 Claude 即将写入文件，或你提交提示词时。Hook 的用途极其广泛：在操作执行前拦截、注入智能体上下文、自动审批，或在操作发生前阻断它。</p><p>Hook 在你的设置文件中通过 JSON 结构配置，包含事件名称、匹配器（matcher，用于筛选哪些工具触发该 hook）以及要运行的命令。它们在你的本地环境中以你的用户权限执行，通过 stdin 接收触发事件的信息，并通过退出码和 stdout 回传结果。这让你无需修改工具本身，就能精确控制 Claude Code 的行为。</p><h2><strong>为什么在 Claude Code 中使用 hooks？</strong></h2><p>Hooks 解决三类问题。</p><p>第一，<strong>它们消除重复的手动步骤</strong>。不必在每次文件变更后手动运行格式化工具，PostToolUse hook 会自动完成。不必第一百次批准 npm test，PermissionRequest hook 会自动放行。</p><p>第二，<strong>hooks 自动执行项目专属规则</strong>。你可以在危险命令执行前阻断它、在写入前校验文件路径、确保命名规范得到遵守。这些护栏每次都会生效，而不是仅在你记得检查时才有效。</p><p>第三，<strong>hooks 无需人工即可注入动态上下文。</strong>SessionStart hook 可以把当前的 git 状态和 TODO 清单喂给 Claude。UserPromptSubmit hook 可以把冲刺优先级附加到每个请求上。你不必重复交代，Claude 也始终掌握最新信息。</p><h2><strong>Claude Code 的 hook 类型及使用时机</strong></h2><p>Claude Code 提供八种 hook 事件，覆盖会话的完整生命周期——从启动、工具执行到结束。每种 hook 在特定时刻触发，让你精确控制自动化的运行时机。选择哪种 hook，取决于你想达成什么目标。</p><p><strong>Hooks 速览</strong></p><div class="w-embed"><figure>
+            <h1 class="article-title u-text-style-h1">Claude Code 高阶自定义：如何配置 Hooks</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>Learn how to configure Claude Code hooks to automate repetitive tasks, enforce project rules, and inject dynamic context into your coding sessions.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/product/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">December 11, 2025</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/how-to-configure-hooks/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>即便是最顺畅的 <a href="https://www.claude.com/product/claude-code" target="_blank">Claude Code</a> 工作流，也会随时间积累摩擦点。Claude 每次写完文件，你都要手动运行 <a target="_blank" href="https://prettier.io/">Prettier</a>。每次运行 npm test，都会弹出同样的权限确认。每个会话都从往第一条消息里粘贴同样的项目背景样板开始。</p><p>好消息是：<a target="_blank" href="https://code.claude.com/docs/en/hooks-guide">Hooks</a> 可以消除这些摩擦点。它们相当于你可以配置的触发器，在特定操作之前或之后自动触发，让你把自定义逻辑、脚本和命令直接注入 Claude 的运行过程。</p><p>本文面向已熟悉 Claude Code 基础用法的开发者，讲解高级配置。读完本文，你将了解八种 hook 类型、各自的使用时机、配置方法，以及出问题时如何调试。</p><p>我们开始吧。</p><h2><strong>什么是 hook？</strong></h2><p>Hook 是你创建的自定义 shell 命令，会在 Claude Code 会话中出现目标事件时自动执行，例如 Claude 即将写入文件，或你提交提示词时。Hook 的用途极其广泛：在操作执行前拦截、注入智能体上下文、自动审批，或在操作发生前阻断它。</p><p>Hook 在你的设置文件中通过 JSON 结构配置，包含事件名称、匹配器（matcher，用于筛选哪些工具触发该 hook）以及要运行的命令。它们在你的本地环境中以你的用户权限执行，通过 stdin 接收触发事件的信息，并通过退出码和 stdout 回传结果。这让你无需修改工具本身，就能精确控制 Claude Code 的行为。</p><h2><strong>为什么在 Claude Code 中使用 hooks？</strong></h2><p>Hooks 解决三类问题。</p><p>第一，<strong>它们消除重复的手动步骤</strong>。不必在每次文件变更后手动运行格式化工具，PostToolUse hook 会自动完成。不必第一百次批准 npm test，PermissionRequest hook 会自动放行。</p><p>第二，<strong>hooks 自动执行项目专属规则</strong>。你可以在危险命令执行前阻断它、在写入前校验文件路径、确保命名规范得到遵守。这些护栏每次都会生效，而不是仅在你记得检查时才有效。</p><p>第三，<strong>hooks 无需人工即可注入动态上下文。</strong>SessionStart hook 可以把当前的 git 状态和 TODO 清单喂给 Claude。UserPromptSubmit hook 可以把冲刺优先级附加到每个请求上。你不必重复交代，Claude 也始终掌握最新信息。</p><h2><strong>Claude Code 的 hook 类型及使用时机</strong></h2><p>Claude Code 提供八种 hook 事件，覆盖会话的完整生命周期——从启动、工具执行到结束。每种 hook 在特定时刻触发，让你精确控制自动化的运行时机。选择哪种 hook，取决于你想达成什么目标。</p><p><strong>Hooks 速览</strong></p><div class="w-embed"><figure>
   <div role="region" tabindex="0">
     <table>
       <thead>
@@ -256,21 +741,70 @@
 </span></span><span>    ]
 </span></span><span>  }
 </span></span><span>}</span></code></pre><p><strong>小贴士：</strong>更多调试技巧，请查阅 Claude Code 调试文档。</p><h2><strong>构建你自己的 hooks</strong></h2><p>从一个能解决工作流中真实摩擦点的简单 hook 开始。PostToolUse 格式化 hook 是不错的选择，因为反馈即时可见。跑通之后，再根据你的心得逐步扩展。</p><p>完整的参考文档（包括所有可用字段和高级模式），请查阅官方 hooks 文档。</p><p>Hooks 让你能够把 Claude Code 塑造成贴合你工作流的形态，而不是让工作流去迁就工具。在配置 hooks 上投入的时间，每个会话都会给你回报。</p><p><em>立即开始使用 hooks，定制你的 </em><a target="_blank" href="https://www.claude.com/product/claude-code"><em>Claude Code</em></a><em> 工作流。</em></p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/how-to-configure-hooks" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/how-to-configure-hooks" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

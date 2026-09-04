@@ -13,5 +13,15 @@
   "translatedTitle": "升级版 Anthropic Console 助你更快走向生产",
   "translated": true,
   "translatedAt": "2026-09-02T04:44:54.905Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [],
+    "product": [],
+    "usecase": []
+  },
+  "subtitle": "We've redesigned the Anthropic Console to serve as one place to build, test, and iterate on your AI deployment with Claude and your teammates. Developers can now share prompts to collaborate with teammates directly in the Anthropic Console . We've also added support for our latest model, Claude 3.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "",
+  "productUrl": ""
 }

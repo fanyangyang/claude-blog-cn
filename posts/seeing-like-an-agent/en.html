@@ -4,46 +4,201 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Seeing like an agent: how we design tools in Claude Code — Claude Blog CN</title>
-  <meta name="description" content="Seeing like an agent: how we design tools in Claude Code">
+  <meta name="description" content="Learn how the Claude Code team designs, tests, and evolves tools by thinking from the model's point of view.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="/posts/seeing-like-an-agent/" class="nav-link">中文版 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>Seeing like an agent: how we design tools in Claude Code</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/seeing-like-an-agent" target="_blank" rel="noopener noreferrer">Ask questions about this page</a>
+        <button type="button" class="explore-item" data-copy-markdown>Copy as markdown</button>
+        <a class="explore-item" href="/posts/seeing-like-an-agent/">阅读中文翻译 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># Seeing like an agent: how we design tools in Claude Code
+
+Learn how the Claude Code team designs, tests, and evolves tools by thinking from the model's point of view.
+
+One of the hardest parts about building an agent harness is constructing its tools.
+
+Claude acts completely through [tool calling](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview), but there are a number of ways tools can be constructed in the Claude API with primitives like [bash](https://platform.claude.com/docs/en/agents-and-tools/tool-use/bash-tool), [skills](https://code.claude.com/docs/en/skills) and [code execution](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool). (You can read more about programmatic tool calling on the Claude API in[ @RLanceMartin's new article](https://x.com/RLanceMartin/status/2027450018513490419)).
+
+So how do you design your agents' tools? Do you give it one general-purpose tool like bash or code execution? Or fifty specialized tools, one for each use case?
+
+To put yourself in the mind of the model, imagine being given a difficult math problem. What tools would you want in order to solve it? It would depend on your own skill set!
+
+Paper would be the minimum, but you’d be limited by manual calculations. A calculator would be better, but you would need to know how to operate the more advanced options. The fastest and most powerful option would be a computer, but you would have to know how to use it to write and execute code.
+
+This is a useful framework for designing your agent. You want to give it tools that are shaped to its own abilities. But how do you know what those abilities are? You pay attention, read its outputs, experiment. You learn to see like an agent.
+
+If you're building an agent, you'll face the same questions we did: when to add a tool, when to remove one, and how to tell the difference. Here's how we've answered them while building Claude Code, including where we got it wrong first.
+
+## Improving elicitation with the AskUserQuestion tool
+
+When building the AskUserQuestion tool, our goal was to improve Claude’s ability to ask questions (often called elicitation).
+
+While Claude could just ask questions in plain text, we found answering those questions felt like they took an unnecessary amount of time. How could we lower this friction and increase the bandwidth of communication between the user and Claude?
+
+### Attempt 1: Editing the ExitPlanTool
+
+The first approach we tried was adding a parameter to the ExitPlanTool to have an array of questions alongside the plan. This was the easiest fix to implement, but it confused Claude because we were simultaneously asking for a plan and a set of questions about the plan. What if the user’s answers conflicted with what the plan said? Would Claude need to call the ExitPlanTool twice? We knew this tactic wouldn’t work, so we went back to the drawing board. (You can read more about why we made an ExitPlanTool in[ our post on prompt caching](https://x.com/trq212/status/2024574133011673516))
+
+### Attempt 2: Changing output format
+
+Next, we tried updating Claude’s output instructions to serve a slightly modified markdown format that it could use to ask questions. For example, we could ask it to output a list of bullet point questions with alternatives in brackets. We could then parse and format that question as UI for the user.
+
+Claude could usually produce this format, but not reliably. It would append extra sentences, drop options, or abandon the structure altogether. Onto the next approach.
+
+### Attempt 3: The AskUserQuestion Tool
+
+Finally, we landed on creating a tool that Claude could call at any point, but it was particularly prompted to do so during plan mode. When the tool triggered we would show a modal to display the questions and block the agent's loop until the user answered.
+
+This tool allowed us to prompt Claude for a structured output and it helped us ensure that Claude gave the user multiple options. It also gave users ways to compose this functionality, for example calling it in the [Agent SDK](https://platform.claude.com/docs/en/agent-sdk/overview) or using referring to it in skills.
+
+Most importantly, Claude seemed to like calling this tool and we found its outputs worked well. After all, even the best designed tool doesn’t work if Claude doesn’t understand how to call it.
+
+Is this the final form of elicitation in Claude Code? We doubt it. As Claude gets more capable, the tools that serve it have to evolve too. The next section shows a case where a tool that once helped started getting in the way.
+
+### Updating with capabilities: tasks &amp; todos
+
+When we first launched Claude Code, we realized that the model needed a [todo list](https://platform.claude.com/docs/en/agent-sdk/todo-tracking) to keep it on track. Todos could be written at the start and checked off as the model did work. To do this we gave Claude the TodoWrite tool, which would write or update Todos and display them to the user.
+
+But even then, we often saw Claude forgetting what it had to do. To adapt, we inserted system reminders every 5 turns that reminded Claude of its goal.
+
+As models improved, they found To-do lists limiting. Being sent reminders of the todo list made Claude think that it had to stick to the list instead of modifying it when it realized it needed to change course. We also saw Opus 4.5 also get much better at using subagents, but how could subagents coordinate on a shared todo list?
+
+Seeing this, we replaced the TodoWrite feature with [the Task tool](https://x.com/trq212/status/2014480496013803643) . Whereas todos are focused on keeping the model on track, tasks help agents communicate with each other. Tasks could include dependencies, share updates across subagents and the model could alter and delete them.
+
+As model capabilities increase, the tools that your models once needed might now be constraining them. It’s important to constantly revisit previous assumptions on what tools are needed. This is also why it's useful to stick to a small set of models to support that have a fairly similar capabilities profile.
+
+## Designing a search interface
+
+The most consequential tools we've built are the ones that let Claude find its own context.
+
+When Claude Code was first released internally, we used RAG: a vector database would pre-index the codebase, and the harness would retrieve relevant snippets and hand them to Claude before each response.. While RAG was powerful and fast, it required indexing and setup and could be fragile across a host of different environments. Most importantly, Claude was *given* this context instead of finding the context itself.
+
+But if Claude could search on the web, why couldn’t it also search your codebase? By giving Claude a Grep tool, we could let it search for files and build context itself.
+
+As Claude gets smarter, it becomes increasingly good at building its context when given the right tools. 
+
+When we introduced [Agent Skills](https://agentskills.io/home), we formalized the idea of progressive disclosure, which allows agents to incrementally discover relevant context through exploration.
+
+Claude could now read skill files and those files could then reference other files that the model could read recursively. In fact, a common use of skills is to add more search capabilities to Claude like giving it instructions on how to use an API or query a database.
+
+Over the course of a year, Claude went from not really being able to build its own context to being able to do nested search across several layers of files to find the exact context it needed.
+
+Progressive disclosure is now a common technique we use to add new functionality without adding a tool. In the next section, we explain why.
+
+## Progressive disclosure: the Claude Code Guide agent
+
+Claude Code currently has ~20 tools, and our team frequently revisits if we need all of them for Claude to be most effective. The bar to add a new tool is high, because this gives the model one more option to think about.
+
+For example, we noticed that Claude did not know enough about how to use Claude Code. If you asked it how to add a MCP or what a slash command did, it would not be able to reply.
+
+We could have put all of this information in the system prompt, but given that users rarely asked about this, it would have added context rot and interfered with Claude Code’s main job: writing code.
+
+Instead, we tried progressive disclosure: we gave Claude a link to its docs that it could load and search when needed. This worked, but Claude would pull large chunks of documentation into context to find an answer the user could have gotten in one sentence.
+
+So we built the Claude Code Guide — a subagent Claude calls whenever a user asks about Claude Code itself. The subagent does the doc-searching in its own context, follows detailed instructions on how to search and what to extract, and hands back only the answer. The main agent's context stays clean.
+
+While this isn’t a perfect solution (Claude can still get confused when you ask it about how to set itself up), we were able to add things to Claude's action space without adding a new tool.
+
+### Seeing like an agent is an art, not a science
+
+Designing the tools for your models is as much an art as it is a science. It depends heavily on the model you're using, the goal of the agent and the environment it’s operating in.
+
+Our best advice? Experiment often, read your outputs, try new things. And most importantly, try to see like an agent.
+
+‍
+
+*Get started with *[*Claude Code*](https://claude.com/product/claude-code)* today.*
+
+***About the author:**** Thariq Shihipar is a member of technical staff at Anthropic, working on Claude Code. *</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Claude Code</span>
-            <span class="article-date">April 10, 2026</span>
-            <span class="lang-badge-large">EN</span>
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-heather);">
+            <img class="hero-illo-img" src="/assets/illustrations/seeing-like-an-agent.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">Seeing like an agent: how we design tools in Claude Code</h1>
-          <a href="/posts/seeing-like-an-agent/" class="lang-toggle">阅读中文翻译 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>One of the hardest parts about building an agent harness is constructing its tools.</p><p>Claude acts completely through <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview">tool calling</a>, but there are a number of ways tools can be constructed in the Claude API with primitives like <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/bash-tool">bash</a>, <a href="https://code.claude.com/docs/en/skills">skills</a> and <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool">code execution</a>. (You can read more about programmatic tool calling on the Claude API in<a href="https://x.com/RLanceMartin/status/2027450018513490419"> @RLanceMartin's new article</a>).</p><p>So how do you design your agents' tools? Do you give it one general-purpose tool like bash or code execution? Or fifty specialized tools, one for each use case?<br></p><p>To put yourself in the mind of the model, imagine being given a difficult math problem. What tools would you want in order to solve it? It would depend on your own skill set!</p><p>Paper would be the minimum, but you’d be limited by manual calculations. A calculator would be better, but you would need to know how to operate the more advanced options. The fastest and most powerful option would be a computer, but you would have to know how to use it to write and execute code.</p><p>This is a useful framework for designing your agent. You want to give it tools that are shaped to its own abilities. But how do you know what those abilities are? You pay attention, read its outputs, experiment. You learn to see like an agent.</p><p>If you're building an agent, you'll face the same questions we did: when to add a tool, when to remove one, and how to tell the difference. Here's how we've answered them while building Claude Code, including where we got it wrong first.</p><h2>Improving elicitation with the AskUserQuestion tool</h2><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:1199px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="1199px"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69d919d46e9dceaa0cf307d9_b089e3d3.png" width="auto" height="auto" loading="auto"></div></figure><p>When building the AskUserQuestion tool, our goal was to improve Claude’s ability to ask questions (often called elicitation).</p><p>While Claude could just ask questions in plain text, we found answering those questions felt like they took an unnecessary amount of time. How could we lower this friction and increase the bandwidth of communication between the user and Claude?</p><h3>Attempt 1: Editing the ExitPlanTool</h3><p>The first approach we tried was adding a parameter to the ExitPlanTool to have an array of questions alongside the plan. This was the easiest fix to implement, but it confused Claude because we were simultaneously asking for a plan and a set of questions about the plan. What if the user’s answers conflicted with what the plan said? Would Claude need to call the ExitPlanTool twice? We knew this tactic wouldn’t work, so we went back to the drawing board. (You can read more about why we made an ExitPlanTool in<a href="https://x.com/trq212/status/2024574133011673516"> our post on prompt caching</a>)</p><h3>Attempt 2: Changing output format</h3><p>Next, we tried updating Claude’s output instructions to serve a slightly modified markdown format that it could use to ask questions. For example, we could ask it to output a list of bullet point questions with alternatives in brackets. We could then parse and format that question as UI for the user.</p><p>Claude could usually produce this format, but not reliably. It would append extra sentences, drop options, or abandon the structure altogether. Onto the next approach.<br></p><h3>Attempt 3: The AskUserQuestion Tool</h3><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:1200px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="1200px"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69d919d46e9dceaa0cf307dc_208fceac.png" width="auto" height="auto" loading="auto"></div></figure><p>Finally, we landed on creating a tool that Claude could call at any point, but it was particularly prompted to do so during plan mode. When the tool triggered we would show a modal to display the questions and block the agent's loop until the user answered.</p><p>This tool allowed us to prompt Claude for a structured output and it helped us ensure that Claude gave the user multiple options. It also gave users ways to compose this functionality, for example calling it in the <a href="https://platform.claude.com/docs/en/agent-sdk/overview">Agent SDK</a> or using referring to it in skills.</p><p>Most importantly, Claude seemed to like calling this tool and we found its outputs worked well. After all, even the best designed tool doesn’t work if Claude doesn’t understand how to call it.</p><p>Is this the final form of elicitation in Claude Code? We doubt it. As Claude gets more capable, the tools that serve it have to evolve too. The next section shows a case where a tool that once helped started getting in the way.</p><h3>Updating with capabilities: tasks &amp; todos</h3><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:1200px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="1200px"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69d919d46e9dceaa0cf307df_9f83e911.png" width="auto" height="auto" loading="auto"></div></figure><p>When we first launched Claude Code, we realized that the model needed a <a href="https://platform.claude.com/docs/en/agent-sdk/todo-tracking">todo list</a> to keep it on track. Todos could be written at the start and checked off as the model did work. To do this we gave Claude the TodoWrite tool, which would write or update Todos and display them to the user.</p><p>But even then, we often saw Claude forgetting what it had to do. To adapt, we inserted system reminders every 5 turns that reminded Claude of its goal.</p><p>As models improved, they found To-do lists limiting. Being sent reminders of the todo list made Claude think that it had to stick to the list instead of modifying it when it realized it needed to change course. We also saw Opus 4.5 also get much better at using subagents, but how could subagents coordinate on a shared todo list?</p><p>Seeing this, we replaced the TodoWrite feature with <a href="https://x.com/trq212/status/2014480496013803643">the Task tool</a> . Whereas todos are focused on keeping the model on track, tasks help agents communicate with each other. Tasks could include dependencies, share updates across subagents and the model could alter and delete them.</p><p>As model capabilities increase, the tools that your models once needed might now be constraining them. It’s important to constantly revisit previous assumptions on what tools are needed. This is also why it's useful to stick to a small set of models to support that have a fairly similar capabilities profile.</p><h2>Designing a search interface</h2><p>The most consequential tools we've built are the ones that let Claude find its own context.</p><p>When Claude Code was first released internally, we used RAG: a vector database would pre-index the codebase, and the harness would retrieve relevant snippets and hand them to Claude before each response.. While RAG was powerful and fast, it required indexing and setup and could be fragile across a host of different environments. Most importantly, Claude was <em>given</em> this context instead of finding the context itself.</p><p>But if Claude could search on the web, why couldn’t it also search your codebase? By giving Claude a Grep tool, we could let it search for files and build context itself.</p><p>As Claude gets smarter, it becomes increasingly good at building its context when given the right tools.&nbsp;</p><p>When we introduced <a href="https://agentskills.io/home">Agent Skills</a>, we formalized the idea of progressive disclosure, which allows agents to incrementally discover relevant context through exploration.</p><p>Claude could now read skill files and those files could then reference other files that the model could read recursively. In fact, a common use of skills is to add more search capabilities to Claude like giving it instructions on how to use an API or query a database.</p><p>Over the course of a year, Claude went from not really being able to build its own context to being able to do nested search across several layers of files to find the exact context it needed.</p><p>Progressive disclosure is now a common technique we use to add new functionality without adding a tool. In the next section, we explain why.</p><h2>Progressive disclosure: the Claude Code Guide agent</h2><p>Claude Code currently has ~20 tools, and our team frequently revisits if we need all of them for Claude to be most effective. The bar to add a new tool is high, because this gives the model one more option to think about.</p><p>For example, we noticed that Claude did not know enough about how to use Claude Code. If you asked it how to add a MCP or what a slash command did, it would not be able to reply.</p><p>We could have put all of this information in the system prompt, but given that users rarely asked about this, it would have added context rot and interfered with Claude Code’s main job: writing code.</p><p>Instead, we tried progressive disclosure: we gave Claude a link to its docs that it could load and search when needed. This worked, but Claude would pull large chunks of documentation into context to find an answer the user could have gotten in one sentence.</p><p>So we built the Claude Code Guide — a subagent Claude calls whenever a user asks about Claude Code itself. The subagent does the doc-searching in its own context, follows detailed instructions on how to search and what to extract, and hands back only the answer. The main agent's context stays clean.</p><p>While this isn’t a perfect solution (Claude can still get confused when you ask it about how to set itself up), we were able to add things to Claude's action space without adding a new tool.</p><h3>Seeing like an agent is an art, not a science</h3><p>Designing the tools for your models is as much an art as it is a science. It depends heavily on the model you're using, the goal of the agent and the environment it’s operating in.</p><p>Our best advice? Experiment often, read your outputs, try new things. And most importantly, try to see like an agent.</p><p>‍</p><p><em>Get started with </em><a href="https://claude.com/product/claude-code"><em>Claude Code</em></a><em> today.</em></p><p><strong><em>About the author:</em></strong><em> Thariq Shihipar is a member of technical staff at Anthropic, working on Claude Code. </em></p></div>
+            <h1 class="article-title u-text-style-h1">Seeing like an agent: how we design tools in Claude Code</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>Learn how the Claude Code team designs, tests, and evolves tools by thinking from the model's point of view.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/product/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">April 10, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/seeing-like-an-agent/en.html">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/seeing-like-an-agent" target="_blank">View original</a></p>
-          <p><a href="/">← Back to home</a></p>
-        </footer>
-      </article>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>One of the hardest parts about building an agent harness is constructing its tools.</p><p>Claude acts completely through <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview">tool calling</a>, but there are a number of ways tools can be constructed in the Claude API with primitives like <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/bash-tool">bash</a>, <a href="https://code.claude.com/docs/en/skills">skills</a> and <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool">code execution</a>. (You can read more about programmatic tool calling on the Claude API in<a href="https://x.com/RLanceMartin/status/2027450018513490419"> @RLanceMartin's new article</a>).</p><p>So how do you design your agents' tools? Do you give it one general-purpose tool like bash or code execution? Or fifty specialized tools, one for each use case?<br></p><p>To put yourself in the mind of the model, imagine being given a difficult math problem. What tools would you want in order to solve it? It would depend on your own skill set!</p><p>Paper would be the minimum, but you’d be limited by manual calculations. A calculator would be better, but you would need to know how to operate the more advanced options. The fastest and most powerful option would be a computer, but you would have to know how to use it to write and execute code.</p><p>This is a useful framework for designing your agent. You want to give it tools that are shaped to its own abilities. But how do you know what those abilities are? You pay attention, read its outputs, experiment. You learn to see like an agent.</p><p>If you're building an agent, you'll face the same questions we did: when to add a tool, when to remove one, and how to tell the difference. Here's how we've answered them while building Claude Code, including where we got it wrong first.</p><h2>Improving elicitation with the AskUserQuestion tool</h2><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:1199px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="1199px"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69d919d46e9dceaa0cf307d9_b089e3d3.png" width="auto" height="auto" loading="auto"></div></figure><p>When building the AskUserQuestion tool, our goal was to improve Claude’s ability to ask questions (often called elicitation).</p><p>While Claude could just ask questions in plain text, we found answering those questions felt like they took an unnecessary amount of time. How could we lower this friction and increase the bandwidth of communication between the user and Claude?</p><h3>Attempt 1: Editing the ExitPlanTool</h3><p>The first approach we tried was adding a parameter to the ExitPlanTool to have an array of questions alongside the plan. This was the easiest fix to implement, but it confused Claude because we were simultaneously asking for a plan and a set of questions about the plan. What if the user’s answers conflicted with what the plan said? Would Claude need to call the ExitPlanTool twice? We knew this tactic wouldn’t work, so we went back to the drawing board. (You can read more about why we made an ExitPlanTool in<a href="https://x.com/trq212/status/2024574133011673516"> our post on prompt caching</a>)</p><h3>Attempt 2: Changing output format</h3><p>Next, we tried updating Claude’s output instructions to serve a slightly modified markdown format that it could use to ask questions. For example, we could ask it to output a list of bullet point questions with alternatives in brackets. We could then parse and format that question as UI for the user.</p><p>Claude could usually produce this format, but not reliably. It would append extra sentences, drop options, or abandon the structure altogether. Onto the next approach.<br></p><h3>Attempt 3: The AskUserQuestion Tool</h3><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:1200px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="1200px"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69d919d46e9dceaa0cf307dc_208fceac.png" width="auto" height="auto" loading="auto"></div></figure><p>Finally, we landed on creating a tool that Claude could call at any point, but it was particularly prompted to do so during plan mode. When the tool triggered we would show a modal to display the questions and block the agent's loop until the user answered.</p><p>This tool allowed us to prompt Claude for a structured output and it helped us ensure that Claude gave the user multiple options. It also gave users ways to compose this functionality, for example calling it in the <a href="https://platform.claude.com/docs/en/agent-sdk/overview">Agent SDK</a> or using referring to it in skills.</p><p>Most importantly, Claude seemed to like calling this tool and we found its outputs worked well. After all, even the best designed tool doesn’t work if Claude doesn’t understand how to call it.</p><p>Is this the final form of elicitation in Claude Code? We doubt it. As Claude gets more capable, the tools that serve it have to evolve too. The next section shows a case where a tool that once helped started getting in the way.</p><h3>Updating with capabilities: tasks &amp; todos</h3><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:1200px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="1200px"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69d919d46e9dceaa0cf307df_9f83e911.png" width="auto" height="auto" loading="auto"></div></figure><p>When we first launched Claude Code, we realized that the model needed a <a href="https://platform.claude.com/docs/en/agent-sdk/todo-tracking">todo list</a> to keep it on track. Todos could be written at the start and checked off as the model did work. To do this we gave Claude the TodoWrite tool, which would write or update Todos and display them to the user.</p><p>But even then, we often saw Claude forgetting what it had to do. To adapt, we inserted system reminders every 5 turns that reminded Claude of its goal.</p><p>As models improved, they found To-do lists limiting. Being sent reminders of the todo list made Claude think that it had to stick to the list instead of modifying it when it realized it needed to change course. We also saw Opus 4.5 also get much better at using subagents, but how could subagents coordinate on a shared todo list?</p><p>Seeing this, we replaced the TodoWrite feature with <a href="https://x.com/trq212/status/2014480496013803643">the Task tool</a> . Whereas todos are focused on keeping the model on track, tasks help agents communicate with each other. Tasks could include dependencies, share updates across subagents and the model could alter and delete them.</p><p>As model capabilities increase, the tools that your models once needed might now be constraining them. It’s important to constantly revisit previous assumptions on what tools are needed. This is also why it's useful to stick to a small set of models to support that have a fairly similar capabilities profile.</p><h2>Designing a search interface</h2><p>The most consequential tools we've built are the ones that let Claude find its own context.</p><p>When Claude Code was first released internally, we used RAG: a vector database would pre-index the codebase, and the harness would retrieve relevant snippets and hand them to Claude before each response.. While RAG was powerful and fast, it required indexing and setup and could be fragile across a host of different environments. Most importantly, Claude was <em>given</em> this context instead of finding the context itself.</p><p>But if Claude could search on the web, why couldn’t it also search your codebase? By giving Claude a Grep tool, we could let it search for files and build context itself.</p><p>As Claude gets smarter, it becomes increasingly good at building its context when given the right tools.&nbsp;</p><p>When we introduced <a href="https://agentskills.io/home">Agent Skills</a>, we formalized the idea of progressive disclosure, which allows agents to incrementally discover relevant context through exploration.</p><p>Claude could now read skill files and those files could then reference other files that the model could read recursively. In fact, a common use of skills is to add more search capabilities to Claude like giving it instructions on how to use an API or query a database.</p><p>Over the course of a year, Claude went from not really being able to build its own context to being able to do nested search across several layers of files to find the exact context it needed.</p><p>Progressive disclosure is now a common technique we use to add new functionality without adding a tool. In the next section, we explain why.</p><h2>Progressive disclosure: the Claude Code Guide agent</h2><p>Claude Code currently has ~20 tools, and our team frequently revisits if we need all of them for Claude to be most effective. The bar to add a new tool is high, because this gives the model one more option to think about.</p><p>For example, we noticed that Claude did not know enough about how to use Claude Code. If you asked it how to add a MCP or what a slash command did, it would not be able to reply.</p><p>We could have put all of this information in the system prompt, but given that users rarely asked about this, it would have added context rot and interfered with Claude Code’s main job: writing code.</p><p>Instead, we tried progressive disclosure: we gave Claude a link to its docs that it could load and search when needed. This worked, but Claude would pull large chunks of documentation into context to find an answer the user could have gotten in one sentence.</p><p>So we built the Claude Code Guide — a subagent Claude calls whenever a user asks about Claude Code itself. The subagent does the doc-searching in its own context, follows detailed instructions on how to search and what to extract, and hands back only the answer. The main agent's context stays clean.</p><p>While this isn’t a perfect solution (Claude can still get confused when you ask it about how to set itself up), we were able to add things to Claude's action space without adding a new tool.</p><h3>Seeing like an agent is an art, not a science</h3><p>Designing the tools for your models is as much an art as it is a science. It depends heavily on the model you're using, the goal of the agent and the environment it’s operating in.</p><p>Our best advice? Experiment often, read your outputs, try new things. And most importantly, try to see like an agent.</p><p>‍</p><p><em>Get started with </em><a href="https://claude.com/product/claude-code"><em>Claude Code</em></a><em> today.</em></p><p><strong><em>About the author:</em></strong><em> Thariq Shihipar is a member of technical staff at Anthropic, working on Claude Code. </em></p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/seeing-like-an-agent" target="_blank">View original</a></p>
+              <p><a href="/">← Back to home</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
     </div>
   </main>
 <footer class="footer">
@@ -51,6 +206,53 @@
       <p>Content from <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · Translation by AI</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

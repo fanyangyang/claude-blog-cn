@@ -4,46 +4,330 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lessons from building Claude Code: How we use skills — Claude Blog CN</title>
-  <meta name="description" content="Lessons from building Claude Code: How we use skills">
+  <meta name="description" content="What we learned building and scaling hundreds of skills internally at Anthropic.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="/posts/lessons-from-building-claude-code-how-we-use-skills/" class="nav-link">中文版 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>Lessons from building Claude Code: How we use skills</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/lessons-from-building-claude-code-how-we-use-skills" target="_blank" rel="noopener noreferrer">Ask questions about this page</a>
+        <button type="button" class="explore-item" data-copy-markdown>Copy as markdown</button>
+        <a class="explore-item" href="/posts/lessons-from-building-claude-code-how-we-use-skills/">阅读中文翻译 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># Lessons from building Claude Code: How we use skills
+
+What we learned building and scaling hundreds of skills internally at Anthropic.
+
+Skills have become one of the most used extension points in Claude Code. They’re flexible, easy to make, and easy to distribute.
+
+But this flexibility also makes it hard to know what works best. What type of skills are worth making? How do you structure a skill? When do you share them with others?
+
+We've been using skills in Claude Code extensively at Anthropic with hundreds of them in active use. These are the lessons we've learned about using skills to accelerate our development.
+
+## What are skills?
+
+Skills are folders of instructions, scripts, and resources that agents can discover and use to do things more accurately and efficiently. This blog post assumes familiarity with skills basics; if you’re new, start with our [Introduction to agent skills course on Skilljar](https://anthropic.skilljar.com/introduction-to-agent-skills).
+
+A common misconception we hear about skills is that they are “just markdown files.” They’re actually folders that can include scripts, assets, data, etc. that the agent can discover, explore and manipulate. 
+
+In Claude Code, skills also have a [wide variety of configuration options](https://code.claude.com/docs/en/skills#frontmatter-reference) including registering dynamic hooks.
+
+We’ve found that some of the most effective skills in Claude Code use these configuration options and folder structure effectively. 
+
+## Types of skills
+
+After cataloging all of our internal skills at Anthropic, we noticed they cluster into nine categories. The best skills fit cleanly into one; the ones that try to do too much straddle several and confuse the agent. This isn't a definitive list, but it is a useful framework for identifying gaps in your own skills library. 
+
+The Claude Code team categorized our internal skills and found that they could be bucketed into nine distinct categories.
+### **1. Library and API reference**
+
+These are skills that explain how to correctly use a library, CLI, or SDKs. They could be both for internal libraries or common libraries that Claude Code sometimes struggles to handle. These skills often included a folder of reference code snippets and a list of gotchas for Claude to avoid when writing a script.
+
+Examples include:
+
+- `billing-lib` — your internal billing library: edge cases, footguns, etc.
+- `internal-platform-cli `— every subcommand of your internal CLI wrapper with examples on when to use them.
+- `sandbox-proxy `— configuring your org's egress gateway for dev work: which hosts are reachable, how to debug &quot;connection refused&quot; errors, how to add an allowlist entry.
+
+### **2. Product verification**
+
+These are skills that describe how to test or verify that your code is working. They are often paired with playwright, tmux, or other external tools for verification.
+
+Verification skills have had the most measurable impact on Claude’s output quality internally. It can be worth having an engineer spend a week just making your verification skills excellent.
+
+Consider techniques like having Claude record a video of its output so you can see exactly what it tested, or enforcing programmatic assertions on state at each step. These are often done by including a variety of scripts in the skill.
+
+Examples include:
+
+- `signup-flow-driver `— runs through signup → email verify → onboarding in a headless browser, with hooks for asserting state at each step
+- `checkout-verifier `— drives the checkout UI with Stripe test cards, verifies the invoice actually lands in the right state
+- `tmux-cli-driver `— for interactive CLI testing where the thing you're verifying needs a TTY
+
+### **3. Data fetching and analysis**
+
+These are skills that connect to your data and monitoring stacks. These skills might include libraries to fetch your data with credentials, specific dashboard ids, etc., as well as instructions on common workflows or ways to get data.
+
+Examples include:
+
+- `funnel-query `— &quot;which events do I join to see signup → activation → paid&quot; plus the table that actually has the canonical user_id
+- `cohort-compare` — compare two cohorts' retention or conversion, flag statistically significant deltas, link to the segment definitions
+- `grafana `— datasource UIDs, cluster names, problem → dashboard lookup table
+- `datadog `— field reference (@request_id vs trace_id), service list, metric prefix conventions
+
+### **4. Business process and team automation**
+
+These are skills that automate repetitive workflows into one command. These skills are usually fairly simple instructions but might have more complicated dependencies on other skills or MCPs. For these skills, saving previous results in log files can help the model stay consistent and reflect on previous executions of the workflow.
+
+Examples include:
+
+- `standup-post `— aggregates your ticket tracker, GitHub activity, and prior Slack → formatted standup, delta-only
+- `create-&lt;ticket-system&gt;-ticket` — enforces schema (valid enum values, required fields) plus post-creation workflow (ping reviewer, link in Slack)
+- `weekly-recap` — merged PRs + closed tickets + deploys → formatted recap post
+
+### **5. Code scaffolding and templates**
+
+These are skills that generate framework boilerplates for a specific function in a codebase. You might combine these skills with scripts that can be composed. They are especially useful when your scaffolding has natural language requirements that can’t be purely covered by code. 
+
+Examples include:
+
+- `new-&lt;framework&gt;-workflow `— scaffolds a new service/workflow/handler with your annotations
+- `new-migration `— your migration file template plus common gotchas
+- `create-app` — new internal app with your auth, logging, and deploy config pre-wired
+
+### **6. Code quality and review**
+
+These are skills that enforce code quality inside of your org and help review code. These can include deterministic scripts or tools for maximum robustness. You may want to run these skills automatically as part of hooks or inside of a GitHub Action. 
+
+- `adversarial-review `— spawns a fresh-eyes subagent to critique, implements fixes, iterates until findings degrade to nitpicks
+- `code-style `— enforces code style, especially styles that Claude does not do well by default.
+- `testing-practices` — instructions on how to write tests and what to test.
+
+### **7. CI/CD and deployment**
+
+These are skills that help you fetch, push, and deploy code inside of your codebase. These skills may reference other skills to collect data.
+
+Examples include:
+
+- `babysit-pr `— monitors a PR → retries flaky CI → resolves merge conflicts → enables auto-merge
+- `deploy-&lt;service&gt;` — build → smoke test → gradual traffic rollout with error-rate comparison → auto-rollback on regression
+- `cherry-pick-prod` — isolated worktree → cherry-pick → conflict resolution → PR with template
+
+### **8. Runbooks**
+
+These are skills that take a symptom (such as a Slack thread, alert, or error signature), walk through a multi-tool investigation, and produce a structured report.
+
+Examples include:
+
+- `&lt;service&gt;-debugging `— maps symptoms → tools → query patterns for your highest-traffic services
+- `oncall-runner `— fetches the alert → checks the usual suspects → formats a finding
+- `log-correlator `— given a request ID, pulls matching logs from every system that might have touched it
+
+### **9. Infrastructure operations**
+
+These are skills that perform routine maintenance and operational procedures, some of which involve destructive actions that benefit from guardrails. These make it easier for engineers to follow best practices in critical operations.
+
+Examples include:
+
+- `&lt;resource&gt;-orphans` — finds orphaned pods/volumes → posts to Slack → soak period → user confirms → cascading cleanup
+- `dependency-management `— your org's dependency approval workflow
+- `cost-investigation `— &quot;why did our storage/egress bill spike&quot; with the specific buckets and query patterns
+
+## Tips for making skills
+
+Once you've decided on the skill to make, how do you write it? These are some of the Claude Code team’s best practices, tips, and tricks for making skills
+
+### Don’t state the obvious
+
+Claude already knows how to code and can read your codebase. A skill that restates what Claude would do by default adds context without adding value. If you’re publishing a skill that is primarily about knowledge, focus on information that pushes Claude out of its normal way of thinking.
+
+The [frontend design skill](https://github.com/anthropics/skills/blob/main/skills/frontend-design/SKILL.md) is a great example; it was built by an engineer at Anthropic by iterating with customers on improving Claude’s design taste, avoiding classic patterns like the Inter font and purple gradients. 
+
+### Build a gotchas section
+
+The highest-signal content in any skill is the Gotchas section. These sections should be built up from common failure points that Claude runs into when using your skill. Ideally, you will update your skill over time to capture these gotchas.
+
+For example:
+
+&quot;The `subscriptions` table is append-only. The row you want is the one with the highest version, not the most recent `created_at`.&quot; &quot;This field is called `@request_id `in the API gateway and `trace_id` in the billing service. They're the same value.&quot; &quot;Staging returns 200 even when the Stripe webhook didn't actually process. Check `payment_events `for the real state.&quot;
+
+### Use the file system and progressive disclosure
+
+The SKILL.md file points to several other files Claude can reference for specific situations. For example, if a job is pending, it should reference stuck-jobs.md.Like we said earlier, a skill is a folder, not just a markdown file. You should think of the entire file system as a form of context engineering and progressive disclosure. Tell Claude what files are in your skill, and it will read them at appropriate times.
+
+The simplest form of progressive disclosure is to point to other markdown files for Claude to use. For example, you may split detailed function signatures and usage examples into `references/api.md`.
+
+Another example: if your end output is a markdown file, you might include a template file for it in `assets/` to copy and use.
+
+You can have folders of references, scripts, examples, etc., which help Claude work more effectively. 
+
+### Avoid railroading Claude
+
+Claude will generally try to stick to your instructions, and because skills are so reusable you’ll want to be careful of being too specific in your instructions. Give Claude the information it needs, but give it the flexibility to adapt to the situation. 
+
+For example:
+
+### Think through the setup
+
+The skill above is written to prompt the user if the Slack channel is not included in the configuration.Some skills may need to be set up with context from the user. For example, if you are making a skill that posts your standup to Slack, you may want Claude to ask which Slack channel to post it in.
+
+A good pattern to do this is to store this setup information in a config.json file in the skill directory like the above example. If the config is not set up, the agent can then ask the user for information.
+
+If you want the agent to present structured, multiple choice questions you can instruct Claude to use the AskUserQuestion tool. 
+
+### Write descriptions for the model, not for humans
+
+When Claude Code starts a session, it builds a listing of every available skill with its description. This listing is what Claude scans to decide &quot;is there a skill for this request?&quot; Which means the description field is not a summary, it's a description of when to trigger this skill.
+
+It’s helpful to include triggers for the skill, like “babysit,” in its description.‍
+
+### Help Claude remember
+
+This text log file helps Claude remember past events like reviewing Sarah’s auth PR.Some skills can include a form of memory by storing data within them. You could store data in anything as simple as an append only text log file or JSON files, or as complicated as a SQLite database.
+
+For example, a `standup-post` skill might keep a standups.log with every post it's written, which means the next time you run it, Claude reads its own history and can tell what's changed since yesterday. 
+
+You can use the env variable `${CLAUDE_PLUGIN_DATA} `to get a stable directory where you can store data, read more persisting data in skills here: [https://code.claude.com/docs/en/plugins-reference#persistent-data-directory](https://code.claude.com/docs/en/plugins-reference#persistent-data-directory). 
+
+### Store scripts and generate code
+
+One of the most powerful tools you can give Claude is code. Giving Claude scripts and libraries lets Claude spend its turns on composition, deciding what to do next rather than reconstructing boilerplate.
+
+For example, in your `data-science` skill you might have a library of functions to fetch data from your event source. In order for Claude to do complex analysis, you could give it a set of helper functions like this:
+
+Claude can then generate scripts on the fly to compose this functionality to do more advanced analysis for prompts like “What happened on Tuesday?”
+
+### Use on-demand hooks 
+
+Skills can include hooks that are only activated when the skill is called, and that only last for the duration of the session. Use this for more opinionated hooks that you don’t want to run all the time, but are extremely useful sometimes.
+
+For example:
+
+- `/`**`careful`**` `— blocks rm -rf, DROP TABLE, force-push, kubectl delete via PreToolUse matcher on Bash. You only want this when you know you're touching prod — having it always on would drive you insane.
+- `/`**`freeze`** — blocks any Edit/Write that's not in a specific directory. Useful during debugging: &quot;I want to add logs but I keep accidentally 'fixing' unrelated code.”
+
+## Distributing skills
+
+One of the biggest benefits of skills is that you can share them with the rest of your team.
+
+There are two ways you might want to share skills with others:
+
+- check your skills into your repo (under `./.claude/skills`)
+- make a **plugin** and have a Claude Code Plugin marketplace where users can upload and install plugins (read more on the [documentation](https://code.claude.com/docs/en/plugin-marketplaces) here)
+
+For smaller teams working across relatively few repos, checking your skills into repos works well. But every skill that is checked in also adds a little bit to the context of the model. As you scale, an internal plugin marketplace allows you to distribute skills and let your team decide which ones to install, as well as include a setup flow.
+
+## Managing a skills marketplace
+
+How do you decide which skills go in a marketplace? How do people submit them?
+
+At Anthropic, we don't have a centralized team that decides; instead we try to find the most useful skills organically. If someone has a skill that they want people to try out, they can upload it to a sandbox folder in GitHub and point people to it in Slack or other forums.
+
+Once a skill has gotten traction (which is up to the skill owner to decide), they can put in a PR to move it into the marketplace.
+
+## Composing skills 
+
+You may want to have skills that depend on each other. For example, you may have a file upload skill that uploads a file, and a CSV generation skill that makes a CSV and uploads it. This sort of dependency management is not natively built into marketplaces or skills yet, but you can just reference other skills by name, and the model will invoke them if they are installed.
+
+## Measuring skills
+
+To understand how a skill is doing, we use a PreToolUse hook that lets us log skill usage within the company ([example code here](https://gist.github.com/ThariqS/24defad423d701746e23dc19aace4de5)). This means we can find skills that are popular or are undertriggering compared to our expectations.
+
+## Get started
+
+Skills best practices are still evolving. Most of our best skills began as a few lines and a single gotcha, then got better because people kept adding to them as Claude hit new edge cases. 
+
+The best way to understand skills is to get started, experiment, and see what works for you. 
+
+- Check out [our skills documentation](https://code.claude.com/docs/en/skills)
+- [Find example skills to customize](https://github.com/anthropics/skills)
+
+*This article was written by Thariq Shihipar, a member of technical staff at Anthropic, working on Claude Code.*</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Claude Code</span>
-            <span class="article-date">June 3, 2026</span>
-            <span class="lang-badge-large">EN</span>
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-heather);">
+            <img class="hero-illo-img" src="/assets/illustrations/lessons-from-building-claude-code-how-we-use-skills.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">Lessons from building Claude Code: How we use skills</h1>
-          <a href="/posts/lessons-from-building-claude-code-how-we-use-skills/" class="lang-toggle">阅读中文翻译 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>Skills have become one of the most used extension points in Claude Code. They’re flexible, easy to make, and easy to distribute.</p><p>But this flexibility also makes it hard to know what works best. What type of skills are worth making? How do you structure a skill? When do you share them with others?</p><p>We've been using skills in Claude Code extensively at Anthropic with hundreds of them in active use. These are the lessons we've learned about using skills to accelerate our development.</p><h2>What are skills?</h2><p>Skills are folders of instructions, scripts, and resources that agents can discover and use to do things more accurately and efficiently. This blog post assumes familiarity with skills basics; if you’re new, start with our <a href="https://anthropic.skilljar.com/introduction-to-agent-skills">Introduction to agent skills course on Skilljar</a>.</p><p>A common misconception we hear about skills is that they are “just markdown files.” They’re actually folders that can include scripts, assets, data, etc. that the agent can discover, explore and manipulate.&nbsp;</p><p>In Claude Code, skills also have a <a href="https://code.claude.com/docs/en/skills#frontmatter-reference">wide variety of configuration options</a> including registering dynamic hooks.</p><p>We’ve found that some of the most effective skills in Claude Code use these configuration options and folder structure effectively. </p></div>
+            <h1 class="article-title u-text-style-h1">Lessons from building Claude Code: How we use skills</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>What we learned building and scaling hundreds of skills internally at Anthropic.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/product/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">June 3, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/lessons-from-building-claude-code-how-we-use-skills/en.html">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/lessons-from-building-claude-code-how-we-use-skills" target="_blank">View original</a></p>
-          <p><a href="/">← Back to home</a></p>
-        </footer>
-      </article>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>Skills have become one of the most used extension points in Claude Code. They’re flexible, easy to make, and easy to distribute.</p><p>But this flexibility also makes it hard to know what works best. What type of skills are worth making? How do you structure a skill? When do you share them with others?</p><p>We've been using skills in Claude Code extensively at Anthropic with hundreds of them in active use. These are the lessons we've learned about using skills to accelerate our development.</p><h2>What are skills?</h2><p>Skills are folders of instructions, scripts, and resources that agents can discover and use to do things more accurately and efficiently. This blog post assumes familiarity with skills basics; if you’re new, start with our <a href="https://anthropic.skilljar.com/introduction-to-agent-skills">Introduction to agent skills course on Skilljar</a>.</p><p>A common misconception we hear about skills is that they are “just markdown files.” They’re actually folders that can include scripts, assets, data, etc. that the agent can discover, explore and manipulate.&nbsp;</p><p>In Claude Code, skills also have a <a href="https://code.claude.com/docs/en/skills#frontmatter-reference">wide variety of configuration options</a> including registering dynamic hooks.</p><p>We’ve found that some of the most effective skills in Claude Code use these configuration options and folder structure effectively. </p><h2>Types of skills</h2><p>After cataloging all of our internal skills at Anthropic, we noticed they cluster into nine categories. The best skills fit cleanly into one; the ones that try to do too much straddle several and confuse the agent. This isn't a definitive list, but it is a useful framework for identifying gaps in your own skills library.&nbsp;</p><figure style="max-width:2048pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="The Claude Code team categorized our internal skills and found that they could be bucketed into nine distinct categories." src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1f3a763cec27e2f026439c_b7942952.png" loading="lazy"></div><figcaption>The Claude Code team categorized our internal skills and found that they could be bucketed into nine distinct categories.</figcaption></figure><h3><strong>1. Library and API reference</strong></h3><p>These are skills that explain how to correctly use a library, CLI, or SDKs. They could be both for internal libraries or common libraries that Claude Code sometimes struggles to handle. These skills often included a folder of reference code snippets and a list of gotchas for Claude to avoid when writing a script.</p><p>Examples include:</p><ul role="list"><li><code>billing-lib</code> — your internal billing library: edge cases, footguns, etc.</li><li><code>internal-platform-cli </code>— every subcommand of your internal CLI wrapper with examples on when to use them.</li><li><code>sandbox-proxy </code>— configuring your org's egress gateway for dev work: which hosts are reachable, how to debug "connection refused" errors, how to add an allowlist entry.</li></ul><h3><strong>2. Product verification</strong></h3><p>These are skills that describe how to test or verify that your code is working. They are often paired with playwright, tmux, or other external tools for verification.</p><p>Verification skills have had the most measurable impact on Claude’s output quality internally. It can be worth having an engineer spend a week just making your verification skills excellent.</p><p>Consider techniques like having Claude record a video of its output so you can see exactly what it tested, or enforcing programmatic assertions on state at each step. These are often done by including a variety of scripts in the skill.</p><p>Examples include:</p><ul role="list"><li><code>signup-flow-driver </code>— runs through signup → email verify → onboarding in a headless browser, with hooks for asserting state at each step</li><li><code>checkout-verifier </code>— drives the checkout UI with Stripe test cards, verifies the invoice actually lands in the right state</li><li><code>tmux-cli-driver </code>— for interactive CLI testing where the thing you're verifying needs a TTY</li></ul><h3><strong>3. Data fetching and analysis</strong></h3><p>These are skills that connect to your data and monitoring stacks. These skills might include libraries to fetch your data with credentials, specific dashboard ids, etc., as well as instructions on common workflows or ways to get data.</p><p>Examples include:</p><ul role="list"><li><code>funnel-query </code>— "which events do I join to see signup → activation → paid" plus the table that actually has the canonical user_id</li><li><code>cohort-compare</code> — compare two cohorts' retention or conversion, flag statistically significant deltas, link to the segment definitions</li><li><code>grafana </code>— datasource UIDs, cluster names, problem → dashboard lookup table</li><li><code>datadog </code>— field reference (@request_id vs trace_id), service list, metric prefix conventions</li></ul><h3><strong>4. Business process and team automation</strong></h3><p>These are skills that automate repetitive workflows into one command. These skills are usually fairly simple instructions but might have more complicated dependencies on other skills or MCPs. For these skills, saving previous results in log files can help the model stay consistent and reflect on previous executions of the workflow.</p><p>Examples include:</p><ul role="list"><li><code>standup-post </code>— aggregates your ticket tracker, GitHub activity, and prior Slack → formatted standup, delta-only</li><li><code>create-&lt;ticket-system&gt;-ticket</code> — enforces schema (valid enum values, required fields) plus post-creation workflow (ping reviewer, link in Slack)</li><li><code>weekly-recap</code> — merged PRs + closed tickets + deploys → formatted recap post</li></ul><h3><strong>5. Code scaffolding and templates</strong></h3><p>These are skills that generate framework boilerplates for a specific function in a codebase. You might combine these skills with scripts that can be composed. They are especially useful when your scaffolding has natural language requirements that can’t be purely covered by code.&nbsp;</p><p>Examples include:</p><ul role="list"><li><code>new-&lt;framework&gt;-workflow </code>— scaffolds a new service/workflow/handler with your annotations</li><li><code>new-migration </code>— your migration file template plus common gotchas</li><li><code>create-app</code> — new internal app with your auth, logging, and deploy config pre-wired</li></ul><h3><strong>6. Code quality and review</strong></h3><p>These are skills that enforce code quality inside of your org and help review code. These can include deterministic scripts or tools for maximum robustness. You may want to run these skills automatically as part of hooks or inside of a GitHub Action.&nbsp;</p><ul role="list"><li><code>adversarial-review </code>— spawns a fresh-eyes subagent to critique, implements fixes, iterates until findings degrade to nitpicks</li><li><code>code-style </code>— enforces code style, especially styles that Claude does not do well by default.</li><li><code>testing-practices</code> — instructions on how to write tests and what to test.</li></ul><h3><strong>7. CI/CD and deployment</strong></h3><p>These are skills that help you fetch, push, and deploy code inside of your codebase. These skills may reference other skills to collect data.</p><p>Examples include:</p><ul role="list"><li><code>babysit-pr </code>— monitors a PR → retries flaky CI → resolves merge conflicts → enables auto-merge</li><li><code>deploy-&lt;service&gt;</code> — build → smoke test → gradual traffic rollout with error-rate comparison → auto-rollback on regression</li><li><code>cherry-pick-prod</code> — isolated worktree → cherry-pick → conflict resolution → PR with template</li></ul><h3><strong>8. Runbooks</strong></h3><p>These are skills that take a symptom (such as a Slack thread, alert, or error signature), walk through a multi-tool investigation, and produce a structured report.</p><p>Examples include:</p><ul role="list"><li><code>&lt;service&gt;-debugging </code>— maps symptoms → tools → query patterns for your highest-traffic services</li><li><code>oncall-runner </code>— fetches the alert → checks the usual suspects → formats a finding</li><li><code>log-correlator </code>— given a request ID, pulls matching logs from every system that might have touched it</li></ul><h3><strong>9. Infrastructure operations</strong></h3><p>These are skills that perform routine maintenance and operational procedures, some of which involve destructive actions that benefit from guardrails. These make it easier for engineers to follow best practices in critical operations.</p><p>Examples include:</p><ul role="list"><li><code>&lt;resource&gt;-orphans</code> — finds orphaned pods/volumes → posts to Slack → soak period → user confirms → cascading cleanup</li><li><code>dependency-management </code>— your org's dependency approval workflow</li><li><code>cost-investigation </code>— "why did our storage/egress bill spike" with the specific buckets and query patterns</li></ul><h2>Tips for making skills</h2><p>Once you've decided on the skill to make, how do you write it? These are some of the Claude Code team’s best practices, tips, and tricks for making skills</p><h3>Don’t state the obvious</h3><figure style="max-width:820pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1f3a763cec27e2f02643a2_6f109d87.png" loading="lazy"></div></figure><p>Claude already knows how to code and can read your codebase. A skill that restates what Claude would do by default adds context without adding value. If you’re publishing a skill that is primarily about knowledge, focus on information that pushes Claude out of its normal way of thinking.</p><p>The <a href="https://github.com/anthropics/skills/blob/main/skills/frontend-design/SKILL.md">frontend design skill</a> is a great example; it was built by an engineer at Anthropic by iterating with customers on improving Claude’s design taste, avoiding classic patterns like the Inter font and purple gradients.&nbsp;</p><h3>Build a gotchas section</h3><p>The highest-signal content in any skill is the Gotchas section. These sections should be built up from common failure points that Claude runs into when using your skill. Ideally, you will update your skill over time to capture these gotchas.</p><p>For example:</p><p>"The <code>subscriptions</code> table is append-only. The row you want is the one with the highest version, not the most recent <code>created_at</code>." "This field is called <code>@request_id </code>in the API gateway and <code>trace_id</code> in the billing service. They're the same value." "Staging returns 200 even when the Stripe webhook didn't actually process. Check <code>payment_events </code>for the real state."</p><h3>Use the file system and progressive disclosure</h3><figure style="max-width:2048pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1f3a763cec27e2f026439f_0e0f23c0.png" loading="lazy"></div><figcaption>The SKILL.md file points to several other files Claude can reference for specific situations. For example, if a job is pending, it should reference stuck-jobs.md.</figcaption></figure><p>Like we said earlier, a skill is a folder, not just a markdown file. You should think of the entire file system as a form of context engineering and progressive disclosure. Tell Claude what files are in your skill, and it will read them at appropriate times.</p><p>The simplest form of progressive disclosure is to point to other markdown files for Claude to use. For example, you may split detailed function signatures and usage examples into <code>references/api.md</code>.</p><p>Another example: if your end output is a markdown file, you might include a template file for it in <code>assets/</code> to copy and use.</p><p>You can have folders of references, scripts, examples, etc., which help Claude work more effectively.&nbsp;</p><h3>Avoid railroading Claude</h3><p>Claude will generally try to stick to your instructions, and because skills are so reusable you’ll want to be careful of being too specific in your instructions. Give Claude the information it needs, but give it the flexibility to adapt to the situation.&nbsp;</p><p>For example:</p><figure style="max-width:1440pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1f3a763cec27e2f02643ae_3c108f2c.png" loading="lazy"></div></figure><h3>Think through the setup</h3><figure style="max-width:1404pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1f3a763cec27e2f02643a8_d5e89124.png" loading="lazy"></div><figcaption>The skill above is written to prompt the user if the Slack channel is not included in the configuration.</figcaption></figure><p>Some skills may need to be set up with context from the user. For example, if you are making a skill that posts your standup to Slack, you may want Claude to ask which Slack channel to post it in.</p><p>A good pattern to do this is to store this setup information in a config.json file in the skill directory like the above example. If the config is not set up, the agent can then ask the user for information.</p><p>If you want the agent to present structured, multiple choice questions you can instruct Claude to use the AskUserQuestion tool.&nbsp;</p><h3>Write descriptions for the model, not for humans</h3><p>When Claude Code starts a session, it builds a listing of every available skill with its description. This listing is what Claude scans to decide "is there a skill for this request?" Which means the description field is not a summary, it's a description of when to trigger this skill.</p><figure style="max-width:1640pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1f3a763cec27e2f0264399_a60f7943.png" loading="lazy"></div><figcaption>It’s helpful to include triggers for the skill, like “babysit,” in its description.</figcaption></figure><p>‍</p><h3>Help Claude remember</h3><figure style="max-width:1440pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1f3a763cec27e2f02643b1_9159a9b1.png" loading="lazy"></div><figcaption>This text log file helps Claude remember past events like reviewing Sarah’s auth PR.</figcaption></figure><p>Some skills can include a form of memory by storing data within them. You could store data in anything as simple as an append only text log file or JSON files, or as complicated as a SQLite database.</p><p>For example, a <code>standup-post</code> skill might keep a standups.log with every post it's written, which means the next time you run it, Claude reads its own history and can tell what's changed since yesterday.&nbsp;</p><p>You can use the env variable <code>${CLAUDE_PLUGIN_DATA} </code>to get a stable directory where you can store data, read more persisting data in skills here: <a href="https://code.claude.com/docs/en/plugins-reference#persistent-data-directory">https://code.claude.com/docs/en/plugins-reference#persistent-data-directory</a>.&nbsp;</p><h3>Store scripts and generate code</h3><p>One of the most powerful tools you can give Claude is code. Giving Claude scripts and libraries lets Claude spend its turns on composition, deciding what to do next rather than reconstructing boilerplate.</p><p>For example, in your <code>data-science</code> skill you might have a library of functions to fetch data from your event source. In order for Claude to do complex analysis, you could give it a set of helper functions like this:</p><figure style="max-width:1440pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1f3a763cec27e2f02643ab_00319576.png" loading="lazy"></div></figure><p>Claude can then generate scripts on the fly to compose this functionality to do more advanced analysis for prompts like “What happened on Tuesday?”</p><figure style="max-width:1440pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1f3a763cec27e2f02643a5_32329bf3.png" loading="lazy"></div></figure><h3>Use on-demand hooks&nbsp;</h3><p>Skills can include hooks that are only activated when the skill is called, and that only last for the duration of the session. Use this for more opinionated hooks that you don’t want to run all the time, but are extremely useful sometimes.</p><p>For example:</p><ul role="list"><li><code>/</code><strong><code>careful</code></strong><code> </code>— blocks rm -rf, DROP TABLE, force-push, kubectl delete via PreToolUse matcher on Bash. You only want this when you know you're touching prod — having it always on would drive you insane.</li><li><code>/</code><strong><code>freeze</code></strong> — blocks any Edit/Write that's not in a specific directory. Useful during debugging: "I want to add logs but I keep accidentally 'fixing' unrelated code.”</li></ul><h2>Distributing skills</h2><p>One of the biggest benefits of skills is that you can share them with the rest of your team.</p><p>There are two ways you might want to share skills with others:</p><ul role="list"><li>check your skills into your repo (under <code>./.claude/skills</code>)</li><li>make a <strong>plugin</strong> and have a Claude Code Plugin marketplace where users can upload and install plugins (read more on the <a href="https://code.claude.com/docs/en/plugin-marketplaces">documentation</a> here)</li></ul><p>For smaller teams working across relatively few repos, checking your skills into repos works well. But every skill that is checked in also adds a little bit to the context of the model. As you scale, an internal plugin marketplace allows you to distribute skills and let your team decide which ones to install, as well as include a setup flow.</p><h2>Managing a skills marketplace</h2><p>How do you decide which skills go in a marketplace? How do people submit them?</p><p>At Anthropic, we don't have a centralized team that decides; instead we try to find the most useful skills organically. If someone has a skill that they want people to try out, they can upload it to a sandbox folder in GitHub and point people to it in Slack or other forums.</p><p>Once a skill has gotten traction (which is up to the skill owner to decide), they can put in a PR to move it into the marketplace.</p><h2>Composing skills&nbsp;</h2><p>You may want to have skills that depend on each other. For example, you may have a file upload skill that uploads a file, and a CSV generation skill that makes a CSV and uploads it. This sort of dependency management is not natively built into marketplaces or skills yet, but you can just reference other skills by name, and the model will invoke them if they are installed.</p><h2>Measuring skills</h2><p>To understand how a skill is doing, we use a PreToolUse hook that lets us log skill usage within the company (<a href="https://gist.github.com/ThariqS/24defad423d701746e23dc19aace4de5">example code here</a>). This means we can find skills that are popular or are undertriggering compared to our expectations.</p><h2>Get started</h2><p>Skills best practices are still evolving. Most of our best skills began as a few lines and a single gotcha, then got better because people kept adding to them as Claude hit new edge cases.&nbsp;</p><p>The best way to understand skills is to get started, experiment, and see what works for you.&nbsp;</p><ul role="list"><li>Check out <a href="https://code.claude.com/docs/en/skills">our skills documentation</a></li><li><a href="https://github.com/anthropics/skills">Find example skills to customize</a></li></ul><p><em>This article was written by Thariq Shihipar, a member of technical staff at Anthropic, working on Claude Code.</em></p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/lessons-from-building-claude-code-how-we-use-skills" target="_blank">View original</a></p>
+              <p><a href="/">← Back to home</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
     </div>
   </main>
 <footer class="footer">
@@ -51,6 +335,53 @@
       <p>Content from <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · Translation by AI</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

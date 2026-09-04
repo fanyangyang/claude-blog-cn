@@ -13,5 +13,21 @@
   "translatedTitle": "Claude 2.1 的长上下文提示技巧",
   "translated": true,
   "translatedAt": "2026-09-02T04:39:32.652Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude apps"
+    ],
+    "usecase": [
+      "Work"
+    ]
+  },
+  "subtitle": "Claude 2.1 excels at retrieving information across its 200K context window, with a simple prompt adjustment improving accuracy from 27% to 98%.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": ""
 }

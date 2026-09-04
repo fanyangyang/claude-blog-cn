@@ -13,5 +13,21 @@
   "translated": true,
   "translatedTitle": "Claude 的 Prompt caching",
   "translatedAt": "2026-09-02T12:36:00.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Platform"
+    ],
+    "usecase": [
+      "Coding"
+    ]
+  },
+  "subtitle": "Claude caches frequently used context between API calls, reducing costs and latency for long prompts.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/platform/api"
 }

@@ -4,54 +4,201 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>在你自己的算力上运行 Claude Code 会话 — Claude Blog 中文翻译</title>
-  <meta name="description" content="在你自己的算力上运行 Claude Code 会话">
+  <meta name="description" content="Self-hosted environments are in public beta. Run Claude Code sessions on your own infrastructure, inside your network and next to your internal services.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/run-claude-code-sessions-on-your-own-compute" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>在你自己的算力上运行 Claude Code 会话</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/run-claude-code-sessions-on-your-own-compute" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/run-claude-code-sessions-on-your-own-compute/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># 在你自己的算力上运行 Claude Code 会话
+
+Self-hosted environments are in public beta. Run Claude Code sessions on your own infrastructure, inside your network and next to your internal services.
+
+现已进入公开测试：自托管环境让你可以在自己的基础设施上运行 Claude Code 会话。从网页、移动端、桌面或例程启动一次会话，它会在你的网络内部运行，紧挨着你的内部服务、工具链和安全控制，而不是跑在 Anthropic 托管的基础设施上。
+
+对大多数企业，我们强烈建议使用我们的托管方案，运维更简单，无需自行运行或维护基础设施。自托管环境面向那些因网络、工具或合规要求，必须把 agent 执行留在自己控制的基础设施上的团队。如果走这条路，请规划工程人力来负责搭建和持续维护。
+
+### **为什么要自托管**
+
+在预览计划中，我们看到组织采用自托管环境主要出于几个原因：
+
+- **网络访问：**会话在你的网络内部运行，可以访问内部服务、数据库和 registry，而无需把它们暴露到公网
+- **可定制：**在环境中预装编译器、SDK 和内部 CLI，让每次会话一开始就能构建
+- **合规：**源代码和构建产物留在你控制的基础设施上
+
+“自托管环境让我们能把 Claude Code 接入现有开发工作流，同时保持我们的安全和运维控制。这意味着 Claude 可以生成 PR、协助修复 CI 问题，并响应开发者工作流事件，算力还能按需扩展。Claude 理解我们的代码库，很契合工程团队的构建方式。”
+
+George Jacob, Senior Engineering Manager
+### **数据留在你的基础设施上**
+
+仓库检出、构建产物、密钥，以及会话创建或修改的任何文件，都留在你所配置的基础设施上。
+
+对话本身，包括提示词、回复和工具结果（其中可能包含 Claude 读取的代码），会发送给 Anthropic 做推理；会话记录会被保存，以便从任意界面继续。
+
+### **工作原理**
+
+使用自托管环境时，你部署一组 [runner](https://code.claude.com/docs/en/self-hosted-environments#key-concepts)。这些长时进程领取会话，并为每个 [session](https://code.claude.com/docs/en/self-hosted-environments#session-lifecycle) 启动一个 Claude Code 进程。Runner 有两种模式。 
+
+- **Fixed：**你保持固定数量运行，会话在它们之间分配。 
+- **On-demand：**一个编排器监视排队中的会话，会话到达时启动 runner，工作结束后停止它们，让容量跟随需求。
+
+Runner 可以服务多个会话，但每个会话都有自己的检出，因此开发者和账户之间的工作保持隔离。所有受支持界面上的会话都会路由到同一个环境，因此你只需配置一次，团队从哪里启动会话都能用。
+
+**说明**：自托管环境不同于 [Remote Control](https://code.claude.com/docs/en/remote-control)。后者让开发者从手机或浏览器继续跑在自己机器上的会话。使用 Remote Control 的会话会在那台机器停止运行会话时结束，并且绑定到运行 `claude` 的用户；而自托管环境把会话跑在平台团队运营的共享基础设施上，任何用户都可以使用。
+
+### **开始使用**
+
+自托管环境以公开测试形式向 Claude Team 和 Enterprise 计划的组织开放。默认关闭，使用 ZDR 的组织不可用。
+
+请规划由平台、开发者体验或开发者生产力团队负责搭建和持续运营，包括构建和维护 runner 镜像、更新 runner，以及在使用 on-demand 模式时运行编排器。
+
+了解更多请参阅 [文档](https://code.claude.com/docs/en/self-hosted-environments)。可通过 [GitHub](https://github.com/anthropics/claude-code/issues) 或你的 Anthropic 客户团队反馈。</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Product announcements</span>
-            <span class="article-date">August 6, 2026</span>
-            
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-clay);">
+            <img class="hero-illo-img" src="/assets/illustrations/run-claude-code-sessions-on-your-own-compute.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">在你自己的算力上运行 Claude Code 会话</h1>
-          <a href="/posts/run-claude-code-sessions-on-your-own-compute/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>自托管环境现已进入公开测试阶段，它让你可以在自己的基础设施上运行 Claude Code 会话。你可以从网页端、移动端、桌面端或例行任务（Routines）发起一个会话，它会在你的网络内部、紧邻你的内部服务、工具链和安全管控措施运行，而不是在 Anthropic 托管的基础设施上。</p><p>对于大多数企业，我们强烈推荐我们的托管方案，因为它在运维上更简单，无需运行或维护任何基础设施。自托管环境适用于那些因网络、工具或合规要求而需要将智能体执行保留在自己可控基础设施上的团队。如果你选择这条路，请计划配置工程人员来负责环境搭建和持续维护。</p><h3><strong>为什么要自托管</strong></h3><p>在预览计划中，我们看到组织采用自托管环境有以下几个关键原因：</p><ul role="list"><li><strong>网络访问：</strong>会话在你的网络内部运行，可以直接访问内部服务、数据库和制品仓库，而无需将它们暴露到公共互联网</li><li><strong>可定制性：</strong>在环境中预装编译器、SDK 和内部 CLI，让每个会话一开始就具备开箱即用的构建能力</li><li><strong>合规性：</strong>源代码和构建产物始终保留在你可控的基础设施上</li></ul></div>
+            <h1 class="article-title u-text-style-h1">在你自己的算力上运行 Claude Code 会话</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>Self-hosted environments are in public beta. Run Claude Code sessions on your own infrastructure, inside your network and next to your internal services.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/announcements" target="_blank" rel="noopener noreferrer">Product announcements</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/product/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">August 6, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/run-claude-code-sessions-on-your-own-compute/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/run-claude-code-sessions-on-your-own-compute" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>现已进入公开测试：自托管环境让你可以在自己的基础设施上运行 Claude Code 会话。从网页、移动端、桌面或例程启动一次会话，它会在你的网络内部运行，紧挨着你的内部服务、工具链和安全控制，而不是跑在 Anthropic 托管的基础设施上。</p><p>对大多数企业，我们强烈建议使用我们的托管方案，运维更简单，无需自行运行或维护基础设施。自托管环境面向那些因网络、工具或合规要求，必须把 agent 执行留在自己控制的基础设施上的团队。如果走这条路，请规划工程人力来负责搭建和持续维护。</p><h3><strong>为什么要自托管</strong></h3><p>在预览计划中，我们看到组织采用自托管环境主要出于几个原因：</p><ul role="list"><li><strong>网络访问：</strong>会话在你的网络内部运行，可以访问内部服务、数据库和 registry，而无需把它们暴露到公网</li><li><strong>可定制：</strong>在环境中预装编译器、SDK 和内部 CLI，让每次会话一开始就能构建</li><li><strong>合规：</strong>源代码和构建产物留在你控制的基础设施上</li></ul><div class="article-testimonials" role="list"><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a71ea92125f54b13041e5b9_6a71ea6c8fc8ac632732466a_logo_faire-light.svg" alt="6a71ea92125f54b13041e5b9 6a71ea6c8fc8ac632732466a faire" loading="lazy"><blockquote><p>“自托管环境让我们能把 Claude Code 接入现有开发工作流，同时保持我们的安全和运维控制。这意味着 Claude 可以生成 PR、协助修复 CI 问题，并响应开发者工作流事件，算力还能按需扩展。Claude 理解我们的代码库，很契合工程团队的构建方式。”</p></blockquote><figcaption class="article-testimonial-caption">George Jacob, Senior Engineering Manager</figcaption></figure></div><h3><strong>数据留在你的基础设施上</strong></h3><p>仓库检出、构建产物、密钥，以及会话创建或修改的任何文件，都留在你所配置的基础设施上。</p><p>对话本身，包括提示词、回复和工具结果（其中可能包含 Claude 读取的代码），会发送给 Anthropic 做推理；会话记录会被保存，以便从任意界面继续。</p><h3><strong>工作原理</strong></h3><p>使用自托管环境时，你部署一组 <a href="https://code.claude.com/docs/en/self-hosted-environments#key-concepts">runner</a>。这些长时进程领取会话，并为每个 <a href="https://code.claude.com/docs/en/self-hosted-environments#session-lifecycle">session</a> 启动一个 Claude Code 进程。Runner 有两种模式。&nbsp;</p><ol role="list"><li><strong>Fixed：</strong>你保持固定数量运行，会话在它们之间分配。&nbsp;</li><li><strong>On-demand：</strong>一个编排器监视排队中的会话，会话到达时启动 runner，工作结束后停止它们，让容量跟随需求。</li></ol><p>Runner 可以服务多个会话，但每个会话都有自己的检出，因此开发者和账户之间的工作保持隔离。所有受支持界面上的会话都会路由到同一个环境，因此你只需配置一次，团队从哪里启动会话都能用。</p><p><strong>说明</strong>：自托管环境不同于 <a href="https://code.claude.com/docs/en/remote-control">Remote Control</a>。后者让开发者从手机或浏览器继续跑在自己机器上的会话。使用 Remote Control 的会话会在那台机器停止运行会话时结束，并且绑定到运行 <code>claude</code> 的用户；而自托管环境把会话跑在平台团队运营的共享基础设施上，任何用户都可以使用。</p><h3><strong>开始使用</strong></h3><p>自托管环境以公开测试形式向 Claude Team 和 Enterprise 计划的组织开放。默认关闭，使用 ZDR 的组织不可用。</p><p>请规划由平台、开发者体验或开发者生产力团队负责搭建和持续运营，包括构建和维护 runner 镜像、更新 runner，以及在使用 on-demand 模式时运行编排器。</p><p>了解更多请参阅 <a href="https://code.claude.com/docs/en/self-hosted-environments">文档</a>。可通过 <a href="https://github.com/anthropics/claude-code/issues">GitHub</a> 或你的 Anthropic 客户团队反馈。</p></div>
+
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/run-claude-code-sessions-on-your-own-compute" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

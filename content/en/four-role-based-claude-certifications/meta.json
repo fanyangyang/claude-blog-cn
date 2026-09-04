@@ -13,5 +13,24 @@
   "translatedTitle": "面向服务客户人员的四项基于角色的 Claude 认证",
   "translated": true,
   "translatedAt": "2026-09-02T04:10:15.615Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Platform",
+      "Claude apps"
+    ],
+    "usecase": [
+      "Business",
+      "Productivity",
+      "Work"
+    ]
+  },
+  "subtitle": "We're expanding the Claude Certification Program with three new role-based certifications that span the full team a customer needs to deploy AI.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/platform/api"
 }

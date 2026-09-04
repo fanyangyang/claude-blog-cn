@@ -13,5 +13,22 @@
   "translatedTitle": "Claude.ai 分析工具介绍",
   "translated": true,
   "translatedAt": "2026-09-02T04:44:54.905Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude apps"
+    ],
+    "usecase": [
+      "Work",
+      "Business"
+    ]
+  },
+  "subtitle": "Claude can now write and run JavaScript code directly in Claude.ai through the analysis tool, enabling precise data analysis and real-time insights with mathematically accurate results.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": ""
 }

@@ -13,5 +13,21 @@
   "translatedTitle": "使用 Claude Code：HTML 意外地好用",
   "translated": true,
   "translatedAt": "2026-09-02T04:16:06Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Claude Code"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": []
+  },
+  "subtitle": "How and why members of the Claude Code team use HTML instead of Markdown to produce richer, more readable, and easily shareable outputs.",
+  "authors": [
+    "Thariq Shihipar"
+  ],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/claude-code",
+  "productUrl": "https://claude.com/product/claude-code"
 }

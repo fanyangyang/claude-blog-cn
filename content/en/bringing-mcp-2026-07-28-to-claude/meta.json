@@ -13,5 +13,22 @@
   "translatedTitle": "将 MCP 2026-07-28 带入 Claude",
   "translated": true,
   "translatedAt": "2026-09-02T04:06:29.981Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Platform",
+      "Claude apps"
+    ],
+    "usecase": [
+      "Agents"
+    ]
+  },
+  "subtitle": "The MCP 2026-07-28 spec is live, moving the Model Context Protocol to a stateless core with standardized extensions and hardened auth. Support is rolling out across Claude products soon. See what's new and how MCP is advancing in Claude.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/platform/api"
 }

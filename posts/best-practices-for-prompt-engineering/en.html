@@ -4,39 +4,511 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Best practices for prompt engineering for 2026 — Claude Blog CN</title>
-  <meta name="description" content="Best practices for prompt engineering for 2026">
+  <meta name="description" content="Get better AI results with prompt engineering techniques from the team behind Claude.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="/posts/best-practices-for-prompt-engineering/" class="nav-link">中文版 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>Best practices for prompt engineering for 2026</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/best-practices-for-prompt-engineering" target="_blank" rel="noopener noreferrer">Ask questions about this page</a>
+        <button type="button" class="explore-item" data-copy-markdown>Copy as markdown</button>
+        <a class="explore-item" href="/posts/best-practices-for-prompt-engineering/">阅读中文翻译 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># Best practices for prompt engineering for 2026
+
+Get better AI results with prompt engineering techniques from the team behind Claude.
+
+## What is prompt engineering?
+
+[Prompt engineering](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices) is the craft of structuring instructions to get better outputs from AI models. It's how you phrase queries, specify style, provide context, and guide the model's behavior to achieve your goals.
+
+The difference between a vague instruction and a well-crafted prompt can mean the gap between generic outputs and exactly what you need. A poorly structured prompt might require multiple back-and-forth exchanges to clarify intent, while a well-engineered prompt gets you there in one shot.
+
+It's also the essential building block of [context engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents), which has emerged as an increasingly important part of working with LLMs. A poorly structured prompt might require multiple back-and-forth exchanges to clarify intent, while a well-engineered prompt gets you there in one shot. However, prompting is converging with [context engineering for Claude 5 generation models](https://claude.com/blog/the-new-rules-of-context-engineering-for-claude-5-generation-models) — less scaffolding, more curation.
+
+To help you get started, we've assembled some of our team's best practices, including practical methods designed to improve your results right away. We'll start with simple habits you can use today, then scale up to advanced methods for complex projects.
+
+## How to use prompt engineering
+
+At its most basic level, prompt engineering is just modifying the query you pass your LLM. Often it's simply adding information to the query before you make your actual request—but knowing *which* information is the *right* information to share is the secret to engineering a great and effective prompt.
+
+### Core techniques
+
+These prompt engineering techniques form the foundation of effective AI interactions. Use them consistently to see immediate improvements in response quality.
+
+#### Be explicit and clear
+
+Modern AI models respond exceptionally well to clear, explicit instructions. Don't assume the model will infer what you want—state it directly. Use simple language that states exactly what you want without ambiguity.
+
+**The key principle**: Tell the model exactly what you want to see. If you want comprehensive output, ask for it. If you want specific features, list them. Modern models like Claude benefit especially from explicit direction.
+
+**Example: Creating an analytics dashboard**
+
+**Vague**: &quot;Create an analytics dashboard&quot;
+
+**Explicit**: &quot;Create an analytics dashboard. Include as many relevant features and interactions as possible. Go beyond the basics to create a fully-featured implementation.&quot;
+
+The second version explicitly requests comprehensive features and signals that you want the model to go above and beyond the minimum.
+
+**Best practices**:
+
+- Lead with direct action verbs: &quot;Write,&quot; &quot;Analyze,&quot; &quot;Generate,&quot; &quot;Create&quot;
+- Skip preambles and get straight to the request
+- State what you want the output to include, not just what to work on
+- Be specific about quality and depth expectations
+
+#### Provide context and motivation
+
+Explaining *why* something matters helps AI models better understand your goals and deliver more targeted responses. This is particularly effective with newer models that can reason about your underlying objectives.
+
+**Example: Formatting preferences**
+
+**Less effective**: &quot;NEVER use bullet points&quot;
+
+**More effective**: &quot;I prefer responses in natural paragraph form rather than bullet points because I find flowing prose easier to read and more conversational. Bullet points feel too formal and list-like for my casual learning style.&quot;
+
+The second version helps the model understand the reasoning behind the rule, which allows it to make better decisions about related formatting choices.
+
+**When to provide context**:
+
+- Explaining the purpose or audience for the output
+- Clarifying why certain constraints exist
+- Describing how the output will be used
+- Indicating what problem you're trying to solve
+
+#### Be specific
+
+Specificity in prompt engineering means structuring your instructions with explicit guidelines and requirements. The more specific you are about what you want, the better the results.
+
+**Example: Meal planning**
+
+**Vague**: &quot;Create a meal plan for a Mediterranean diet&quot;
+
+**Specific**: &quot;Design a Mediterranean diet meal plan for pre-diabetic management. 1,800 calories daily, emphasis on low glycemic foods. List breakfast, lunch, dinner, and one snack with complete nutritional breakdowns.&quot;
+
+**What makes a prompt specific enough?**
+
+Include:
+
+- Clear constraints (word count, format, timeline)
+- Relevant context (who's the audience, what's the goal)
+- Desired output structure (table, list, paragraph)
+- Any requirements or restrictions (dietary needs, budget limits, technical constraints)
+
+#### Use examples
+
+Examples aren't always necessary, but they shine when explaining concepts or demonstrating specific formats. Also known as one-shot or few-shot prompting, examples show rather than tell, clarifying subtle requirements that are difficult to express through description alone.
+
+**Important note for modern models**: Claude 4.x and similar advanced models pay very close attention to details in examples. Ensure your examples align with the behaviors you want to encourage and minimize any patterns you want to avoid.
+
+**Example: Article summarization**
+
+**Without example**: &quot;Summarize this article&quot;
+
+`Here's an example of the summary style I want:
+
+Article: [link to article about AI regulation]
+Summary: EU passes comprehensive AI Act targeting high-risk systems. Key provisions include transparency requirements and human oversight mandates. Takes effect 2026.
+
+Now summarize this article in the same style: [link to your new article]`**When to use examples**:
+
+- The desired format is easier to show than describe
+- You need a specific tone or style
+- The task involves subtle patterns or conventions
+- Simple instructions haven't produced consistent results
+
+**Pro tip**: Start with one example (one-shot). Only add more examples (few-shot) if the output still doesn't match your needs.
+
+#### Give permission to Claude to express uncertainty
+
+Give the AI explicit permission to express uncertainty rather than guessing. This reduces hallucinations and increases reliability.
+
+**Example**: &quot;Analyze this financial data and identify trends. If the data is insufficient to draw conclusions, say so rather than speculating.&quot;
+
+This simple addition makes responses more trustworthy by allowing the model to acknowledge limitations.
+
+[**Try**](https://claude.ai/)** these in Claude.**
+
+## Advanced prompt engineering techniques
+
+These core habits will get you pretty far, but you may still encounter situations that require more sophisticated approaches. Advanced prompt engineering techniques shine when you're building agentic solutions, working with complex data structures, or need to break down multi-stage problems.
+
+### Prefill the AI's response
+
+Prefilling lets you start the AI's response for it, guiding format, tone, or structure. This technique is particularly powerful for enforcing output formats or skipping preambles.
+
+**When to use prefilling**:
+
+- You need the AI to output JSON, XML, or other structured formats
+- You want to skip conversational preambles and get straight to content
+- You need to maintain a specific voice or character
+- You want to control how the AI begins its response
+
+**Example: Enforcing JSON output**
+
+Without prefill, Claude might say: &quot;Here's the JSON you requested: {...}&quot;
+
+With prefill (API usage):
+
+`messages=[
+    {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Extract the name and price from this product description into JSON.&quot;},
+    {&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: &quot;{&quot;}
+]`The AI will continue from the opening brace, outputting only valid JSON.
+
+**Note**: In chat interfaces, you can approximate this by being very explicit: &quot;Output only valid JSON with no preamble. Begin your response with an opening brace.&quot;
+
+### Chain of thought prompting
+
+Chain of thought (CoT) prompting involves requesting step-by-step reasoning before answering. This technique helps with complex analytical tasks that benefit from structured thinking.
+
+**Modern approach**: Claude offers an [extended thinking](https://www.anthropic.com/news/visible-extended-thinking) feature that automates structured reasoning. When available, extended thinking is generally preferable to manual chain of thought prompting. However, understanding manual CoT remains valuable for situations where extended thinking isn't available or when you need transparent reasoning you can review.
+
+**When to use chain of thought**:
+
+- Extended thinking isn't available (i.e. the free [Claude.ai](http://claude.ai) plan)
+- You need transparent reasoning that you can review
+- The task requires multiple analytical steps
+- You want to ensure the AI considers specific factors
+
+There are three common implementations of chain of thought:
+
+**Basic chain of thought**
+
+Simply add &quot;Think step-by-step&quot; to your instructions.
+
+`Draft personalized emails to donors asking for contributions to this year's Care for Kids program.
+
+Program information:
+&lt;program&gt;
+{{PROGRAM_DETAILS}}
+&lt;/program&gt;
+
+Donor information:
+&lt;donor&gt;
+{{DONOR_DETAILS}}
+&lt;/donor&gt;
+
+Think step-by-step before you write the email.`**Guided chain of thought**
+
+Structure your prompt to provide specific reasoning stages.
+
+`Think before you write the email. First, think through what messaging might appeal to this donor given their donation history. Then, consider which aspects of the Care for Kids program would resonate with them. Finally, write the personalized donor email using your analysis.`**Structured chain of thought**
+
+Use tags to separate reasoning from the final answer.
+
+`Think before you write the email in &lt;thinking&gt; tags. First, analyze what messaging would appeal to this donor. Then, identify relevant program aspects. Finally, write the personalized donor email in &lt;email&gt; tags, using your analysis.`**Note**: Even when extended thinking is available, explicit CoT prompting can still be beneficial for complex tasks. The two approaches are complementary, not mutually exclusive.
+
+### Control the output format
+
+For modern AI models, there are several effective ways to control response formatting:
+
+**1. Tell the AI what TO do instead of what NOT to do**
+
+Instead of: &quot;Do not use markdown in your response&quot; Try: &quot;Your response should be composed of smoothly flowing prose paragraphs&quot;
+
+**2. Match your prompt style to the desired output**
+
+The formatting style used in your prompt may influence the AI's response style. If you want minimal markdown, reduce markdown in your prompt.
+
+**3. Be explicit about formatting preferences**
+
+For detailed control over formatting:
+
+`When writing reports or analyses, write in clear, flowing prose using complete paragraphs. Use standard paragraph breaks for organization. Reserve markdown primarily for inline code, code blocks, and simple headings.
+
+DO NOT use ordered lists or unordered lists unless you're presenting truly discrete items where a list format is the best option, or the user explicitly requests a list.
+
+Instead of listing items with bullets, incorporate them naturally into sentences. Your goal is readable, flowing text that guides the reader naturally through ideas.`
+### Prompt chaining
+
+Unlike the previous techniques, prompt chaining cannot be implemented in a single prompt. Chaining breaks down complex tasks into smaller sequential steps with separate prompts. Each prompt handles one stage, and the output feeds into the next instruction.
+
+This approach trades latency for higher accuracy by making each individual task easier. Typically this technique would be implemented using workflows or programmatically, but you could manually provide the prompts after receiving responses.
+
+**Example: Research summary**
+
+- **First prompt**: &quot;Summarize this medical paper covering methodology, findings, and clinical implications.&quot;
+
+- **Second prompt**: &quot;Review the summary above for accuracy, clarity, and completeness. Provide graded feedback.&quot;
+
+- **Third prompt**: &quot;Improve the summary based on this feedback: [feedback from step 2]&quot;
+
+Each stage adds refinement through focused instruction.
+
+**When to use prompt chaining**:
+
+- You have a complex request that needs breaking down into steps
+- You need iterative refinement
+- You're doing multi-stage analysis
+- Intermediate validation adds value
+- A single prompt produces inconsistent results
+
+**Trade-offs**: Chaining increases latency (multiple API calls) but often dramatically improves accuracy and reliability for complex tasks.
+
+## Techniques you might have heard about
+
+Some prompt engineering techniques that were popular with earlier AI models are less necessary with models like Claude. However, you may still encounter them in older documentation or find them useful in specific situations.
+
+### XML tags for structure
+
+XML tags were once a recommended way to add structure and clarity to prompts, especially when incorporating large amounts of data. While modern models are better at understanding structure without XML tags, they can still be useful in specific situations.
+
+**Example**:
+
+`&lt;athlete_information&gt;
+- Height: 6'2&quot;
+- Weight: 180 lbs
+- Goal: Build muscle
+- Dietary restrictions: Vegetarian
+&lt;/athlete_information&gt;
+
+Generate a meal plan based on the athlete information above.`**When XML tags might still be helpful**:
+
+- You're working with extremely complex prompts mixing multiple types of content
+- You need to be absolutely certain about content boundaries
+- You're working with older model versions
+
+**Modern alternative**: For most use cases, clear headings, whitespace, and explicit language (&quot;Using the athlete information below...&quot;) work just as well with less overhead.
+
+### Role prompting
+
+Role prompting defines expert personas and perspectives in how you phrase your query. While this can be effective, modern models are sophisticated enough that heavy-handed role prompting is often unnecessary.
+
+**Example**: &quot;You are a financial advisor. Analyze this investment portfolio...&quot;
+
+**Important caveat**: Don't over-constrain the role. &quot;You are a helpful assistant&quot; is often better than &quot;You are a world-renowned expert who only speaks in technical jargon and never makes mistakes.&quot; Overly specific roles can limit the AI's helpfulness.
+
+**When role prompting might help**:
+
+- You need consistent tone across many outputs
+- You're building an application that requires a specific persona
+- You want domain expertise framing for complex topics
+
+**Modern alternative**: Often, being explicit about what perspective you want is more effective: &quot;Analyze this investment portfolio, focusing on risk tolerance and long-term growth potential&quot; rather than assigning a role.
+
+[Try](https://preview.claude.ai/new) in Claude.
+
+## Putting it all together
+
+You've now seen individual techniques in isolation, but their real power emerges when you combine them strategically. The art of prompt engineering isn't using every technique available—it's selecting the right combination for your specific need.
+
+**Example combining multiple techniques**:
+
+`xtract key financial metrics from this quarterly report and present them in JSON format.
+
+I need this data for automated processing, so it's critical that your response contains ONLY valid JSON with no preamble or explanation.
+
+Use this structure:
+{
+  &quot;revenue&quot;: &quot;value with units&quot;,
+  &quot;profit_margin&quot;: &quot;percentage&quot;,
+  &quot;growth_rate&quot;: &quot;percentage&quot;
+}
+
+If any metric is not clearly stated in the report, use null rather than guessing.
+
+Begin your response with an opening brace: {`This prompt combines:
+
+- Explicit instructions (exactly what to extract)
+- Context (why format matters)
+- Example structure (showing the format)
+- Permission to express uncertainty (use null if unsure)
+- Format control (begin with opening brace)
+
+## Choosing the right techniques
+
+Not every prompt needs every technique. Here's a decision framework:
+
+**Start here:**
+
+- Is your request clear and explicit? If no, work on clarity first
+- Is the task simple? Use core techniques only (be specific, be clear, provide context)
+- Does the task require specific formatting? Use examples or prefilling
+- Is the task complex? Consider breaking it down (chaining)
+- Does it need reasoning? Use extended thinking (if available) or chain of thought
+
+‍**Technique selection guide**:
+
+  
+    
+      
+        
+          If you need...
+          Use...
+        
+      
+      
+        
+          Specific output format
+          Examples, prefilling, or explicit format instructions
+        
+        
+          Step-by-step reasoning
+          Extended thinking (Claude 4.x) or chain of thought
+        
+        
+          Complex multi-stage task
+          Prompt chaining
+        
+        
+          Transparent reasoning
+          Chain of thought with structured output
+        
+        
+          To prevent hallucinations
+          Permission to say &quot;I don't know&quot;
+        
+      
+    
+  
+
+## Troubleshooting common prompt issues
+
+Even well-intentioned prompts can produce unexpected results. Here are common issues and how to fix them:
+
+- **Problem: Response is too generic** → Solution: Add specificity, examples, or explicit requests for comprehensive output. Ask the AI to &quot;go beyond the basics.&quot;
+- **Problem: Response is off-topic or misses the point** → Solution: Be more explicit about your actual goal. Provide context about why you're asking.
+- **Problem: Response format is inconsistent** → Solution: Add examples (few-shot) or use prefilling to control the start of the response.
+- **Problem: Task is too complex, results are unreliable** → Solution: Break into multiple prompts (chaining). Each prompt should do one thing well.
+- **Problem: AI includes unnecessary preambles** → Solution: Use prefilling or explicitly request: &quot;Skip the preamble and get straight to the answer.&quot;
+- **Problem: AI makes up information** → Solution: Explicitly give permission to say &quot;I don't know&quot; when uncertain.
+- **Problem: AI suggests changes when you wanted implementation** → Solution: Be explicit about action: &quot;Change this function&quot; rather than &quot;Can you suggest changes?&quot;
+
+**Pro tip**: Start simple and add complexity only when needed. Test each addition to see if it actually improves results.
+
+## Common mistakes to avoid
+
+Learn from these common pitfalls to save time and improve your prompts:
+
+- **Don't over-engineer**: Longer, more complex prompts are NOT always better.
+- **Don't ignore the basics**: Advanced techniques won't help if your core prompt is unclear or vague.
+- **Don't assume the AI reads minds**: Be specific about what you want. Leaving things ambiguous gives the AI room to misinterpret.
+- **Don't use every technique at once**: Select techniques that address your specific challenge.
+- **Don't forget to iterate**: The first prompt rarely works perfectly. Test and refine.
+- **Don't rely on outdated techniques**: XML tags and heavy role prompting are less necessary with modern models. Start with explicit, clear instructions.
+
+## Prompt engineering considerations
+
+### Working with long content
+
+One of the challenges of implementing advanced prompt engineering is that it adds context overhead through additional token usage. Examples, multiple prompts, detailed instructions—they all consume tokens, and context management is a skill in its own right.
+
+Remember to use prompt engineering techniques when they make sense and justify their usage. For comprehensive guidance on managing context effectively, check out our blog post on[ context engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents).
+
+**Context awareness improvements**: Modern AI models, including Claude 4.x, have significantly improved context awareness capabilities that help address historical &quot;lost-in-the-middle&quot; issues where models struggled to attend equally to all parts of long contexts.
+
+**Why task-splitting still helps**: Even with these improvements, breaking large tasks into smaller, discrete chunks remains a valuable technique—not because of context limitations, but because it helps the model focus on doing its best work within a very specific set of requirements and scope. A focused task with clear boundaries consistently produces higher quality results than trying to accomplish multiple objectives in a single prompt.
+
+**Strategy**: When working with long contexts, structure your information clearly with the most critical details at the beginning or end. When working with complex tasks, consider whether breaking them into focused subtasks would improve the quality and reliability of each component.
+
+### Prompt engineering examples: what a good prompt looks like
+
+Prompt engineering is a skill, and it's going to take a few tries before you master it. The only way to know if you're doing it right is to test it and see. The first step is to just try it yourself. You'll see right away the differences between queries with and without the prompting techniques we covered here.
+
+To really hone your prompt engineering skills, you'll need to objectively measure the effectiveness of your prompts. The good news is that is exactly what is covered in our prompt engineering course at [anthropic.skilljar.com](https://anthropic.skilljar.com/claude-with-the-anthropic-api).
+
+**Quick evaluation tips**:
+
+- Does the output match your specific requirements?
+- Did you get the result in one attempt or need multiple iterations?
+- Is the format consistent across multiple attempts?
+- Are you avoiding the common mistakes listed above?
+
+## Final words of advice
+
+Prompt engineering is ultimately about communication: speaking the language that helps AI most clearly understand your intent. Start with the core techniques covered early in this guide. Use them consistently until they become second nature. Only layer in advanced techniques when they solve a specific problem.
+
+Remember: the best prompt isn't the longest or most complex. It's the one that achieves your goals reliably with the minimum necessary structure. As you practice, you'll develop an intuition for which techniques suit which situations.
+
+For instructions you want applied to every session rather than every prompt, move them into [CLAUDE.md files, skills, or other steering methods](https://claude.com/blog/steering-claude-code-skills-hooks-rules-subagents-and-more). However, the shift toward context engineering doesn't diminish prompt engineering's importance. 
+
+In fact, prompt engineering is a fundamental building block within context engineering. Every well-crafted prompt becomes part of the larger context that shapes AI behavior, working alongside conversation history, attached files, and system instructions to create better outcomes.
+
+[Start prompting](https://preview.claude.ai/new) in Claude today.
+
+## Additional resources
+
+- [Prompt engineering documentation](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview)
+- [Interactive prompt engineering tutorial](https://github.com/anthropics/prompt-eng-interactive-tutorial)
+- [Prompt engineering course](https://anthropic.skilljar.com/claude-with-the-anthropic-api)
+- [Context engineering guide](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Agents</span>
-            <span class="article-date">November 10, 2025</span>
-            <span class="lang-badge-large">EN</span>
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-peach);">
+            <img class="hero-illo-img" src="/assets/illustrations/best-practices-for-prompt-engineering.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">Best practices for prompt engineering for 2026</h1>
-          <a href="/posts/best-practices-for-prompt-engineering/" class="lang-toggle">阅读中文翻译 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><h2>What is prompt engineering?</h2><p><a href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices" target="_blank">Prompt engineering</a> is the craft of structuring instructions to get better outputs from AI models. It's how you phrase queries, specify style, provide context, and guide the model's behavior to achieve your goals.</p><p>The difference between a vague instruction and a well-crafted prompt can mean the gap between generic outputs and exactly what you need. A poorly structured prompt might require multiple back-and-forth exchanges to clarify intent, while a well-engineered prompt gets you there in one shot.</p><p>It's also the essential building block of <a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">context engineering</a>, which has emerged as an increasingly important part of working with LLMs. A poorly structured prompt might require multiple back-and-forth exchanges to clarify intent, while a well-engineered prompt gets you there in one shot. However, prompting is converging with <a href="https://claude.com/blog/the-new-rules-of-context-engineering-for-claude-5-generation-models">context engineering for Claude 5 generation models</a> — less scaffolding, more curation.</p><p>To help you get started, we've assembled some of our team's best practices, including practical methods designed to improve your results right away. We'll start with simple habits you can use today, then scale up to advanced methods for complex projects.</p><h2>How to use prompt engineering</h2><p>At its most basic level, prompt engineering is just modifying the query you pass your LLM. Often it's simply adding information to the query before you make your actual request—but knowing <em>which</em> information is the <em>right</em> information to share is the secret to engineering a great and effective prompt.</p><h3>Core techniques</h3><p>These prompt engineering techniques form the foundation of effective AI interactions. Use them consistently to see immediate improvements in response quality.</p><h4>Be explicit and clear</h4><p>Modern AI models respond exceptionally well to clear, explicit instructions. Don't assume the model will infer what you want—state it directly. Use simple language that states exactly what you want without ambiguity.</p><p><strong>The key principle</strong>: Tell the model exactly what you want to see. If you want comprehensive output, ask for it. If you want specific features, list them. Modern models like Claude benefit especially from explicit direction.</p><p><strong>Example: Creating an analytics dashboard</strong></p><p><strong>Vague</strong>: "Create an analytics dashboard"</p><p><strong>Explicit</strong>: "Create an analytics dashboard. Include as many relevant features and interactions as possible. Go beyond the basics to create a fully-featured implementation."</p><p>The second version explicitly requests comprehensive features and signals that you want the model to go above and beyond the minimum.</p><p><strong>Best practices</strong>:</p><ul role="list"><li>Lead with direct action verbs: "Write," "Analyze," "Generate," "Create"</li><li>Skip preambles and get straight to the request</li><li>State what you want the output to include, not just what to work on</li><li>Be specific about quality and depth expectations</li></ul><h4>Provide context and motivation</h4><p>Explaining <em>why</em> something matters helps AI models better understand your goals and deliver more targeted responses. This is particularly effective with newer models that can reason about your underlying objectives.</p><p><strong>Example: Formatting preferences</strong></p><p><strong>Less effective</strong>: "NEVER use bullet points"</p><p><strong>More effective</strong>: "I prefer responses in natural paragraph form rather than bullet points because I find flowing prose easier to read and more conversational. Bullet points feel too formal and list-like for my casual learning style."</p><p>The second version helps the model understand the reasoning behind the rule, which allows it to make better decisions about related formatting choices.</p><p><strong>When to provide context</strong>:</p><ul role="list"><li>Explaining the purpose or audience for the output</li><li>Clarifying why certain constraints exist</li><li>Describing how the output will be used</li><li>Indicating what problem you're trying to solve</li></ul><h4>Be specific</h4><p>Specificity in prompt engineering means structuring your instructions with explicit guidelines and requirements. The more specific you are about what you want, the better the results.</p><p><strong>Example: Meal planning</strong></p><p><strong>Vague</strong>: "Create a meal plan for a Mediterranean diet"</p><p><strong>Specific</strong>: "Design a Mediterranean diet meal plan for pre-diabetic management. 1,800 calories daily, emphasis on low glycemic foods. List breakfast, lunch, dinner, and one snack with complete nutritional breakdowns."</p><p><strong>What makes a prompt specific enough?</strong></p><p>Include:</p><ul role="list"><li>Clear constraints (word count, format, timeline)</li><li>Relevant context (who's the audience, what's the goal)</li><li>Desired output structure (table, list, paragraph)</li><li>Any requirements or restrictions (dietary needs, budget limits, technical constraints)</li></ul><h4>Use examples</h4><p>Examples aren't always necessary, but they shine when explaining concepts or demonstrating specific formats. Also known as one-shot or few-shot prompting, examples show rather than tell, clarifying subtle requirements that are difficult to express through description alone.</p><p><strong>Important note for modern models</strong>: Claude 4.x and similar advanced models pay very close attention to details in examples. Ensure your examples align with the behaviors you want to encourage and minimize any patterns you want to avoid.</p><p><strong>Example: Article summarization</strong></p><p><strong>Without example</strong>: "Summarize this article"</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-plaintext" style="white-space:pre-wrap"><span><span>Here's an example of the summary style I want:
+            <h1 class="article-title u-text-style-h1">Best practices for prompt engineering for 2026</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>Get better AI results with prompt engineering techniques from the team behind Claude.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/agents" target="_blank" rel="noopener noreferrer">Agents</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <div class="hero-detail-value u-text-style-body-3">Claude apps</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">November 10, 2025</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/best-practices-for-prompt-engineering/en.html">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><h2>What is prompt engineering?</h2><p><a href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices" target="_blank">Prompt engineering</a> is the craft of structuring instructions to get better outputs from AI models. It's how you phrase queries, specify style, provide context, and guide the model's behavior to achieve your goals.</p><p>The difference between a vague instruction and a well-crafted prompt can mean the gap between generic outputs and exactly what you need. A poorly structured prompt might require multiple back-and-forth exchanges to clarify intent, while a well-engineered prompt gets you there in one shot.</p><p>It's also the essential building block of <a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">context engineering</a>, which has emerged as an increasingly important part of working with LLMs. A poorly structured prompt might require multiple back-and-forth exchanges to clarify intent, while a well-engineered prompt gets you there in one shot. However, prompting is converging with <a href="https://claude.com/blog/the-new-rules-of-context-engineering-for-claude-5-generation-models">context engineering for Claude 5 generation models</a> — less scaffolding, more curation.</p><p>To help you get started, we've assembled some of our team's best practices, including practical methods designed to improve your results right away. We'll start with simple habits you can use today, then scale up to advanced methods for complex projects.</p><h2>How to use prompt engineering</h2><p>At its most basic level, prompt engineering is just modifying the query you pass your LLM. Often it's simply adding information to the query before you make your actual request—but knowing <em>which</em> information is the <em>right</em> information to share is the secret to engineering a great and effective prompt.</p><h3>Core techniques</h3><p>These prompt engineering techniques form the foundation of effective AI interactions. Use them consistently to see immediate improvements in response quality.</p><h4>Be explicit and clear</h4><p>Modern AI models respond exceptionally well to clear, explicit instructions. Don't assume the model will infer what you want—state it directly. Use simple language that states exactly what you want without ambiguity.</p><p><strong>The key principle</strong>: Tell the model exactly what you want to see. If you want comprehensive output, ask for it. If you want specific features, list them. Modern models like Claude benefit especially from explicit direction.</p><p><strong>Example: Creating an analytics dashboard</strong></p><p><strong>Vague</strong>: "Create an analytics dashboard"</p><p><strong>Explicit</strong>: "Create an analytics dashboard. Include as many relevant features and interactions as possible. Go beyond the basics to create a fully-featured implementation."</p><p>The second version explicitly requests comprehensive features and signals that you want the model to go above and beyond the minimum.</p><p><strong>Best practices</strong>:</p><ul role="list"><li>Lead with direct action verbs: "Write," "Analyze," "Generate," "Create"</li><li>Skip preambles and get straight to the request</li><li>State what you want the output to include, not just what to work on</li><li>Be specific about quality and depth expectations</li></ul><h4>Provide context and motivation</h4><p>Explaining <em>why</em> something matters helps AI models better understand your goals and deliver more targeted responses. This is particularly effective with newer models that can reason about your underlying objectives.</p><p><strong>Example: Formatting preferences</strong></p><p><strong>Less effective</strong>: "NEVER use bullet points"</p><p><strong>More effective</strong>: "I prefer responses in natural paragraph form rather than bullet points because I find flowing prose easier to read and more conversational. Bullet points feel too formal and list-like for my casual learning style."</p><p>The second version helps the model understand the reasoning behind the rule, which allows it to make better decisions about related formatting choices.</p><p><strong>When to provide context</strong>:</p><ul role="list"><li>Explaining the purpose or audience for the output</li><li>Clarifying why certain constraints exist</li><li>Describing how the output will be used</li><li>Indicating what problem you're trying to solve</li></ul><h4>Be specific</h4><p>Specificity in prompt engineering means structuring your instructions with explicit guidelines and requirements. The more specific you are about what you want, the better the results.</p><p><strong>Example: Meal planning</strong></p><p><strong>Vague</strong>: "Create a meal plan for a Mediterranean diet"</p><p><strong>Specific</strong>: "Design a Mediterranean diet meal plan for pre-diabetic management. 1,800 calories daily, emphasis on low glycemic foods. List breakfast, lunch, dinner, and one snack with complete nutritional breakdowns."</p><p><strong>What makes a prompt specific enough?</strong></p><p>Include:</p><ul role="list"><li>Clear constraints (word count, format, timeline)</li><li>Relevant context (who's the audience, what's the goal)</li><li>Desired output structure (table, list, paragraph)</li><li>Any requirements or restrictions (dietary needs, budget limits, technical constraints)</li></ul><h4>Use examples</h4><p>Examples aren't always necessary, but they shine when explaining concepts or demonstrating specific formats. Also known as one-shot or few-shot prompting, examples show rather than tell, clarifying subtle requirements that are difficult to express through description alone.</p><p><strong>Important note for modern models</strong>: Claude 4.x and similar advanced models pay very close attention to details in examples. Ensure your examples align with the behaviors you want to encourage and minimize any patterns you want to avoid.</p><p><strong>Example: Article summarization</strong></p><p><strong>Without example</strong>: "Summarize this article"</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-plaintext" style="white-space:pre-wrap"><span><span>Here's an example of the summary style I want:
 </span></span><span>
 </span><span>Article: [link to article about AI regulation]
 </span><span>Summary: EU passes comprehensive AI Act targeting high-risk systems. Key provisions include transparency requirements and human oversight mandates. Takes effect 2026.
@@ -114,13 +586,15 @@
     </table>
   </div>
 </figure></div><h2>Troubleshooting common prompt issues</h2><p>Even well-intentioned prompts can produce unexpected results. Here are common issues and how to fix them:</p><ul role="list"><li><strong>Problem: Response is too generic</strong> → Solution: Add specificity, examples, or explicit requests for comprehensive output. Ask the AI to "go beyond the basics."</li><li><strong>Problem: Response is off-topic or misses the point</strong> → Solution: Be more explicit about your actual goal. Provide context about why you're asking.</li><li><strong>Problem: Response format is inconsistent</strong> → Solution: Add examples (few-shot) or use prefilling to control the start of the response.</li><li><strong>Problem: Task is too complex, results are unreliable</strong> → Solution: Break into multiple prompts (chaining). Each prompt should do one thing well.</li><li><strong>Problem: AI includes unnecessary preambles</strong> → Solution: Use prefilling or explicitly request: "Skip the preamble and get straight to the answer."</li><li><strong>Problem: AI makes up information</strong> → Solution: Explicitly give permission to say "I don't know" when uncertain.</li><li><strong>Problem: AI suggests changes when you wanted implementation</strong> → Solution: Be explicit about action: "Change this function" rather than "Can you suggest changes?"</li></ul><p><strong>Pro tip</strong>: Start simple and add complexity only when needed. Test each addition to see if it actually improves results.</p><h2>Common mistakes to avoid</h2><p>Learn from these common pitfalls to save time and improve your prompts:</p><ul role="list"><li><strong>Don't over-engineer</strong>: Longer, more complex prompts are NOT always better.</li><li><strong>Don't ignore the basics</strong>: Advanced techniques won't help if your core prompt is unclear or vague.</li><li><strong>Don't assume the AI reads minds</strong>: Be specific about what you want. Leaving things ambiguous gives the AI room to misinterpret.</li><li><strong>Don't use every technique at once</strong>: Select techniques that address your specific challenge.</li><li><strong>Don't forget to iterate</strong>: The first prompt rarely works perfectly. Test and refine.</li><li><strong>Don't rely on outdated techniques</strong>: XML tags and heavy role prompting are less necessary with modern models. Start with explicit, clear instructions.</li></ul><h2>Prompt engineering considerations</h2><h3>Working with long content</h3><p>One of the challenges of implementing advanced prompt engineering is that it adds context overhead through additional token usage. Examples, multiple prompts, detailed instructions—they all consume tokens, and context management is a skill in its own right.</p><p>Remember to use prompt engineering techniques when they make sense and justify their usage. For comprehensive guidance on managing context effectively, check out our blog post on<a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents" target="_blank"> context engineering</a>.</p><p><strong>Context awareness improvements</strong>: Modern AI models, including Claude 4.x, have significantly improved context awareness capabilities that help address historical "lost-in-the-middle" issues where models struggled to attend equally to all parts of long contexts.</p><p><strong>Why task-splitting still helps</strong>: Even with these improvements, breaking large tasks into smaller, discrete chunks remains a valuable technique—not because of context limitations, but because it helps the model focus on doing its best work within a very specific set of requirements and scope. A focused task with clear boundaries consistently produces higher quality results than trying to accomplish multiple objectives in a single prompt.</p><p><strong>Strategy</strong>: When working with long contexts, structure your information clearly with the most critical details at the beginning or end. When working with complex tasks, consider whether breaking them into focused subtasks would improve the quality and reliability of each component.</p><h3>Prompt engineering examples: what a good prompt looks like</h3><p>Prompt engineering is a skill, and it's going to take a few tries before you master it. The only way to know if you're doing it right is to test it and see. The first step is to just try it yourself. You'll see right away the differences between queries with and without the prompting techniques we covered here.</p><p>To really hone your prompt engineering skills, you'll need to objectively measure the effectiveness of your prompts. The good news is that is exactly what is covered in our prompt engineering course at <a href="https://anthropic.skilljar.com/claude-with-the-anthropic-api" target="_blank">anthropic.skilljar.com</a>.</p><p><strong>Quick evaluation tips</strong>:</p><ul role="list"><li>Does the output match your specific requirements?</li><li>Did you get the result in one attempt or need multiple iterations?</li><li>Is the format consistent across multiple attempts?</li><li>Are you avoiding the common mistakes listed above?</li></ul><h2>Final words of advice</h2><p>Prompt engineering is ultimately about communication: speaking the language that helps AI most clearly understand your intent. Start with the core techniques covered early in this guide. Use them consistently until they become second nature. Only layer in advanced techniques when they solve a specific problem.</p><p>Remember: the best prompt isn't the longest or most complex. It's the one that achieves your goals reliably with the minimum necessary structure. As you practice, you'll develop an intuition for which techniques suit which situations.</p><p>For instructions you want applied to every session rather than every prompt, move them into <a href="https://claude.com/blog/steering-claude-code-skills-hooks-rules-subagents-and-more" target="_blank">CLAUDE.md files, skills, or other steering methods</a>. However, the shift toward context engineering doesn't diminish prompt engineering's importance. </p><p>In fact, prompt engineering is a fundamental building block within context engineering. Every well-crafted prompt becomes part of the larger context that shapes AI behavior, working alongside conversation history, attached files, and system instructions to create better outcomes.</p><p><a href="https://preview.claude.ai/new" target="_blank">Start prompting</a> in Claude today.</p><h2>Additional resources</h2><ul role="list"><li><a href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview" target="_blank">Prompt engineering documentation</a></li><li><a href="https://github.com/anthropics/prompt-eng-interactive-tutorial" target="_blank">Interactive prompt engineering tutorial</a></li><li><a href="https://anthropic.skilljar.com/claude-with-the-anthropic-api" target="_blank">Prompt engineering course</a></li><li><a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents" target="_blank">Context engineering guide</a></li></ul></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/best-practices-for-prompt-engineering" target="_blank">View original</a></p>
+              <p><a href="/">← Back to home</a></p>
+            </footer>
+          </article>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/best-practices-for-prompt-engineering" target="_blank">View original</a></p>
-          <p><a href="/">← Back to home</a></p>
-        </footer>
-      </article>
+      </div>
     </div>
   </main>
 <footer class="footer">
@@ -128,6 +602,53 @@
       <p>Content from <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · Translation by AI</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

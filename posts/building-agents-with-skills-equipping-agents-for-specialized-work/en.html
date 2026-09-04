@@ -4,39 +4,267 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Building agents with Skills: Equipping agents for specialized work — Claude Blog CN</title>
-  <meta name="description" content="Building agents with Skills: Equipping agents for specialized work">
+  <meta name="description" content="Skills package domain expertise in files agents can access and apply—turning general-purpose agents into knowledgeable specialists for real work.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="/posts/building-agents-with-skills-equipping-agents-for-specialized-work/" class="nav-link">中文版 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>Building agents with Skills: Equipping agents for specialized work</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/building-agents-with-skills-equipping-agents-for-specialized-work" target="_blank" rel="noopener noreferrer">Ask questions about this page</a>
+        <button type="button" class="explore-item" data-copy-markdown>Copy as markdown</button>
+        <a class="explore-item" href="/posts/building-agents-with-skills-equipping-agents-for-specialized-work/">阅读中文翻译 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># Building agents with Skills: Equipping agents for specialized work
+
+Skills package domain expertise in files agents can access and apply—turning general-purpose agents into knowledgeable specialists for real work.
+
+A lot has changed in the past year. MCP became the standard for agent connectivity with rapid adoption from industry leaders and the developer community. [Claude Code launched](https://www.anthropic.com/news/claude-3-7-sonnet) as a general-purpose coding agent. And we launched the [Claude Agent SDK](https://www.anthropic.com/engineering/building-agents-with-the-claude-agent-sdk), which now provides a production-ready agent out of the box.
+
+But as we've built and deployed these agents, we keep running into the same gap: agents have intelligence and capabilities, but not always the expertise to effectively tackle real work. This led us to [create Agent Skills](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills). Skills are organized collections of files that package domain expertise - workflows, best practices, scripts - in a format agents can access and apply. They turn a capable generalist into a knowledgeable specialist.
+
+In this post, we'll explain why we stopped building specialized agents and started building skills instead, and how this shift is changing how we think about extending agent capabilities.
+
+## **The new paradigm: code is all you need**
+
+We used to think agents in different domains would look very different. A coding agent, a research agent, one for finance, one for marketing—each seemed to need its own tools and scaffolding. The industry initially embraced this model of domain-specific agents. But as models improved in intelligence and agent capabilities progressed, we converged on a different approach.
+
+We came to see code less as just a use case and more as an interface for agents to do almost any digital work. Claude Code is a coding agent, but also a general-purpose agent that happens to work through code.
+
+Consider working with Claude Code to generate a financial report. It can call APIs for research, store data in the filesystem, analyze it with Python, and synthesize insights. All of that happens through code. The scaffolding becomes as simple as bash and a filesystem.
+
+But general capability isn't the same as expertise. When we started using Claude Code for real work, a gap emerged.
+
+## **The missing piece: domain expertise**
+
+Who would you want filing your taxes: a math genius figuring it out from first principles, or an experienced tax professional who's filed thousands of returns? Most people would choose the tax professional. Not because they're smarter, but because they have the right expertise.
+
+Agents today are like that math genius: brilliant at reasoning through novel situations, but often lacking the accumulated expertise of a seasoned professional. They can do amazing things with proper guidance. However, they're often missing important context, can't easily absorb your organization's expertise, and don't automatically learn from repeated tasks.
+
+Skills bridge this gap by packaging domain expertise in a format that agents can progressively access and apply.
+
+## **What are Agent Skills?**
+
+Skills package domain expertise and procedural knowledge for agents. 
+
+`anthropic_brand/
+├── SKILL.md
+├── docs.md
+├── slide-decks.md
+└── apply_template.py`The simplicity of skills is deliberate. Files are a universal primitive that works with what you already have. You can version them with Git, store them in Google Drive, and share them with your team. This simplicity also means skill creation isn't limited to engineers. Product managers, analysts, and domain experts are already building skills to codify their workflows.
+
+## **Progressive disclosure**
+
+Skills can contain extensive information. To protect the context window and make skills composable, they use progressive disclosure: at runtime, only the metadata (name and description from the YAML frontmatter) is shown to the model.
+
+`---
+name: Anthropic Brand Style Guidelines
+description: Anthropic's official brand colors and typography…
+---
+`If Claude determines a skill is needed, it reads the full SKILL.md file. For additional detail, skills can include a references/ directory with supporting documentation loaded only on demand.
+
+This three-tier approach means you can equip an agent with hundreds of skills without overwhelming its context window—metadata uses ~50 tokens, full SKILL.md files ~500 tokens, and reference files 2,000+ tokens and only when specifically needed.
+
+## **Skills can include scripts as tools**
+
+Traditional tools have problems: some have poorly written instructions, the model can't always modify or extend them, and they often bloat the context window. Code, on the other hand, is self-documenting, modifiable, and doesn't need to be in context at all times.
+
+Here's a real example: we kept seeing Claude write the same script to apply Anthropic styling to slides. So we asked Claude to save it as a tool for itself:
+
+`# anthropic/brand_styling/apply_template.py
+import sys
+from pptx import Presentation
+
+if len(sys.argv) != 2:
+    print(&quot;USAGE: apply_template.py &lt;pptx&gt;&quot;)
+    sys.exit(1)
+
+prs = Presentation(sys.argv[1])
+for slide in prs.slides:
+    ...`The corresponding documentation in slide-decks.md simply references this script:
+
+`## Anthropic Slide Decks
+- Intro/outro slides
+  - background color: `#141413`
+  - foreground color: oat
+- Section slides:
+  - background color: `#da7857`
+  - foreground color: `#141413`
+
+Use the `./apply_template.py` script to update a pptx file in-place.`
+## **The skills ecosystem**
+
+The skills ecosystem has emerged quickly, and so far we've seen three major types of skills being built:
+
+### **Foundational skills**
+
+These provide core capabilities everyone needs: working with documents, spreadsheets, presentations, etc. They encode best practices for document generation and manipulation. You can see what this looks like in practice by exploring the [foundational skills in our public repository](https://github.com/anthropics/skills/tree/main/skills/public).
+
+### **Partner skills**
+
+As skills standardize how agents interact with specialized capabilities, companies are building skills to make their services agent-accessible. [K-Dense](https://github.com/K-Dense-AI/claude-scientific-skills), [Browserbase](https://github.com/browserbase/agent-browse), [Notion](https://www.notion.so/notiondevs/Notion-Skills-for-Claude-28da4445d27180c7af1df7d8615723d0), and [many others](https://claude.com/blog/organization-skills-and-directory) are creating skills that integrate their services directly, extending Claude's capabilities in specific domains while maintaining the simplicity of the skills format.
+
+### **Enterprise skills**
+
+Organizations build proprietary skills encoding their internal processes and domain expertise. Skills help capture the specific workflows, compliance requirements, and institutional knowledge that make an agent useful for enterprise work.
+
+## **Trends we see**
+
+As skills adoption grows, several patterns are emerging that point to where this paradigm may be heading. These trends shape how we think about skill design and the tooling we're building to support skill developers.
+
+### **Increasing complexity**
+
+Early skills were simple documentation references. Now we're seeing sophisticated multi-step workflows that coordinate data retrieval, complex calculations, and formatted output across multiple tools.
+
+- **Simple**: &quot;Status report writer&quot; (~100 lines) - Templates and formatting
+- **Intermediate**: &quot;Financial model builder&quot; (~800 lines) - Data retrieval, Excel modeling with Python
+- **Complex**: &quot;RNA sequencing pipeline&quot; (2,500+ lines) - Coordinates HISAT2, StringTie, DESeq2 analysis
+
+### **Skills and MCP**
+
+[Skills and MCP servers work together](https://claude.com/blog/extending-claude-capabilities-with-skills-mcp-servers) naturally. A competitive analysis skill might coordinate web search, internal databases via MCP, Slack message history, and Notion pages to synthesize a comprehensive report.
+
+### **Non-developer adoption**
+
+Skill creation is expanding beyond engineers to product managers, analysts, and domain experts across disciplines. They can create and test their first skill in under 30 minutes using the skill-creator tool, which guides them through the process interactively. We're working  to make skill creation even more accessible, with improved tooling and templates that let anyone capture and share expertise.
+
+## **The complete architecture**
+
+Putting it all together, the emerging agent architecture looks like a combination of:
+
+- **Agent loop**: The core reasoning system that decides what to do next
+- **Agent runtime**: Execution environment (code, filesystem)
+- **MCP servers**: Connections to external tools and data sources
+- **Skills library**: Domain expertise and procedural knowledge
+
+Each layer has a clear purpose: the loop reasons, the runtime executes, MCP connects, and skills guide. This separation makes the system comprehensible and allows each piece to evolve independently.
+
+Consider what happens when you add a single skill to this architecture. The [frontend design skill](https://github.com/anthropics/claude-code/tree/main/plugins/frontend-design) transforms Claude's frontend capabilities instantly. It provides specialized guidance on typography, color theory, and animation, activating only when building web interfaces. Progressive disclosure means it loads only when relevant. Adding new capabilities is straightforward.
+
+## **Deploying skills to new verticals**
+
+This emerging pattern of general agents equipped with MCP servers and skills is already helping us deploy Claude to new verticals.
+
+### **Financial Services**
+
+Just after launching skills, we enhanced [Claude for the financial services](https://www.anthropic.com/news/claude-for-financial-services) sector with skills that make Claude more useful for finance professionals:
+
+- **DCF model builder**: Constructs discounted cash flow models with proper WACC calculations and sensitivity analysis
+- **Comparable company analysis**: Generates comps tables with relevant multiples and benchmarking
+- **Earnings analysis**: Processes quarterly results and creates investment update reports
+- **Initiation coverage**: Builds comprehensive research reports with financial models
+- **Due diligence**: Structures M&amp;A analysis with standardized frameworks
+- **Pitch materials**: Creates client presentations following industry standards
+
+### **Healthcare &amp; Life Sciences**
+
+We've also enhanced our [healthcare and life sciences offerings ](https://www.anthropic.com/news/healthcare-life-sciences)with skills that make Claude more useful for researchers, clinicians, and healthcare developers:
+
+- **Bioinformatics bundles**: Skills for scVI-tools and Nextflow deployments, essential for managing genomic pipelines and single-cell RNA sequencing
+- **Clinical trial protocol generation**: Accelerates protocol development for clinical research
+- **Scientific problem selection**: Helps researchers identify and frame impactful research questions
+- **FHIR development**: Helps developers write more accurate code for health data interoperability, connecting healthcare systems faster with fewer errors
+- **Prior authorization review**: Cuts administrative burden and accelerates patient access to needed care by cross-referencing coverage requirements, clinical guidelines, and patient records
+
+## **Standardizing Agent Skills**
+
+To enable this vision, we're publishing [Agent Skills](https://agentskills.io) as an open standard. Like MCP, we believe skills should be portable across tools and platforms. The same skill should work whether you're using Claude or other AI platforms. We've been collaborating with members of the ecosystem on the standard, and we're excited to see early adoption.
+
+When someone starts using an AI agent for the first time, it should already know what you and your team care about because skills capture and transfer that expertise. As this ecosystem grows, a skill built by someone else in the community can make your agent more useful, reliable, and capable - regardless of which AI platform they're using.
+
+## **Getting started**
+
+We're converging on an architecture for general agents, and skills provide a paradigm for shipping and sharing new capabilities. The real value emerges from the collective knowledge base we build together: capturing expertise, transferring it across teams, and making every agent more capable than the last.
+
+**Resources:**
+
+- [Don’t Build Agents, Build Skills Instead](https://youtu.be/CEvIs9y1uog?si=yhYQH-ZTX0DfNdtm) (YouTube Video)
+- [Skills documentation](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview)
+- [GitHub repository](https://github.com/anthropics/skills)
+- [Skills cookbook](https://platform.claude.com/cookbook/skills-notebooks-01-skills-introduction)
+- [Using skills in Claude](https://support.claude.com/en/articles/12512180-using-skills-in-claude)
+- [Skills API quickstart](https://platform.claude.com/docs/en/build-with-claude/skills-guide)
+- [Skills best practices documentation](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices)
+
+### **Acknowledgments:**
+
+Barry Zhang, Mahesh Murag, Keith Lazuka, Ryan Whitehead</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Agents</span>
-            <span class="article-date">January 22, 2026</span>
-            <span class="lang-badge-large">EN</span>
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-olive);">
+            <img class="hero-illo-img" src="/assets/illustrations/building-agents-with-skills-equipping-agents-for-specialized-work.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">Building agents with Skills: Equipping agents for specialized work</h1>
-          <a href="/posts/building-agents-with-skills-equipping-agents-for-specialized-work/" class="lang-toggle">阅读中文翻译 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>A lot has changed in the past year. MCP became the standard for agent connectivity with rapid adoption from industry leaders and the developer community. <a href="https://www.anthropic.com/news/claude-3-7-sonnet" target="_blank">Claude Code launched</a> as a general-purpose coding agent. And we launched the <a href="https://www.anthropic.com/engineering/building-agents-with-the-claude-agent-sdk" target="_blank">Claude Agent SDK</a>, which now provides a production-ready agent out of the box.</p><p>But as we've built and deployed these agents, we keep running into the same gap: agents have intelligence and capabilities, but not always the expertise to effectively tackle real work. This led us to <a href="https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills" target="_blank">create Agent Skills</a>. Skills are organized collections of files that package domain expertise - workflows, best practices, scripts - in a format agents can access and apply. They turn a capable generalist into a knowledgeable specialist.</p><p>In this post, we'll explain why we stopped building specialized agents and started building skills instead, and how this shift is changing how we think about extending agent capabilities.</p><h2><strong>The new paradigm: code is all you need</strong></h2><p>We used to think agents in different domains would look very different. A coding agent, a research agent, one for finance, one for marketing—each seemed to need its own tools and scaffolding. The industry initially embraced this model of domain-specific agents. But as models improved in intelligence and agent capabilities progressed, we converged on a different approach.</p><figure style="max-width:2880pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6972a852db1883d8c862151f_building-agents-with-skills-fig1-v3%402x.png" loading="lazy"></div></figure><p>We came to see code less as just a use case and more as an interface for agents to do almost any digital work. Claude Code is a coding agent, but also a general-purpose agent that happens to work through code.</p><figure style="max-width:2880pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6972a8b8cb336e177c409445_building-agents-with-skills-fig2-v4%402x.png" loading="lazy"></div></figure><p>Consider working with Claude Code to generate a financial report. It can call APIs for research, store data in the filesystem, analyze it with Python, and synthesize insights. All of that happens through code. The scaffolding becomes as simple as bash and a filesystem.</p><p>But general capability isn't the same as expertise. When we started using Claude Code for real work, a gap emerged.</p><h2><strong>The missing piece: domain expertise</strong></h2><p>Who would you want filing your taxes: a math genius figuring it out from first principles, or an experienced tax professional who's filed thousands of returns? Most people would choose the tax professional. Not because they're smarter, but because they have the right expertise.</p><p>Agents today are like that math genius: brilliant at reasoning through novel situations, but often lacking the accumulated expertise of a seasoned professional. They can do amazing things with proper guidance. However, they're often missing important context, can't easily absorb your organization's expertise, and don't automatically learn from repeated tasks.</p><p>Skills bridge this gap by packaging domain expertise in a format that agents can progressively access and apply.</p><h2><strong>What are Agent Skills?</strong></h2><p>Skills package domain expertise and procedural knowledge for agents.&nbsp;</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-javascript" style="white-space:pre-wrap"><span><span>anthropic_brand/
+            <h1 class="article-title u-text-style-h1">Building agents with Skills: Equipping agents for specialized work</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>Skills package domain expertise in files agents can access and apply—turning general-purpose agents into knowledgeable specialists for real work.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <div class="hero-detail-value-stack"><a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/agents" target="_blank" rel="noopener noreferrer">Agents</a><div class="hero-detail-value u-text-style-body-3">Claude Code</div></div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/product/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">January 22, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/building-agents-with-skills-equipping-agents-for-specialized-work/en.html">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>A lot has changed in the past year. MCP became the standard for agent connectivity with rapid adoption from industry leaders and the developer community. <a href="https://www.anthropic.com/news/claude-3-7-sonnet" target="_blank">Claude Code launched</a> as a general-purpose coding agent. And we launched the <a href="https://www.anthropic.com/engineering/building-agents-with-the-claude-agent-sdk" target="_blank">Claude Agent SDK</a>, which now provides a production-ready agent out of the box.</p><p>But as we've built and deployed these agents, we keep running into the same gap: agents have intelligence and capabilities, but not always the expertise to effectively tackle real work. This led us to <a href="https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills" target="_blank">create Agent Skills</a>. Skills are organized collections of files that package domain expertise - workflows, best practices, scripts - in a format agents can access and apply. They turn a capable generalist into a knowledgeable specialist.</p><p>In this post, we'll explain why we stopped building specialized agents and started building skills instead, and how this shift is changing how we think about extending agent capabilities.</p><h2><strong>The new paradigm: code is all you need</strong></h2><p>We used to think agents in different domains would look very different. A coding agent, a research agent, one for finance, one for marketing—each seemed to need its own tools and scaffolding. The industry initially embraced this model of domain-specific agents. But as models improved in intelligence and agent capabilities progressed, we converged on a different approach.</p><figure style="max-width:2880pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6972a852db1883d8c862151f_building-agents-with-skills-fig1-v3%402x.png" loading="lazy"></div></figure><p>We came to see code less as just a use case and more as an interface for agents to do almost any digital work. Claude Code is a coding agent, but also a general-purpose agent that happens to work through code.</p><figure style="max-width:2880pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6972a8b8cb336e177c409445_building-agents-with-skills-fig2-v4%402x.png" loading="lazy"></div></figure><p>Consider working with Claude Code to generate a financial report. It can call APIs for research, store data in the filesystem, analyze it with Python, and synthesize insights. All of that happens through code. The scaffolding becomes as simple as bash and a filesystem.</p><p>But general capability isn't the same as expertise. When we started using Claude Code for real work, a gap emerged.</p><h2><strong>The missing piece: domain expertise</strong></h2><p>Who would you want filing your taxes: a math genius figuring it out from first principles, or an experienced tax professional who's filed thousands of returns? Most people would choose the tax professional. Not because they're smarter, but because they have the right expertise.</p><p>Agents today are like that math genius: brilliant at reasoning through novel situations, but often lacking the accumulated expertise of a seasoned professional. They can do amazing things with proper guidance. However, they're often missing important context, can't easily absorb your organization's expertise, and don't automatically learn from repeated tasks.</p><p>Skills bridge this gap by packaging domain expertise in a format that agents can progressively access and apply.</p><h2><strong>What are Agent Skills?</strong></h2><p>Skills package domain expertise and procedural knowledge for agents.&nbsp;</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-javascript" style="white-space:pre-wrap"><span><span>anthropic_brand/
 </span></span><span>├── SKILL.md
 </span><span>├── docs.md
 </span><span>├── slide-decks.md
@@ -63,13 +291,15 @@
 </span></span><span><span>  - foreground color: </span><span style="color:#abe338">`#141413`</span><span>
 </span></span><span>
 </span><span><span>Use the </span><span style="color:#abe338">`./apply_template.py`</span><span> script to update a pptx file </span><span style="color:#dcc6e0">in</span><span>-place.</span></span></code></pre><h2><strong>The skills ecosystem</strong></h2><p>The skills ecosystem has emerged quickly, and so far we've seen three major types of skills being built:</p><h3><strong>Foundational skills</strong></h3><p>These provide core capabilities everyone needs: working with documents, spreadsheets, presentations, etc. They encode best practices for document generation and manipulation. You can see what this looks like in practice by exploring the <a href="https://github.com/anthropics/skills/tree/main/skills/public" target="_blank">foundational skills in our public repository</a>.</p><h3><strong>Partner skills</strong></h3><p>As skills standardize how agents interact with specialized capabilities, companies are building skills to make their services agent-accessible. <a href="https://github.com/K-Dense-AI/claude-scientific-skills" target="_blank">K-Dense</a>, <a href="https://github.com/browserbase/agent-browse" target="_blank">Browserbase</a>, <a href="https://www.notion.so/notiondevs/Notion-Skills-for-Claude-28da4445d27180c7af1df7d8615723d0" target="_blank">Notion</a>, and <a href="https://claude.com/blog/organization-skills-and-directory" target="_blank">many others</a> are creating skills that integrate their services directly, extending Claude's capabilities in specific domains while maintaining the simplicity of the skills format.</p><h3><strong>Enterprise skills</strong></h3><p>Organizations build proprietary skills encoding their internal processes and domain expertise. Skills help capture the specific workflows, compliance requirements, and institutional knowledge that make an agent useful for enterprise work.</p><h2><strong>Trends we see</strong></h2><p>As skills adoption grows, several patterns are emerging that point to where this paradigm may be heading. These trends shape how we think about skill design and the tooling we're building to support skill developers.</p><h3><strong>Increasing complexity</strong></h3><p>Early skills were simple documentation references. Now we're seeing sophisticated multi-step workflows that coordinate data retrieval, complex calculations, and formatted output across multiple tools.</p><ul role="list"><li><strong>Simple</strong>: "Status report writer" (~100 lines) - Templates and formatting</li><li><strong>Intermediate</strong>: "Financial model builder" (~800 lines) - Data retrieval, Excel modeling with Python</li><li><strong>Complex</strong>: "RNA sequencing pipeline" (2,500+ lines) - Coordinates HISAT2, StringTie, DESeq2 analysis</li></ul><h3><strong>Skills and MCP</strong></h3><p><a href="https://claude.com/blog/extending-claude-capabilities-with-skills-mcp-servers" target="_blank">Skills and MCP servers work together</a> naturally. A competitive analysis skill might coordinate web search, internal databases via MCP, Slack message history, and Notion pages to synthesize a comprehensive report.</p><h3><strong>Non-developer adoption</strong></h3><p>Skill creation is expanding beyond engineers to product managers, analysts, and domain experts across disciplines. They can create and test their first skill in under 30 minutes using the skill-creator tool, which guides them through the process interactively. We're working&nbsp; to make skill creation even more accessible, with improved tooling and templates that let anyone capture and share expertise.</p><h2><strong>The complete architecture</strong></h2><p>Putting it all together, the emerging agent architecture looks like a combination of:</p><ol role="list"><li><strong>Agent loop</strong>: The core reasoning system that decides what to do next</li><li><strong>Agent runtime</strong>: Execution environment (code, filesystem)</li><li><strong>MCP servers</strong>: Connections to external tools and data sources</li><li><strong>Skills library</strong>: Domain expertise and procedural knowledge</li></ol><figure style="max-width:2880pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6972ab24ac6df74ad6704f37_building-agents-with-skills-fig3-v2%402x.png" loading="lazy"></div></figure><p>Each layer has a clear purpose: the loop reasons, the runtime executes, MCP connects, and skills guide. This separation makes the system comprehensible and allows each piece to evolve independently.</p><p>Consider what happens when you add a single skill to this architecture. The <a href="https://github.com/anthropics/claude-code/tree/main/plugins/frontend-design" target="_blank">frontend design skill</a> transforms Claude's frontend capabilities instantly. It provides specialized guidance on typography, color theory, and animation, activating only when building web interfaces. Progressive disclosure means it loads only when relevant. Adding new capabilities is straightforward.</p><h2><strong>Deploying skills to new verticals</strong></h2><p>This emerging pattern of general agents equipped with MCP servers and skills is already helping us deploy Claude to new verticals.</p><h3><strong>Financial Services</strong></h3><p>Just after launching skills, we enhanced <a href="https://www.anthropic.com/news/claude-for-financial-services" target="_blank">Claude for the financial services</a> sector with skills that make Claude more useful for finance professionals:</p><ul role="list"><li><strong>DCF model builder</strong>: Constructs discounted cash flow models with proper WACC calculations and sensitivity analysis</li><li><strong>Comparable company analysis</strong>: Generates comps tables with relevant multiples and benchmarking</li><li><strong>Earnings analysis</strong>: Processes quarterly results and creates investment update reports</li><li><strong>Initiation coverage</strong>: Builds comprehensive research reports with financial models</li><li><strong>Due diligence</strong>: Structures M&amp;A analysis with standardized frameworks</li><li><strong>Pitch materials</strong>: Creates client presentations following industry standards</li></ul><h3><strong>Healthcare &amp; Life Sciences</strong></h3><p>We've also enhanced our <a href="https://www.anthropic.com/news/healthcare-life-sciences">healthcare and life sciences offerings </a>with skills that make Claude more useful for researchers, clinicians, and healthcare developers:</p><ul role="list"><li><strong>Bioinformatics bundles</strong>: Skills for scVI-tools and Nextflow deployments, essential for managing genomic pipelines and single-cell RNA sequencing</li><li><strong>Clinical trial protocol generation</strong>: Accelerates protocol development for clinical research</li><li><strong>Scientific problem selection</strong>: Helps researchers identify and frame impactful research questions</li><li><strong>FHIR development</strong>: Helps developers write more accurate code for health data interoperability, connecting healthcare systems faster with fewer errors</li><li><strong>Prior authorization review</strong>: Cuts administrative burden and accelerates patient access to needed care by cross-referencing coverage requirements, clinical guidelines, and patient records</li></ul><h2><strong>Standardizing Agent Skills</strong></h2><p>To enable this vision, we're publishing <a href="https://agentskills.io" target="_blank">Agent Skills</a> as an open standard. Like MCP, we believe skills should be portable across tools and platforms. The same skill should work whether you're using Claude or other AI platforms. We've been collaborating with members of the ecosystem on the standard, and we're excited to see early adoption.</p><p>When someone starts using an AI agent for the first time, it should already know what you and your team care about because skills capture and transfer that expertise. As this ecosystem grows, a skill built by someone else in the community can make your agent more useful, reliable, and capable - regardless of which AI platform they're using.</p><h2><strong>Getting started</strong></h2><p>We're converging on an architecture for general agents, and skills provide a paradigm for shipping and sharing new capabilities. The real value emerges from the collective knowledge base we build together: capturing expertise, transferring it across teams, and making every agent more capable than the last.</p><p><strong>Resources:</strong></p><ul role="list"><li><a href="https://youtu.be/CEvIs9y1uog?si=yhYQH-ZTX0DfNdtm" target="_blank">Don’t Build Agents, Build Skills Instead</a> (YouTube Video)</li><li><a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview" target="_blank">Skills documentation</a></li><li><a href="https://github.com/anthropics/skills" target="_blank">GitHub repository</a></li><li><a href="https://platform.claude.com/cookbook/skills-notebooks-01-skills-introduction" target="_blank">Skills cookbook</a></li><li><a href="https://support.claude.com/en/articles/12512180-using-skills-in-claude" target="_blank">Using skills in Claude</a></li><li><a href="https://platform.claude.com/docs/en/build-with-claude/skills-guide" target="_blank">Skills API quickstart</a></li><li><a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices" target="_blank">Skills best practices documentation</a></li></ul><h3><strong>Acknowledgments:</strong></h3><p>Barry Zhang, Mahesh Murag, Keith Lazuka, Ryan Whitehead</p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/building-agents-with-skills-equipping-agents-for-specialized-work" target="_blank">View original</a></p>
+              <p><a href="/">← Back to home</a></p>
+            </footer>
+          </article>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/building-agents-with-skills-equipping-agents-for-specialized-work" target="_blank">View original</a></p>
-          <p><a href="/">← Back to home</a></p>
-        </footer>
-      </article>
+      </div>
     </div>
   </main>
 <footer class="footer">
@@ -77,6 +307,53 @@
       <p>Content from <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · Translation by AI</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

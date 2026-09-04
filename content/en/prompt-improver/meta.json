@@ -13,5 +13,21 @@
   "translatedTitle": "在开发者控制台中改进你的提示词",
   "translated": true,
   "translatedAt": "2026-09-02T04:39:32.652Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Platform"
+    ],
+    "usecase": [
+      "Coding"
+    ]
+  },
+  "subtitle": "Claude can now automatically refine prompts in the developer console using techniques like chain-of-thought reasoning and example enrichment.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/platform/api"
 }

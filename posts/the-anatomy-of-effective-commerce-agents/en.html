@@ -4,39 +4,444 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>A guide to the anatomy of effective commerce agents — Claude Blog CN</title>
-  <meta name="description" content="A guide to the anatomy of effective commerce agents">
+  <meta name="description" content="The architecture, latency &amp; cost techniques, and eval practices for agents that make it easier to buy and sell online.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="/posts/the-anatomy-of-effective-commerce-agents/" class="nav-link">中文版 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>A guide to the anatomy of effective commerce agents</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/the-anatomy-of-effective-commerce-agents" target="_blank" rel="noopener noreferrer">Ask questions about this page</a>
+        <button type="button" class="explore-item" data-copy-markdown>Copy as markdown</button>
+        <a class="explore-item" href="/posts/the-anatomy-of-effective-commerce-agents/">阅读中文翻译 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># A guide to the anatomy of effective commerce agents
+
+The architecture, latency &amp; cost techniques, and eval practices for agents that make it easier to buy and sell online.
+
+Over the past year, we've worked with teams across the commerce industry — retailers, marketplaces, travel, entertainment, and telecom providers — to build commerce agents using Claude.  
+
+These agents are in production, and enterprise customers have seen larger carts and more efficient seller operations when using them. They also share a simple architecture: Claude in an agent loop equipped with a set of skills, tools, and a strong eval suite.
+
+This post is for the engineers and engineering leaders building these (or other consumer facing) agents. Part 1 covers the architecture, which you decide once. Part 2 covers latency and cost. Part 3 covers production: memory, safety, evals, and scaling the work across an organization.
+
+Reference implementationWe've also provided a **blueprint** to help build commerce agents on Claude. It contains the harnesses, patterns, and guardrails an engineering team needs to get a commerce agent running in days, with reference implementations of a shopping agent and a merchant agent for retail, travel, telecom, and ticketing platforms.[anthropics/commerce-agents →](https://github.com/anthropics/commerce-agents)In this guide
+
+- [Part 1: The architecture](#ca-p1)
+What is a commerce agent?
+- Skills, not subagents
+- System prompt or skill: decide by frequency
+- Engineering agent tooling
+- The UI components are tools
+
+- [Part 2: Making it fast and affordable](#ca-p2)
+Minimizing task completion latency
+- Perceived latency
+- Prompt caching
+- Choosing the model and its configuration
+
+- [Part 3: Running it in production](#ca-p3)
+Memory that survives the session
+- Safety: enforcement lives in the harness
+- Evals: shipping a non-deterministic system
+- Shipping with a large organization
+
+- [Looking ahead](#ca-p4)
+
+**01**
+## The architecture
+
+One model in a standard agent loop, with skills for the long tail and tools that call the systems you already run. You decide this once.
+### **What is a commerce agent?**
+
+We define a commerce agent as an agent that simplifies buying and selling across an online catalog.
+
+Some agents face consumers: they search, compare, substitute, and assemble the order. That could be a retail cart, a travel itinerary, a mobile plan change, or seats held for a show. Some agents face the business: they answer questions about sales, run promotions and campaigns, and manage inventory and pricing. 
+
+*The core architecture is a model in a [standard agent loop](https://www.anthropic.com/engineering/building-effective-agents): reasoning about a goal, exploring context, taking actions through tools, learning procedures through skills, asking clarifying questions, and observing the results until the goal is accomplished. 
+
+There is no intent router in front of it that segments the conversation and no set of domain specific agents behind it.
+
+### **Engineering context**
+
+#### **Skills, not subagents**
+
+A commerce agent has to cover a wide range of capabilities across many categories and intents, which makes it tempting to create one subagent per domain. 
+
+In practice this proves suboptimal, because a commerce conversation is one tightly coupled session across multiple intents and turns, and requires considerable shared context.
+
+In a subagent architecture, the orchestrator holds the cart or staged changes, the user's preferences, and the conversation history. 
+
+Every handoff to a subagent is a state-lossy operation, which often impacts the quality of the subagent’s response and, consequently, the overall response. On top of that, each handoff can cost several times the tokens and adds seconds of latency.
+
+The domains also rarely separate cleanly. A returns flow might need the order history, the current cart, and the product catalog, meaning a subagent-per-domain approach either duplicates that access everywhere or hands off mid-task. 
+
+As models get smarter, they also handle longer context, more skills, and more tools, so the limits behind today's placement rules loosen with each model generation.
+
+Instead, [agent skills](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview) give you similar per-domain modularity and context control without the handoff tax, because the skill instructions load into the main agent that already holds the entire history. 
+
+In our comparisons across several enterprise deployments, a single agent with skills consistently has outperformed both the one-prompt-for-everything design and the subagent design on quality, and often at a lower cost and latency per task.
+
+Where subagents do earn their place is when the orchestrator can call them as a tool for a narrow or self-contained task that would benefit from its own dedicated context window. 
+
+A common production example is a deep-research subagent, where the subagent searches and reads documents, writes and runs code, traverses data models, and hits dead ends. All the work happens inside one or more subagents, and only a compact answer comes back to the orchestrator.
+
+The other exception is a domain that already has its own purpose-built agent. If your pharmacy or financial-services experience runs a dedicated agent with its own compliance surface, the right move can be a hand-off, where that agent takes over the task and works with the user directly through its own loop until the task is done. 
+
+The distinction is ownership of the conversation. A hand-off makes the domain agent the user's counterpart, while delegation keeps the orchestrator, bouncing the domain agent in and out within a single turn and degrading on every exchange.
+
+#### **System prompt or skill: decide by frequency**
+
+The main factor when deciding whether to put a set of instructions within a system prompt or skill is how often the agent will need it. Loading a skill costs a model turn, so anything the agent needs on most turns generally goes in the system prompt. 
+
+This does, however, depend on how your traffic is distributed, and what agent behavior your evals show. A good starting point is that anything relevant to a third or more of your traffic, whether anticipated before launch or observed in production, goes in the system prompt, and the rest goes in skills.
+
+If a skill is predictable from a signal you already have, such as the page the user arrived from, we recommend injecting it from the harness before the first model call and skipping the extra turn to load the skill. 
+
+Critical instructions, such as safety and legal rules, brand constraints, and key user facts such as allergies, always go in the system prompt.
+
+For commerce agents, this means product search lives in the prompt, since nearly every session touches it, and skills carry the long tail of features. 
+
+In our [reference implementation](https://github.com/anthropics/commerce-agents), the shopping agent's prompt holds grounding, cart and checkout semantics, and presentation rules, and the following skills cover the rest: search-discovery, purchase-research, planning-goals, customer-care, and memory-personalization. 
+
+The merchant agent splits the same way, with performance-insights, catalog-listings, inventory-operations, pricing-promotions, and marketing-campaigns as its skills, one per operational domain.
+
+**In the prompt**Shopping agent*Grounding, cart and checkout semantics, presentation rules, and product search.**Shopping skills***The long tail*search-discovery · purchase-research · planning-goals · customer-care · memory-personalization**Merchant skills***One per operational domain*performance-insights · catalog-listings · inventory-operations · pricing-promotions · marketing-campaigns
+### **Engineering agent tooling**
+
+Our post on[ writing effective tools for agents](https://www.anthropic.com/engineering/writing-tools-for-agents) covers tool design in general. Two points have mattered most in commerce:
+
+**Build agent tools on top of your core systems and logic.** 
+
+A commerce company already has search and ranking, a cart, a preferences and profile store, an inventory system, promotion and campaign engines, sales analytics, and more, each encoding logic tuned over years and seeing signals the model never will. 
+
+The agent's tools should call those systems, not reimplement them, and the tool boundary is where their logic ends and the model's judgment takes over. 
+
+For example, when the agent calls `search_products`, the results should arrive already ranked; its job is to decide which results serve the user's goal, how many to show, and how to present them.
+
+**Tool results are context.** 
+
+Return the fields the model reasons with and drop the rest. Image URLs on every search row are the usual offender. 
+
+As needed, reshape the raw response inside the tool, including appending a next step when it isn't obvious from the data. 
+
+This is especially relevant for error scenarios, where the model benefits from instructions instead of error codes. For example, add an error instruction &quot;Include a product ID when querying availability,&quot; instead of a generic 403.
+
+#### **The UI components are tools**
+
+Most commerce agent responses are UI components rather than prose, whether a product carousel, an itinerary, a seat map, or a chart. That means the agent has to emit a schema rather than text.
+
+Teams sometimes start by prompting the model to emit custom tags and parsing them on the client-side. This stops working as the surface grows, because:
+
+- The model isn’t as well trained on your markup as it is on tool calls so reliability drops as nested components get added. Well-formed data is not guaranteed just through prompting.
+- The tag definitions live in the system prompt, so every new component bloats context and every edit risks regressions elsewhere in the prompt.
+- Past conversations end up stored in a format only your parser can read, so loading history means either parsing raw messages on the client or keeping a second copy in a format that isn't native to the model API.
+
+The pattern that has held up is to make each UI component a tool. The model calls `present_products`, `present_itinerary`, or `present_plan_comparison` with typed arguments; your server validates and enriches the call and emits an event; and your client renders it. 
+
+As the components are tool calls, they're already in the messages array in native format, so you don’t need to re-parse when you reload an old conversation. An example presentation-tool contract is illustrated below and in the [reference repo.](https://github.com/anthropics/commerce-agents)
+
+The tradeoff is streaming granularity. Each top-level argument of a tool call buffers on the server for validation, so the sub-components of a presentation tool arrive in steps even with streaming on. This impacts perceived latency. 
+
+To get a token-level stream, set `eager_input_streaming:` true on the tool definition, which skips the buffering and with it the server-side schema guarantee. 
+
+In our evals, schema violations are very rare on Claude Sonnet-class models and up, but wrap the call in a retry for the cases where one slips through.
+
+Presentation tools also give the agent a record of what's on screen. When a customer says &quot;the first hotel&quot; or &quot;the third one down on the left,&quot; the layout is in the messages array, in the arguments of the last presentation call. 
+
+For that to work, the arguments have to reflect the rendered layout, so structure them the way the UI is structured, as ordered rows and carousels rather than a flat list the client rearranges.
+
+**02**
+## Making it fast and affordable
+
+Attack latency on two fronts, end-to-end and perceived, and let caching carry the cost. None of it should spend intelligence to get there.Latency matters in commerce, and consumer surfaces are the least forgiving. However, on agentic surfaces, what we have consistently seen move metrics like retention, engagement, and cart size is the quality of the outcome. 
+
+Whether the answer was relevant and the task actually completed was more critical to those metrics as compared to marginal latency gains. 
+
+So attack latency on two fronts. Minimize end-to-end latency through good engineering, and pair that with dropping perceived latency (since time spent watching an agent work reads as progress). 
+
+Every user has a latency budget, and the techniques below keep the agent inside it without spending intelligence to get there.
+
+### **Minimizing task completion latency**
+
+Task completion latency is the sum, over model turns, of time to last token plus tool processing. That gives you three levers to work towards: fewer turns, faster tools, and faster tokens. These levers sometimes compete, so the thing to minimize is the sum rather than any one of them.
+
+**Fewer turns**Load likely context up front, increase model intelligence, and have the model call independent tools in parallel.**Faster tools**Optimize the tool's own backend, and dispatch tools eagerly as their arguments complete.**Faster tokens**Choose the model and its configuration by sweeping your eval suite.
+#### **Fewer turns**
+
+Query complexity adds turns, and is generally out of your control. Model intelligence and relevant context help the agent get to task completion in fewer turns. Some of our key learnings in this area include:
+
+- **Load likely context up front.** If the user opened the assistant from a product page, or a merchant opened it from a campaign dashboard, put that page's data in the session context. The conversation is likely about it, and answering from context costs no extra turns.
+- **Increase model intelligence.** Smarter models can decrease overall turns in the completion of a task as the agent can more efficiently plan and issue its tool calls. That often outweighs their slower tokens. If your queries skew complex, or production shows more than about five turns per task, the faster model is frequently the smarter one. Which one that is depends on your traffic, so choose by sweep, as described under &quot;Choosing the model&quot; below.
+- **Have the model call independent tools in parallel**. Commerce use cases often require many operations in parallel: be it searching for multiple products, querying many policy docs, or fetching records from many sources of sales data. Parallel tool ensures multiple independent queries don’t burn additional turns. Prompt the model to call many tools within a turn and return the results in one user message as an array of tool results (see the [parallel tool use docs](https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use)).
+
+#### **Faster tools**
+
+- **Optimize the tool's own backend.** Sometimes a tool genuinely fans out – a merchant agent with a  &quot;get today's snapshot&quot; query reads sales, inventory, and campaign status in three independent calls. But we often see the tool boundary become the place where missing backend logic gets stitched together: an availability check that calls the catalog for the SKU, the inventory service per store, and the fulfillment service for cutoffs, then applies substitution rules and pickup eligibility in the tool's own code before answering. That tool is now overloaded with domain knowledge, hard to keep correct as the rules change, and is carrying logic that should sit in an upstream system. When you find yourself writing that logic in a tool, the fix is one backend endpoint that answers the question, and calling that with an agent tool.
+- **Dispatch tools eagerly.** Tool arguments stream out of the model like any other tokens, so the harness can execute each tool’s call as its arguments complete and process it while the model is still streaming other, parallel tools or content blocks. We've seen this take multi-second gaps down to a few hundred milliseconds, and the [Claude Agent SDK](https://code.claude.com/docs/en/agent-sdk/overview) does it by default. You should prompt the model to emit its slowest call first for maximum latency gains.
+
+### **Perceived latency**
+
+Perceived latency is the time a user feels until the screen does something. It’s especially critical in consumer-facing use cases where any transaction friction impacts checkout rates and revenue. Two techniques shorten it without touching the model:
+
+- **Stream components as they form.** A rendered commerce response is typically 500–700 output tokens, which without streaming is five or more seconds of a spinner. Send each parameter of a presentation tool to the client as it streams and render the page progressively.
+- **Show the work.** While the agent is gathering context, render a short progress line for each step in plain language (for example, &quot;finding hotels near the water&quot;). You can build it from the tool's existing arguments (such as the query for a product search), or add an additional user_facing_message parameter tool that prompts the model to write the line. 
+
+*The two panels above run the same agent with the same tools and prompt; only the harness differs. Total time is about the same, but the time the user sees something is quite different.*
+### **Prompt caching**
+
+Prompt caching is your largest cost reduction candidate and commerce traffic is well-suited for it. Cached input token reads cost a tenth of fresh ones, and while cache-writes carry a premium of roughly 1.25x, a cached prefix pays for itself on its second use. In customer facing applications where volume is large, you have a unique opportunity to hit very high cache levels using the cheapest, default 5 minute cache expiration.  
+
+The best commerce deployments we've seen run at 90–99% cache hit rates, and that is the range to design for from the start. Our experience has shown cached token reads are also around 1.5 to 2x faster at ~100k tokens, with relatively linear scaling the more tokens there are. 
+
+Caching is prefix-based. A request reads from cache up to the first byte that differs from a previous request, so what matters is not just what is in the context but the order it is in. Think of a request as three segments, ordered by how often they change:
+
+- **Global**: most of the system prompt and tool definitions, identical across every session. This is your warmest cache and, at scale, will likely not expire. Keep it byte-identical across turns and sessions and put a cache breakpoint at its end.
+- **Session**: per-user context and conversation history, which differ across sessions but stay stable within one. This segment comes after the global one.
+- **Volatile**: anything that changes within a session, such as the current time or the current page. Put it at the very end of the request, either as a tagged block in the newest user turn or, on models that support [mid-conversation system messages](https://platform.claude.com/docs/en/build-with-claude/mid-conversation-system-messages), as a system-role message appended to the messages array. The most common mistake we see is a timestamp or the current page at the top of the system prompt, which silently breaks the cache on every request.
+
+There are two implementation details to remember here. First, skills should be loaded as tool results rather than appended to the system prompt. The skill body then lands in the conversation prefix and is cached along with it. 
+
+Second, roll your breakpoints forward in each turn: a request allows a limited number of breakpoints, so move the newest one to the end of each user turn. Each round then reads the accumulated history, including long tool results such as search responses, from cache.
+
+### **Choosing the model and its configuration**
+
+[Model size and the effort setting](https://claude.com/blog/claude-model-and-effort-level-in-claude-code) are the same tradeoff – intelligence against latency and cost – and you should choose both by measurement:
+
+- **Pick your metric and your floor.** Pick the quality metrics your business runs on (task completion, answer relevance, grounded accuracy), the eval score you won't go below, and your p50 and p99 latency and cost budgets.
+- **Sweep.** Run your entire eval suite across *every* model and effort level you'd consider. We recommend starting at Opus for merchant agents, whose tasks are analysis-heavy, and Sonnet for consumer agents, where latency weighs more. If you have production traffic, weigh the results by your real query mix. Then let the numbers decide. Sometimes Opus 5's lift on cart-driving tasks justifies the cost difference over Sonnet, and sometimes it doesn't.**‍**
+- **Read the results carefully.** Two things regularly surprise teams. The first is that a prompt is tuned to a model, so a sweep run with one prompt may underperform other models that it wasn't written for. A smaller model usually needs instructions the current model infers on its own, and a larger one will follow instructions to the letter that the smaller one was ignoring. A few rounds of iteration on each candidate's failing cases is a cheap step before ruling any of them out. The second is that a more intelligent configuration sometimes wins on latency (most commonly on p90 and p99) despite slower tokens, because it plans its tool calls better and needs fewer rounds on the most complex requests.
+
+Measure cost per completed task rather than per model call, since a cheaper model that needs more turns, or fails more often, is not cheaper. When the result is close, and the cost fits your per-task economics and latency, choose intelligence. Quality is what drives adoption and retention, and allows for room to build for the next 6 months as models become better.
+
+**03**
+## Running it in production
+
+Memory, safety, evals, and scaling the work across an organization: what gets an agent through production and keeps it there.Lastly, we talk about what gets an agent through production: memory, safety, evals, and scaling the work across an organization.
+
+### **Memory that survives the session**
+
+The relationship and interactions you have with your customers matter. Memory is what lets an agent pick up where the last conversation left off instead of starting from nothing. A shopper who mentioned a nut allergy in March shouldn't have to repeat it in June, and a merchant who checks the same three campaigns every Monday shouldn't have to name them each time. Long-term memory, the facts that should survive across sessions, is a system you build and it has three parts: how facts are stored, how they are written, and how they are read.
+
+#### **Storing memories **
+
+Memory belongs in your systems, not in the model. 
+
+A flat markdown profile works when profiles are small and the agent is the only reader. Most production commerce agents outgrow it, and the practical replacement is the database you already operate. A fact is a small typed record: a key (such as shoe_size, default_store, preferred_report_cadence), a short value, a category, and the session it came from. Some keys you decide up front and every user gets; the rest the extractor discovers. A database stays queryable as the store grows, lets you build deterministic behavior on specific attributes, and joins to the user data you already have.
+
+For merchant-facing agents, key memory by person rather than by account. Merchant logins are often shared between operators, so each operator needs their own profile, and reads have to respect that operator's permissions: a store manager's agent should not recall a fact a district manager stated.
+
+In the commerce domain, agent memory holds personal data. The facts worth remembering are often the most regulated ones, and the rules between jurisdictions differ. Treat memory as a data-handling design problem and not just a storage one. In practice that means four things:
+
+- **Decide which types of memories you are willing to hold**. Enforce that at the write path, with a validator that every save goes through, rather than in the prompt alone.
+- **Give users a way to see, correct, and delete what is stored.** Wire deletion into your account-deletion and data-request flows. 
+- **Set a retention period. **A preference from a few years ago is likely to be outdated, so a retention period helps keep memory facts fresh.
+- **Memory should be a per-deployment switch**. This allows regions that can't take on these obligations to run without it.
+
+#### **Writing memory**
+
+Write memory asynchronously. At the end of each turn, or every few turns in a long session, an agent in a separate thread or process reads the conversation and creates, updates, or deletes facts in the store, keeping its own working context as the session goes on. 
+
+It adds nothing to the conversation's latency, and achieved 13% higher fact recall on our internal commerce memory eval suite.
+
+The obvious alternative, a tool the agent calls to save a fact, is the wrong one for a latency-sensitive commerce agent. Every save is a tool call inside a user-facing turn, and unless the whole store is in context, a save needs a read first to update or dedupe, which is a round of its own. 
+
+It also puts one more decision in front of the agent on every turn, and in our evals that competition for attention showed up as missed memories.
+
+Separating the extractor also lets you prompt it precisely. It reads only the user's and the assistant's text, never tool results, so a product description or a review can't become a fact about the user. Its prompt says what counts as a fact — a stated size, a dietary constraint, a fulfillment preference, a merchant’s usual materialized views — and what doesn't, such as anything from a listing or a one-off detail.
+
+#### **Reading memory**
+
+Read memory in three layers.
+
+**Always in context**A small fixed set of facts goes into context on every turn: the ones nearly every request depends on, such as a shopper's default store and fulfillment preference, or an operator's store and role.**Pre-fetched per turn**Facts relevant to the current request are pre-fetched per turn from the same signals that pre-load a skill: a shoe search pulls sizes and brand preferences, a campaign question pulls the operator's usual metrics.**Behind a lookup tool**Everything else sits behind a lookup tool.Since memory is per-user context, all of it goes in the session segment, below the global cache breakpoint.
+
+### **Safety: enforcement lives in the harness**
+
+The prompt is where safe behavior starts, but in commerce it can't be where safety is enforced. The failures are financial and often irreversible, and a prompt rule is one injection or one bad sample away from being skipped. Every rule below is enforced in code, on both the consumer and the merchant agent, and defined once so every runtime shares it.
+
+#### **The model stages; a person or a policy applies**
+
+No model tool call moves money or changes the business. Order placement, payments, refunds, price changes, and campaign launches all end in an action the harness controls instead of the model.
+
+On the consumer side this is structural: the checkout tool renders the cart with a button to place the order, and the backend interface the agent calls has no charge method at all. 
+
+On the merchant side, every write tool produces a staged change with a server-generated ID, and `apply_change` succeeds only for IDs that have been approved through a real surface: a button in the operator's portal, a confirmation in the CLI, or the platform's own tool-approval prompt when the agent runs on Managed Agents. 
+
+The guardrails are re-checked at apply time against current limits, not the limits in force when the change was staged. Whatever the surface, the shape is the same: the model's most dangerous action is to propose, and the approval routes through the maker-checker flow your business already uses for that kind of change.
+
+#### **Writes and renders accept only server-issued IDs**
+
+The harness keeps a per-session record of every ID the server has handed the model, and that record is the only key any write or render will accept. 
+
+The cart accepts only product IDs the server returned to this session, and the merchant tools accept only listing and campaign IDs the agent has actually read. An ID that arrived any other way — hallucinated, pasted by a user, planted in a review — is refused before the backend sees it.
+
+The same rule covers the UI. Presentation tools take IDs, and the server fills in the product, order, or change records itself, so a card only renders records the server itself filled in.
+
+It covers delegates too: the merchant analysis subagent reads data but never adds to the set of IDs the agent may write to.
+
+For fees, disclosures, and other regulated content, the model chooses which product to disclose and the server supplies every word from approved copy. The same fee fields are on the merchant agent's protected list, so neither side of the counter can change or paraphrase them, and evals check the rendered strings byte for byte.
+
+#### **Capped transactions must hold to repeated requests **
+
+Most commerce surfaces cap how many of an item one user can buy — for ticket allocations, promotional pricing, or fraud control — and an agent will retry, rephrase, and parallelize in ways a human clicking a button never did.
+
+The cap is therefore enforced on the line as it would be after the write, so a second &quot;add two more&quot; can't stack past it, and cart writes for one session are serialized so parallel tool calls in a single turn can't combine to exceed it. 
+
+Merchant changes are checked the same way against caps on price movement, discount depth, restock size, and campaign budget, plus a list of protected fields no change may touch. The rule generalizes: enforce every limit on the resulting state rather than the request, and serialize writes per session.
+
+#### **Third-party content is sanitized**
+
+In commerce most of the context is written by people who aren't you — sellers, reviewers, competitors — so every backend read is untrusted input and goes through one sanitizer. 
+
+Every tool result authored by a third party, such as listings, reviews, policies, seller messages, and stored memory,  is sanitized and wrapped in a fence with a fixed label before the model sees it. 
+
+The sanitizer strips control and bidirectional characters, removes anything that imitates the fence markers, defuses text that imitates a conversation turn or a tool call, and caps the size, which is designed to stop a hostile listing from impersonating the system or filling the context. 
+
+The prompt carries the other half of the contract: fenced text is material to report on, never to act on.
+
+### **Evals: shipping a non-deterministic system**
+
+Anything from a small prompt change to a new tool can change agent behavior in ways that are hard to predict, and the change you're shipping is often not the one that regresses. Evals are how you find that out before you deploy. Our earlier blog post on [evals for agents](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents) covers the general practice. This section covers specifics for commerce agents.
+
+**Evaluate snapshots, not conversations**
+
+The model’s API is stateless, so what the agent outputs is a function of the system prompt, the tools, and the messages array. This means any state a commerce conversation can reach can be constructed directly. So creating an eval case means constructing the test state, appending the test user message, and letting the agent run from there. 
+
+Then grade the outcome: the final state and the rendered response, including the arguments of the last write. In most cases, we recommend against grading the path the agent took to get there as such test cases are brittle and restricting.
+
+Simulated-user evals, in which a second model plays the user and a judge grades the whole conversation, are a poor tool for measurement. Two non-deterministic systems interacting need larger samples, cost more per trial, are harder to judge, and produce failures that are hard to attribute. They are useful for finding coverage gaps and for a general vibe check on the agent, so use them to discover cases, then write each case as a snapshot.
+
+#### **Evaluate for behaviors in tough conditions**
+
+Most teams fail to properly test the injected state. A case should encode the preconditions of a failure, not just the task. If a behavior only emerges after a busy first turn with several tool calls, or after a contradiction earlier in the session, a case that starts from a clean state passes on every config and provides no meaningful data. 
+
+We've observed most suites to be heavy on such clean-state cases, so make sure a share of yours starts from long, messy, or contradictory histories.
+
+**Cover the different types of commerce agent evals** Effective evaluation requires testing both desired and undesired behaviors. 
+
+For every positive case, write its negative counterpart: a &quot;should serve&quot; for every &quot;should refuse,&quot; a &quot;should just do it&quot; for every &quot;should ask.&quot; Missing negatives are the most common gap we find in a suite. 
+
+Evaluate for the following:
+
+- **Core requests** that make up the bulk of your traffic, since a failure here affects most sessions. These include simple lookups, multi-constraint requests, product and plan questions, and multi-intent messages. For the questions, check that every price, availability, and attribute traces back to returned data, and that the agent says when data is missing rather than inventing it.
+- **Context-dependent requests**, such as references to what is on screen, constraints carried over from earlier turns, and writes against an existing cart. Evaluating memory falls into this bucket as well. Check that memories were extracted, retrieved, and changed the answer.
+- **Safety and brand cases**, where a failure costs money or trust. These include attempted injection, attempts to read another user's data, and regulated language, which is checked byte for byte. Split injection into two cases: user-authored injection, where the directive comes from the user's own message, and data-plane injection, where it is planted in product names, reviews, or web snippets that arrive via tool results.
+- **Interface evaluations**, to ensure the right component is rendered, item caps are respected, and there are no internal identifiers in user-facing text. Test for timeouts and empty results too.
+- **Requests that belong to multiple capabilities at once.** An operator asks &quot;if I mark this down 15%, do I have enough stock to cover the demand?&quot; That is a pricing question and an inventory question together. The right answer stages the markdown with a stock projection attached; the wrong answers do one and skip the other. Evals written per capability won't catch this, because each grades only its own half. Write cases for the requests that need two neighboring capabilities together, and grade both halves of the answer.
+
+**Write evals with SMEs and use real incidents**Partner with the subject-matter experts who see the failures firsthand, such as team members in Product, Legal, Merchant Ops, Customer Care, and Category Management, to design test cases. Real failures make the best evals, and 50-100 eval cases per user flow is a good starting point. 
+
+Make sure to have a variety of cases, as outlined above. Production transcripts are a great stream for sourcing new cases, especially the tricky ones. Coding agents are good at generating additional cases and adversarial variants. The[ reference repository](https://github.com/anthropics/commerce-agents) includes a Claude Code plugin with an eval-authoring skill built with our recommended approach.
+
+#### **Shipping with a large organization**
+
+In a commerce enterprise the agent is built by many engineering teams. Search, checkout, pricing, marketing tech, customer care, and the catalog platform each own systems the agent depends on, each ships on its own cadence, and each will want to add or change a tool, a skill, or a prompt rule. 
+
+Unlike a service, an agent has no strict module boundary protecting the others: a change made by the pricing team shares a context window with checkout.
+
+The tempting fix is to break the system into many subagents, one per business unit. As discussed in Part 1, we recommend against it for quality reasons. Instead, we outline the process for de-risking multi-team collaboration:
+
+- **Ownership follows the systems.** Every skill and tool has a single owner team. For example, pricing owns the promotion tools and the pricing skill, care owns the order and returns tools and the customer-care skill. The shared prompt has a single platform-level owner for the common parts and domain owner for the domain-specific section.
+- **A change ships with its cases and CI runs a set chosen for it.** A team contributing a skill also contributes its cases, including the negative cases and the boundary cases against neighboring skills. Running the full suite on every pull request is too slow and too expensive to survive, so build a CI set from it instead. That set will consist of a core set of cases with the highest-traffic requests and every safety case. On top of that, run the cases for whatever the change touched. For a skill, that means its own cases and its neighbors' boundary cases. For a tool, it is every case that calls it. For the shared prompt, it is the full eval suite since everything reads the system prompt. We recommend gating the pass rate over a few trials, and on cache hit rate and cost per turn. It is also a good practice to run the full suite nightly and before every release. Cross-team regressions are caught in these runs.
+- **The agent should also be inside the release calendar.** It's one deployment unit, so a bad change reaches every user at once. Roll prompt and skill changes to a canary cohort first, keep a switch that turns off one skill without a deploy, and freeze the agent ahead of peak periods the same way you freeze other systems.
+
+For the human side of this arrangement, see [Building effective human-agent teams](https://claude.com/blog/building-effective-human-agent-teams).
+
+## **Looking ahead**
+
+Most of what this post describes is not about the model. The tools call systems you already run, the skills encode procedures you already follow, the evals are your product requirements doc written as tests, and the harness enforces policy you would enforce for any client. Models will keep improving, and when a better one ships, the architecture we describe adopts it as a config change with an eval sweep. Everything else keeps working.
+
+It is also important to think about your roadmap for product surfaces. The architecture will outlast the chat panel. The same agent can work over voice, and it can proactively act on a fare drop before the user asks. For a team that already has the evals and the tools, those are presentation-layer projects. Further out, some of the traffic to your storefront will come from agents that shop on behalf of users. The same provenance, staging, and approval rules that keep your own agent in bounds are what will let you open your tools to those agents safely.
+
+Commerce has always rewarded making the buying process as smooth as possible. Agents make that a lot easier. Check out the [complete reference implementation](https://github.com/anthropics/commerce-agents), with both the consumer and the merchant agent and runnable examples for retail, travel, telecom, and entertainment.
+
+### **Acknowledgements**
+
+*Written by Matthew Koen and Ali Shazal. Special thanks to Michael Segner, Rodrigo Olivares, Amandeep Khurana, Aiza Usman, John Lopus and others for their contributions.*</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Agents</span>
-            <span class="article-date">September 2, 2026</span>
-            <span class="lang-badge-large">EN</span>
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-cactus);">
+            <img class="hero-illo-img" src="/assets/illustrations/the-anatomy-of-effective-commerce-agents.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">A guide to the anatomy of effective commerce agents</h1>
-          <a href="/posts/the-anatomy-of-effective-commerce-agents/" class="lang-toggle">阅读中文翻译 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><div class="w-embed"><!-- ca- shared styles v1 -->
+            <h1 class="article-title u-text-style-h1">A guide to the anatomy of effective commerce agents</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>The architecture, latency &amp; cost techniques, and eval practices for agents that make it easier to buy and sell online.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/agents" target="_blank" rel="noopener noreferrer">Agents</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/platform/api" target="_blank" rel="noopener noreferrer">Claude Platform</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">September 2, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>25</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/the-anatomy-of-effective-commerce-agents/en.html">Copy link</button>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M15.5117 1.99707C15.9213 2.0091 16.3438 2.13396 16.6768 2.46679C17.0278 2.81814 17.1209 3.26428 17.0801 3.68261C17.0404 4.08745 16.8765 4.49344 16.6787 4.85058C16.3934 5.36546 15.9941 5.85569 15.6348 6.20898C15.7682 6.41421 15.8912 6.66414 15.9551 6.9453C16.0804 7.4977 15.9714 8.13389 15.4043 8.70116C14.8566 9.24884 13.974 9.54823 13.1943 9.71679C12.7628 9.81003 12.3303 9.86698 11.9473 9.90233C12.0596 10.2558 12.0902 10.7051 11.8779 11.2012L11.8223 11.3203C11.5396 11.8854 11.0275 12.2035 10.4785 12.3965C9.93492 12.5875 9.29028 12.6792 8.65332 12.75C7.99579 12.8231 7.34376 12.8744 6.70117 12.9775C6.14371 13.067 5.63021 13.1903 5.18652 13.3818L5.00585 13.4658C4.53515 14.2245 4.13745 14.9658 3.80957 15.6465C4.43885 15.2764 5.1935 15 5.99999 15C6.27614 15 6.49999 15.2238 6.49999 15.5C6.49999 15.7761 6.27613 16 5.99999 16C5.35538 16 4.71132 16.2477 4.15039 16.6103C3.58861 16.9736 3.14957 17.427 2.91601 17.7773C2.91191 17.7835 2.90568 17.788 2.90136 17.7939C2.88821 17.8119 2.8746 17.8289 2.85937 17.8447C2.85117 17.8533 2.84268 17.8612 2.83398 17.8691C2.81803 17.8835 2.80174 17.897 2.78417 17.9092C2.774 17.9162 2.76353 17.9225 2.75292 17.9287C2.73854 17.9372 2.72412 17.9451 2.70898 17.9521C2.69079 17.9605 2.6723 17.9675 2.65332 17.9736C2.6417 17.9774 2.63005 17.9805 2.61816 17.9834C2.60263 17.9872 2.5871 17.9899 2.57128 17.9922C2.55312 17.9948 2.53511 17.9974 2.5166 17.998C2.50387 17.9985 2.49127 17.9976 2.47851 17.9971C2.45899 17.9962 2.43952 17.9954 2.41992 17.9922C2.40511 17.9898 2.39062 17.9862 2.37597 17.9824C2.36477 17.9795 2.35294 17.9783 2.34179 17.9746C2.33697 17.973 2.33286 17.9695 2.32812 17.9678C2.31042 17.9612 2.29351 17.953 2.27636 17.9443C2.26332 17.9378 2.25053 17.9314 2.23828 17.9238C2.23339 17.9208 2.22747 17.9192 2.22265 17.916C2.21414 17.9103 2.20726 17.9026 2.19921 17.8965C2.18396 17.8849 2.16896 17.8735 2.15527 17.8603C2.14518 17.8507 2.13609 17.8404 2.12695 17.8301C2.11463 17.8161 2.10244 17.8023 2.09179 17.7871C2.08368 17.7756 2.07736 17.7631 2.07031 17.751C2.06168 17.7362 2.05297 17.7216 2.04589 17.706C2.03868 17.6901 2.03283 17.6738 2.02734 17.6572C2.0228 17.6436 2.01801 17.6302 2.01464 17.6162C2.01117 17.6017 2.009 17.587 2.00683 17.5722C2.00411 17.5538 2.00161 17.5354 2.00097 17.5166C2.00054 17.5039 2.00141 17.4912 2.00195 17.4785C2.00279 17.459 2.00364 17.4395 2.00683 17.4199C2.00902 17.4064 2.01327 17.3933 2.0166 17.3799C2.01973 17.3673 2.02123 17.3543 2.02539 17.3418C2.41772 16.1648 3.18163 14.466 4.30468 12.7012C4.31908 12.5557 4.34007 12.3582 4.36914 12.1201C4.43379 11.5907 4.53836 10.8564 4.69921 10.0381C5.0174 8.41955 5.56814 6.39783 6.50585 4.9912L6.73242 4.66894C7.27701 3.93277 7.93079 3.30953 8.61035 2.85156C9.3797 2.33311 10.2221 2 11.001 2C11.7951 2.00025 12.3531 2.35795 12.7012 2.70605C12.7723 2.77723 12.8348 2.84998 12.8896 2.91796C13.2829 2.66884 13.7917 2.39502 14.3174 2.21191C14.6946 2.08056 15.1094 1.98537 15.5117 1.99707ZM17.04 15.5537C17.1486 15.3 17.4425 15.1818 17.6963 15.29C17.95 15.3986 18.0683 15.6925 17.96 15.9463C17.4827 17.0612 16.692 18 15.5 18C14.6309 17.9999 13.9764 17.5003 13.5 16.7978C13.0236 17.5003 12.3691 18 11.5 18C10.6309 17.9999 9.97639 17.5003 9.49999 16.7978C9.02359 17.5003 8.36911 18 7.49999 18C7.22391 17.9999 7 17.7761 6.99999 17.5C6.99999 17.2239 7.22391 17 7.49999 17C8.07039 17 8.6095 16.5593 9.04003 15.5537L9.07421 15.4873C9.16428 15.3412 9.32494 15.25 9.49999 15.25C9.70008 15.25 9.88121 15.3698 9.95996 15.5537L10.042 15.7353C10.4581 16.6125 10.9652 16.9999 11.5 17C12.0704 17 12.6095 16.5593 13.04 15.5537L13.0742 15.4873C13.1643 15.3412 13.3249 15.25 13.5 15.25C13.7001 15.25 13.8812 15.3698 13.96 15.5537L14.042 15.7353C14.4581 16.6125 14.9652 16.9999 15.5 17C16.0704 17 16.6095 16.5593 17.04 15.5537ZM15.4824 2.99707C15.247 2.99022 14.9608 3.04682 14.6465 3.15624C14.0173 3.37541 13.389 3.76516 13.0498 4.01953C12.9277 4.11112 12.7697 4.14131 12.6221 4.10253C12.4745 4.06357 12.3522 3.9591 12.291 3.81933V3.81835C12.2892 3.81468 12.2861 3.80833 12.2822 3.80078C12.272 3.78092 12.2541 3.7485 12.2295 3.70898C12.1794 3.62874 12.1011 3.52019 11.9941 3.41308C11.7831 3.2021 11.4662 3.00024 11.001 2.99999C10.4904 2.99999 9.84173 3.22729 9.16894 3.68066C8.58685 4.07297 8.01568 4.61599 7.5371 5.26269L7.33789 5.54589C6.51634 6.77827 5.99475 8.63369 5.68066 10.2314C5.63363 10.4707 5.5913 10.7025 5.55371 10.9238C7.03031 9.01824 8.94157 7.19047 11.2812 6.05077C11.5295 5.92989 11.8283 6.03301 11.9492 6.28124C12.0701 6.52949 11.967 6.82829 11.7187 6.94921C9.33153 8.11208 7.38648 10.0746 5.91406 12.1103C6.12313 12.0632 6.33385 12.0238 6.54296 11.9902C7.21709 11.8821 7.92723 11.8243 8.54296 11.7558C9.17886 11.6852 9.72123 11.6025 10.1465 11.4531C10.5662 11.3056 10.8063 11.1158 10.9277 10.873L10.9795 10.7549C11.0776 10.487 11.0316 10.2723 10.9609 10.1123C10.918 10.0155 10.8636 9.93595 10.8203 9.88183C10.7996 9.85598 10.7822 9.83638 10.7715 9.82518L10.7607 9.81542L10.7627 9.8164L10.7646 9.81835C10.6114 9.67972 10.5597 9.46044 10.6338 9.26757C10.7082 9.07475 10.8939 8.94726 11.1006 8.94726C11.5282 8.94719 12.26 8.8956 12.9834 8.73925C13.7297 8.5779 14.3654 8.32602 14.6973 7.99413C15.0087 7.68254 15.0327 7.40213 14.9795 7.16698C14.9332 6.96327 14.8204 6.77099 14.707 6.62792L14.5957 6.50195C14.4933 6.39957 14.4401 6.25769 14.4502 6.11327C14.4605 5.96888 14.5327 5.83599 14.6484 5.74902C14.9558 5.51849 15.4742 4.96086 15.8037 4.3662C15.9675 4.07048 16.0637 3.80137 16.085 3.58593C16.1047 3.38427 16.0578 3.26213 15.9697 3.17382C15.8631 3.06726 15.7102 3.00377 15.4824 2.99707Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Author(s)</div>
+                  <div class="hero-detail-value u-text-style-body-3">Ali Shazal, Matthew Koen</div>
+                </div>
+              </li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><div class="w-embed"><!-- ca- shared styles v1 -->
 <style>
 .w-richtext .ca-cta{background:#141413;color:#faf9f5;border-radius:14px;padding:22px 26px;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center;margin:0 0 32px;border:1px solid rgba(250,249,245,.12)}
 .w-richtext .ca-cta div div{font-size:15px;line-height:1.5;color:#faf9f5;margin:0}
@@ -84,13 +489,15 @@
 <li><div><a href="#ca-p3">Part 3: Running it in production</a><ol><li>Memory that survives the session</li><li>Safety: enforcement lives in the harness</li><li>Evals: shipping a non-deterministic system</li><li>Shipping with a large organization</li></ol></div></li>
 <li><div><a href="#ca-p4">Looking ahead</a></div></li>
 </ol></div></div><div class="w-embed"><div class="ca-band" id="ca-p1" style="background:#dbe5ef"><b>01</b><div><h2>The architecture</h2><div>One model in a standard agent loop, with skills for the long tail and tools that call the systems you already run. You decide this once.</div></div></div></div><h3><strong>What is a commerce agent?</strong></h3><p>We define a commerce agent as an agent that simplifies buying and selling across an online catalog.</p><p>Some agents face consumers: they search, compare, substitute, and assemble the order. That could be a retail cart, a travel itinerary, a mobile plan change, or seats held for a show. Some agents face the business: they answer questions about sales, run promotions and campaigns, and manage inventory and pricing.&nbsp;</p><figure style="max-width:1520pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a97121e31e08caa3a0e6679_02653800.png" loading="lazy"></div></figure><p>The core architecture is a model in a <a href="https://www.anthropic.com/engineering/building-effective-agents">standard agent loop</a>: reasoning about a goal, exploring context, taking actions through tools, learning procedures through skills, asking clarifying questions, and observing the results until the goal is accomplished. </p><p>There is no intent router in front of it that segments the conversation and no set of domain specific agents behind it.</p><h3><strong>Engineering context</strong></h3><h4><strong>Skills, not subagents</strong></h4><p>A commerce agent has to cover a wide range of capabilities across many categories and intents, which makes it tempting to create one subagent per domain. </p><p>In practice this proves suboptimal, because a commerce conversation is one tightly coupled session across multiple intents and turns, and requires considerable shared context.</p><p>In a subagent architecture, the orchestrator holds the cart or staged changes, the user's preferences, and the conversation history. </p><p>Every handoff to a subagent is a state-lossy operation, which often impacts the quality of the subagent’s response and, consequently, the overall response. On top of that, each handoff can cost several times the tokens and adds seconds of latency.</p><p>The domains also rarely separate cleanly. A returns flow might need the order history, the current cart, and the product catalog, meaning a subagent-per-domain approach either duplicates that access everywhere or hands off mid-task. </p><p>As models get smarter, they also handle longer context, more skills, and more tools, so the limits behind today's placement rules loosen with each model generation.</p><p>Instead, <a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview">agent skills</a> give you similar per-domain modularity and context control without the handoff tax, because the skill instructions load into the main agent that already holds the entire history. </p><p>In our comparisons across several enterprise deployments, a single agent with skills consistently has outperformed both the one-prompt-for-everything design and the subagent design on quality, and often at a lower cost and latency per task.</p><p>Where subagents do earn their place is when the orchestrator can call them as a tool for a narrow or self-contained task that would benefit from its own dedicated context window. </p><p>A common production example is a deep-research subagent, where the subagent searches and reads documents, writes and runs code, traverses data models, and hits dead ends. All the work happens inside one or more subagents, and only a compact answer comes back to the orchestrator.</p><p>The other exception is a domain that already has its own purpose-built agent. If your pharmacy or financial-services experience runs a dedicated agent with its own compliance surface, the right move can be a hand-off, where that agent takes over the task and works with the user directly through its own loop until the task is done.&nbsp;</p><p>The distinction is ownership of the conversation. A hand-off makes the domain agent the user's counterpart, while delegation keeps the orchestrator, bouncing the domain agent in and out within a single turn and degrading on every exchange.</p><h4><strong>System prompt or skill: decide by frequency</strong></h4><p>The main factor when deciding whether to put a set of instructions within a system prompt or skill is how often the agent will need it. Loading a skill costs a model turn, so anything the agent needs on most turns generally goes in the system prompt.&nbsp;</p><p>This does, however, depend on how your traffic is distributed, and what agent behavior your evals show. A good starting point is that anything relevant to a third or more of your traffic, whether anticipated before launch or observed in production, goes in the system prompt, and the rest goes in skills.</p><p>If a skill is predictable from a signal you already have, such as the page the user arrived from, we recommend injecting it from the harness before the first model call and skipping the extra turn to load the skill. </p><p>Critical instructions, such as safety and legal rules, brand constraints, and key user facts such as allergies, always go in the system prompt.</p><p>For commerce agents, this means product search lives in the prompt, since nearly every session touches it, and skills carry the long tail of features.&nbsp;</p><p>In our <a href="https://github.com/anthropics/commerce-agents">reference implementation</a>, the shopping agent's prompt holds grounding, cart and checkout semantics, and presentation rules, and the following skills cover the rest: search-discovery, purchase-research, planning-goals, customer-care, and memory-personalization.&nbsp;</p><p>The merchant agent splits the same way, with performance-insights, catalog-listings, inventory-operations, pricing-promotions, and marketing-campaigns as its skills, one per operational domain.</p><div class="w-embed"><div class="ca-cards"><div style="background:#dbe5ef"><b>In the prompt</b><i>Shopping agent</i>Grounding, cart and checkout semantics, presentation rules, and product search.</div><div style="background:#e8e6dc"><b>Shopping skills</b><i>The long tail</i>search-discovery · purchase-research · planning-goals · customer-care · memory-personalization</div><div style="background:#e8e6dc"><b>Merchant skills</b><i>One per operational domain</i>performance-insights · catalog-listings · inventory-operations · pricing-promotions · marketing-campaigns</div></div></div><h3><strong>Engineering agent tooling</strong></h3><p>Our post on<a href="https://www.anthropic.com/engineering/writing-tools-for-agents"> writing effective tools for agents</a> covers tool design in general. Two points have mattered most in commerce:</p><p><strong>Build agent tools on top of your core systems and logic.</strong> </p><p>A commerce company already has search and ranking, a cart, a preferences and profile store, an inventory system, promotion and campaign engines, sales analytics, and more, each encoding logic tuned over years and seeing signals the model never will. </p><p>The agent's tools should call those systems, not reimplement them, and the tool boundary is where their logic ends and the model's judgment takes over. </p><p>For example, when the agent calls <code>search_products</code>, the results should arrive already ranked; its job is to decide which results serve the user's goal, how many to show, and how to present them.</p><p><strong>Tool results are context.</strong> </p><p>Return the fields the model reasons with and drop the rest. Image URLs on every search row are the usual offender. </p><p>As needed, reshape the raw response inside the tool, including appending a next step when it isn't obvious from the data. </p><p>This is especially relevant for error scenarios, where the model benefits from instructions instead of error codes. For example, add an error instruction "Include a product ID when querying availability," instead of a generic 403.</p><h4><strong>The UI components are tools</strong></h4><p>Most commerce agent responses are UI components rather than prose, whether a product carousel, an itinerary, a seat map, or a chart. That means the agent has to emit a schema rather than text.</p><p>Teams sometimes start by prompting the model to emit custom tags and parsing them on the client-side. This stops working as the surface grows, because:</p><ul role="list"><li>The model isn’t as well trained on your markup as it is on tool calls so reliability drops as nested components get added. Well-formed data is not guaranteed just through prompting.</li><li>The tag definitions live in the system prompt, so every new component bloats context and every edit risks regressions elsewhere in the prompt.</li><li>Past conversations end up stored in a format only your parser can read, so loading history means either parsing raw messages on the client or keeping a second copy in a format that isn't native to the model API.</li></ul><p>The pattern that has held up is to make each UI component a tool. The model calls <code>present_products</code>, <code>present_itinerary</code>, or <code>present_plan_comparison</code> with typed arguments; your server validates and enriches the call and emits an event; and your client renders it.&nbsp;</p><p>As the components are tool calls, they're already in the messages array in native format, so you don’t need to re-parse when you reload an old conversation. An example presentation-tool contract is illustrated below and in the <a href="https://github.com/anthropics/commerce-agents">reference repo.</a></p><figure style="max-width:920pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a971accf6d9dcde640f87df_presentationtool.gif" loading="lazy"></div></figure><p>The tradeoff is streaming granularity. Each top-level argument of a tool call buffers on the server for validation, so the sub-components of a presentation tool arrive in steps even with streaming on. This impacts perceived latency.&nbsp;</p><p>To get a token-level stream, set <code>eager_input_streaming:</code> true on the tool definition, which skips the buffering and with it the server-side schema guarantee. </p><p>In our evals, schema violations are very rare on Claude Sonnet-class models and up, but wrap the call in a retry for the cases where one slips through.</p><p>Presentation tools also give the agent a record of what's on screen. When a customer says "the first hotel" or "the third one down on the left," the layout is in the messages array, in the arguments of the last presentation call. </p><p>For that to work, the arguments have to reflect the rendered layout, so structure them the way the UI is structured, as ordered rows and carousels rather than a flat list the client rearranges.</p><div class="w-embed"><div class="ca-band" id="ca-p2" style="background:#f1d9cc"><b>02</b><div><h2>Making it fast and affordable</h2><div>Attack latency on two fronts, end-to-end and perceived, and let caching carry the cost. None of it should spend intelligence to get there.</div></div></div></div><p>Latency matters in commerce, and consumer surfaces are the least forgiving. However, on agentic surfaces, what we have consistently seen move metrics like retention, engagement, and cart size is the quality of the outcome. </p><p>Whether the answer was relevant and the task actually completed was more critical to those metrics as compared to marginal latency gains.&nbsp;</p><p>So attack latency on two fronts. Minimize end-to-end latency through good engineering, and pair that with dropping perceived latency (since time spent watching an agent work reads as progress). </p><p>Every user has a latency budget, and the techniques below keep the agent inside it without spending intelligence to get there.</p><h3><strong>Minimizing task completion latency</strong></h3><p>Task completion latency is the sum, over model turns, of time to last token plus tool processing. That gives you three levers to work towards: fewer turns, faster tools, and faster tokens. These levers sometimes compete, so the thing to minimize is the sum rather than any one of them.</p><div class="w-embed"><div class="ca-steps"><div><b>Fewer turns</b>Load likely context up front, increase model intelligence, and have the model call independent tools in parallel.</div><div><b>Faster tools</b>Optimize the tool's own backend, and dispatch tools eagerly as their arguments complete.</div><div><b>Faster tokens</b>Choose the model and its configuration by sweeping your eval suite.</div></div></div><h4><strong>Fewer turns</strong></h4><p>Query complexity adds turns, and is generally out of your control. Model intelligence and relevant context help the agent get to task completion in fewer turns. Some of our key learnings in this area include:</p><ul role="list"><li><strong>Load likely context up front.</strong> If the user opened the assistant from a product page, or a merchant opened it from a campaign dashboard, put that page's data in the session context. The conversation is likely about it, and answering from context costs no extra turns.</li><li><strong>Increase model intelligence.</strong> Smarter models can decrease overall turns in the completion of a task as the agent can more efficiently plan and issue its tool calls. That often outweighs their slower tokens. If your queries skew complex, or production shows more than about five turns per task, the faster model is frequently the smarter one. Which one that is depends on your traffic, so choose by sweep, as described under "Choosing the model" below.</li><li><strong>Have the model call independent tools in parallel</strong>. Commerce use cases often require many operations in parallel: be it searching for multiple products, querying many policy docs, or fetching records from many sources of sales data. Parallel tool ensures multiple independent queries don’t burn additional turns. Prompt the model to call many tools within a turn and return the results in one user message as an array of tool results (see the <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use">parallel tool use docs</a>).</li></ul><h4><strong>Faster tools</strong></h4><ul role="list"><li><strong>Optimize the tool's own backend.</strong> Sometimes a tool genuinely fans out – a merchant agent with a&nbsp; "get today's snapshot" query reads sales, inventory, and campaign status in three independent calls. But we often see the tool boundary become the place where missing backend logic gets stitched together: an availability check that calls the catalog for the SKU, the inventory service per store, and the fulfillment service for cutoffs, then applies substitution rules and pickup eligibility in the tool's own code before answering. That tool is now overloaded with domain knowledge, hard to keep correct as the rules change, and is carrying logic that should sit in an upstream system. When you find yourself writing that logic in a tool, the fix is one backend endpoint that answers the question, and calling that with an agent tool.</li><li><strong>Dispatch tools eagerly.</strong> Tool arguments stream out of the model like any other tokens, so the harness can execute each tool’s call as its arguments complete and process it while the model is still streaming other, parallel tools or content blocks. We've seen this take multi-second gaps down to a few hundred milliseconds, and the <a href="https://code.claude.com/docs/en/agent-sdk/overview">Claude Agent SDK</a> does it by default. You should prompt the model to emit its slowest call first for maximum latency gains.</li></ul><figure style="max-width:920pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a971b4ebf113390b39a25b2_eagerdispatch.gif" loading="lazy"></div></figure><h3><strong>Perceived latency</strong></h3><p>Perceived latency is the time a user feels until the screen does something. It’s especially critical in consumer-facing use cases where any transaction friction impacts checkout rates and revenue. Two techniques shorten it without touching the model:</p><ul role="list"><li><strong>Stream components as they form.</strong> A rendered commerce response is typically 500–700 output tokens, which without streaming is five or more seconds of a spinner. Send each parameter of a presentation tool to the client as it streams and render the page progressively.</li><li><strong>Show the work.</strong> While the agent is gathering context, render a short progress line for each step in plain language (for example, "finding hotels near the water"). You can build it from the tool's existing arguments (such as the query for a product search), or add an additional user_facing_message parameter tool that prompts the model to write the line.&nbsp;</li></ul><figure style="max-width:920pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a971b28c43d0f061e80bc6c_perceivedlatency.gif" loading="lazy"></div><figcaption><em>The two panels above run the same agent with the same tools and prompt; only the harness differs. Total time is about the same, but the time the user sees something is quite different.</em></figcaption></figure><h3><strong>Prompt caching</strong></h3><p>Prompt caching is your largest cost reduction candidate and commerce traffic is well-suited for it. Cached input token reads cost a tenth of fresh ones, and while cache-writes carry a premium of roughly 1.25x, a cached prefix pays for itself on its second use. In customer facing applications where volume is large, you have a unique opportunity to hit very high cache levels using the cheapest, default 5 minute cache expiration.&nbsp;&nbsp;</p><p>The best commerce deployments we've seen run at 90–99% cache hit rates, and that is the range to design for from the start. Our experience has shown cached token reads are also around 1.5 to 2x faster at ~100k tokens, with relatively linear scaling the more tokens there are.&nbsp;</p><p>Caching is prefix-based. A request reads from cache up to the first byte that differs from a previous request, so what matters is not just what is in the context but the order it is in. Think of a request as three segments, ordered by how often they change:</p><ul role="list"><li><strong>Global</strong>: most of the system prompt and tool definitions, identical across every session. This is your warmest cache and, at scale, will likely not expire. Keep it byte-identical across turns and sessions and put a cache breakpoint at its end.</li><li><strong>Session</strong>: per-user context and conversation history, which differ across sessions but stay stable within one. This segment comes after the global one.</li><li><strong>Volatile</strong>: anything that changes within a session, such as the current time or the current page. Put it at the very end of the request, either as a tagged block in the newest user turn or, on models that support <a href="https://platform.claude.com/docs/en/build-with-claude/mid-conversation-system-messages">mid-conversation system messages</a>, as a system-role message appended to the messages array. The most common mistake we see is a timestamp or the current page at the top of the system prompt, which silently breaks the cache on every request.</li></ul><figure style="max-width:1520pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a970f654fd654f0e7990b95_c63ca0e7.png" loading="lazy"></div></figure><p>There are two implementation details to remember here. First, skills should be loaded as tool results rather than appended to the system prompt. The skill body then lands in the conversation prefix and is cached along with it. </p><p>Second, roll your breakpoints forward in each turn: a request allows a limited number of breakpoints, so move the newest one to the end of each user turn. Each round then reads the accumulated history, including long tool results such as search responses, from cache.</p><figure style="max-width:1520pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a97109fd7957fb6e5b0facf_f48075ed.png" loading="lazy"></div></figure><h3><strong>Choosing the model and its configuration</strong></h3><p><a href="https://claude.com/blog/claude-model-and-effort-level-in-claude-code">Model size and the effort setting</a> are the same tradeoff – intelligence against latency and cost – and you should choose both by measurement:</p><ol role="list"><li><strong>Pick your metric and your floor.</strong> Pick the quality metrics your business runs on (task completion, answer relevance, grounded accuracy), the eval score you won't go below, and your p50 and p99 latency and cost budgets.</li><li><strong>Sweep.</strong> Run your entire eval suite across <em>every</em> model and effort level you'd consider. We recommend starting at Opus for merchant agents, whose tasks are analysis-heavy, and Sonnet for consumer agents, where latency weighs more. If you have production traffic, weigh the results by your real query mix. Then let the numbers decide. Sometimes Opus 5's lift on cart-driving tasks justifies the cost difference over Sonnet, and sometimes it doesn't.<strong>‍</strong></li><li><strong>Read the results carefully.</strong> Two things regularly surprise teams. The first is that a prompt is tuned to a model, so a sweep run with one prompt may underperform other models that it wasn't written for. A smaller model usually needs instructions the current model infers on its own, and a larger one will follow instructions to the letter that the smaller one was ignoring. A few rounds of iteration on each candidate's failing cases is a cheap step before ruling any of them out.&nbsp;The second is that a more intelligent configuration sometimes wins on latency (most commonly on p90 and p99) despite slower tokens, because it plans its tool calls better and needs fewer rounds on the most complex requests.</li></ol><p>Measure cost per completed task rather than per model call, since a cheaper model that needs more turns, or fails more often, is not cheaper. When the result is close, and the cost fits your per-task economics and latency, choose intelligence. Quality is what drives adoption and retention, and allows for room to build for the next 6 months as models become better.</p><div class="w-embed"><div class="ca-band" id="ca-p3" style="background:#dfe6d3"><b>03</b><div><h2>Running it in production</h2><div>Memory, safety, evals, and scaling the work across an organization: what gets an agent through production and keeps it there.</div></div></div></div><p>Lastly, we talk about what gets an agent through production: memory, safety, evals, and scaling the work across an organization.</p><h3><strong>Memory that survives the session</strong></h3><p>The relationship and interactions you have with your customers matter. Memory is what lets an agent pick up where the last conversation left off instead of starting from nothing. A shopper who mentioned a nut allergy in March shouldn't have to repeat it in June, and a merchant who checks the same three campaigns every Monday shouldn't have to name them each time. Long-term memory, the facts that should survive across sessions, is a system you build and it has three parts: how facts are stored, how they are written, and how they are read.</p><h4><strong>Storing memories&nbsp;</strong></h4><p>Memory belongs in your systems, not in the model.&nbsp;</p><p>A flat markdown profile works when profiles are small and the agent is the only reader. Most production commerce agents outgrow it, and the practical replacement is the database you already operate. A fact is a small typed record: a key (such as shoe_size, default_store, preferred_report_cadence), a short value, a category, and the session it came from. Some keys you decide up front and every user gets; the rest the extractor discovers. A database stays queryable as the store grows, lets you build deterministic behavior on specific attributes, and joins to the user data you already have.</p><p>For merchant-facing agents, key memory by person rather than by account. Merchant logins are often shared between operators, so each operator needs their own profile, and reads have to respect that operator's permissions: a store manager's agent should not recall a fact a district manager stated.</p><p>In the commerce domain, agent memory holds personal data. The facts worth remembering are often the most regulated ones, and the rules between jurisdictions differ. Treat memory as a data-handling design problem and not just a storage one. In practice that means four things:</p><ul role="list"><li><strong>Decide which types of memories you are willing to hold</strong>. Enforce that at the write path, with a validator that every save goes through, rather than in the prompt alone.</li><li><strong>Give users a way to see, correct, and delete what is stored.</strong> Wire deletion into your account-deletion and data-request flows.&nbsp;</li><li><strong>Set a retention period. </strong>A preference from a few years ago is likely to be outdated, so a retention period helps keep memory facts fresh.</li><li><strong>Memory should be a per-deployment switch</strong>. This allows regions that can't take on these obligations to run without it.</li></ul><h4><strong>Writing memory</strong></h4><p>Write memory asynchronously. At the end of each turn, or every few turns in a long session, an agent in a separate thread or process reads the conversation and creates, updates, or deletes facts in the store, keeping its own working context as the session goes on. </p><p>It adds nothing to the conversation's latency, and achieved 13% higher fact recall on our internal commerce memory eval suite.</p><p>The obvious alternative, a tool the agent calls to save a fact, is the wrong one for a latency-sensitive commerce agent. Every save is a tool call inside a user-facing turn, and unless the whole store is in context, a save needs a read first to update or dedupe, which is a round of its own. </p><p>It also puts one more decision in front of the agent on every turn, and in our evals that competition for attention showed up as missed memories.</p><p>Separating the extractor also lets you prompt it precisely. It reads only the user's and the assistant's text, never tool results, so a product description or a review can't become a fact about the user. Its prompt says what counts as a fact — a stated size, a dietary constraint, a fulfillment preference, a merchant’s usual materialized views — and what doesn't, such as anything from a listing or a one-off detail.</p><figure style="max-width:1520pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a9713df298bf7d2c29e81e1_7480b230.png" loading="lazy"></div></figure><h4><strong>Reading memory</strong></h4><p>Read memory in three layers.</p><div class="w-embed"><div class="ca-steps"><div><b>Always in context</b>A small fixed set of facts goes into context on every turn: the ones nearly every request depends on, such as a shopper's default store and fulfillment preference, or an operator's store and role.</div><div><b>Pre-fetched per turn</b>Facts relevant to the current request are pre-fetched per turn from the same signals that pre-load a skill: a shoe search pulls sizes and brand preferences, a campaign question pulls the operator's usual metrics.</div><div><b>Behind a lookup tool</b>Everything else sits behind a lookup tool.</div></div></div><p>Since memory is per-user context, all of it goes in the session segment, below the global cache breakpoint.</p><h3><strong>Safety: enforcement lives in the harness</strong></h3><p>The prompt is where safe behavior starts, but in commerce it can't be where safety is enforced. The failures are financial and often irreversible, and a prompt rule is one injection or one bad sample away from being skipped. Every rule below is enforced in code, on both the consumer and the merchant agent, and defined once so every runtime shares it.</p><h4><strong>The model stages; a person or a policy applies</strong></h4><p>No model tool call moves money or changes the business. Order placement, payments, refunds, price changes, and campaign launches all end in an action the harness controls instead of the model.</p><p>On the consumer side this is structural: the checkout tool renders the cart with a button to place the order, and the backend interface the agent calls has no charge method at all. </p><p>On the merchant side, every write tool produces a staged change with a server-generated ID, and <code>apply_change</code> succeeds only for IDs that have been approved through a real surface: a button in the operator's portal, a confirmation in the CLI, or the platform's own tool-approval prompt when the agent runs on Managed Agents.&nbsp;</p><p>The guardrails are re-checked at apply time against current limits, not the limits in force when the change was staged. Whatever the surface, the shape is the same: the model's most dangerous action is to propose, and the approval routes through the maker-checker flow your business already uses for that kind of change.</p><h4><strong>Writes and renders accept only server-issued IDs</strong></h4><p>The harness keeps a per-session record of every ID the server has handed the model, and that record is the only key any write or render will accept. </p><p>The cart accepts only product IDs the server returned to this session, and the merchant tools accept only listing and campaign IDs the agent has actually read. An ID that arrived any other way — hallucinated, pasted by a user, planted in a review — is refused before the backend sees it.</p><p>The same rule covers the UI. Presentation tools take IDs, and the server fills in the product, order, or change records itself, so a card only renders records the server itself filled in.</p><p>It covers delegates too: the merchant analysis subagent reads data but never adds to the set of IDs the agent may write to.</p><p>For fees, disclosures, and other regulated content, the model chooses which product to disclose and the server supplies every word from approved copy. The same fee fields are on the merchant agent's protected list, so neither side of the counter can change or paraphrase them, and evals check the rendered strings byte for byte.</p><h4><strong>Capped transactions must hold to repeated requests&nbsp;</strong></h4><p>Most commerce surfaces cap how many of an item one user can buy — for ticket allocations, promotional pricing, or fraud control — and an agent will retry, rephrase, and parallelize in ways a human clicking a button never did.</p><p>The cap is therefore enforced on the line as it would be after the write, so a second "add two more" can't stack past it, and cart writes for one session are serialized so parallel tool calls in a single turn can't combine to exceed it. </p><p>Merchant changes are checked the same way against caps on price movement, discount depth, restock size, and campaign budget, plus a list of protected fields no change may touch. The rule generalizes: enforce every limit on the resulting state rather than the request, and serialize writes per session.</p><h4><strong>Third-party content is sanitized</strong></h4><p>In commerce most of the context is written by people who aren't you — sellers, reviewers, competitors — so every backend read is untrusted input and goes through one sanitizer. </p><p>Every tool result authored by a third party, such as listings, reviews, policies, seller messages, and stored memory,&nbsp; is sanitized and wrapped in a fence with a fixed label before the model sees it.&nbsp;</p><p>The sanitizer strips control and bidirectional characters, removes anything that imitates the fence markers, defuses text that imitates a conversation turn or a tool call, and caps the size, which is designed to stop a hostile listing from impersonating the system or filling the context. </p><p>The prompt carries the other half of the contract: fenced text is material to report on, never to act on.</p><h3><strong>Evals: shipping a non-deterministic system</strong></h3><p>Anything from a small prompt change to a new tool can change agent behavior in ways that are hard to predict, and the change you're shipping is often not the one that regresses. Evals are how you find that out before you deploy. Our earlier blog post on <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents">evals for agents</a> covers the general practice. This section covers specifics for commerce agents.</p><p><strong>Evaluate snapshots, not conversations</strong></p><p>The model’s API is stateless, so what the agent outputs is a function of the system prompt, the tools, and the messages array. This means any state a commerce conversation can reach can be constructed directly. So creating an eval case means constructing the test state, appending the test user message, and letting the agent run from there.&nbsp;</p><p>Then grade the outcome: the final state and the rendered response, including the arguments of the last write. In most cases, we recommend against grading the path the agent took to get there as such test cases are brittle and restricting.</p><p>Simulated-user evals, in which a second model plays the user and a judge grades the whole conversation, are a poor tool for measurement. Two non-deterministic systems interacting need larger samples, cost more per trial, are harder to judge, and produce failures that are hard to attribute. They are useful for finding coverage gaps and for a general vibe check on the agent, so use them to discover cases, then write each case as a snapshot.</p><figure style="max-width:1520pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a97148e18f6986708d53e97_f98ad17a.png" loading="lazy"></div></figure><h4><strong>Evaluate for behaviors in tough conditions</strong></h4><p>Most teams fail to properly test the injected state. A case should encode the preconditions of a failure, not just the task. If a behavior only emerges after a busy first turn with several tool calls, or after a contradiction earlier in the session, a case that starts from a clean state passes on every config and provides no meaningful data. </p><p>We've observed most suites to be heavy on such clean-state cases, so make sure a share of yours starts from long, messy, or contradictory histories.</p><h5><strong>Cover the different types of commerce agent evals</strong>&nbsp;</h5><p>Effective evaluation requires testing both desired and undesired behaviors. </p><p>For every positive case, write its negative counterpart: a "should serve" for every "should refuse," a "should just do it" for every "should ask." Missing negatives are the most common gap we find in a suite. </p><p>Evaluate for the following:</p><ul role="list"><li><strong>Core requests</strong> that make up the bulk of your traffic, since a failure here affects most sessions. These include simple lookups, multi-constraint requests, product and plan questions, and multi-intent messages. For the questions, check that every price, availability, and attribute traces back to returned data, and that the agent says when data is missing rather than inventing it.</li><li><strong>Context-dependent requests</strong>, such as references to what is on screen, constraints carried over from earlier turns, and writes against an existing cart. Evaluating memory falls into this bucket as well. Check that memories were extracted, retrieved, and changed the answer.</li><li><strong>Safety and brand cases</strong>, where a failure costs money or trust. These include attempted injection, attempts to read another user's data, and regulated language, which is checked byte for byte. Split injection into two cases: user-authored injection, where the directive comes from the user's own message, and data-plane injection, where it is planted in product names, reviews, or web snippets that arrive via tool results.</li><li><strong>Interface evaluations</strong>, to ensure the right component is rendered, item caps are respected, and there are no internal identifiers in user-facing text. Test for timeouts and empty results too.</li><li><strong>Requests that belong to multiple capabilities at once.</strong> An operator asks "if I mark this down 15%, do I have enough stock to cover the demand?" That is a pricing question and an inventory question together. The right answer stages the markdown with a stock projection attached; the wrong answers do one and skip the other. Evals written per capability won't catch this, because each grades only its own half. Write cases for the requests that need two neighboring capabilities together, and grade both halves of the answer.</li></ul><h5><strong>Write evals with SMEs and use real incidents</strong></h5><p>Partner with the subject-matter experts who see the failures firsthand, such as team members in Product, Legal, Merchant Ops, Customer Care, and Category Management, to design test cases. Real failures make the best evals, and 50-100 eval cases per user flow is a good starting point.&nbsp;</p><p>Make sure to have a variety of cases, as outlined above. Production transcripts are a great stream for sourcing new cases, especially the tricky ones. Coding agents are good at generating additional cases and adversarial variants. The<a href="https://github.com/anthropics/commerce-agents"> reference repository</a> includes a Claude Code plugin with an eval-authoring skill built with our recommended approach.</p><h4><strong>Shipping with a large organization</strong></h4><p>In a commerce enterprise the agent is built by many engineering teams. Search, checkout, pricing, marketing tech, customer care, and the catalog platform each own systems the agent depends on, each ships on its own cadence, and each will want to add or change a tool, a skill, or a prompt rule.&nbsp;</p><p>Unlike a service, an agent has no strict module boundary protecting the others: a change made by the pricing team shares a context window with checkout.</p><p>The tempting fix is to break the system into many subagents, one per business unit. As discussed in Part 1, we recommend against it for quality reasons. Instead, we outline the process for de-risking multi-team collaboration:</p><ul role="list"><li><strong>Ownership follows the systems.</strong> Every skill and tool has a single owner team. For example, pricing owns the promotion tools and the pricing skill, care owns the order and returns tools and the customer-care skill. The shared prompt has a single platform-level owner for the common parts and domain owner for the domain-specific section.</li><li><strong>A change ships with its cases and CI runs a set chosen for it.</strong> A team contributing a skill also contributes its cases, including the negative cases and the boundary cases against neighboring skills. Running the full suite on every pull request is too slow and too expensive to survive, so build a CI set from it instead. That set will consist of a core set of cases with the highest-traffic requests and every safety case. On top of that, run the cases for whatever the change touched. For a skill, that means its own cases and its neighbors' boundary cases. For a tool, it is every case that calls it. For the shared prompt, it is the full eval suite since everything reads the system prompt. We recommend gating the pass rate over a few trials, and on cache hit rate and cost per turn. It is also a good practice to run the full suite nightly and before every release. Cross-team regressions are caught in these runs.</li><li><strong>The agent should also be inside the release calendar.</strong> It's one deployment unit, so a bad change reaches every user at once. Roll prompt and skill changes to a canary cohort first, keep a switch that turns off one skill without a deploy, and freeze the agent ahead of peak periods the same way you freeze other systems.</li></ul><p>For the human side of this arrangement, see <a href="https://claude.com/blog/building-effective-human-agent-teams">Building effective human-agent teams</a>.</p><div class="w-embed"><div class="ca-anchor" id="ca-p4"></div></div><h2><strong>Looking ahead</strong></h2><p>Most of what this post describes is not about the model. The tools call systems you already run, the skills encode procedures you already follow, the evals are your product requirements doc written as tests, and the harness enforces policy you would enforce for any client. Models will keep improving, and when a better one ships, the architecture we describe adopts it as a config change with an eval sweep. Everything else keeps working.</p><p>It is also important to think about your roadmap for product surfaces. The architecture will outlast the chat panel. The same agent can work over voice, and it can proactively act on a fare drop before the user asks. For a team that already has the evals and the tools, those are presentation-layer projects. Further out, some of the traffic to your storefront will come from agents that shop on behalf of users. The same provenance, staging, and approval rules that keep your own agent in bounds are what will let you open your tools to those agents safely.</p><p>Commerce has always rewarded making the buying process as smooth as possible. Agents make that a lot easier. Check out the <a href="https://github.com/anthropics/commerce-agents">complete reference implementation</a>, with both the consumer and the merchant agent and runnable examples for retail, travel, telecom, and entertainment.</p><h3><strong>Acknowledgements</strong></h3><p><em>Written by Matthew Koen and Ali Shazal. Special thanks to Michael Segner, Rodrigo Olivares, Amandeep Khurana, Aiza Usman, John Lopus and others for their contributions.</em></p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/the-anatomy-of-effective-commerce-agents" target="_blank">View original</a></p>
+              <p><a href="/">← Back to home</a></p>
+            </footer>
+          </article>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/the-anatomy-of-effective-commerce-agents" target="_blank">View original</a></p>
-          <p><a href="/">← Back to home</a></p>
-        </footer>
-      </article>
+      </div>
     </div>
   </main>
 <footer class="footer">
@@ -98,6 +505,53 @@
       <p>Content from <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · Translation by AI</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

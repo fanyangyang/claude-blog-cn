@@ -13,5 +13,21 @@
   "illustrationBg": "Clay",
   "translatedTitle": "Claude Managed Agents 的内置记忆",
   "translatedAt": "2026-09-02T05:12:35.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Platform"
+    ],
+    "usecase": [
+      "Agents"
+    ]
+  },
+  "subtitle": "Memory for Claude Managed Agents is a built-in memory layer that lets agents learn across sessions, improve over time, and share what they've learned.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/platform/api"
 }

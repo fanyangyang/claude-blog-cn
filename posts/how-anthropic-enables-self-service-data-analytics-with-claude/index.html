@@ -4,54 +4,653 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Anthropic 如何用 Claude 实现自助式数据分析 — Claude Blog 中文翻译</title>
-  <meta name="description" content="Anthropic 如何用 Claude 实现自助式数据分析">
+  <meta name="description" content="受治理的数据基础、事实来源、skills 与验证方法，让 AI 驱动的分析真正可信。">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/how-anthropic-enables-self-service-data-analytics-with-claude" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>Anthropic 如何用 Claude 实现自助式数据分析</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/how-anthropic-enables-self-service-data-analytics-with-claude" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/how-anthropic-enables-self-service-data-analytics-with-claude/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># Anthropic 如何用 Claude 实现自助式数据分析
+
+受治理的数据基础、事实来源、skills 与验证方法，让 AI 驱动的分析真正可信。
+
+许多数据科学和数据工程团队都可以作证：实现自助式数据分析，向来是一件苦差事。 
+
+为了方便技术背景较弱的同事使用数据，常见做法是建立宽表和反规范化表，但随着业务扩张，这往往会导致定义不一致、相互重叠的视图大量涌现（而且对那些压根不想学 SQL 的员工帮助有限）。另一种做法是为用户开辟更多隔离环境，却常常覆盖不到业务问题的长尾需求，还会因团队各自为政而造成指标和仪表盘的泛滥。
+
+大语言模型的兴起为自助式分析提供了另一条路径，可以绕开上述难题。然而，把 Claude 直接对准数据仓库、任由智能体自由执行，也可能制造出一种虚假的精确感。 
+
+起初从临时取数需求中解放出来的欣喜，很快会转变为恐慌——因为这种设置让业务方脱离了底层数据设施、文档和专业知识的支撑，而正是这些因素过去一直在引导他们使用精心治理的数据集。 
+
+在 Anthropic，95% 的业务分析查询由 Claude 自动完成，总体准确率约为 95%。把这些繁琐、重复的工作交给 Claude 之后，我们的数据科学团队得以专注于因果建模、预测和机器学习等更具战略价值的工作。 
+
+在走访了数十位 Anthropic 内部顶尖的 Claude Code 用户、并见过大量分析智能体的设计模式之后，我们总结出了一些面向数据团队使用大语言模型的最佳实践。在这篇文章中，我们将分享这些技巧和方法，帮助其他团队最大化发挥 Claude 驱动自助式业务洞察的能力，内容包括：
+
+- 为什么分析的准确性是上下文与验证的问题，而不是代码生成的问题；
+- 导致大多数错误的三种失败模式； 
+- 我们为解决这些错误而构建的智能体分析技术栈；
+- 我们如何衡量效果；以及
+- 我们创建绝大多数 skills 所用的基础模板（见附录）
+
+## **数据不是软件**
+
+大语言模型的生成能力是一把双刃剑：让模型能为复杂问题创造出精妙解法的机制，同样也会导致幻觉式的错误输出。要充分理解分析智能体面临的挑战，不妨将它们与编码智能体做个对比。
+
+编码是一个开放式的解空间，恰恰能发挥模型的创造力，而且文档和测试为遏制幻觉提供了天然的护栏。相比之下，分析场景往往只有唯一正确的答案，且只能来自唯一正确的数据源，同时又没有确定性的方法来证明结果的正确性。 
+
+对于自助式智能体业务分析而言，复杂性主要源于数据的模糊性。核心问题归结为***我们能否把用户的提问映射到数据模型中具体且最新的实体，并知道与它们打交道的正确方式***。只要能做到这一点，后续的执行和 SQL 就变得轻而易举。
+
+我们识别出了这一问题的三个特征，它们是绝大多数不准确回答的根源：
+
+- **概念与实体的歧义**：数据模型中往往有数百个可用选项（潜在字段可能多达数百万个），智能体无法选出最能回答用户问题的字段。例如，在统计活跃用户数时：哪些行为算“活跃”？要不要把欺诈用户算进去？回看窗口取多长？
+
+- **数据过期**：数据源、业务定义和 schema 始终在变化；数据资产和智能体的知识会逐渐过时，开始返回微妙错误的答案。
+
+- **检索失败**：正确的信息可能确实存在于数据模型中且标注得当，但由于搜索空间过于庞大，智能体就是找不到它。
+
+## **我们的智能体自助分析技术栈**
+
+在 Anthropic，我们主要靠智能体数据技术栈来压低这三类错误。每一层的存在，主要就是为了打掉其中一个或多个问题： 
+
+- **实体歧义**：数据基础和事实来源把合理实体的空间不断收窄，直到只剩一个受治理的答案。 
+
+- **过期**：维护与验证流程防止业务变化时整套东西腐烂。
+
+- **检索失败**：skills 确保智能体稳定找到那个答案，并且用对。 
+
+这一节我们会讲每一层是怎么建的。 
+
+对于直接在 Slack 里提出的临时问题，可以看看我们的数据团队如何用 [Claude Tag 部署数据分析智能体](https://claude.com/blog/self-service-data-analytics-in-slack-how-anthropic-deploys-claude-tag-for-ad-hoc-questions)。
+### **数据基础**
+
+确保分析智能体准确，最重要的一面是扎实的数据基础，包括数据模型、转换、测试、数据仓库里的表，以及描述它们的元数据。维度建模、[dimensional modeling](https://en.wikipedia.org/wiki/Dimensional_modeling)、对关键管道的左移测试、新鲜度和完整性检查，这些标准数据工程和数据质量实践全部仍然适用（我们不会在这里重审一遍）。
+
+         像维度建模这样的标准数据工程实践，和过去一样重要。真正变了的是：数据模型的终端用户不再是数据专家（比如数据科学家），而是代表数据能力或对底层设施理解程度各不相同的用户去行动的智能体。这一转变带来的挑战是，结果不能再要求用户去核验底层是否正确，因为终端用户并不知道。
+
+数据基础层主要对准歧义：比如 *revenue* 如果落到一份受治理的数据集，而不是四十个说得通的候选，问题在智能体开始搜索之前就基本消失了。第一道过期防线也在这里，因为定义规范模型的同一个仓库，天然就是强制它们保持最新的地方。
+
+我们看到几条实践特别管用：
+
+- **建立规范数据集**：最常见的失败，是智能体没法把一个概念（「产品 X 的收入」）映射到唯一正确的表、列和指标定义，通常是因为存在多个实现略有不同的说得通的候选。修法是更少、治理更重的逻辑模型：精选出一小套规范的、单一事实来源的数据集，所有权清晰、可直接消费、可被发现，然后积极废弃那些近似重复。物理汇总和缓存对成本和性能仍然重要，但它们应当从规范模型机械派生，而不是作为替代品和它们并排活着。目标是：智能体搜索一个概念时，找到的是一个受治理的答案。
+- **把标准执行下去**：我们发现，基础只有在规范模型和指标定义被*工具*（智能体在结构上被先路由到它们；下文会再讲）、被 *CI*（绕过它们的变更过不了审查）以及被*强制要求*（下游团队建在受治理层上，否则要解释为什么不）执行时，才能站得住。没有执行的治理，很快就会退回多个候选的问题。
+- **把产物放在一起**：我们对不断变化的数据模型和业务逻辑的主要防线是共置。几乎所有数据代码（建模、语义层、参考文档、规范仪表盘定义）都住在同一个仓库里，并用 CI 检查保护跨层完整性。如果一次建模变更会弄坏下游仪表盘，或让已文档化的指标失效，CI 会标出来，修复和变更在同一个 PR 里发出。（我们会在下面的 **Skills **一节回到具体机制。）
+- **把元数据当作一等产品**：编码智能体表现好，部分是因为代码库是*可读的*：README、类型签名、docstring 等。你的仓库也可以同样可读，前提是列和表的描述、规范指标定义、粒度文档、合法取值范围、血缘、所有权和模型分层，都按和转换本身同样的严谨程度来维护。这不是新见解，但良好治理提供了帮助智能体选对数据集的关键上下文。
+
+### **事实来源**
+
+如果说数据基础是数据仓库本身，事实来源就是智能体用来导航它的参考界面。这一层减少概念与实体的歧义，把相关方问题里的「周活跃用户」变成数据模型里一个具体、受治理的实体。大致按信任度从高到低：
+
+- **语义层：**编译好的指标和维度定义。如果一个问题能干净地映射到已定义的指标，智能体调用一个函数，得到一个数字，和公司其他所有界面产出的是同一个数字。我们的智能体在结构上（靠 skill 指令）被*要求*先用语义层（见附录）。我们试过一个*不管用*的想法：让 LLM 从原始表和查询日志自动生成指标定义，来引导语义层。它产出了看起来说得通、却把我们正想消掉的歧义写进去的定义，在评测上相对更小、由人策展的一层是净负的。因此我们建议用 Claude 生成*文档*，但让人拥有*定义*。
+- **血缘与转换图：**当语义层覆盖不了一个问题时，血缘和按引用次数做的表排序，让智能体能推理哪些上游模型喂养一个概念、哪些已废弃、哪些共享粒度。这把「我不知道这个指标」变成「我知道该从哪个受治理模型做聚合」。它也是我们在下面**在线验证**里呈现的新鲜度和出处信号的骨干。
+- **查询语料：**来自仪表盘、notebook 和以往分析的历史 SQL。直觉上这应当很有价值：它是每一道已经被正确回答过的问题的记录。*实际上，我们发现给智能体对几千条过往查询的原始检索权限，准确率变动不到一个百分点 *（我们会在后面一节走一遍那次消融）。非结构化检索没法把新问题映射到正确先例。真正管用的，是把那份语料蒸馏成按领域组织的结构化参考文档，以及 **skills** 里描述的可复用分析模式。把查询历史当作策展的原材料，而不是智能体直接读的事实来源。
+- **业务上下文：**大多数团队跳过的一层，也是我们低估最久的一层。不理解你业务的智能体会回答用户问出口的话，而不是他们想问的意思。它不会知道「Q2 launch」指的是某个具体产品，不会知道两个团队对同一个词定义不同，也不会知道这个问题是因为周四有董事会才被问出来。我们接入由索引文档、路线图、决策日志和组织架构组成的公司知识图谱，让智能体能解开这些环境指称，并提出更好的澄清问题。 
+
+这四层共同的失败模式，和数据基础层是同一类：**文档差或过期**。Claude 在补上缺口时极其有用（起草列描述、从查询模式提出指标文档、在 CI 里标出未文档化的模型），但策展和所有权由人来管。 
+
+接下来两节，我们讨论如何让这份所有权便宜到真的会发生。
+
+### **Skills**
+
+如果说事实来源是智能体的*陈述性*知识（一个指标是什么意思），那 skill 就是它的*程序性*知识：按什么顺序咨询哪些来源、如何在含糊数据里导航、以及一份完成的分析长什么样。 
+
+在 Claude Code 里，一个 [skill](https://code.claude.com/docs/en/skills) 是智能体按需阅读的一文件夹 markdown。在 Anthropic，我们开发的 skills 带来了巨大增量。没有 skills，Claude 在我们的评测上回答分析问题的准确率超不过 21%。加上 skills 之后，总体稳定在 95% 以上，某些领域经常在 99% 左右。附录里有我们用来创建绝大多数 skills 的骨架。
+
+一些最佳实践：
+
+**做成成对的 skills： **一份***知识*** skill 充当薄的顶层路由器，让额外的领域细节按需加载。它会说「先试语义层，但如果没有覆盖，这里有大约 30 份这个领域的参考文件，描述相关表、列、join 和陷阱。」这个路由器，实际上就是我们对检索失败的回答：与其让智能体在百万字段的仓库里搜索，它先把空间收窄到几十份策展过的文件，然后才写查询。***runbook*** skill 编码资深分析师会走的流程：澄清问题、找来源（通过知识 skill）、跑查询，再把结果送进对抗性审查子智能体循环。它还打包了十几种可复用分析模式（留存曲线、比率分解、漏斗分析），这样常见请求不会每次都重做一遍。
+
+**写对参考文档**：为 LLM 检索而写。我们的参考文档描述表（粒度、范围和排除项）、陷阱的机制（例如「排除已知的免费邮箱域名，但保留 anthropic.com 这类自定义域名」），以及显式的路由触发（例如「IF 问题关于实验提升……DO NOT 用来做原始事件计数」），而不写会过期的规定性菜谱。下面是我们用来写参考文档的骨架。
+
+`# [Domain] Tables
+
+## Quick Reference
+### Business Context — [what this domain means in plain words]
+### Entity Grain — [what one row represents]
+### Standard Hygiene Filter — [the filter every query in this domain applies]
+
+## Dimensions
+- [How the key dimensions are encoded, and how the same concept is named
+  differently across tables]
+
+## Key Tables
+### [table_name]
+- **Grain**: [...] · **Scope/exclusions**: [...]
+- **Usage**: [when to use it, when NOT to, join keys, required filters]
+[... one short section per governed table ...]
+
+## Gotchas
+- [The wrong-answer modes a senior analyst would warn you about]
+
+## Best Practices / Common Query Patterns
+- [Default choices, standard cuts, worked patterns where the exact query
+  form is the hard part]
+
+## Cross-References
+- [Neighboring domain docs that own adjacent questions]`**把 skill 维护当成一等公民**：Skill 文档描述的是每天都在变的数据模型，没有主动维护，几周内就会错。我们看着离线准确率从上线时的约 95% 在一个月里漂到约 65%，然后才把它当成工程问题。这意味着把 skill 的 markdown 文件和转换模型放在同一个仓库，改模型的 PR 就是更新描述它的文档的同一个 PR。一个代码审查 hook 会标出任何没碰到 skill 文件的报表模型变更。现在大约 90% 的数据模型 PR 会在同一次 diff 里带上 skill 变更。我们也会随着模型变强、以往失败模式不再适用，定期修剪 skill 脚手架。
+
+**在所有界面上做成一致、无缝的体验**：同一个 skill *必须*在 Slack、IDE、仪表盘工具和独立智能体会话里，对问题给出同一个答案。我们的做法是确保只有一个规范来源（数据仓库），并且 skill 变更自动同步。合并时，skill 会同步到 plugin marketplace（给 IDE 用户）、同步到云存储 blob（给读单个文件的托管应用），并作为资源直接通过 MCP 提供。我们从一开始就按可移植来设计，避免硬编码仓库路径和界面专属命名空间。
+
+### **验证**
+
+最后，验证是你用来发现三类失败模式里还有哪一类在往外漏的办法。 
+
+#### **离线评测**
+
+我们常见的一种模式是：数据团队搭了精致的分析环境，却没有任何流程去理解分析智能体的准确率。
+
+补上这个缺口的一种办法是离线评测，也就是简单的问答对。你可以把它想成类似机器学习模型的离线测试：它不会告诉你在线智能体的表现，但能很好地告诉你会不会有关键缺口。
+
+在 Anthropic，我们部署两类离线评测。**基于仪表盘的评测**由 Claude 自动生成（再由人核验），覆盖最常见的相关方问题。**长尾评测**是我们把业务上下文（路线图、表文档）喂给 Claude，让它在该领域其余部分生成说得通的问题。我们还持续收割相关方在线程里纠正智能体的每一次，那次纠正就是一条候选评测。
+
+其他最佳实践包括：
+
+- **把 ground truth 钉住，让它漂不走**：对着实时数据写的评测，底层数字一动就会过期。把每条评测钉在一个快照日期，对着稳定的事实表写，或者让评分器评判智能体的*查询*而不是它的数字。把套件接到 CI，这样碰到依赖的 PR 会重跑受影响的评测。
+- **像遥测一样存结果，而不是像测试日志：**每一次运行都落入仓库表，带上 skill 版本、git SHA、模型 ID、每条断言的通过/失败、token 数和墙上时钟。「那次变更有没有帮助？」变成一条查询，你也有时间序列去抓住单次 CI 跑不出来的缓慢回退。
+- **按领域给上线设门槛**：领域所有者不能向相关方宣布智能体，直到他们那一片评测集跨过某个阈值（我们最初用约 90%）。这迫使参考文档的修复发生在*用户看见失败之前*。
+- **做出数量合适的评测**：你该有多少评测，取决于业务领域的复杂度和底层数据模型的复杂度。用离线准确率对在线准确率的预测有多好来校准：我们发现每个主题（例如「增长」）过了几十条之后收益递减，而且这个天花板会随每一代新模型下降。
+- **离线评测准确率应当接近 100%**；每一个正确答案也应当打到你的语义层（如果你有的话）。再强调一次，这种准确率并不能告诉你系统不会给出错误答案，只是说明在评测覆盖得当的前提下，没有明显缺口。
+
+#### **消融方法**
+
+关于 skill 的每一个结构性决定（例如暴露哪些来源、一个子智能体值不值得它的延迟、要不要把两个 skills 合成一个）都是在离线评测集固定的前提下做出的。 
+
+我们每次只改一个组件，比较通过率。每次运行只要一小时，却能替掉很多争论。方法论比任何单次结果都更重要：
+
+- **为零结果而设计。**我们最有用的一次消融是负向的。我们给智能体直接 grep 全部仪表盘、转换和分析师 notebook SQL 的权限（几千个文件）。然后在记录里核验它每次回答前真的读了它们。准确率往哪个方向都没动过一个百分点。我们接着检查了显而易见的混淆因素：它答错的那些问题，答案是否其实就在语料里？大约 80% 的时候，是的。「答案在」能不能预测「现在答对了」？不能，翻转率是平的。信息在那儿，智能体看见了，仍然没用上。那一次实验告诉我们，瓶颈不是对以往工作的*访问*，而是*结构*（也就是把问题映射到正确实体）。这个洞察改写了几个月的路线图。
+- **按 PR 粒度做消融。**每一次有意义的 skill 编辑，都在相关评测切片上跑一次前后对比，并把差值写进 PR 描述。这让「我改进了文档」保持诚实，也能抓住那种好心添加反而把事情弄糟的意外常见情况。
+- **留一份短清单，记下什么不管用。**我们有两条：过了某个点还叠更多轮文档精炼（我们连续三次净负迭代：文档在变长，没有变更好）；以及为了降延迟，把对抗性审查者换成更便宜的模型（它丢掉了大部分准确率收益，速度也没有真正加快）。负向结果记下来很便宜，也能阻止下一个人重跑同一实验。
+
+#### **在线验证**
+
+最后一步是尽可能保证真实在线系统的表现准确。我们采取的一些步骤包括：
+
+- **对抗性审查**：我们发现，用一个 Claude skill 去激烈挑战潜在最终答案上的所有底层假设，能在评测集里把准确率提高 6%，代价是多 32% 的 token 和高 72% 的延迟。
+- **出处页脚：**每条回复都带一个页脚，写明它来自哪一层来源（语义层 › 策展参考 › 原始表）、底层数据有多新、以及谁拥有这个模型。它不会让答案更正确，但能帮消费者判断自己能信多少。「原始表，新鲜度未知」的页脚是转给上游之前先核验的信号，也是我们对沉默失败为数不多的缓解之一。
+- **数据质量检查**：有可能智能体用对了字段、用对了方式，但数据本身是错的。加上基本的数据质量检查，确保被引用的字段是最新的、完整的、没有异常，通常是好的卫生习惯。
+- **被动监控：**我们持续跟踪的两个生产信号是：经语义层解决的智能体查询占比，以及回复里使用纠正语言的占比（「那是错的表」「你漏了欺诈过滤」）。两者都喂进一块仪表盘，每周和离线通过率一起审。
+- **主动收割纠正**：把环闭合的那一部分。一个定时智能体每隔几小时扫描相关方频道，寻找类似的纠正语言，起草对相关参考文档的一行修复，并开一个打给领域所有者的 PR。修复路径故意很无聊——改一个 markdown 文件、合并、到处自动同步——这样领域所有者不会在这件事上花太多时间。同样的纠正也会回灌进离线评测集。
+
+这些都抓不全的失败模式，是**沉默**的那一种。答案是错的，但看起来说得通，并且被不加反对地用掉了。我们的缓解是出处页脚、任何给领导层的东西都要显式的人工签字，以及每个领域顶级 KPI 的常设评测，每天对照受祝福的仪表盘做健全性检查，尽管我们还没有稳健的解决方案。
+
+## **开始做自助式分析**
+
+如果你从零开始，一小撮规范数据集、几十条离线评测，再加一个薄的知识 skill，就能吃下大部分收益；本文其余部分，是我们在这些建好之后才加上的。
+
+我们也分享了许多最佳实践，并非每一条都适合每个数据团队。先和你的组织对齐几条会影响路径的原则，可以问：
+
+- **今天答对有多重要，相对未来答对？** AI 模型进步很快。我们常看到公司为当前模型的短板建大量基础设施，而这些短板一旦模型变好就不再成立。知道模型短在哪里，并等模型改进来补上缺口，开销显著更小，但可能不符合你公司的风险承受度。
+- **你预期业务复杂度会如何随时间变化？** 如果我们讨论的某些流程对你来说过重，例如你产出的数据不多、输出的消费者很少，或数据模型很可能保持简单，那就不必照搬。
+- **输出的目标受众有多技术？** 换个说法，如果你是在为能认出答案不对的数据科学家建这套分析系统，你对错误的容忍度，可能高于受众对底层数据模型毫无熟悉的情况。 
+- **为提高准确率，你愿意花多少？** 我们发现对抗性验证这类流程能显著提高准确率，但常常伴随更高的成本和延迟。
+- **你对访问控制和内部数据隐私的舒适度如何？** 智能体通常上下文越多越好用；但宽的数据访问会和大多数公司的治理姿态相冲突。这决定了你是在建一个智能体，还是许多范围收窄的智能体。
+
+无论你走哪条路，我们最大的收益都来自分别对付三类失败模式：把歧义收成一个受治理的答案，让这个答案容易被发现，并在其中任一过期时标出来。
+
+*本文由数据科学与数据工程团队的 Chen Chang、Clement Peng、Justin Leder、Johanne Jiao 和 Josh Cherry 撰写。作者感谢 Michael Segner 的贡献。*
+
+## **附录**
+
+#### **Skill 文件骨架**
+
+下面是我们主仓库 skill 的骨架：真实文件的结构，内部细节换成了 [方括号占位符]。它不是用来原样复制的；它是为了展示我们发现值得写下来的那些章节类型。
+
+`---
+name: [warehouse-skill]
+version: [x.y.z]
+description: &quot;IF the user asks to query [the company]'s data warehouse for any
+  [list of business domains] question — THEN invoke this skill. DO NOT invoke
+  for [adjacent engineering tasks] or questions with no data-warehouse component.&quot;
+---
+
+# [Warehouse] Skill Instructions
+
+## Description
+The single source of truth for safe and effective [warehouse] querying.
+Referenced by other skills [listed] for query execution guidance.
+
+Act as a Data Analyst, providing strategic insights and data-driven
+recommendations but seek guidance along the way.
+
+**Out-of-scope decisions**: [product areas, etc.] → surface data only,
+state &quot;decision is [owning team]'s call&quot;, do NOT take a position or author
+code fixes.
+
+## Executing queries
+Priority:
+1. **[Managed connection]** (if available): [query tool] / [schema tool]
+2. **[CLI fallback]** (if installed): [default project, fallback project]
+3. **Neither** — ask the user to authenticate, then stop
+
+---
+
+# Semantic Layer (REQUIRED first step)
+
+The governed semantic layer is the **mandatory default path** for every data
+question — same numbers as [the BI tool], joins/grain/filters baked in. Raw SQL
+via the reference docs below is the **fallback**, used only after the
+semantic-layer path is shown not to cover the ask.
+
+## Required workflow
+1. **Load** — [how to load the semantic layer in each runtime, with fallbacks]
+2. **Discover** — search measures/dimensions by keyword; **always check
+   segments** (the named canonical population filters — hand-rolled WHERE
+   clauses for these are the dominant wrong-answer mode)
+3. **Compile + run** — build the spec → compile to SQL → execute
+4. **Fallback** — only if discovery finds no relevant metric or compile fails
+   → raw SQL via `references/*.md` (PART 3 below)
+
+&gt; **Don't bail early.** Do NOT fall back to raw SQL on these grounds:
+&gt; - &quot;[custom date filtering / cohorts]&quot; → [covered by time-dimension specs]
+&gt; - &quot;[needs a join]&quot; → [the metric layer already encapsulates its joins]
+&gt; - [3–4 more pre-rebutted excuses agents use to skip the semantic layer]
+
+### Date windows &amp; timezone — decide before you query
+- **As-of date vs trailing-N days**: [convention for each]
+- **&quot;Last week/month&quot;** → the last *complete* calendar week/month, not trailing-7/30
+- **Timezone default**: [TZ]; [exception for certain reporting rollups]
+- **Freshness lag**: [some] tables settle late — anchor on MAX(date), not &quot;yesterday&quot;
+
+---
+
+# PART 1: MUST KNOW (Read First for Every Request)
+
+## 🚀 Quick Start Workflow
+1. **Check for red flags first**: [restricted/PII requests, gated domains,
+   high-stakes asks that need extra validation]
+2. **Out of scope — escalate, don't guess**: [access requests, pipeline
+   troubleshooting, stale dashboards, root-cause assertions, product/pricing
+   recommendations] → redirect to [the owning team], don't answer
+3. **Clarify the request**: time period, segment, the business decision it informs
+4. **Check for existing dashboards**: [per-domain dashboard catalogs]
+5. **Identify the data source**: [navigation map below; prefer governed/aggregated tables]
+6. **Execute the analysis**: [required filters + adversarial review]
+7. **Deliver insights**: show methodology, differentiate observations from interpretations
+
+## 🏢 Business Context
+
+### Entity Disambiguation (MUST CLARIFY)
+- **&quot;[Term A]&quot; can mean**: [entity 1] or [entity 2] — always clarify which
+- **&quot;[Term B]&quot; can mean**: [entity 1] → [entity 2] → [entity 3] (one-to-many chain)
+- **&quot;Users&quot;**: [which identifier gives accurate counts, and which ones inflate them]
+
+### Business Terminology
+- [Current product names vs deprecated aliases that still appear as frozen
+  values in the data layer — write with the new names, filter with the old]
+- [Key internal acronyms]
+- **[Headline metric] calculations**: [monthly / default window / leading indicator]
+- **Unfamiliar terms — search [internal docs], don't guess**
+
+### Data Integrity Requirements ⚠️
+- **NEVER**: make up data/columns; make speculative assertions beyond what data shows
+- **ALWAYS**: use safe division; differentiate observations (&quot;data shows X&quot;)
+  from interpretations (&quot;this suggests Y&quot;); flag limitations
+
+---
+
+# PART 2: HOW TO DO (Follow During Execution)
+
+## 🔧 Technical Execution Guide
+- [Managed-connection tools and CLI invocation details]
+- **PII protection**: for restricted data, return the SQL for the user to run
+  themselves — do not return results
+
+## 📊 Analysis Best Practices Guide
+1. Clarify the ask before querying
+2. Show your work (filters, inclusions/exclusions, freshness)
+3. Clarify denominators
+4. Consider sample bias
+5. Connect to business impact
+6. **Adversarial SQL review (MANDATORY)** — spawn the [sql-reviewer] sub-agent
+   for every query before the final answer; blocking findings must be fixed
+   and re-reviewed; do not self-certify
+7. **Report with provenance** — every answer ends with a footer:
+   &gt; **Source:** [semantic layer | governed table | raw exploration] ·
+   &gt; **Confidence:** [tier] · **Reviewed:** [reviewer ✓, round N] ·
+   &gt; **Freshness:** [max date in the data] · **Owner:** [owning team]
+
+---
+
+# PART 3: DATA REFERENCES &amp; RESOURCES
+
+## 📚 Knowledge Base Navigation
+### [Domain A] → `references/[domain_a].md`
+- **Use for**: [kinds of questions]
+- **Key tables**: [...]
+- **Dashboards**: `references/[domain_a]_dashboards.json`
+
+### [Domain B] → `references/[domain_b].md`
+- **Use for**: [...]
+
+[... one entry per business domain — a few dozen in total ...]
+
+## ⚠️ Troubleshooting Guide
+
+### When Information Is Missing
+- [missing tables / access denied / outdated docs / unknown enum values → what to do]
+
+### Field Naming Gotchas
+- Use `[field_x_v2]` NOT `[field_x]`
+- [Two similarly-named tables report the same metric at different grains — which to use]
+- [Which of two plausible sources is canonical for the headline metric]
+- [… a dozen more hard-won one-liners …]
+`</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Enterprise AI</span>
-            <span class="article-date">June 3, 2026</span>
-            
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-cactus);">
+            <img class="hero-illo-img" src="/assets/illustrations/how-anthropic-enables-self-service-data-analytics-with-claude.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">Anthropic 如何用 Claude 实现自助式数据分析</h1>
-          <a href="/posts/how-anthropic-enables-self-service-data-analytics-with-claude/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>许多数据科学和数据工程团队都可以作证：实现自助式数据分析，向来是一件苦差事。 </p><p>为了方便技术背景较弱的同事使用数据，常见做法是建立宽表和反规范化表，但随着业务扩张，这往往会导致定义不一致、相互重叠的视图大量涌现（而且对那些压根不想学 SQL 的员工帮助有限）。另一种做法是为用户开辟更多隔离环境，却常常覆盖不到业务问题的长尾需求，还会因团队各自为政而造成指标和仪表盘的泛滥。</p><p>大语言模型的兴起为自助式分析提供了另一条路径，可以绕开上述难题。然而，把 Claude 直接对准数据仓库、任由智能体自由执行，也可能制造出一种虚假的精确感。 </p><p>起初从临时取数需求中解放出来的欣喜，很快会转变为恐慌——因为这种设置让业务方脱离了底层数据设施、文档和专业知识的支撑，而正是这些因素过去一直在引导他们使用精心治理的数据集。&nbsp;</p><p>在 Anthropic，95% 的业务分析查询由 Claude 自动完成，总体准确率约为 95%。把这些繁琐、重复的工作交给 Claude 之后，我们的数据科学团队得以专注于因果建模、预测和机器学习等更具战略价值的工作。&nbsp;</p><p>在走访了数十位 Anthropic 内部顶尖的 Claude Code 用户、并见过大量分析智能体的设计模式之后，我们总结出了一些面向数据团队使用大语言模型的最佳实践。在这篇文章中，我们将分享这些技巧和方法，帮助其他团队最大化发挥 Claude 驱动自助式业务洞察的能力，内容包括：</p><ul role="list"><li>为什么分析的准确性是上下文与验证的问题，而不是代码生成的问题；</li><li>导致大多数错误的三种失败模式；&nbsp;</li><li>我们为解决这些错误而构建的智能体分析技术栈；</li><li>我们如何衡量效果；以及</li><li>我们创建绝大多数 skills 所用的基础模板（见附录）</li></ul><h2><strong>数据不是软件</strong></h2><p>大语言模型的生成能力是一把双刃剑：让模型能为复杂问题创造出精妙解法的机制，同样也会导致幻觉式的错误输出。要充分理解分析智能体面临的挑战，不妨将它们与编码智能体做个对比。</p><p>编码是一个开放式的解空间，恰恰能发挥模型的创造力，而且文档和测试为遏制幻觉提供了天然的护栏。相比之下，分析场景往往只有唯一正确的答案，且只能来自唯一正确的数据源，同时又没有确定性的方法来证明结果的正确性。&nbsp;</p><figure style="max-width:698pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a20480bedac32484c00d6b9_4a7645b6.png" loading="lazy"></div></figure><p>对于自助式智能体业务分析而言，复杂性主要源于数据的模糊性。核心问题归结为<strong><em>我们能否把用户的提问映射到数据模型中具体且最新的实体，并知道与它们打交道的正确方式</em></strong>。只要能做到这一点，后续的执行和 SQL 就变得轻而易举。</p><p>我们识别出了这一问题的三个特征，它们是绝大多数不准确回答的根源：</p><ol role="list"><li><strong>概念与实体的歧义</strong>：数据模型中往往有数百个可用选项（潜在字段可能多达数百万个），智能体无法选出最能回答用户问题的字段。例如，在统计活跃用户数时：哪些行为算“活跃”？要不要把欺诈用户算进去？回看窗口取多长？</li></ol><ol start="2" role="list"><li><strong>数据过期</strong>：数据源、业务定义和 schema 始终在变化；数据资产和智能体的知识会逐渐过时，开始返回微妙错误的答案。</li></ol><ol start="3" role="list"><li><strong>检索失败</strong>：正确的信息可能确实存在于数据模型中且标注得当，但由于搜索空间过于庞大，智能体就是找不到它。</li></ol></div>
+            <h1 class="article-title u-text-style-h1">Anthropic 如何用 Claude 实现自助式数据分析</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>受治理的数据基础、事实来源、skills 与验证方法，让 AI 驱动的分析真正可信。</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/enterprise-ai" target="_blank" rel="noopener noreferrer">Enterprise AI</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/product/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">June 3, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/how-anthropic-enables-self-service-data-analytics-with-claude/">Copy link</button>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M15.5117 1.99707C15.9213 2.0091 16.3438 2.13396 16.6768 2.46679C17.0278 2.81814 17.1209 3.26428 17.0801 3.68261C17.0404 4.08745 16.8765 4.49344 16.6787 4.85058C16.3934 5.36546 15.9941 5.85569 15.6348 6.20898C15.7682 6.41421 15.8912 6.66414 15.9551 6.9453C16.0804 7.4977 15.9714 8.13389 15.4043 8.70116C14.8566 9.24884 13.974 9.54823 13.1943 9.71679C12.7628 9.81003 12.3303 9.86698 11.9473 9.90233C12.0596 10.2558 12.0902 10.7051 11.8779 11.2012L11.8223 11.3203C11.5396 11.8854 11.0275 12.2035 10.4785 12.3965C9.93492 12.5875 9.29028 12.6792 8.65332 12.75C7.99579 12.8231 7.34376 12.8744 6.70117 12.9775C6.14371 13.067 5.63021 13.1903 5.18652 13.3818L5.00585 13.4658C4.53515 14.2245 4.13745 14.9658 3.80957 15.6465C4.43885 15.2764 5.1935 15 5.99999 15C6.27614 15 6.49999 15.2238 6.49999 15.5C6.49999 15.7761 6.27613 16 5.99999 16C5.35538 16 4.71132 16.2477 4.15039 16.6103C3.58861 16.9736 3.14957 17.427 2.91601 17.7773C2.91191 17.7835 2.90568 17.788 2.90136 17.7939C2.88821 17.8119 2.8746 17.8289 2.85937 17.8447C2.85117 17.8533 2.84268 17.8612 2.83398 17.8691C2.81803 17.8835 2.80174 17.897 2.78417 17.9092C2.774 17.9162 2.76353 17.9225 2.75292 17.9287C2.73854 17.9372 2.72412 17.9451 2.70898 17.9521C2.69079 17.9605 2.6723 17.9675 2.65332 17.9736C2.6417 17.9774 2.63005 17.9805 2.61816 17.9834C2.60263 17.9872 2.5871 17.9899 2.57128 17.9922C2.55312 17.9948 2.53511 17.9974 2.5166 17.998C2.50387 17.9985 2.49127 17.9976 2.47851 17.9971C2.45899 17.9962 2.43952 17.9954 2.41992 17.9922C2.40511 17.9898 2.39062 17.9862 2.37597 17.9824C2.36477 17.9795 2.35294 17.9783 2.34179 17.9746C2.33697 17.973 2.33286 17.9695 2.32812 17.9678C2.31042 17.9612 2.29351 17.953 2.27636 17.9443C2.26332 17.9378 2.25053 17.9314 2.23828 17.9238C2.23339 17.9208 2.22747 17.9192 2.22265 17.916C2.21414 17.9103 2.20726 17.9026 2.19921 17.8965C2.18396 17.8849 2.16896 17.8735 2.15527 17.8603C2.14518 17.8507 2.13609 17.8404 2.12695 17.8301C2.11463 17.8161 2.10244 17.8023 2.09179 17.7871C2.08368 17.7756 2.07736 17.7631 2.07031 17.751C2.06168 17.7362 2.05297 17.7216 2.04589 17.706C2.03868 17.6901 2.03283 17.6738 2.02734 17.6572C2.0228 17.6436 2.01801 17.6302 2.01464 17.6162C2.01117 17.6017 2.009 17.587 2.00683 17.5722C2.00411 17.5538 2.00161 17.5354 2.00097 17.5166C2.00054 17.5039 2.00141 17.4912 2.00195 17.4785C2.00279 17.459 2.00364 17.4395 2.00683 17.4199C2.00902 17.4064 2.01327 17.3933 2.0166 17.3799C2.01973 17.3673 2.02123 17.3543 2.02539 17.3418C2.41772 16.1648 3.18163 14.466 4.30468 12.7012C4.31908 12.5557 4.34007 12.3582 4.36914 12.1201C4.43379 11.5907 4.53836 10.8564 4.69921 10.0381C5.0174 8.41955 5.56814 6.39783 6.50585 4.9912L6.73242 4.66894C7.27701 3.93277 7.93079 3.30953 8.61035 2.85156C9.3797 2.33311 10.2221 2 11.001 2C11.7951 2.00025 12.3531 2.35795 12.7012 2.70605C12.7723 2.77723 12.8348 2.84998 12.8896 2.91796C13.2829 2.66884 13.7917 2.39502 14.3174 2.21191C14.6946 2.08056 15.1094 1.98537 15.5117 1.99707ZM17.04 15.5537C17.1486 15.3 17.4425 15.1818 17.6963 15.29C17.95 15.3986 18.0683 15.6925 17.96 15.9463C17.4827 17.0612 16.692 18 15.5 18C14.6309 17.9999 13.9764 17.5003 13.5 16.7978C13.0236 17.5003 12.3691 18 11.5 18C10.6309 17.9999 9.97639 17.5003 9.49999 16.7978C9.02359 17.5003 8.36911 18 7.49999 18C7.22391 17.9999 7 17.7761 6.99999 17.5C6.99999 17.2239 7.22391 17 7.49999 17C8.07039 17 8.6095 16.5593 9.04003 15.5537L9.07421 15.4873C9.16428 15.3412 9.32494 15.25 9.49999 15.25C9.70008 15.25 9.88121 15.3698 9.95996 15.5537L10.042 15.7353C10.4581 16.6125 10.9652 16.9999 11.5 17C12.0704 17 12.6095 16.5593 13.04 15.5537L13.0742 15.4873C13.1643 15.3412 13.3249 15.25 13.5 15.25C13.7001 15.25 13.8812 15.3698 13.96 15.5537L14.042 15.7353C14.4581 16.6125 14.9652 16.9999 15.5 17C16.0704 17 16.6095 16.5593 17.04 15.5537ZM15.4824 2.99707C15.247 2.99022 14.9608 3.04682 14.6465 3.15624C14.0173 3.37541 13.389 3.76516 13.0498 4.01953C12.9277 4.11112 12.7697 4.14131 12.6221 4.10253C12.4745 4.06357 12.3522 3.9591 12.291 3.81933V3.81835C12.2892 3.81468 12.2861 3.80833 12.2822 3.80078C12.272 3.78092 12.2541 3.7485 12.2295 3.70898C12.1794 3.62874 12.1011 3.52019 11.9941 3.41308C11.7831 3.2021 11.4662 3.00024 11.001 2.99999C10.4904 2.99999 9.84173 3.22729 9.16894 3.68066C8.58685 4.07297 8.01568 4.61599 7.5371 5.26269L7.33789 5.54589C6.51634 6.77827 5.99475 8.63369 5.68066 10.2314C5.63363 10.4707 5.5913 10.7025 5.55371 10.9238C7.03031 9.01824 8.94157 7.19047 11.2812 6.05077C11.5295 5.92989 11.8283 6.03301 11.9492 6.28124C12.0701 6.52949 11.967 6.82829 11.7187 6.94921C9.33153 8.11208 7.38648 10.0746 5.91406 12.1103C6.12313 12.0632 6.33385 12.0238 6.54296 11.9902C7.21709 11.8821 7.92723 11.8243 8.54296 11.7558C9.17886 11.6852 9.72123 11.6025 10.1465 11.4531C10.5662 11.3056 10.8063 11.1158 10.9277 10.873L10.9795 10.7549C11.0776 10.487 11.0316 10.2723 10.9609 10.1123C10.918 10.0155 10.8636 9.93595 10.8203 9.88183C10.7996 9.85598 10.7822 9.83638 10.7715 9.82518L10.7607 9.81542L10.7627 9.8164L10.7646 9.81835C10.6114 9.67972 10.5597 9.46044 10.6338 9.26757C10.7082 9.07475 10.8939 8.94726 11.1006 8.94726C11.5282 8.94719 12.26 8.8956 12.9834 8.73925C13.7297 8.5779 14.3654 8.32602 14.6973 7.99413C15.0087 7.68254 15.0327 7.40213 14.9795 7.16698C14.9332 6.96327 14.8204 6.77099 14.707 6.62792L14.5957 6.50195C14.4933 6.39957 14.4401 6.25769 14.4502 6.11327C14.4605 5.96888 14.5327 5.83599 14.6484 5.74902C14.9558 5.51849 15.4742 4.96086 15.8037 4.3662C15.9675 4.07048 16.0637 3.80137 16.085 3.58593C16.1047 3.38427 16.0578 3.26213 15.9697 3.17382C15.8631 3.06726 15.7102 3.00377 15.4824 2.99707Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Author(s)</div>
+                  <div class="hero-detail-value u-text-style-body-3">Josh Cherry, Clement Peng, Johanne Jiao, Justin Leder, Chen Chang</div>
+                </div>
+              </li>
+            </ul>
+          </aside>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/how-anthropic-enables-self-service-data-analytics-with-claude" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>许多数据科学和数据工程团队都可以作证：实现自助式数据分析，向来是一件苦差事。 </p><p>为了方便技术背景较弱的同事使用数据，常见做法是建立宽表和反规范化表，但随着业务扩张，这往往会导致定义不一致、相互重叠的视图大量涌现（而且对那些压根不想学 SQL 的员工帮助有限）。另一种做法是为用户开辟更多隔离环境，却常常覆盖不到业务问题的长尾需求，还会因团队各自为政而造成指标和仪表盘的泛滥。</p><p>大语言模型的兴起为自助式分析提供了另一条路径，可以绕开上述难题。然而，把 Claude 直接对准数据仓库、任由智能体自由执行，也可能制造出一种虚假的精确感。 </p><p>起初从临时取数需求中解放出来的欣喜，很快会转变为恐慌——因为这种设置让业务方脱离了底层数据设施、文档和专业知识的支撑，而正是这些因素过去一直在引导他们使用精心治理的数据集。&nbsp;</p><p>在 Anthropic，95% 的业务分析查询由 Claude 自动完成，总体准确率约为 95%。把这些繁琐、重复的工作交给 Claude 之后，我们的数据科学团队得以专注于因果建模、预测和机器学习等更具战略价值的工作。&nbsp;</p><p>在走访了数十位 Anthropic 内部顶尖的 Claude Code 用户、并见过大量分析智能体的设计模式之后，我们总结出了一些面向数据团队使用大语言模型的最佳实践。在这篇文章中，我们将分享这些技巧和方法，帮助其他团队最大化发挥 Claude 驱动自助式业务洞察的能力，内容包括：</p><ul role="list"><li>为什么分析的准确性是上下文与验证的问题，而不是代码生成的问题；</li><li>导致大多数错误的三种失败模式；&nbsp;</li><li>我们为解决这些错误而构建的智能体分析技术栈；</li><li>我们如何衡量效果；以及</li><li>我们创建绝大多数 skills 所用的基础模板（见附录）</li></ul><h2><strong>数据不是软件</strong></h2><p>大语言模型的生成能力是一把双刃剑：让模型能为复杂问题创造出精妙解法的机制，同样也会导致幻觉式的错误输出。要充分理解分析智能体面临的挑战，不妨将它们与编码智能体做个对比。</p><p>编码是一个开放式的解空间，恰恰能发挥模型的创造力，而且文档和测试为遏制幻觉提供了天然的护栏。相比之下，分析场景往往只有唯一正确的答案，且只能来自唯一正确的数据源，同时又没有确定性的方法来证明结果的正确性。&nbsp;</p><figure style="max-width:698pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a20480bedac32484c00d6b9_4a7645b6.png" loading="lazy"></div></figure><p>对于自助式智能体业务分析而言，复杂性主要源于数据的模糊性。核心问题归结为<strong><em>我们能否把用户的提问映射到数据模型中具体且最新的实体，并知道与它们打交道的正确方式</em></strong>。只要能做到这一点，后续的执行和 SQL 就变得轻而易举。</p><p>我们识别出了这一问题的三个特征，它们是绝大多数不准确回答的根源：</p><ol role="list"><li><strong>概念与实体的歧义</strong>：数据模型中往往有数百个可用选项（潜在字段可能多达数百万个），智能体无法选出最能回答用户问题的字段。例如，在统计活跃用户数时：哪些行为算“活跃”？要不要把欺诈用户算进去？回看窗口取多长？</li></ol><ol start="2" role="list"><li><strong>数据过期</strong>：数据源、业务定义和 schema 始终在变化；数据资产和智能体的知识会逐渐过时，开始返回微妙错误的答案。</li></ol><ol start="3" role="list"><li><strong>检索失败</strong>：正确的信息可能确实存在于数据模型中且标注得当，但由于搜索空间过于庞大，智能体就是找不到它。</li></ol><h2><strong>我们的智能体自助分析技术栈</strong></h2><p>在 Anthropic，我们主要靠智能体数据技术栈来压低这三类错误。每一层的存在，主要就是为了打掉其中一个或多个问题：&nbsp;</p><ol role="list"><li><strong>实体歧义</strong>：数据基础和事实来源把合理实体的空间不断收窄，直到只剩一个受治理的答案。&nbsp;</li></ol><ol start="2" role="list"><li><strong>过期</strong>：维护与验证流程防止业务变化时整套东西腐烂。</li></ol><ol start="3" role="list"><li><strong>检索失败</strong>：skills 确保智能体稳定找到那个答案，并且用对。&nbsp;</li></ol><p>这一节我们会讲每一层是怎么建的。&nbsp;</p><figure style="max-width:1600pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a2049920443016925a3ef72_74528df2.png" loading="lazy"></div></figure><blockquote>对于直接在 Slack 里提出的临时问题，可以看看我们的数据团队如何用 <a href="https://claude.com/blog/self-service-data-analytics-in-slack-how-anthropic-deploys-claude-tag-for-ad-hoc-questions">Claude Tag 部署数据分析智能体</a>。</blockquote><h3><strong>数据基础</strong></h3><p>确保分析智能体准确，最重要的一面是扎实的数据基础，包括数据模型、转换、测试、数据仓库里的表，以及描述它们的元数据。维度建模、<a href="https://en.wikipedia.org/wiki/Dimensional_modeling">dimensional modeling</a>、对关键管道的左移测试、新鲜度和完整性检查，这些标准数据工程和数据质量实践全部仍然适用（我们不会在这里重审一遍）。</p><figure style="max-width:900pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a2049920443016925a3ef75_98412372.png" loading="lazy"></div><figcaption>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;像维度建模这样的标准数据工程实践，和过去一样重要。</figcaption></figure><p>真正变了的是：数据模型的终端用户不再是数据专家（比如数据科学家），而是代表数据能力或对底层设施理解程度各不相同的用户去行动的智能体。这一转变带来的挑战是，结果不能再要求用户去核验底层是否正确，因为终端用户并不知道。</p><p>数据基础层主要对准歧义：比如 <em>revenue</em> 如果落到一份受治理的数据集，而不是四十个说得通的候选，问题在智能体开始搜索之前就基本消失了。第一道过期防线也在这里，因为定义规范模型的同一个仓库，天然就是强制它们保持最新的地方。</p><p>我们看到几条实践特别管用：</p><ul role="list"><li><strong>建立规范数据集</strong>：最常见的失败，是智能体没法把一个概念（「产品 X 的收入」）映射到唯一正确的表、列和指标定义，通常是因为存在多个实现略有不同的说得通的候选。修法是更少、治理更重的逻辑模型：精选出一小套规范的、单一事实来源的数据集，所有权清晰、可直接消费、可被发现，然后积极废弃那些近似重复。物理汇总和缓存对成本和性能仍然重要，但它们应当从规范模型机械派生，而不是作为替代品和它们并排活着。目标是：智能体搜索一个概念时，找到的是一个受治理的答案。</li><li><strong>把标准执行下去</strong>：我们发现，基础只有在规范模型和指标定义被<em>工具</em>（智能体在结构上被先路由到它们；下文会再讲）、被 <em>CI</em>（绕过它们的变更过不了审查）以及被<em>强制要求</em>（下游团队建在受治理层上，否则要解释为什么不）执行时，才能站得住。没有执行的治理，很快就会退回多个候选的问题。</li><li><strong>把产物放在一起</strong>：我们对不断变化的数据模型和业务逻辑的主要防线是共置。几乎所有数据代码（建模、语义层、参考文档、规范仪表盘定义）都住在同一个仓库里，并用 CI 检查保护跨层完整性。如果一次建模变更会弄坏下游仪表盘，或让已文档化的指标失效，CI 会标出来，修复和变更在同一个 PR 里发出。（我们会在下面的 <strong>Skills </strong>一节回到具体机制。）</li><li><strong>把元数据当作一等产品</strong>：编码智能体表现好，部分是因为代码库是<em>可读的</em>：README、类型签名、docstring 等。你的仓库也可以同样可读，前提是列和表的描述、规范指标定义、粒度文档、合法取值范围、血缘、所有权和模型分层，都按和转换本身同样的严谨程度来维护。这不是新见解，但良好治理提供了帮助智能体选对数据集的关键上下文。</li></ul><h3><strong>事实来源</strong></h3><p>如果说数据基础是数据仓库本身，事实来源就是智能体用来导航它的参考界面。这一层减少概念与实体的歧义，把相关方问题里的「周活跃用户」变成数据模型里一个具体、受治理的实体。大致按信任度从高到低：</p><ul role="list"><li><strong>语义层：</strong>编译好的指标和维度定义。如果一个问题能干净地映射到已定义的指标，智能体调用一个函数，得到一个数字，和公司其他所有界面产出的是同一个数字。我们的智能体在结构上（靠 skill 指令）被<em>要求</em>先用语义层（见附录）。我们试过一个<em>不管用</em>的想法：让 LLM 从原始表和查询日志自动生成指标定义，来引导语义层。它产出了看起来说得通、却把我们正想消掉的歧义写进去的定义，在评测上相对更小、由人策展的一层是净负的。因此我们建议用 Claude 生成<em>文档</em>，但让人拥有<em>定义</em>。</li><li><strong>血缘与转换图：</strong>当语义层覆盖不了一个问题时，血缘和按引用次数做的表排序，让智能体能推理哪些上游模型喂养一个概念、哪些已废弃、哪些共享粒度。这把「我不知道这个指标」变成「我知道该从哪个受治理模型做聚合」。它也是我们在下面<strong>在线验证</strong>里呈现的新鲜度和出处信号的骨干。</li><li><strong>查询语料：</strong>来自仪表盘、notebook 和以往分析的历史 SQL。直觉上这应当很有价值：它是每一道已经被正确回答过的问题的记录。<em>实际上，我们发现给智能体对几千条过往查询的原始检索权限，准确率变动不到一个百分点 </em>（我们会在后面一节走一遍那次消融）。非结构化检索没法把新问题映射到正确先例。真正管用的，是把那份语料蒸馏成按领域组织的结构化参考文档，以及 <strong>skills</strong> 里描述的可复用分析模式。把查询历史当作策展的原材料，而不是智能体直接读的事实来源。</li><li><strong>业务上下文：</strong>大多数团队跳过的一层，也是我们低估最久的一层。不理解你业务的智能体会回答用户问出口的话，而不是他们想问的意思。它不会知道「Q2 launch」指的是某个具体产品，不会知道两个团队对同一个词定义不同，也不会知道这个问题是因为周四有董事会才被问出来。我们接入由索引文档、路线图、决策日志和组织架构组成的公司知识图谱，让智能体能解开这些环境指称，并提出更好的澄清问题。&nbsp;</li></ul><p>这四层共同的失败模式，和数据基础层是同一类：<strong>文档差或过期</strong>。Claude 在补上缺口时极其有用（起草列描述、从查询模式提出指标文档、在 CI 里标出未文档化的模型），但策展和所有权由人来管。&nbsp;</p><p>接下来两节，我们讨论如何让这份所有权便宜到真的会发生。</p><h3><strong>Skills</strong></h3><p>如果说事实来源是智能体的<em>陈述性</em>知识（一个指标是什么意思），那 skill 就是它的<em>程序性</em>知识：按什么顺序咨询哪些来源、如何在含糊数据里导航、以及一份完成的分析长什么样。&nbsp;</p><p>在 Claude Code 里，一个 <a href="https://code.claude.com/docs/en/skills">skill</a> 是智能体按需阅读的一文件夹 markdown。在 Anthropic，我们开发的 skills 带来了巨大增量。没有 skills，Claude 在我们的评测上回答分析问题的准确率超不过 21%。加上 skills 之后，总体稳定在 95% 以上，某些领域经常在 99% 左右。附录里有我们用来创建绝大多数 skills 的骨架。</p><p>一些最佳实践：</p><p><strong>做成成对的 skills： </strong>一份<strong><em>知识</em></strong> skill 充当薄的顶层路由器，让额外的领域细节按需加载。它会说「先试语义层，但如果没有覆盖，这里有大约 30 份这个领域的参考文件，描述相关表、列、join 和陷阱。」这个路由器，实际上就是我们对检索失败的回答：与其让智能体在百万字段的仓库里搜索，它先把空间收窄到几十份策展过的文件，然后才写查询。<strong><em>runbook</em></strong> skill 编码资深分析师会走的流程：澄清问题、找来源（通过知识 skill）、跑查询，再把结果送进对抗性审查子智能体循环。它还打包了十几种可复用分析模式（留存曲线、比率分解、漏斗分析），这样常见请求不会每次都重做一遍。</p><p><strong>写对参考文档</strong>：为 LLM 检索而写。我们的参考文档描述表（粒度、范围和排除项）、陷阱的机制（例如「排除已知的免费邮箱域名，但保留 anthropic.com 这类自定义域名」），以及显式的路由触发（例如「IF 问题关于实验提升……DO NOT 用来做原始事件计数」），而不写会过期的规定性菜谱。下面是我们用来写参考文档的骨架。</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-markdown" style="white-space:pre-wrap"><span style="color:#00e0e0;font-style:italic"><span style="color:#00e0e0"># [Domain] Tables</span><span>
+</span></span><span style="color:#00e0e0;font-style:italic">
+</span><span style="color:#00e0e0;font-style:italic"><span></span><span style="color:#00e0e0">## Quick Reference</span><span>
+</span></span><span style="color:#00e0e0;font-style:italic"><span></span><span style="color:#00e0e0">### Business Context — [what this domain means in plain words]</span><span>
+</span></span><span style="color:#00e0e0;font-style:italic"><span></span><span style="color:#00e0e0">### Entity Grain — [what one row represents]</span><span>
+</span></span><span style="color:#00e0e0;font-style:italic"><span></span><span style="color:#00e0e0">### Standard Hygiene Filter — [the filter every query in this domain applies]</span><span>
+</span></span><span style="color:#00e0e0;font-style:italic">
+</span><span style="color:#00e0e0;font-style:italic"><span></span><span style="color:#00e0e0">## Dimensions</span><span>
+</span></span><span style="color:#00e0e0;font-style:italic"><span></span><span style="color:#abe338">-</span><span> [How the key dimensions are encoded, and how the same concept is named
+</span></span><span style="color:#00e0e0;font-style:italic">  differently across tables]
+</span><span style="color:#00e0e0;font-style:italic">
+</span><span style="color:#00e0e0;font-style:italic"><span></span><span style="color:#00e0e0">## Key Tables</span><span>
+</span></span><span style="color:#00e0e0;font-style:italic"><span></span><span style="color:#00e0e0">### [table</span><span style="color:#00e0e0;font-style:italic">_name]
+</span></span><span style="color:#00e0e0;font-style:italic"><span style="color:#00e0e0;font-style:italic">- </span><span style="color:#00e0e0;font-style:italic;font-weight:bold">**Grain**</span><span style="color:#00e0e0;font-style:italic">: [...] · </span><span style="color:#00e0e0;font-style:italic;font-weight:bold">**Scope/exclusions**</span><span style="color:#00e0e0;font-style:italic">: [...]
+</span></span><span style="color:#00e0e0;font-style:italic"><span style="color:#00e0e0;font-style:italic">- </span><span style="color:#00e0e0;font-style:italic;font-weight:bold">**Usage**</span><span style="color:#00e0e0;font-style:italic">: [when to use it, when NOT to, join keys, required filters]
+</span></span><span style="color:#00e0e0;font-style:italic">[... one short section per governed table ...]
+</span><span style="color:#00e0e0;font-style:italic">
+</span><span style="color:#00e0e0;font-style:italic">## Gotchas
+</span><span style="color:#00e0e0;font-style:italic">- [The wrong-answer modes a senior analyst would warn you about]
+</span><span style="color:#00e0e0;font-style:italic">
+</span><span style="color:#00e0e0;font-style:italic">## Best Practices / Common Query Patterns
+</span><span style="color:#00e0e0;font-style:italic">- [Default choices, standard cuts, worked patterns where the exact query
+</span><span style="color:#00e0e0;font-style:italic">  form is the hard part]
+</span><span style="color:#00e0e0;font-style:italic">
+</span><span style="color:#00e0e0;font-style:italic">## Cross-References
+</span><span style="color:#00e0e0;font-style:italic">- [Neighboring domain docs that own adjacent questions]</span></code></pre><p><strong>把 skill 维护当成一等公民</strong>：Skill 文档描述的是每天都在变的数据模型，没有主动维护，几周内就会错。我们看着离线准确率从上线时的约 95% 在一个月里漂到约 65%，然后才把它当成工程问题。这意味着把 skill 的 markdown 文件和转换模型放在同一个仓库，改模型的 PR 就是更新描述它的文档的同一个 PR。一个代码审查 hook 会标出任何没碰到 skill 文件的报表模型变更。现在大约 90% 的数据模型 PR 会在同一次 diff 里带上 skill 变更。我们也会随着模型变强、以往失败模式不再适用，定期修剪 skill 脚手架。</p><p><strong>在所有界面上做成一致、无缝的体验</strong>：同一个 skill <em>必须</em>在 Slack、IDE、仪表盘工具和独立智能体会话里，对问题给出同一个答案。我们的做法是确保只有一个规范来源（数据仓库），并且 skill 变更自动同步。合并时，skill 会同步到 plugin marketplace（给 IDE 用户）、同步到云存储 blob（给读单个文件的托管应用），并作为资源直接通过 MCP 提供。我们从一开始就按可移植来设计，避免硬编码仓库路径和界面专属命名空间。</p><h3><strong>验证</strong></h3><p>最后，验证是你用来发现三类失败模式里还有哪一类在往外漏的办法。&nbsp;</p><h4><strong>离线评测</strong></h4><p>我们常见的一种模式是：数据团队搭了精致的分析环境，却没有任何流程去理解分析智能体的准确率。</p><p>补上这个缺口的一种办法是离线评测，也就是简单的问答对。你可以把它想成类似机器学习模型的离线测试：它不会告诉你在线智能体的表现，但能很好地告诉你会不会有关键缺口。</p><p>在 Anthropic，我们部署两类离线评测。<strong>基于仪表盘的评测</strong>由 Claude 自动生成（再由人核验），覆盖最常见的相关方问题。<strong>长尾评测</strong>是我们把业务上下文（路线图、表文档）喂给 Claude，让它在该领域其余部分生成说得通的问题。我们还持续收割相关方在线程里纠正智能体的每一次，那次纠正就是一条候选评测。</p><p>其他最佳实践包括：</p><ul role="list"><li><strong>把 ground truth 钉住，让它漂不走</strong>：对着实时数据写的评测，底层数字一动就会过期。把每条评测钉在一个快照日期，对着稳定的事实表写，或者让评分器评判智能体的<em>查询</em>而不是它的数字。把套件接到 CI，这样碰到依赖的 PR 会重跑受影响的评测。</li><li><strong>像遥测一样存结果，而不是像测试日志：</strong>每一次运行都落入仓库表，带上 skill 版本、git SHA、模型 ID、每条断言的通过/失败、token 数和墙上时钟。「那次变更有没有帮助？」变成一条查询，你也有时间序列去抓住单次 CI 跑不出来的缓慢回退。</li><li><strong>按领域给上线设门槛</strong>：领域所有者不能向相关方宣布智能体，直到他们那一片评测集跨过某个阈值（我们最初用约 90%）。这迫使参考文档的修复发生在<em>用户看见失败之前</em>。</li><li><strong>做出数量合适的评测</strong>：你该有多少评测，取决于业务领域的复杂度和底层数据模型的复杂度。用离线准确率对在线准确率的预测有多好来校准：我们发现每个主题（例如「增长」）过了几十条之后收益递减，而且这个天花板会随每一代新模型下降。</li><li><strong>离线评测准确率应当接近 100%</strong>；每一个正确答案也应当打到你的语义层（如果你有的话）。再强调一次，这种准确率并不能告诉你系统不会给出错误答案，只是说明在评测覆盖得当的前提下，没有明显缺口。</li></ul><h4><strong>消融方法</strong></h4><p>关于 skill 的每一个结构性决定（例如暴露哪些来源、一个子智能体值不值得它的延迟、要不要把两个 skills 合成一个）都是在离线评测集固定的前提下做出的。&nbsp;</p><p>我们每次只改一个组件，比较通过率。每次运行只要一小时，却能替掉很多争论。方法论比任何单次结果都更重要：</p><ul role="list"><li><strong>为零结果而设计。</strong>我们最有用的一次消融是负向的。我们给智能体直接 grep 全部仪表盘、转换和分析师 notebook SQL 的权限（几千个文件）。然后在记录里核验它每次回答前真的读了它们。准确率往哪个方向都没动过一个百分点。我们接着检查了显而易见的混淆因素：它答错的那些问题，答案是否其实就在语料里？大约 80% 的时候，是的。「答案在」能不能预测「现在答对了」？不能，翻转率是平的。信息在那儿，智能体看见了，仍然没用上。那一次实验告诉我们，瓶颈不是对以往工作的<em>访问</em>，而是<em>结构</em>（也就是把问题映射到正确实体）。这个洞察改写了几个月的路线图。</li><li><strong>按 PR 粒度做消融。</strong>每一次有意义的 skill 编辑，都在相关评测切片上跑一次前后对比，并把差值写进 PR 描述。这让「我改进了文档」保持诚实，也能抓住那种好心添加反而把事情弄糟的意外常见情况。</li><li><strong>留一份短清单，记下什么不管用。</strong>我们有两条：过了某个点还叠更多轮文档精炼（我们连续三次净负迭代：文档在变长，没有变更好）；以及为了降延迟，把对抗性审查者换成更便宜的模型（它丢掉了大部分准确率收益，速度也没有真正加快）。负向结果记下来很便宜，也能阻止下一个人重跑同一实验。</li></ul><h4><strong>在线验证</strong></h4><p>最后一步是尽可能保证真实在线系统的表现准确。我们采取的一些步骤包括：</p><ul role="list"><li><strong>对抗性审查</strong>：我们发现，用一个 Claude skill 去激烈挑战潜在最终答案上的所有底层假设，能在评测集里把准确率提高 6%，代价是多 32% 的 token 和高 72% 的延迟。</li><li><strong>出处页脚：</strong>每条回复都带一个页脚，写明它来自哪一层来源（语义层 › 策展参考 › 原始表）、底层数据有多新、以及谁拥有这个模型。它不会让答案更正确，但能帮消费者判断自己能信多少。「原始表，新鲜度未知」的页脚是转给上游之前先核验的信号，也是我们对沉默失败为数不多的缓解之一。</li><li><strong>数据质量检查</strong>：有可能智能体用对了字段、用对了方式，但数据本身是错的。加上基本的数据质量检查，确保被引用的字段是最新的、完整的、没有异常，通常是好的卫生习惯。</li><li><strong>被动监控：</strong>我们持续跟踪的两个生产信号是：经语义层解决的智能体查询占比，以及回复里使用纠正语言的占比（「那是错的表」「你漏了欺诈过滤」）。两者都喂进一块仪表盘，每周和离线通过率一起审。</li><li><strong>主动收割纠正</strong>：把环闭合的那一部分。一个定时智能体每隔几小时扫描相关方频道，寻找类似的纠正语言，起草对相关参考文档的一行修复，并开一个打给领域所有者的 PR。修复路径故意很无聊——改一个 markdown 文件、合并、到处自动同步——这样领域所有者不会在这件事上花太多时间。同样的纠正也会回灌进离线评测集。</li></ul><p>这些都抓不全的失败模式，是<strong>沉默</strong>的那一种。答案是错的，但看起来说得通，并且被不加反对地用掉了。我们的缓解是出处页脚、任何给领导层的东西都要显式的人工签字，以及每个领域顶级 KPI 的常设评测，每天对照受祝福的仪表盘做健全性检查，尽管我们还没有稳健的解决方案。</p><h2><strong>开始做自助式分析</strong></h2><p>如果你从零开始，一小撮规范数据集、几十条离线评测，再加一个薄的知识 skill，就能吃下大部分收益；本文其余部分，是我们在这些建好之后才加上的。</p><p>我们也分享了许多最佳实践，并非每一条都适合每个数据团队。先和你的组织对齐几条会影响路径的原则，可以问：</p><ul role="list"><li><strong>今天答对有多重要，相对未来答对？</strong> AI 模型进步很快。我们常看到公司为当前模型的短板建大量基础设施，而这些短板一旦模型变好就不再成立。知道模型短在哪里，并等模型改进来补上缺口，开销显著更小，但可能不符合你公司的风险承受度。</li><li><strong>你预期业务复杂度会如何随时间变化？</strong> 如果我们讨论的某些流程对你来说过重，例如你产出的数据不多、输出的消费者很少，或数据模型很可能保持简单，那就不必照搬。</li><li><strong>输出的目标受众有多技术？</strong> 换个说法，如果你是在为能认出答案不对的数据科学家建这套分析系统，你对错误的容忍度，可能高于受众对底层数据模型毫无熟悉的情况。&nbsp;</li><li><strong>为提高准确率，你愿意花多少？</strong> 我们发现对抗性验证这类流程能显著提高准确率，但常常伴随更高的成本和延迟。</li><li><strong>你对访问控制和内部数据隐私的舒适度如何？</strong> 智能体通常上下文越多越好用；但宽的数据访问会和大多数公司的治理姿态相冲突。这决定了你是在建一个智能体，还是许多范围收窄的智能体。</li></ul><p>无论你走哪条路，我们最大的收益都来自分别对付三类失败模式：把歧义收成一个受治理的答案，让这个答案容易被发现，并在其中任一过期时标出来。</p><p><em>本文由数据科学与数据工程团队的 Chen Chang、Clement Peng、Justin Leder、Johanne Jiao 和 Josh Cherry 撰写。作者感谢 Michael Segner 的贡献。</em></p><h2><strong>附录</strong></h2><h4><strong>Skill 文件骨架</strong></h4><p>下面是我们主仓库 skill 的骨架：真实文件的结构，内部细节换成了 [方括号占位符]。它不是用来原样复制的；它是为了展示我们发现值得写下来的那些章节类型。</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-markdown" style="white-space:pre-wrap"><span><span>---
+</span></span><span>name: [warehouse-skill]
+</span><span>version: [x.y.z]
+</span><span>description: "IF the user asks to query [the company]'s data warehouse for any
+</span><span>  [list of business domains] question — THEN invoke this skill. DO NOT invoke
+</span><span><span></span><span style="color:#00e0e0">  for [adjacent engineering tasks] or questions with no data-warehouse component."
+</span></span><span><span style="color:#00e0e0">---</span><span>
+</span></span><span>
+</span><span><span></span><span style="color:#00e0e0"># [Warehouse] Skill Instructions</span><span>
+</span></span><span>
+</span><span><span></span><span style="color:#00e0e0">## Description</span><span>
+</span></span><span>The single source of truth for safe and effective [warehouse] querying.
+</span><span>Referenced by other skills [listed] for query execution guidance.
+</span><span>
+</span><span>Act as a Data Analyst, providing strategic insights and data-driven
+</span><span>recommendations but seek guidance along the way.
+</span><span>
+</span><span><span></span><span style="font-weight:bold">**Out-of-scope decisions**</span><span>: [product areas, etc.] → surface data only,
+</span></span><span>state "decision is [owning team]'s call", do NOT take a position or author
+</span><span>code fixes.
+</span><span>
+</span><span><span></span><span style="color:#00e0e0">## Executing queries</span><span>
+</span></span><span>Priority:
+</span><span><span></span><span style="color:#abe338">1.</span><span> </span><span style="font-weight:bold">**[Managed connection]**</span><span> (if available): [query tool] / [schema tool]
+</span></span><span><span></span><span style="color:#abe338">2.</span><span> </span><span style="font-weight:bold">**[CLI fallback]**</span><span> (if installed): [default project, fallback project]
+</span></span><span><span></span><span style="color:#abe338">3.</span><span> </span><span style="font-weight:bold">**Neither**</span><span> — ask the user to authenticate, then stop
+</span></span><span>
+</span><span>---
+</span><span>
+</span><span><span></span><span style="color:#00e0e0"># Semantic Layer (REQUIRED first step)</span><span>
+</span></span><span>
+</span><span><span>The governed semantic layer is the </span><span style="font-weight:bold">**mandatory default path**</span><span> for every data
+</span></span><span>question — same numbers as [the BI tool], joins/grain/filters baked in. Raw SQL
+</span><span><span>via the reference docs below is the </span><span style="font-weight:bold">**fallback**</span><span>, used only after the
+</span></span><span>semantic-layer path is shown not to cover the ask.
+</span><span>
+</span><span><span></span><span style="color:#00e0e0">## Required workflow</span><span>
+</span></span><span><span></span><span style="color:#abe338">1.</span><span> </span><span style="font-weight:bold">**Load**</span><span> — [how to load the semantic layer in each runtime, with fallbacks]
+</span></span><span><span></span><span style="color:#abe338">2.</span><span> </span><span style="font-weight:bold">**Discover**</span><span> — search measures/dimensions by keyword; </span><span style="font-weight:bold">**always check
+</span></span><span><span style="font-weight:bold">   segments**</span><span> (the named canonical population filters — hand-rolled WHERE
+</span></span><span>   clauses for these are the dominant wrong-answer mode)
+</span><span><span></span><span style="color:#abe338">3.</span><span> </span><span style="font-weight:bold">**Compile + run**</span><span> — build the spec → compile to SQL → execute
+</span></span><span><span></span><span style="color:#abe338">4.</span><span> </span><span style="font-weight:bold">**Fallback**</span><span> — only if discovery finds no relevant metric or compile fails
+</span></span><span><span>   → raw SQL via </span><span class="hljs-code">`references/*.md`</span><span> (PART 3 below)
+</span></span><span>
+</span><span><span></span><span style="color:#d4d0ab">&gt; </span><span style="color:#d4d0ab;font-weight:bold">**Don't bail early.**</span><span style="color:#d4d0ab"> Do NOT fall back to raw SQL on these grounds:</span><span>
+</span></span><span><span></span><span style="color:#d4d0ab">&gt; - "[custom date filtering / cohorts]" → [covered by time-dimension specs]</span><span>
+</span></span><span><span></span><span style="color:#d4d0ab">&gt; - "[needs a join]" → [the metric layer already encapsulates its joins]</span><span>
+</span></span><span><span></span><span style="color:#d4d0ab">&gt; - [3–4 more pre-rebutted excuses agents use to skip the semantic layer]</span><span>
+</span></span><span>
+</span><span><span></span><span style="color:#00e0e0">### Date windows &amp; timezone — decide before you query</span><span>
+</span></span><span><span></span><span style="color:#abe338">-</span><span> </span><span style="font-weight:bold">**As-of date vs trailing-N days**</span><span>: [convention for each]
+</span></span><span><span></span><span style="color:#abe338">-</span><span> </span><span style="font-weight:bold">**"Last week/month"**</span><span> → the last </span><span style="font-style:italic">*complete*</span><span> calendar week/month, not trailing-7/30
+</span></span><span><span></span><span style="color:#abe338">-</span><span> </span><span style="font-weight:bold">**Timezone default**</span><span>: [TZ]; [exception for certain reporting rollups]
+</span></span><span><span></span><span style="color:#abe338">-</span><span> </span><span style="font-weight:bold">**Freshness lag**</span><span>: [some] tables settle late — anchor on MAX(date), not "yesterday"
+</span></span><span>
+</span><span>---
+</span><span>
+</span><span><span></span><span style="color:#00e0e0"># PART 1: MUST KNOW (Read First for Every Request)</span><span>
+</span></span><span>
+</span><span><span></span><span style="color:#00e0e0">## 🚀 Quick Start Workflow</span><span>
+</span></span><span><span></span><span style="color:#abe338">1.</span><span> </span><span style="font-weight:bold">**Check for red flags first**</span><span>: [restricted/PII requests, gated domains,
+</span></span><span>   high-stakes asks that need extra validation]
+</span><span><span></span><span style="color:#abe338">2.</span><span> </span><span style="font-weight:bold">**Out of scope — escalate, don't guess**</span><span>: [access requests, pipeline
+</span></span><span>   troubleshooting, stale dashboards, root-cause assertions, product/pricing
+</span><span>   recommendations] → redirect to [the owning team], don't answer
+</span><span><span></span><span style="color:#abe338">3.</span><span> </span><span style="font-weight:bold">**Clarify the request**</span><span>: time period, segment, the business decision it informs
+</span></span><span><span></span><span style="color:#abe338">4.</span><span> </span><span style="font-weight:bold">**Check for existing dashboards**</span><span>: [per-domain dashboard catalogs]
+</span></span><span><span></span><span style="color:#abe338">5.</span><span> </span><span style="font-weight:bold">**Identify the data source**</span><span>: [navigation map below; prefer governed/aggregated tables]
+</span></span><span><span></span><span style="color:#abe338">6.</span><span> </span><span style="font-weight:bold">**Execute the analysis**</span><span>: [required filters + adversarial review]
+</span></span><span><span></span><span style="color:#abe338">7.</span><span> </span><span style="font-weight:bold">**Deliver insights**</span><span>: show methodology, differentiate observations from interpretations
+</span></span><span>
+</span><span><span></span><span style="color:#00e0e0">## 🏢 Business Context</span><span>
+</span></span><span>
+</span><span><span></span><span style="color:#00e0e0">### Entity Disambiguation (MUST CLARIFY)</span><span>
+</span></span><span><span></span><span style="color:#abe338">-</span><span> </span><span style="font-weight:bold">**"[Term A]" can mean**</span><span>: [entity 1] or [entity 2] — always clarify which
+</span></span><span><span></span><span style="color:#abe338">-</span><span> </span><span style="font-weight:bold">**"[Term B]" can mean**</span><span>: [entity 1] → [entity 2] → [entity 3] (one-to-many chain)
+</span></span><span><span></span><span style="color:#abe338">-</span><span> </span><span style="font-weight:bold">**"Users"**</span><span>: [which identifier gives accurate counts, and which ones inflate them]
+</span></span><span>
+</span><span><span></span><span style="color:#00e0e0">### Business Terminology</span><span>
+</span></span><span><span></span><span style="color:#abe338">-</span><span> [Current product names vs deprecated aliases that still appear as frozen
+</span></span><span>  values in the data layer — write with the new names, filter with the old]
+</span><span><span></span><span style="color:#abe338">-</span><span> [Key internal acronyms]
+</span></span><span><span></span><span style="color:#abe338">-</span><span> </span><span style="font-weight:bold">**[Headline metric] calculations**</span><span>: [monthly / default window / leading indicator]
+</span></span><span><span></span><span style="color:#abe338">-</span><span> </span><span style="font-weight:bold">**Unfamiliar terms — search [internal docs], don't guess**</span><span>
+</span></span><span>
+</span><span><span></span><span style="color:#00e0e0">### Data Integrity Requirements ⚠️</span><span>
+</span></span><span><span></span><span style="color:#abe338">-</span><span> </span><span style="font-weight:bold">**NEVER**</span><span>: make up data/columns; make speculative assertions beyond what data shows
+</span></span><span><span></span><span style="color:#abe338">-</span><span> </span><span style="font-weight:bold">**ALWAYS**</span><span>: use safe division; differentiate observations ("data shows X")
+</span></span><span>  from interpretations ("this suggests Y"); flag limitations
+</span><span>
+</span><span>---
+</span><span>
+</span><span><span></span><span style="color:#00e0e0"># PART 2: HOW TO DO (Follow During Execution)</span><span>
+</span></span><span>
+</span><span><span></span><span style="color:#00e0e0">## 🔧 Technical Execution Guide</span><span>
+</span></span><span><span></span><span style="color:#abe338">-</span><span> [Managed-connection tools and CLI invocation details]
+</span></span><span><span></span><span style="color:#abe338">-</span><span> </span><span style="font-weight:bold">**PII protection**</span><span>: for restricted data, return the SQL for the user to run
+</span></span><span>  themselves — do not return results
+</span><span>
+</span><span><span></span><span style="color:#00e0e0">## 📊 Analysis Best Practices Guide</span><span>
+</span></span><span><span></span><span style="color:#abe338">1.</span><span> Clarify the ask before querying
+</span></span><span><span></span><span style="color:#abe338">2.</span><span> Show your work (filters, inclusions/exclusions, freshness)
+</span></span><span><span></span><span style="color:#abe338">3.</span><span> Clarify denominators
+</span></span><span><span></span><span style="color:#abe338">4.</span><span> Consider sample bias
+</span></span><span><span></span><span style="color:#abe338">5.</span><span> Connect to business impact
+</span></span><span><span></span><span style="color:#abe338">6.</span><span> </span><span style="font-weight:bold">**Adversarial SQL review (MANDATORY)**</span><span> — spawn the [sql-reviewer] sub-agent
+</span></span><span>   for every query before the final answer; blocking findings must be fixed
+</span><span>   and re-reviewed; do not self-certify
+</span><span><span></span><span style="color:#abe338">7.</span><span> </span><span style="font-weight:bold">**Report with provenance**</span><span> — every answer ends with a footer:
+</span></span><span><span>   &gt; </span><span style="font-weight:bold">**Source:**</span><span> [semantic layer | governed table | raw exploration] ·
+</span></span><span><span>   &gt; </span><span style="font-weight:bold">**Confidence:**</span><span> [tier] · </span><span style="font-weight:bold">**Reviewed:**</span><span> [reviewer ✓, round N] ·
+</span></span><span><span>   &gt; </span><span style="font-weight:bold">**Freshness:**</span><span> [max date in the data] · </span><span style="font-weight:bold">**Owner:**</span><span> [owning team]
+</span></span><span>
+</span><span>---
+</span><span>
+</span><span><span></span><span style="color:#00e0e0"># PART 3: DATA REFERENCES &amp; RESOURCES</span><span>
+</span></span><span>
+</span><span><span></span><span style="color:#00e0e0">## 📚 Knowledge Base Navigation</span><span>
+</span></span><span><span></span><span style="color:#00e0e0">### [Domain A] → `references/[domain</span><span style="color:#00e0e0;font-style:italic">_a].md`
+</span></span><span><span style="color:#00e0e0;font-style:italic">- </span><span style="color:#00e0e0;font-style:italic;font-weight:bold">**Use for**</span><span style="color:#00e0e0;font-style:italic">: [kinds of questions]
+</span></span><span><span style="color:#00e0e0;font-style:italic">- </span><span style="color:#00e0e0;font-style:italic;font-weight:bold">**Key tables**</span><span style="color:#00e0e0;font-style:italic">: [...]
+</span></span><span><span style="color:#00e0e0;font-style:italic">- </span><span style="color:#00e0e0;font-style:italic;font-weight:bold">**Dashboards**</span><span style="color:#00e0e0;font-style:italic">: `references/[domain_</span><span style="color:#00e0e0">a]</span><span style="color:#00e0e0;font-style:italic">_dashboards.json`
+</span></span><span>
+</span><span><span style="color:#00e0e0;font-style:italic">### [Domain B] → `references/[domain_</span><span style="color:#00e0e0">b].md`</span><span>
+</span></span><span><span></span><span style="color:#abe338">-</span><span> </span><span style="font-weight:bold">**Use for**</span><span>: [...]
+</span></span><span>
+</span><span>[... one entry per business domain — a few dozen in total ...]
+</span><span>
+</span><span><span></span><span style="color:#00e0e0">## ⚠️ Troubleshooting Guide</span><span>
+</span></span><span>
+</span><span><span></span><span style="color:#00e0e0">### When Information Is Missing</span><span>
+</span></span><span><span></span><span style="color:#abe338">-</span><span> [missing tables / access denied / outdated docs / unknown enum values → what to do]
+</span></span><span>
+</span><span><span></span><span style="color:#00e0e0">### Field Naming Gotchas</span><span>
+</span></span><span><span></span><span style="color:#abe338">-</span><span> Use </span><span class="hljs-code">`[field_x_v2]`</span><span> NOT </span><span class="hljs-code">`[field_x]`</span><span>
+</span></span><span><span></span><span style="color:#abe338">-</span><span> [Two similarly-named tables report the same metric at different grains — which to use]
+</span></span><span><span></span><span style="color:#abe338">-</span><span> [Which of two plausible sources is canonical for the headline metric]
+</span></span><span><span></span><span style="color:#abe338">-</span><span> [… a dozen more hard-won one-liners …]
+</span></span><span></span></code></pre>
+</div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/how-anthropic-enables-self-service-data-analytics-with-claude" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

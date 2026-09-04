@@ -13,5 +13,22 @@
   "translatedTitle": "最大化你的 Claude Code 会话价值",
   "translated": true,
   "translatedAt": "2026-09-02T04:30:13.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Claude Code",
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": []
+  },
+  "subtitle": "How to run efficient sessions that get the most value from every token.",
+  "authors": [
+    "Lydia Hallie"
+  ],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/claude-code",
+  "productUrl": "https://claude.com/product/claude-code"
 }

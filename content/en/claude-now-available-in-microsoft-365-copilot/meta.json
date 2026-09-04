@@ -13,5 +13,22 @@
   "translated": true,
   "translatedTitle": "Claude 现已在 Microsoft 365 Copilot 中提供",
   "translatedAt": "2026-09-02T12:24:00.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude apps"
+    ],
+    "usecase": [
+      "Business",
+      "Work"
+    ]
+  },
+  "subtitle": "Today, Microsoft announced that Claude models are now available in Microsoft 365 Copilot, bringing Claude to millions of enterprise users through Microsoft's productivity platform.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": ""
 }

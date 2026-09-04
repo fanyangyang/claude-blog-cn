@@ -9,5 +9,22 @@
   "inGrid": true,
   "illustration": "assets/illustrations/claude-for-commerce-agents.svg",
   "illustrationBg": "Clay",
-  "fetchedAt": "2026-09-02T16:11:20.522Z"
+  "fetchedAt": "2026-09-02T16:11:20.522Z",
+  "facets": {
+    "category": [
+      "Product announcements",
+      "Agents"
+    ],
+    "product": [
+      "Claude Platform"
+    ],
+    "usecase": [
+      "Agents"
+    ]
+  },
+  "subtitle": "Retailers running shopping agents on Claude have seen carts up to 35% larger and shoppers 60% more likely to complete a purchase.",
+  "authors": [],
+  "readingMinutes": 3,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/platform/api"
 }

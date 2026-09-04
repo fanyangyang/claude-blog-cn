@@ -13,5 +13,24 @@
   "translatedTitle": "Anthropic 团队如何使用 Claude Code",
   "translated": true,
   "translatedAt": "2026-09-02T04:44:54.905Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": [
+      "Content Creation",
+      "Business",
+      "Productivity",
+      "Work"
+    ]
+  },
+  "subtitle": "Teams across Anthropic use Claude Code for everything from debugging production issues and navigating unfamiliar codebases to building custom automation tools. Here's how.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/product/claude-code"
 }

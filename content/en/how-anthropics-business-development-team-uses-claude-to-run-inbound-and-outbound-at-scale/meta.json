@@ -13,5 +13,23 @@
   "translatedTitle": "Anthropic 业务拓展团队如何用 Claude 大规模运营入站与出站业务",
   "translated": true,
   "translatedAt": "2026-09-02T04:30:13.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Cowork"
+    ],
+    "usecase": [
+      "Sales"
+    ]
+  },
+  "subtitle": "John Albert, a business development rep at Anthropic, shares how his team uses Claude to research account books, draft customer replies, and address the ad-hoc requests that used to queue behind data teams.",
+  "authors": [
+    "John Albert"
+  ],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/product/cowork"
 }

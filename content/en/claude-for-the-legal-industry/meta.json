@@ -13,5 +13,21 @@
   "translatedTitle": "Claude 面向法律行业",
   "translated": true,
   "translatedAt": "2026-09-02T04:22:36.115Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Cowork"
+    ],
+    "usecase": [
+      "Legal"
+    ]
+  },
+  "subtitle": "We're releasing 20+ new MCP connectors that link Claude to the software that the legal industry runs on and 12 new plugins tailored to specific legal work and practice areas.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/product/cowork"
 }

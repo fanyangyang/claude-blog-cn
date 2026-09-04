@@ -13,5 +13,24 @@
   "translatedTitle": "Claude Code 中的 Routines 功能介绍",
   "translated": true,
   "translatedAt": "2026-09-02T04:32:12.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": [
+      "Coding",
+      "Work",
+      "Productivity",
+      "Agents"
+    ]
+  },
+  "subtitle": "Define repeatable routines that work your backlog, review your PRs, and respond to events in the cloud.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/product/claude-code"
 }

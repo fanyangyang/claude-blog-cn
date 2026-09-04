@@ -13,5 +13,22 @@
   "translatedTitle": "在开发者控制台中生成更好的提示词",
   "translated": true,
   "translatedAt": "2026-09-02T04:39:32.652Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Platform"
+    ],
+    "usecase": [
+      "Work",
+      "Business"
+    ]
+  },
+  "subtitle": "Claude now generates production-ready prompt templates, helping developers create effective prompts faster.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/platform/api"
 }

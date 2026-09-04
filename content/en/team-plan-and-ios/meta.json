@@ -13,5 +13,22 @@
   "translatedTitle": "Claude Team 计划与 iOS 应用正式发布",
   "translated": true,
   "translatedAt": "2026-09-02T04:39:32.652Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude apps"
+    ],
+    "usecase": [
+      "Work",
+      "Business"
+    ]
+  },
+  "subtitle": "Claude now offers a Team plan with increased usage and a free iOS app.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": ""
 }

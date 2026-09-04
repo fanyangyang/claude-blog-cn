@@ -13,5 +13,21 @@
   "translatedTitle": "Claude Android 应用",
   "translated": true,
   "translatedAt": "2026-09-02T04:39:32.652Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude apps"
+    ],
+    "usecase": [
+      "Work"
+    ]
+  },
+  "subtitle": "Claude is now available on Android with full vision, multilingual, and reasoning capabilities across web, iOS, and Android platforms.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": ""
 }

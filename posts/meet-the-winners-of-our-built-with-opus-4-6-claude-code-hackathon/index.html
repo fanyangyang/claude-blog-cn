@@ -4,54 +4,229 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>认识 Built with Opus 4.6 Claude Code 黑客松的获胜者们 — Claude Blog 中文翻译</title>
-  <meta name="description" content="认识 Built with Opus 4.6 Claude Code 黑客松的获胜者们">
+  <meta name="description" content="From a cardiologist to an electronic musician, get to the know the winners of our Built with Opus 4.6 hackathon.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/meet-the-winners-of-our-built-with-opus-4-6-claude-code-hackathon" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>认识 Built with Opus 4.6 Claude Code 黑客松的获胜者们</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/meet-the-winners-of-our-built-with-opus-4-6-claude-code-hackathon" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/meet-the-winners-of-our-built-with-opus-4-6-claude-code-hackathon/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># 认识 Built with Opus 4.6 Claude Code 黑客松的获胜者们
+
+From a cardiologist to an electronic musician, get to the know the winners of our Built with Opus 4.6 hackathon.
+
+上周，我们宣布了与 Cerebral Valley 合办的 [*Built with Opus 4.7* Claude Code 线上黑客松](https://cerebralvalley.ai/e/built-with-4-7-hackathon)，邀请社区使用[我们最新的](https://www.anthropic.com/news/claude-opus-4-7) Opus 模型进行构建。与此前以 Opus 4.6 为主题的黑客松一样，我们将选出 500 名参与者，每人获得 500 美元的 API 额度和一周时间用 Claude Code 进行开发。随后，Claude 团队的评委将评选出六名获胜者，并从总额 10 万美元的 Claude API 额度奖金池中发放奖励，用于项目开发。
+
+作为本系列的首场赛事，Opus 4.6 黑客松的获胜者包括一位人身伤害律师、一位心脏病专科医生、一位道路与基础设施专家、一位电子音乐人，以及一位职业软件工程师。他们的项目涉及住房、医疗、基础设施、音乐和教育领域。五名获胜者中有四位并非职业开发者。 
+
+我们希望他们的项目能给你带来启发，去构建有意义的东西。
+
+## 第一名：[CrossBeam](https://www.youtube.com/watch?v=jHwBkFSvyk0)，Mike Brown
+
+图片由 Mike Brown 提供。加利福尼亚州的住房许可证首次提交驳回率超过 90%，平均延期六个月，让房主损失 3 万美元。而问题大多出在官僚流程上：缺少签名、法规引用编号错误、表格填写不完整。 
+
+&quot;人人都说加州有住房危机。其实我们没有住房危机，我们有的是许可证危机。&quot;人身伤害律师 Mike Brown 说。拿到建造新住宅所需的许可证，可能比施工本身花的时间还长。Mike 的黑客松项目 [CrossBeam](https://github.com/mikeOnBreeze/cc-crossbeam)，正是用 AI 来打通加州的许可证审批瓶颈。 
+
+使用 CrossBeam 时，建筑商只需把蓝图和整改通知函拖入工具；并行的 sub-agent 会解析文档、建立空间索引，并为每一条独立的整改项分派专职 agent。二十分钟后，建筑商就拿到一份精确的获批行动方案。而在桌子的另一端，CrossBeam 让市政部门能够批量处理提交的许可证，并自动生成整改通知函草稿。 
+
+布埃纳帕克（Buena Park）是南加州的一座城市，它需要在 2029 年前为超过 8900 套住房单元发放许可，但 2024 年只发了大约 120 套。该市正在考虑采用 CrossBeam 来加速许可流程——受益的不只是建筑商，还有那些要审阅成堆材料的行政人员。
+&quot;如果我们能同时解决加州许可证危机的两端，&quot;Mike 说，&quot;我们或许真的能解决加州的住房危机。&quot; 
+
+Mike 构建 CrossBeam 的工作流是：先给 Claude Code 写提示词，然后让 Claude 编写测试。&quot;我居然赢了这场比赛，而我一行代码都没写过，这太不可思议了，&quot;他说，&quot;我甚至一行代码都没读过。&quot;
+
+[*在 GitHub 上查看 CrossBeam。*](https://github.com/mikeOnBreeze/cc-crossbeam)
+
+## 第二名：[Elisa](https://www.youtube.com/watch?v=rsUaz_QAK6o)，Jon McBee
+
+图片由 Jon McBee 提供。当 Jon McBee 12 岁的女儿要为七年级的科学展项目给微控制器编程时，他希望她能用上自己作为软件工程师每天使用的工具：Claude Code。但终端界面并不是为初中生设计的——于是他自己做了一个。
+
+Elisa 是一个基于积木块的可视化集成开发环境（IDE），用户通过拼搭原语（目标、需求、agent、skill、规则、入口、部署）来设计软件，而 AI 在幕后编写真正的代码。用户用一种可视语言编写规格说明，一个元规划器（meta-planner）将其分解为任务图，剩下的交给 agent 处理。内置的教学引擎会以适龄的语言解释所用到的编程概念，让每一次构建都成为一堂课。Jon 的女儿用它为她的项目把代码烧录到微控制器上，全程没写一行代码。
+
+借助 Claude Code，Jon 只用 30 个小时就构建出了 Elisa**，提交了 76 次 commit，包含超过 39000 行代码和 1500 多个测试。&quot;我懂系统架构，懂硬件集成，也知道如何定义和测试软件，&quot;他说，&quot;Claude Code 帮我在短短六天里把这些知识变成了一款可以发布的产品。&quot;
+
+已有教育工作者主动联系希望在课堂上使用 Elisa，Jon 正在利用他获得第二名所得的 3 万美元 Claude API 额度为这项工作筹集资金。他相信，软件开发者很快就会完全不再手写源代码，而是与定义良好的测试和规格说明打交道。*Elisa* 把这个理念包在了一个对孩子友好的可视化界面里。&quot;我用女儿的名字命名这个项目，&quot;Jon 说，&quot;因为它正是为她这样的人做的。&quot;
+
+[*在 GitHub 上查看 Elisa。*](https://github.com/zoidbergclawd/elisa)
+
+## 第三名：[PostVisit.ai](https://youtu.be/V29UCOii2jE)，Michał Nedoszytko
+
+图片由 Michał Nedoszytko 提供。Michał Nedoszytko 是一位常驻布鲁塞尔的心脏病专科医生，在行医之余已经做了 20 年医疗软件。他此前的项目 Previsit.AI 是一套已在比利时、希腊和波兰部署的 AI 患者预诊系统。而过去两年他真正想做的，是它的对侧：就诊之后发生什么。&quot;我在导管室做过数千台手术，&quot;他说，&quot;但真正的困难是在患者走出诊室的那一刻开始的。&quot;
+
+PostVisit 是一套工具集：用通俗语言解释诊断、分析就诊记录和 AI 病历助手的转写文本，并在医生的监督下，从科研资源和完整健康档案中呈现相关的临床证据。患者能更清楚地了解自己的诊疗情况，医生也能掌握患者在两次就诊之间的状态。这个助手围绕隐私、安全和临床最佳实践而构建。
+
+为了开发 PostVisit，Michał 给自己安排了一场黑客松公路旅行，在从布鲁塞尔开往旧金山的路上边走边开发。&quot;我最好的想法都是在路上诞生的，&quot;他说。一周、几千英里之后，他做出了这个设想多年的产品。&quot;医学以证据为基础，&quot;他说，&quot;而现在，通过把健康档案、临床证据和就诊数据结合在一起，患者可以完全掌控并理解就诊之后发生的一切。&quot;
+
+[*了解更多请访问 postvisit.ai。*](http://postvisit.ai)
+
+## &quot;Keep Thinking&quot;（持续思考）奖：[TARA](https://www.youtube.com/watch?v=GFCrXehS1DE)，Kyeyune Kazibwe
+
+图片由 Kyeyune Kazibwe 提供。乌干达的道路基础设施需求远超预算所能覆盖，而传统可行性研究帮不上忙：一次研究要花费 100 万到 400 万美元、耗时 9 到 14 个月，而且只关注经济预测，完全没有考虑道路本应服务的社区。当时在乌干达工程与交通部工作的 Kyeyune Kazibwe 构建了 TARA，希望改变这类决策的制定方式。
+
+TARA 能把行车记录仪拍下的道路影像转化为一份完整的投资评估报告。该工具利用 Opus 4.6 的视觉能力分析每一帧画面，识别路面状况、病害模式，以及道路沿线的活动——包括行人、骑行者和市场摊位。系统将道路切分为不同路况区段，自动填入养护干预成本，并生成完整的经济评估，包括净现值（NPV）、现金流预测和敏感性分析。它还会给出一个公平性得分，评估这项投资究竟让谁受益，并将沿途识别到的邻近设施和重点关注区域纳入考量。
+
+参加黑客松时，Kyeyune 上传了 Kira 至 Matugga 公路的真实行车记录仪录像，这条路目前在乌干达在建。&quot;点一下就能生成一份完整的 PDF 报告：路况评估、经济分析、公平性发现、敏感性解读，全部在一个文档里，&quot;他说，&quot;这个过程过去要花好几周，TARA 只用五个小时。&quot;
+
+[在 GitHub 上查看 *TARA*。](https://github.com/Kye256/tara-transport-assessment)
+
+## 特别奖——创意探索：[Conductr](https://www.youtube.com/watch?v=X6CqJoyj0kI)，Asep Bagja Priandana
+
+图片由 Asep Bagja Priandana 提供。Asep Bagja Priandana 构建了 Conductr，把 Claude 变成一位实时合奏的虚拟乐队搭档。这个基于浏览器的 MIDI 乐器会在你用控制器弹奏和弦时聆听、分析你的演奏，并实时生成鼓、贝斯、旋律与和声四条音轨。输入 *&quot;make it funky&quot;* 或 *&quot;build to a climax&quot;*，编曲就会在演奏中途改变。
+
+他说，技术上的挑战在于让音乐不中断。一个编译为 WebAssembly 的 C 语言引擎每 15 毫秒生成一次音符，因此 AI 的决策可以重塑编曲而不打断律动。用 Asep 的话说，延迟低到&quot;在音乐上不可察觉&quot;。
+
+Conductr 由大约 4800 行 JavaScript 和 WebAssembly 构成：对一个能聆听、思考并与你实时合奏的乐器来说，这是一次相当精炼的实现。
+
+[*在 GitHub 上查看 Conductr。*](https://github.com/nanassound/conductr)
+
+请持续关注 Built with Opus 4.7 黑客松获胜者的后续消息。
+
+[***了解***](http://claude.com/community)***我们的 Claude 社区计划，包括线下聚会、黑客松等更多活动。***
+
+‍</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Claude Code</span>
-            <span class="article-date">April 20, 2026</span>
-            
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-peach);">
+            <img class="hero-illo-img" src="/assets/illustrations/meet-the-winners-of-our-built-with-opus-4-6-claude-code-hackathon.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">认识 Built with Opus 4.6 Claude Code 黑客松的获胜者们</h1>
-          <a href="/posts/meet-the-winners-of-our-built-with-opus-4-6-claude-code-hackathon/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>上周，我们宣布了与 Cerebral Valley 合办的 <a href="https://cerebralvalley.ai/e/built-with-4-7-hackathon" target="_blank"><em>Built with Opus 4.7</em> Claude Code 线上黑客松</a>，邀请社区使用<a href="https://www.anthropic.com/news/claude-opus-4-7">我们最新的</a> Opus 模型进行构建。与此前以 Opus 4.6 为主题的黑客松一样，我们将选出 500 名参与者，每人获得 500 美元的 API 额度和一周时间用 Claude Code 进行开发。随后，Claude 团队的评委将评选出六名获胜者，并从总额 10 万美元的 Claude API 额度奖金池中发放奖励，用于项目开发。</p><p>作为本系列的首场赛事，Opus 4.6 黑客松的获胜者包括一位人身伤害律师、一位心脏病专科医生、一位道路与基础设施专家、一位电子音乐人，以及一位职业软件工程师。他们的项目涉及住房、医疗、基础设施、音乐和教育领域。五名获胜者中有四位并非职业开发者。&nbsp;</p><p>我们希望他们的项目能给你带来启发，去构建有意义的东西。</p><h2>第一名：<a href="https://www.youtube.com/watch?v=jHwBkFSvyk0" target="_blank">CrossBeam</a>，Mike Brown</h2><figure style="max-width:1366px" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69e452d10be28aa3eb8577be_image3.png" loading="lazy"></div><figcaption>图片由 Mike Brown 提供。</figcaption></figure><p>加利福尼亚州的住房许可证首次提交驳回率超过 90%，平均延期六个月，让房主损失 3 万美元。而问题大多出在官僚流程上：缺少签名、法规引用编号错误、表格填写不完整。&nbsp;</p><p>"人人都说加州有住房危机。其实我们没有住房危机，我们有的是许可证危机。"人身伤害律师 Mike Brown 说。拿到建造新住宅所需的许可证，可能比施工本身花的时间还长。Mike 的黑客松项目 <a href="https://github.com/mikeOnBreeze/cc-crossbeam" target="_blank">CrossBeam</a>，正是用 AI 来打通加州的许可证审批瓶颈。&nbsp;</p><p>使用 CrossBeam 时，建筑商只需把蓝图和整改通知函拖入工具；并行的 sub-agent 会解析文档、建立空间索引，并为每一条独立的整改项分派专职 agent。二十分钟后，建筑商就拿到一份精确的获批行动方案。而在桌子的另一端，CrossBeam 让市政部门能够批量处理提交的许可证，并自动生成整改通知函草稿。&nbsp;</p><p>布埃纳帕克（Buena Park）是南加州的一座城市，它需要在 2029 年前为超过 8900 套住房单元发放许可，但 2024 年只发了大约 120 套。该市正在考虑采用 CrossBeam 来加速许可流程——受益的不只是建筑商，还有那些要审阅成堆材料的行政人员。<br>"如果我们能同时解决加州许可证危机的两端，"Mike 说，"我们或许真的能解决加州的住房危机。"&nbsp;</p><p>Mike 构建 CrossBeam 的工作流是：先给 Claude Code 写提示词，然后让 Claude 编写测试。"我居然赢了这场比赛，而我一行代码都没写过，这太不可思议了，"他说，"我甚至一行代码都没读过。"</p><p><a href="https://github.com/mikeOnBreeze/cc-crossbeam"><em>在 GitHub 上查看 CrossBeam。</em></a></p><h2>第二名：<a href="https://www.youtube.com/watch?v=rsUaz_QAK6o" target="_blank">Elisa</a>，Jon McBee</h2><figure style="max-width:1340px" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69e45316687854976b223003_image2.png" loading="lazy"></div><figcaption>图片由 Jon McBee 提供。</figcaption></figure><p>当 Jon McBee 12 岁的女儿要为七年级的科学展项目给微控制器编程时，他希望她能用上自己作为软件工程师每天使用的工具：Claude Code。但终端界面并不是为初中生设计的——于是他自己做了一个。</p><p>Elisa 是一个基于积木块的可视化集成开发环境（IDE），用户通过拼搭原语（目标、需求、agent、skill、规则、入口、部署）来设计软件，而 AI 在幕后编写真正的代码。用户用一种可视语言编写规格说明，一个元规划器（meta-planner）将其分解为任务图，剩下的交给 agent 处理。内置的教学引擎会以适龄的语言解释所用到的编程概念，让每一次构建都成为一堂课。Jon 的女儿用它为她的项目把代码烧录到微控制器上，全程没写一行代码。</p><p>借助 Claude Code，Jon 只用 30 个小时就构建出了 Elisa<em></em>，提交了 76 次 commit，包含超过 39000 行代码和 1500 多个测试。"我懂系统架构，懂硬件集成，也知道如何定义和测试软件，"他说，"Claude Code 帮我在短短六天里把这些知识变成了一款可以发布的产品。"</p><p>已有教育工作者主动联系希望在课堂上使用 Elisa，Jon 正在利用他获得第二名所得的 3 万美元 Claude API 额度为这项工作筹集资金。他相信，软件开发者很快就会完全不再手写源代码，而是与定义良好的测试和规格说明打交道。<em>Elisa</em> 把这个理念包在了一个对孩子友好的可视化界面里。"我用女儿的名字命名这个项目，"Jon 说，"因为它正是为她这样的人做的。"</p><p><a href="https://github.com/zoidbergclawd/elisa"><em>在 GitHub 上查看 Elisa。</em></a></p><h2>第三名：<a href="https://youtu.be/V29UCOii2jE">PostVisit.ai</a>，Michał Nedoszytko</h2><figure style="max-width:1174px" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69e453686a5b08ad802e98f2_image1.png" loading="lazy"></div><figcaption>图片由 Michał Nedoszytko 提供。</figcaption></figure><p>Michał Nedoszytko 是一位常驻布鲁塞尔的心脏病专科医生，在行医之余已经做了 20 年医疗软件。他此前的项目 Previsit.AI 是一套已在比利时、希腊和波兰部署的 AI 患者预诊系统。而过去两年他真正想做的，是它的对侧：就诊之后发生什么。"我在导管室做过数千台手术，"他说，"但真正的困难是在患者走出诊室的那一刻开始的。"</p><p>PostVisit 是一套工具集：用通俗语言解释诊断、分析就诊记录和 AI 病历助手的转写文本，并在医生的监督下，从科研资源和完整健康档案中呈现相关的临床证据。患者能更清楚地了解自己的诊疗情况，医生也能掌握患者在两次就诊之间的状态。这个助手围绕隐私、安全和临床最佳实践而构建。</p><p>为了开发 PostVisit，Michał 给自己安排了一场黑客松公路旅行，在从布鲁塞尔开往旧金山的路上边走边开发。"我最好的想法都是在路上诞生的，"他说。一周、几千英里之后，他做出了这个设想多年的产品。"医学以证据为基础，"他说，"而现在，通过把健康档案、临床证据和就诊数据结合在一起，患者可以完全掌控并理解就诊之后发生的一切。"</p><p><a href="http://postvisit.ai"><em>了解更多请访问 postvisit.ai。</em></a></p><h2>"Keep Thinking"（持续思考）奖：<a href="https://www.youtube.com/watch?v=GFCrXehS1DE" target="_blank">TARA</a>，Kyeyune Kazibwe</h2><figure class="w-richtext-align-center w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69e4550a09fb338e86755644_image4.png" loading="lazy"></div><figcaption>图片由 Kyeyune Kazibwe 提供。</figcaption></figure><p>乌干达的道路基础设施需求远超预算所能覆盖，而传统可行性研究帮不上忙：一次研究要花费 100 万到 400 万美元、耗时 9 到 14 个月，而且只关注经济预测，完全没有考虑道路本应服务的社区。当时在乌干达工程与交通部工作的 Kyeyune Kazibwe 构建了 TARA，希望改变这类决策的制定方式。</p><p>TARA 能把行车记录仪拍下的道路影像转化为一份完整的投资评估报告。该工具利用 Opus 4.6 的视觉能力分析每一帧画面，识别路面状况、病害模式，以及道路沿线的活动——包括行人、骑行者和市场摊位。系统将道路切分为不同路况区段，自动填入养护干预成本，并生成完整的经济评估，包括净现值（NPV）、现金流预测和敏感性分析。它还会给出一个公平性得分，评估这项投资究竟让谁受益，并将沿途识别到的邻近设施和重点关注区域纳入考量。</p><p>参加黑客松时，Kyeyune 上传了 Kira 至 Matugga 公路的真实行车记录仪录像，这条路目前在乌干达在建。"点一下就能生成一份完整的 PDF 报告：路况评估、经济分析、公平性发现、敏感性解读，全部在一个文档里，"他说，"这个过程过去要花好几周，TARA 只用五个小时。"</p><p><a href="https://github.com/Kye256/tara-transport-assessment" target="_blank">在 GitHub 上查看 <em>TARA</em>。</a></p><h2>特别奖——创意探索：<a href="https://www.youtube.com/watch?v=X6CqJoyj0kI" target="_blank">Conductr</a>，Asep Bagja Priandana</h2><figure class="w-richtext-align-center w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69e45536f6ba167d389c055f_image7.jpg" loading="lazy"></div><figcaption>图片由 Asep Bagja Priandana 提供。</figcaption></figure><p>Asep Bagja Priandana 构建了 Conductr，把 Claude 变成一位实时合奏的虚拟乐队搭档。这个基于浏览器的 MIDI 乐器会在你用控制器弹奏和弦时聆听、分析你的演奏，并实时生成鼓、贝斯、旋律与和声四条音轨。输入 <em>"make it funky"</em> 或 <em>"build to a climax"</em>，编曲就会在演奏中途改变。</p><p>他说，技术上的挑战在于让音乐不中断。一个编译为 WebAssembly 的 C 语言引擎每 15 毫秒生成一次音符，因此 AI 的决策可以重塑编曲而不打断律动。用 Asep 的话说，延迟低到"在音乐上不可察觉"。</p><p>Conductr 由大约 4800 行 JavaScript 和 WebAssembly 构成：对一个能聆听、思考并与你实时合奏的乐器来说，这是一次相当精炼的实现。</p><p><a href="https://github.com/nanassound/conductr"><em>在 GitHub 上查看 Conductr。</em></a></p><p>请持续关注 Built with Opus 4.7 黑客松获胜者的后续消息。</p><p><a href="http://claude.com/community" target="_blank"><strong><em>了解</em></strong></a><strong><em>我们的 Claude 社区计划，包括线下聚会、黑客松等更多活动。</em></strong></p><p>‍</p></div>
+            <h1 class="article-title u-text-style-h1">认识 Built with Opus 4.6 Claude Code 黑客松的获胜者们</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>From a cardiologist to an electronic musician, get to the know the winners of our Built with Opus 4.6 hackathon.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/product/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">April 20, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/meet-the-winners-of-our-built-with-opus-4-6-claude-code-hackathon/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/meet-the-winners-of-our-built-with-opus-4-6-claude-code-hackathon" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>上周，我们宣布了与 Cerebral Valley 合办的 <a href="https://cerebralvalley.ai/e/built-with-4-7-hackathon" target="_blank"><em>Built with Opus 4.7</em> Claude Code 线上黑客松</a>，邀请社区使用<a href="https://www.anthropic.com/news/claude-opus-4-7">我们最新的</a> Opus 模型进行构建。与此前以 Opus 4.6 为主题的黑客松一样，我们将选出 500 名参与者，每人获得 500 美元的 API 额度和一周时间用 Claude Code 进行开发。随后，Claude 团队的评委将评选出六名获胜者，并从总额 10 万美元的 Claude API 额度奖金池中发放奖励，用于项目开发。</p><p>作为本系列的首场赛事，Opus 4.6 黑客松的获胜者包括一位人身伤害律师、一位心脏病专科医生、一位道路与基础设施专家、一位电子音乐人，以及一位职业软件工程师。他们的项目涉及住房、医疗、基础设施、音乐和教育领域。五名获胜者中有四位并非职业开发者。&nbsp;</p><p>我们希望他们的项目能给你带来启发，去构建有意义的东西。</p><h2>第一名：<a href="https://www.youtube.com/watch?v=jHwBkFSvyk0" target="_blank">CrossBeam</a>，Mike Brown</h2><figure style="max-width:1366px" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69e452d10be28aa3eb8577be_image3.png" loading="lazy"></div><figcaption>图片由 Mike Brown 提供。</figcaption></figure><p>加利福尼亚州的住房许可证首次提交驳回率超过 90%，平均延期六个月，让房主损失 3 万美元。而问题大多出在官僚流程上：缺少签名、法规引用编号错误、表格填写不完整。&nbsp;</p><p>"人人都说加州有住房危机。其实我们没有住房危机，我们有的是许可证危机。"人身伤害律师 Mike Brown 说。拿到建造新住宅所需的许可证，可能比施工本身花的时间还长。Mike 的黑客松项目 <a href="https://github.com/mikeOnBreeze/cc-crossbeam" target="_blank">CrossBeam</a>，正是用 AI 来打通加州的许可证审批瓶颈。&nbsp;</p><p>使用 CrossBeam 时，建筑商只需把蓝图和整改通知函拖入工具；并行的 sub-agent 会解析文档、建立空间索引，并为每一条独立的整改项分派专职 agent。二十分钟后，建筑商就拿到一份精确的获批行动方案。而在桌子的另一端，CrossBeam 让市政部门能够批量处理提交的许可证，并自动生成整改通知函草稿。&nbsp;</p><p>布埃纳帕克（Buena Park）是南加州的一座城市，它需要在 2029 年前为超过 8900 套住房单元发放许可，但 2024 年只发了大约 120 套。该市正在考虑采用 CrossBeam 来加速许可流程——受益的不只是建筑商，还有那些要审阅成堆材料的行政人员。<br>"如果我们能同时解决加州许可证危机的两端，"Mike 说，"我们或许真的能解决加州的住房危机。"&nbsp;</p><p>Mike 构建 CrossBeam 的工作流是：先给 Claude Code 写提示词，然后让 Claude 编写测试。"我居然赢了这场比赛，而我一行代码都没写过，这太不可思议了，"他说，"我甚至一行代码都没读过。"</p><p><a href="https://github.com/mikeOnBreeze/cc-crossbeam"><em>在 GitHub 上查看 CrossBeam。</em></a></p><h2>第二名：<a href="https://www.youtube.com/watch?v=rsUaz_QAK6o" target="_blank">Elisa</a>，Jon McBee</h2><figure style="max-width:1340px" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69e45316687854976b223003_image2.png" loading="lazy"></div><figcaption>图片由 Jon McBee 提供。</figcaption></figure><p>当 Jon McBee 12 岁的女儿要为七年级的科学展项目给微控制器编程时，他希望她能用上自己作为软件工程师每天使用的工具：Claude Code。但终端界面并不是为初中生设计的——于是他自己做了一个。</p><p>Elisa 是一个基于积木块的可视化集成开发环境（IDE），用户通过拼搭原语（目标、需求、agent、skill、规则、入口、部署）来设计软件，而 AI 在幕后编写真正的代码。用户用一种可视语言编写规格说明，一个元规划器（meta-planner）将其分解为任务图，剩下的交给 agent 处理。内置的教学引擎会以适龄的语言解释所用到的编程概念，让每一次构建都成为一堂课。Jon 的女儿用它为她的项目把代码烧录到微控制器上，全程没写一行代码。</p><p>借助 Claude Code，Jon 只用 30 个小时就构建出了 Elisa<em></em>，提交了 76 次 commit，包含超过 39000 行代码和 1500 多个测试。"我懂系统架构，懂硬件集成，也知道如何定义和测试软件，"他说，"Claude Code 帮我在短短六天里把这些知识变成了一款可以发布的产品。"</p><p>已有教育工作者主动联系希望在课堂上使用 Elisa，Jon 正在利用他获得第二名所得的 3 万美元 Claude API 额度为这项工作筹集资金。他相信，软件开发者很快就会完全不再手写源代码，而是与定义良好的测试和规格说明打交道。<em>Elisa</em> 把这个理念包在了一个对孩子友好的可视化界面里。"我用女儿的名字命名这个项目，"Jon 说，"因为它正是为她这样的人做的。"</p><p><a href="https://github.com/zoidbergclawd/elisa"><em>在 GitHub 上查看 Elisa。</em></a></p><h2>第三名：<a href="https://youtu.be/V29UCOii2jE">PostVisit.ai</a>，Michał Nedoszytko</h2><figure style="max-width:1174px" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69e453686a5b08ad802e98f2_image1.png" loading="lazy"></div><figcaption>图片由 Michał Nedoszytko 提供。</figcaption></figure><p>Michał Nedoszytko 是一位常驻布鲁塞尔的心脏病专科医生，在行医之余已经做了 20 年医疗软件。他此前的项目 Previsit.AI 是一套已在比利时、希腊和波兰部署的 AI 患者预诊系统。而过去两年他真正想做的，是它的对侧：就诊之后发生什么。"我在导管室做过数千台手术，"他说，"但真正的困难是在患者走出诊室的那一刻开始的。"</p><p>PostVisit 是一套工具集：用通俗语言解释诊断、分析就诊记录和 AI 病历助手的转写文本，并在医生的监督下，从科研资源和完整健康档案中呈现相关的临床证据。患者能更清楚地了解自己的诊疗情况，医生也能掌握患者在两次就诊之间的状态。这个助手围绕隐私、安全和临床最佳实践而构建。</p><p>为了开发 PostVisit，Michał 给自己安排了一场黑客松公路旅行，在从布鲁塞尔开往旧金山的路上边走边开发。"我最好的想法都是在路上诞生的，"他说。一周、几千英里之后，他做出了这个设想多年的产品。"医学以证据为基础，"他说，"而现在，通过把健康档案、临床证据和就诊数据结合在一起，患者可以完全掌控并理解就诊之后发生的一切。"</p><p><a href="http://postvisit.ai"><em>了解更多请访问 postvisit.ai。</em></a></p><h2>"Keep Thinking"（持续思考）奖：<a href="https://www.youtube.com/watch?v=GFCrXehS1DE" target="_blank">TARA</a>，Kyeyune Kazibwe</h2><figure class="w-richtext-align-center w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69e4550a09fb338e86755644_image4.png" loading="lazy"></div><figcaption>图片由 Kyeyune Kazibwe 提供。</figcaption></figure><p>乌干达的道路基础设施需求远超预算所能覆盖，而传统可行性研究帮不上忙：一次研究要花费 100 万到 400 万美元、耗时 9 到 14 个月，而且只关注经济预测，完全没有考虑道路本应服务的社区。当时在乌干达工程与交通部工作的 Kyeyune Kazibwe 构建了 TARA，希望改变这类决策的制定方式。</p><p>TARA 能把行车记录仪拍下的道路影像转化为一份完整的投资评估报告。该工具利用 Opus 4.6 的视觉能力分析每一帧画面，识别路面状况、病害模式，以及道路沿线的活动——包括行人、骑行者和市场摊位。系统将道路切分为不同路况区段，自动填入养护干预成本，并生成完整的经济评估，包括净现值（NPV）、现金流预测和敏感性分析。它还会给出一个公平性得分，评估这项投资究竟让谁受益，并将沿途识别到的邻近设施和重点关注区域纳入考量。</p><p>参加黑客松时，Kyeyune 上传了 Kira 至 Matugga 公路的真实行车记录仪录像，这条路目前在乌干达在建。"点一下就能生成一份完整的 PDF 报告：路况评估、经济分析、公平性发现、敏感性解读，全部在一个文档里，"他说，"这个过程过去要花好几周，TARA 只用五个小时。"</p><p><a href="https://github.com/Kye256/tara-transport-assessment" target="_blank">在 GitHub 上查看 <em>TARA</em>。</a></p><h2>特别奖——创意探索：<a href="https://www.youtube.com/watch?v=X6CqJoyj0kI" target="_blank">Conductr</a>，Asep Bagja Priandana</h2><figure class="w-richtext-align-center w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69e45536f6ba167d389c055f_image7.jpg" loading="lazy"></div><figcaption>图片由 Asep Bagja Priandana 提供。</figcaption></figure><p>Asep Bagja Priandana 构建了 Conductr，把 Claude 变成一位实时合奏的虚拟乐队搭档。这个基于浏览器的 MIDI 乐器会在你用控制器弹奏和弦时聆听、分析你的演奏，并实时生成鼓、贝斯、旋律与和声四条音轨。输入 <em>"make it funky"</em> 或 <em>"build to a climax"</em>，编曲就会在演奏中途改变。</p><p>他说，技术上的挑战在于让音乐不中断。一个编译为 WebAssembly 的 C 语言引擎每 15 毫秒生成一次音符，因此 AI 的决策可以重塑编曲而不打断律动。用 Asep 的话说，延迟低到"在音乐上不可察觉"。</p><p>Conductr 由大约 4800 行 JavaScript 和 WebAssembly 构成：对一个能聆听、思考并与你实时合奏的乐器来说，这是一次相当精炼的实现。</p><p><a href="https://github.com/nanassound/conductr"><em>在 GitHub 上查看 Conductr。</em></a></p><p>请持续关注 Built with Opus 4.7 黑客松获胜者的后续消息。</p><p><a href="http://claude.com/community" target="_blank"><strong><em>了解</em></strong></a><strong><em>我们的 Claude 社区计划，包括线下聚会、黑客松等更多活动。</em></strong></p><p>‍</p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/meet-the-winners-of-our-built-with-opus-4-6-claude-code-hackathon" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

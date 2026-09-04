@@ -13,5 +13,19 @@
   "translatedTitle": "Agent harness 设计：驾驭 Claude 智能的三种模式",
   "translated": true,
   "translatedAt": "2026-09-02T04:07:02.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Agents"
+    ],
+    "product": [
+      "Claude Platform"
+    ],
+    "usecase": []
+  },
+  "subtitle": "Building applications that balance intelligence, latency, and cost.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/agents",
+  "productUrl": "https://claude.com/platform/api"
 }

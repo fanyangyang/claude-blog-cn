@@ -4,39 +4,354 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Using CLAUDE.md files: Customizing Claude Code for your codebase — Claude Blog CN</title>
-  <meta name="description" content="Using CLAUDE.md files: Customizing Claude Code for your codebase">
+  <meta name="description" content="A practical guide for using CLAUDE.md files to optimize your use of Claude Code.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="/posts/using-claude-md-files/" class="nav-link">中文版 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>Using CLAUDE.md files: Customizing Claude Code for your codebase</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/using-claude-md-files" target="_blank" rel="noopener noreferrer">Ask questions about this page</a>
+        <button type="button" class="explore-item" data-copy-markdown>Copy as markdown</button>
+        <a class="explore-item" href="/posts/using-claude-md-files/">阅读中文翻译 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># Using CLAUDE.md files: Customizing Claude Code for your codebase
+
+A practical guide for using CLAUDE.md files to optimize your use of Claude Code.
+
+If you use AI coding agents, you face the same challenge: how do you give them enough context to understand your architecture, conventions, and workflows without repeating yourself?
+
+The problem compounds as your codebase grows. Complex module relationships, domain-specific patterns, and team conventions don't surface easily. You end up explaining the same architectural decisions, testing requirements, and code style preferences at the start of every conversation.
+
+[CLAUDE.md](https://www.anthropic.com/engineering/claude-code-best-practices) files solve this by giving Claude persistent context about your project. Think of it as a configuration file that Claude automatically incorporates into every conversation, ensuring it always knows your project structure, coding standards, and preferred workflows.
+
+In this article, we walk through how to structure your [CLAUDE.md](http://claude.md), share best practices, and tips for using them to get the most out of Claude Code. 
+
+## What is a CLAUDE.md file?
+
+CLAUDE.md is a special configuration file that lives in your repository and provides Claude with project-specific context. You can place it in your repository root to share with your team, in parent directories for monorepo setups, or in your home folder for universal application across all projects.
+
+Here’s an example CLAUDE.md that you might have in your repository:
+
+`# Project Context
+
+When working with this codebase, prioritize readability over cleverness. Ask clarifying questions before making architectural changes.
+
+## About This Project
+
+FastAPI REST API for user authentication and profiles. Uses SQLAlchemy for database operations and Pydantic for validation.
+
+## Key Directories
+
+- `app/models/` - database models
+- `app/api/` - route handlers
+- `app/core/` - configuration and utilities
+
+## Standards
+
+- Type hints required on all functions
+- pytest for testing (fixtures in `tests/conftest.py`)
+- PEP 8 with 100 character lines
+
+## Common Commands
+```bash
+uvicorn app.main:app --reload  # dev server
+pytest tests/ -v               # run tests
+```
+
+## Notes
+
+All routes use `/api/v1` prefix. JWT tokens expire after 24 hours.
+`A well-configured CLAUDE.md transforms how Claude works with your specific project. The file serves multiple purposes: providing architectural context, establishing workflows, and connecting Claude to your development tools. Each addition should solve a real problem you have encountered, not theoretical concerns about what Claude might need.
+
+This file can document common bash commands, core utilities, code style guidelines, testing instructions, repository conventions, developer environment setup, and project-specific warnings. There is no required format. The recommendation is to keep this file concise and human-readable, treating it like documentation that both humans and Claude need to understand quickly.
+
+Your CLAUDE.md file becomes part of Claude's system prompt. Every conversation starts with this context already loaded, eliminating the need to explain basic project information repeatedly.
+
+## **Getting started with /init**
+
+Creating a CLAUDE.md from scratch can feel daunting, especially in an unfamiliar codebase. 
+
+The `/init` command automates this process by analyzing your project and generating a starter configuration.
+
+Run `/init `in any Claude Code session:
+
+`cd your-project
+claude
+/init`Claude examines your codebase—reading package files, existing documentation, configuration files, and code structure—then generates a CLAUDE.md tailored to your project. The generated file typically includes build commands, test instructions, key directories, and coding conventions it detected.
+
+Think of `/init` as a starting point, not a finished product. The generated CLAUDE.md captures obvious patterns but may miss nuances specific to your workflow. Review what Claude produces and refine it based on your team's actual practices.
+
+You can also use `/init `on existing projects that already have a CLAUDE.md. Claude will review the current file and suggest improvements based on what it learns from exploring your codebase.
+
+After running `/init`, consider these next steps:
+
+- Review the generated content for accuracy
+- Add workflow instructions Claude couldn't infer (branch naming conventions, deployment processes, code review requirements)
+- Remove generic guidance that doesn't apply to your project
+- Commit the file to version control so your team benefits
+
+The `/init` command works well for getting oriented quickly, but the real value comes from iterating on the generated file over time. As you work with Claude Code, use the `#` key to add instructions you find yourself repeating—these additions accumulate into a CLAUDE.md that genuinely reflects how your team works.
+
+## How to structure your CLAUDE.md
+
+The following sections show you how to structure content for maximum impact: navigating complex architectures, tracking progress on multi-step tasks, integrating custom tools, and preventing rework through consistent workflows.
+
+### Give Claude a map
+
+Explaining your project architecture, key libraries, and coding styles becomes tedious when you do it for every new task. You need Claude to maintain consistent context about your codebase structure without manual reinforcement.
+
+Add a project summary and high-level directory structure to your CLAUDE.md. This gives Claude immediate orientation when navigating your codebase. 
+
+A simple tree output showing key directories helps Claude understand where different components live:
+
+`main.py
+├── logs
+│   ├── application.log
+├── modules
+│   ├── cli.py
+│   ├── logging_utils.py
+│   ├── media_handler.py
+│   ├── player.py`Include information about your main dependencies, architectural patterns, and any non-standard organizational choices. If you use domain-driven design, microservices, or specific frameworks, document that. Claude uses this map to make better decisions about where to find code and where to make changes.
+
+### Connect Claude to your tools
+
+Claude inherits your complete environment but needs guidance on which custom tools and scripts to use. Your team likely has specialized utilities for deployment, testing, or code generation that Claude should know about.
+
+Document your custom tools in CLAUDE.md with usage examples. Include tool names, basic usage patterns, and when to invoke them. If your tool provides help documentation through a `--help` flag, mention that so Claude knows to check it. For complex tools, add examples of common invocations your team uses regularly.
+
+Claude functions as an MCP (Model Context Protocol) client, connecting to MCP servers that extend its capabilities. Configure these through project settings, global configuration, or checked-in `.mcp.json` files. The `--mcp-debug` flag helps troubleshoot connection issues when tools don't appear as expected.
+
+For example, if you have a Slack MCP server configured for your organization and you need Claude to understand how to use it, include something like this in CLAUDE.md:
+
+`### Slack MCP
+- Posts to #dev-notifications channel only
+- Use for deployment notifications and build failures
+- Do not use for individual PR updates (those go through GitHub webhooks)
+- Rate limited to 10 messages per hour`Learn more about MCP [fundamentals and best practices](https://www.anthropic.com/engineering/building-effective-mcp-servers).
+
+For more information on setting permissions for Claude Code, see settings.json documentation at[ code.claude.com](https://code.claude.com/docs/en/settings).
+
+### **Define standard workflows**
+
+Having Claude jump straight into code changes without planning creates rework. Claude might implement a solution that misses requirements, choose the wrong architectural approach, or make changes that break existing functionality.
+
+You need Claude to think before acting. Define standard workflows in your CLAUDE.md that Claude should follow for different types of tasks. A solid default workflow addresses four questions before making changes:
+
+- Is this a question about current state that requires investigation first?
+- Does this need a detailed plan before implementation?
+- What additional information is missing?
+- How will effectiveness be tested?
+
+Specific workflows might include explore-plan-code-commit for features, test-driven development for algorithmic work, or visual iteration for UI changes. Document your testing requirements, commit message format, and any approval steps. When Claude knows your workflow upfront, it structures work to match your team's actual process rather than guessing.
+
+An example workflow instruction might be: 
+
+`1) Before modifying code in the following locations: X, Y, Z
+	- Consider how it might affect A, B, C
+	- Construct an implementation plan
+	- Develop a test plan that will validate the following functions...`
+## ‍**Additional tips for working with Claude Code **
+
+Beyond configuring your CLAUDE.md file, three additional techniques improve how you work with Claude Code.
+
+### **Keep context fresh**
+
+Working with Claude Code over time accumulates irrelevant context. File contents from earlier tasks, command outputs that no longer matter, and tangential conversations fill Claude's context window. As the signal-to-noise ratio drops, Claude struggles to maintain focus on the current task.
+
+Use `/clear` between distinct tasks to reset the context window. This removes accumulated history while preserving your CLAUDE.md configuration and Claude's ability to address new problems with fresh context. Think of it as closing one work session and opening another.
+
+When you finish debugging authentication and switch to implementing a new API endpoint, clear the context. The authentication details no longer matter and distract from the new work.
+
+### **Use subagents for distinct phases**
+
+Long conversations accumulate context that interferes with new tasks. You've debugged a complex authentication flow, and now you need a security review of that same code. The debugging details color Claude's security analysis, potentially causing it to overlook issues or focus on already-resolved concerns.
+
+Tell Claude to use a [subagent](https://code.claude.com/docs/en/sub-agents) for distinct phases of work. Subagents maintain isolated context, preventing information from earlier tasks from interfering with new analysis. After implementing a payment processor, instruct Claude to &quot;use a sub-agent to perform a security review of that code&quot; rather than continuing in the same conversation.
+
+Subagents work best for multistep workflows where each phase requires different perspectives. Implementation needs architectural context and feature requirements; security review needs fresh eyes focused solely on vulnerabilities. Context separation keeps both analyses sharp.
+
+### **Create custom commands**
+
+Repetitive prompts waste time. You find yourself typing &quot;review this code for security issues&quot; or &quot;analyze this for performance problems&quot; over and over. Each time you need to remember the exact phrasing that gets good results.
+
+Custom slash commands store these as markdown files in your` .claude/commands/ `directory. Create a file named `performance-optimization.mm` with your preferred performance optimization prompt, and it becomes available as `/performance-optimization` in any conversation. Commands support arguments through $ARGUMENTS or numbered placeholders like `$1` and `$2`, letting you pass specific files or parameters.
+
+For example, `performance-optimization.md` might look like this:
+
+`# Performance Optimization
+
+Analyze the provided code for performance bottlenecks and optimization opportunities. Conduct a thorough review covering:
+
+## Areas to Analyze
+
+### Database &amp; Data Access
+- N+1 query problems and missing eager loading
+- Lack of database indexes on frequently queried columns
+- Inefficient joins or subqueries
+- Missing pagination on large result sets
+- Absence of query result caching
+- Connection pooling issues
+
+### Algorithm Efficiency
+- Time complexity issues (O(n²) or worse when better exists)
+- Nested loops that could be optimized
+- Redundant calculations or repeated work
+- Inefficient data structure choices
+- Missing memoization or dynamic programming opportunities
+
+### Memory Management
+- Memory leaks or retained references
+- Loading entire datasets when streaming is possible
+- Excessive object instantiation in loops
+- Large data structures kept in memory unnecessarily
+- Missing garbage collection opportunities
+
+### Async &amp; Concurrency
+- Blocking I/O operations that should be async
+- Sequential operations that could run in parallel
+- Missing Promise.all() or concurrent execution patterns
+- Synchronous file operations
+- Unoptimized worker thread usage
+
+### Network &amp; I/O
+- Excessive API calls (missing request batching)
+- No response caching strategy
+- Large payloads without compression
+- Missing CDN usage for static assets
+- Lack of connection reuse
+
+### Frontend Performance
+- Render-blocking JavaScript or CSS
+- Missing code splitting or lazy loading
+- Unoptimized images or assets
+- Excessive DOM manipulations or reflows
+- Missing virtualization for long lists
+- No debouncing/throttling on expensive operations
+
+### Caching
+- Missing HTTP caching headers
+- No application-level caching layer
+- Absence of memoization for pure functions
+- Static assets without cache busting
+
+## Output Format
+
+For each issue identified:
+1. **Issue**: Describe the performance problem
+2. **Location**: Specify file/function/line numbers
+3. **Impact**: Rate severity (Critical/High/Medium/Low) and explain expected performance degradation
+4. **Current Complexity**: Include time/space complexity where applicable
+5. **Recommendation**: Provide specific optimization strategy
+6. **Code Example**: Show optimized version when possible
+7. **Expected Improvement**: Quantify performance gains if measurable
+
+If code is well-optimized:
+- Confirm optimization status
+- List performance best practices properly implemented
+- Note any minor improvements possible
+
+**Code to review:**
+```
+$ARGUMENTS
+````You don't need to write custom command files manually. Ask Claude to create them for you:
+
+`Create a custom slash command called /performance-optimization that analyzes code for database query issues, algorithm efficiency, memory management, and caching opportunities.
+`Claude will write the markdown file to `.claude/commands/performance-optimization.md`, and the command will be available immediately.
+
+## **Start simple, expand deliberately**
+
+It's tempting to create a comprehensive CLAUDE.md right away. Resist that urge.
+
+CLAUDE.md is added to Claude Code's context every time, so from a[ context engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) and[ prompt engineering](https://www.anthropic.com/engineering/prompt-engineering-overview) standpoint, keep it concise. One option: break up information into separate markdown files and reference them inside the CLAUDE.md file.
+
+Don't include sensitive information, API keys, credentials, database connection strings, or detailed security vulnerability information—especially if you commit to version control. Since CLAUDE.md becomes part of Claude's system prompt, treat it as documentation that could be shared publicly.
+
+## **Make CLAUDE.md work for you**
+
+CLAUDE.md files turn Claude Code from a general-purpose assistant into a tool configured specifically for your codebase. Start simple with basic project structure and build documentation, then expand based on actual friction points in your workflow.
+
+The most effective CLAUDE.md files solve real problems: they document the commands you type repeatedly, capture the architectural context that takes ten minutes to explain, and establish workflows that prevent rework. Your file should reflect how your team actually develops software—not theoretical best practices that sound good but don't match reality.
+
+Treat customization as an ongoing practice rather than a one-time setup task. Projects change, teams learn better patterns, and new tools enter your workflow. A well-maintained CLAUDE.md evolves with your codebase, continuously reducing the friction of working with AI assistance on complex software.
+
+***Get started with ***[***Claude Code***](https://www.claude.com/product/claude-code)*** today.***</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Claude Code</span>
-            <span class="article-date">November 25, 2025</span>
-            <span class="lang-badge-large">EN</span>
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-heather);">
+            <img class="hero-illo-img" src="/assets/illustrations/using-claude-md-files.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">Using CLAUDE.md files: Customizing Claude Code for your codebase</h1>
-          <a href="/posts/using-claude-md-files/" class="lang-toggle">阅读中文翻译 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>If you use AI coding agents, you face the same challenge: how do you give them enough context to understand your architecture, conventions, and workflows without repeating yourself?</p><p>The problem compounds as your codebase grows. Complex module relationships, domain-specific patterns, and team conventions don't surface easily. You end up explaining the same architectural decisions, testing requirements, and code style preferences at the start of every conversation.</p><p><a href="https://www.anthropic.com/engineering/claude-code-best-practices">CLAUDE.md</a> files solve this by giving Claude persistent context about your project. Think of it as a configuration file that Claude automatically incorporates into every conversation, ensuring it always knows your project structure, coding standards, and preferred workflows.</p><p>In this article, we walk through how to structure your <a href="http://claude.md">CLAUDE.md</a>, share best practices, and tips for using them to get the most out of Claude Code.&nbsp;</p><h2>What is a CLAUDE.md file?</h2><p>CLAUDE.md is a special configuration file that lives in your repository and provides Claude with project-specific context. You can place it in your repository root to share with your team, in parent directories for monorepo setups, or in your home folder for universal application across all projects.</p><p>Here’s an example CLAUDE.md that you might have in your repository:</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-markdown" style="white-space:pre-wrap"><span><span style="color:#007faa"># Project Context</span><span>
+            <h1 class="article-title u-text-style-h1">Using CLAUDE.md files: Customizing Claude Code for your codebase</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>A practical guide for using CLAUDE.md files to optimize your use of Claude Code.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/product/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">November 25, 2025</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/using-claude-md-files/en.html">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>If you use AI coding agents, you face the same challenge: how do you give them enough context to understand your architecture, conventions, and workflows without repeating yourself?</p><p>The problem compounds as your codebase grows. Complex module relationships, domain-specific patterns, and team conventions don't surface easily. You end up explaining the same architectural decisions, testing requirements, and code style preferences at the start of every conversation.</p><p><a href="https://www.anthropic.com/engineering/claude-code-best-practices">CLAUDE.md</a> files solve this by giving Claude persistent context about your project. Think of it as a configuration file that Claude automatically incorporates into every conversation, ensuring it always knows your project structure, coding standards, and preferred workflows.</p><p>In this article, we walk through how to structure your <a href="http://claude.md">CLAUDE.md</a>, share best practices, and tips for using them to get the most out of Claude Code.&nbsp;</p><h2>What is a CLAUDE.md file?</h2><p>CLAUDE.md is a special configuration file that lives in your repository and provides Claude with project-specific context. You can place it in your repository root to share with your team, in parent directories for monorepo setups, or in your home folder for universal application across all projects.</p><p>Here’s an example CLAUDE.md that you might have in your repository:</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-markdown" style="white-space:pre-wrap"><span><span style="color:#007faa"># Project Context</span><span>
 </span></span><span>
 </span><span>When working with this codebase, prioritize readability over cleverness. Ask clarifying questions before making architectural changes.
 </span><span>
@@ -158,13 +473,15 @@
 </span></span><span class="hljs-code">$ARGUMENTS
 </span><span class="hljs-code">```</span></code></pre><p>You don't need to write custom command files manually. Ask Claude to create them for you:</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-javascript" style="white-space:pre-wrap"><span><span>Create a custom slash command called /performance-optimization that analyzes code </span><span style="color:#7928a1">for</span><span> database query issues, algorithm efficiency, memory management, and caching opportunities.
 </span></span><span></span></code></pre><p>Claude will write the markdown file to <code>.claude/commands/performance-optimization.md</code>, and the command will be available immediately.</p><h2><strong>Start simple, expand deliberately</strong></h2><p>It's tempting to create a comprehensive CLAUDE.md right away. Resist that urge.</p><p>CLAUDE.md is added to Claude Code's context every time, so from a<a target="_blank" href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"> context engineering</a> and<a target="_blank" href="https://www.anthropic.com/engineering/prompt-engineering-overview"> prompt engineering</a> standpoint, keep it concise. One option: break up information into separate markdown files and reference them inside the CLAUDE.md file.</p><p>Don't include sensitive information, API keys, credentials, database connection strings, or detailed security vulnerability information—especially if you commit to version control. Since CLAUDE.md becomes part of Claude's system prompt, treat it as documentation that could be shared publicly.</p><h2><strong>Make CLAUDE.md work for you</strong></h2><p>CLAUDE.md files turn Claude Code from a general-purpose assistant into a tool configured specifically for your codebase. Start simple with basic project structure and build documentation, then expand based on actual friction points in your workflow.</p><p>The most effective CLAUDE.md files solve real problems: they document the commands you type repeatedly, capture the architectural context that takes ten minutes to explain, and establish workflows that prevent rework. Your file should reflect how your team actually develops software—not theoretical best practices that sound good but don't match reality.</p><p>Treat customization as an ongoing practice rather than a one-time setup task. Projects change, teams learn better patterns, and new tools enter your workflow. A well-maintained CLAUDE.md evolves with your codebase, continuously reducing the friction of working with AI assistance on complex software.</p><p><strong><em>Get started with </em></strong><a target="_blank" href="https://www.claude.com/product/claude-code"><strong><em>Claude Code</em></strong></a><strong><em> today.</em></strong></p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/using-claude-md-files" target="_blank">View original</a></p>
+              <p><a href="/">← Back to home</a></p>
+            </footer>
+          </article>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/using-claude-md-files" target="_blank">View original</a></p>
-          <p><a href="/">← Back to home</a></p>
-        </footer>
-      </article>
+      </div>
     </div>
   </main>
 <footer class="footer">
@@ -172,6 +489,53 @@
       <p>Content from <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · Translation by AI</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

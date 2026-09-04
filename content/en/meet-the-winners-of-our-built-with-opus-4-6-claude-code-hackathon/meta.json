@@ -13,5 +13,19 @@
   "translatedTitle": "认识 Built with Opus 4.6 Claude Code 黑客松的获胜者们",
   "translated": true,
   "translatedAt": "2026-09-02T04:32:12.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Claude Code"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": []
+  },
+  "subtitle": "From a cardiologist to an electronic musician, get to the know the winners of our Built with Opus 4.6 hackathon.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/claude-code",
+  "productUrl": "https://claude.com/product/claude-code"
 }

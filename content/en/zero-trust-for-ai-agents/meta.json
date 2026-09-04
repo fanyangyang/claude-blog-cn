@@ -13,5 +13,20 @@
   "translatedTitle": "面向 AI agent 的零信任",
   "translated": true,
   "translatedAt": "2026-09-02T04:16:06Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI",
+      "Agents"
+    ],
+    "product": [
+      "Claude Security"
+    ],
+    "usecase": []
+  },
+  "subtitle": "We share a security framework for deploying autonomous AI agents in the enterprise, covering the new threat landscape, a tiered Zero Trust architecture, and defensive operations built for AI-accelerated attacks.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/product/claude-security"
 }

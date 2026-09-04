@@ -13,5 +13,19 @@
   "translatedTitle": "Anthropic 增长营销团队如何用 Claude Code 把广告制作时间从 30 分钟压缩到 30 秒",
   "translated": true,
   "translatedAt": "2026-09-02T04:22:24.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Enterprise"
+    ],
+    "usecase": []
+  },
+  "subtitle": "Austin Lau, growth marketer at Anthropic, shares how he went from never having opened a terminal to building Figma plugins and automated ad generation workflows, without writing a single line of code.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/solutions/enterprise"
 }

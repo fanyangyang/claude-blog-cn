@@ -4,54 +4,386 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>构建 Claude Code 的经验：我们如何使用 Skills — Claude Blog 中文翻译</title>
-  <meta name="description" content="构建 Claude Code 的经验：我们如何使用 Skills">
+  <meta name="description" content="我们在 Anthropic 内部构建并规模化数百个 skills 的收获。">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/lessons-from-building-claude-code-how-we-use-skills" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>构建 Claude Code 的经验：我们如何使用 Skills</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/lessons-from-building-claude-code-how-we-use-skills" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/lessons-from-building-claude-code-how-we-use-skills/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># 构建 Claude Code 的经验：我们如何使用 Skills
+
+我们在 Anthropic 内部构建并规模化数百个 skills 的收获。
+
+Skills 已经成为 Claude Code 中使用最广泛的扩展机制之一。它灵活、易于创建，也易于分发。
+
+但这种灵活性也让人难以判断怎样用才最有效。什么样的 Skills 值得去做？Skill 应该如何组织结构？什么时候适合分享给他人？
+
+在 Anthropic，我们大规模地在 Claude Code 中使用 Skills，目前处于活跃使用状态的就有数百个。以下是我们利用 Skills 加速开发的经验总结。
+
+## 什么是 Skills？
+
+Skills 是由指令、脚本和资源组成的文件夹，智能体可以发现并使用它们，从而更准确、更高效地完成任务。本文假设读者已了解 Skills 的基础知识；如果你是新手，建议先学习我们在 Skilljar 上的[智能体 Skills 入门课程](https://anthropic.skilljar.com/introduction-to-agent-skills)。
+
+我们经常听到一个关于 Skills 的误解：它们“只是一些 markdown 文件”。实际上，Skills 是文件夹，可以包含脚本、素材、数据等，智能体能够发现、探索并操作这些内容。 
+
+在 Claude Code 中，Skills 还拥有[丰富多样的配置选项](https://code.claude.com/docs/en/skills#frontmatter-reference)，包括注册动态 hooks。
+
+我们发现，Claude Code 中最有效的一些 Skills，正是充分利用了这些配置选项和文件夹结构的那些。 
+
+## Skills 的类型
+
+把 Anthropic 内部的 Skills 全部盘点一遍之后，我们注意到它们聚成九类。最好的 Skills 干净地落在其中一类；想做太多的那些会横跨好几类，并把智能体搞糊涂。这不是一份定论清单，但它是一个有用的框架，用来找出你自己的 Skills 库还缺什么。 
+
+Claude Code 团队把内部 Skills 归了类，发现它们可以分成九个不同类别。
+### **1. 库与 API 参考**
+
+这类 Skills 解释如何正确使用某个库、CLI 或 SDK。对象既可以是内部库，也可以是 Claude Code 有时不太会用的常见库。它们通常会带上一文件夹参考代码片段，以及一份给 Claude 写脚本时避开的陷阱清单。
+
+例如：
+
+- `billing-lib` — 你的内部计费库：边界情况、踩坑点等。
+- `internal-platform-cli `— 内部 CLI 包装器的每一条子命令，以及何时使用它们的示例。
+- `sandbox-proxy `— 为开发工作配置组织的出口网关：哪些主机可达，如何调试 “connection refused”，如何加一条 allowlist 条目。
+
+### **2. 产品验证**
+
+这类 Skills 描述如何测试或验证你的代码是否在工作。它们常常和 playwright、tmux 或其他外部验证工具配对。
+
+在我们内部，验证类 Skills 对 Claude 输出质量的可测影响最大。值得让一位工程师花上一整周，只把验证 Skills 做到出色。
+
+可以考虑让 Claude 把自己的输出录成视频，这样你能精确看到它测了什么；也可以在每一步对状态强制做可编程断言。这些通常靠在 Skill 里放进各种脚本完成。
+
+例如：
+
+- `signup-flow-driver `— 在无头浏览器里走完注册 → 邮箱验证 → 引导，并在每一步用 hooks 断言状态
+- `checkout-verifier `— 用 Stripe 测试卡驱动结账 UI，验证发票真的落到正确状态
+- `tmux-cli-driver `— 用于需要 TTY 的交互式 CLI 测试
+
+### **3. 数据拉取与分析**
+
+这类 Skills 接到你的数据和监控栈。它们可能包含带凭证拉取数据的库、具体的仪表盘 id 等，以及常见工作流或取数路径的说明。
+
+例如：
+
+- `funnel-query `— 「要看注册 → 激活 → 付费，该 join 哪些事件」，以及真正持有规范 user_id 的那张表
+- `cohort-compare` — 比较两个队列的留存或转化，标出统计显著的差异，并链到分群定义
+- `grafana `— 数据源 UID、集群名、问题 → 仪表盘查找表
+- `datadog `— 字段对照（@request_id vs trace_id）、服务列表、指标前缀约定
+
+### **4. 业务流程与团队自动化**
+
+这类 Skills 把重复工作流收成一条命令。它们通常是相当简单的指令，但可能对其他 Skills 或 MCP 有更复杂的依赖。对这类 Skills 来说，把以往结果存进日志文件，能帮助模型保持一致，并对照该工作流的历史执行做反思。
+
+例如：
+
+- `standup-post `— 汇总工单系统、GitHub 动态和此前的 Slack → 格式化站会，只报增量
+- `create-&lt;ticket-system&gt;-ticket` — 强制 schema（合法枚举值、必填字段），再加上创建后工作流（提醒审查者、在 Slack 里贴链接）
+- `weekly-recap` — 已合并 PR + 已关闭工单 + 部署 → 格式化周报
+
+### **5. 代码脚手架与模板**
+
+这类 Skills 为代码库里的特定功能生成框架样板。你可以把它们和可组合的脚本搭配使用。当你的脚手架带有自然语言要求、单靠代码覆盖不住时，它们尤其有用。 
+
+例如：
+
+- `new-&lt;framework&gt;-workflow `— 用你们的注解脚手架出一个新服务/工作流/handler
+- `new-migration `— 你们的迁移文件模板，外加常见陷阱
+- `create-app` — 新建内部应用，预接好你们的鉴权、日志和部署配置
+
+### **6. 代码质量与审查**
+
+这类 Skills 在组织内强制代码质量，并帮助审查代码。它们可以包含确定性脚本或工具，以追求最大稳健性。你可能希望它们作为 hooks 的一部分、或在 GitHub Action 里自动运行。 
+
+- `adversarial-review `— 拉起一个新上下文的子智能体来挑刺，落实修复，迭代到发现只剩吹毛求疵为止
+- `code-style `— 强制代码风格，尤其是 Claude 默认不太会写好的那些。
+- `testing-practices` — 关于如何写测试、测什么的说明。
+
+### **7. CI/CD 与部署**
+
+这类 Skills 帮助你在代码库里拉取、推送和部署代码。它们可能引用其他 Skills 来收集数据。
+
+例如：
+
+- `babysit-pr `— 监控一个 PR → 重试不稳定的 CI → 解决合并冲突 → 打开自动合并
+- `deploy-&lt;service&gt;` — 构建 → 冒烟测试 → 按错误率对比逐步放量 → 回归时自动回滚
+- `cherry-pick-prod` — 隔离 worktree → cherry-pick → 解决冲突 → 按模板开 PR
+
+### **8. Runbooks**
+
+这类 Skills 接住一个症状（比如 Slack 线程、告警或错误签名），走完一次多工具调查，并产出结构化报告。
+
+例如：
+
+- `&lt;service&gt;-debugging `— 为流量最高的服务把症状 → 工具 → 查询模式映射起来
+- `oncall-runner `— 拉取告警 → 检查常见嫌疑人 → 格式化发现
+- `log-correlator `— 给定一个 request ID，从所有可能碰过它的系统里拉出匹配日志
+
+### **9. 基础设施运维**
+
+这类 Skills 执行例行维护和操作流程，其中一些涉及破坏性动作，因而受益于护栏。它们让工程师在关键操作里更容易按最佳实践走。
+
+例如：
+
+- `&lt;resource&gt;-orphans` — 找出孤儿 pod/volume → 发到 Slack → 浸泡期 → 用户确认 → 级联清理
+- `dependency-management `— 你们组织的依赖审批工作流
+- `cost-investigation `— 「为什么存储/出口账单突然飙了」，带上具体的 bucket 和查询模式
+
+## 制作 Skills 的技巧
+
+决定要做哪个 Skill 之后，该怎么写？下面是 Claude Code 团队制作 Skills 的一些最佳实践、技巧和窍门
+
+### 别说显而易见的事
+
+Claude 已经会写代码，也能读你的代码库。一个只是复述 Claude 默认就会做的事情的 Skill，只会增加上下文，不增加价值。如果你发布的 Skill 主要关乎知识，就把重点放在能把 Claude 推出惯常思路的信息上。
+
+[frontend design skill](https://github.com/anthropics/skills/blob/main/skills/frontend-design/SKILL.md) 是很好的例子；它由 Anthropic 的一位工程师和客户反复迭代，用来提升 Claude 的设计品味，避开 Inter 字体和紫色渐变这类经典套路。 
+
+### 建一个 Gotchas 小节
+
+任何 Skill 里信号最强的内容，都是 Gotchas 小节。这些小节应当从 Claude 使用你的 Skill 时常见的失败点长出来。理想情况下，你会随时间更新 Skill，把这些陷阱收进去。
+
+例如：
+
+“`subscriptions` 表是只追加的。你要的那一行是 version 最高的那条，不是 `created_at` 最近的那条。”“这个字段在 API 网关叫 `@request_id `，在计费服务叫 `trace_id`。它们是同一个值。”“即使 Stripe webhook 其实没处理成功，预发环境也会返回 200。真实状态去查 `payment_events `。”
+
+### 利用文件系统和渐进披露
+
+SKILL.md 指向若干其他文件，供 Claude 在特定情况下参考。例如，如果一个任务处于 pending，就应参考 stuck-jobs.md。正如前面所说，一个 Skill 是一个文件夹，而不只是一个 markdown 文件。你应当把整个文件系统想成一种上下文工程和渐进披露。告诉 Claude 你的 Skill 里有哪些文件，它会在合适的时候去读。
+
+最简单的渐进披露，是指向其他 markdown 文件给 Claude 用。例如，你可以把详细的函数签名和使用示例拆到 `references/api.md`。
+
+另一个例子：如果最终产出是一个 markdown 文件，你可以在 `assets/` 里放一份模板文件，让它复制后使用。
+
+你可以准备参考文档、脚本、示例等文件夹，帮助 Claude 更有效地工作。 
+
+### 避免把 Claude 逼上一条轨道
+
+Claude 通常会尽量遵守你的指令，而 Skills 又非常可复用，所以你要小心别把指令写得太死。给 Claude 它需要的信息，同时给它按情境调整的空间。 
+
+例如：
+
+### 想清楚初始化
+
+上面这个 Skill 的写法是：如果配置里没有 Slack 频道，就向用户提问。有些 Skills 需要用用户提供的上下文来完成初始化。例如，如果你在做一个把站会发到 Slack 的 Skill，可能希望 Claude 先问要发到哪个 Slack 频道。
+
+一个好的模式是把这些初始化信息存在 Skill 目录里的 config.json，就像上面的例子。如果配置还没设好，智能体就可以向用户提问。
+
+如果你希望智能体提出结构化的多选题，可以指示 Claude 使用 AskUserQuestion 工具。 
+
+### 描述写给模型看，不是写给人看
+
+Claude Code 启动一次会话时，会列出每个可用 Skill 及其 description。这份清单就是 Claude 扫描「这次请求有没有对应 Skill？」的依据。因此 description 字段不是摘要，而是何时触发这个 Skill 的说明。
+
+在 description 里写上 Skill 的触发词会很有帮助，比如 “babysit”。‍
+
+### 帮 Claude 记住
+
+这份文本日志帮助 Claude 记住过往事件，比如审查过 Sarah 的 auth PR。有些 Skills 可以通过在内部存数据，带上某种记忆。你可以存进只追加的文本日志或 JSON 文件这么简单的东西，也可以存进 SQLite 数据库这么复杂的东西。
+
+例如，一个 `standup-post` Skill 可以维护一份 standups.log，记下它写过的每一条，于是你下次再跑时，Claude 会读自己的历史，并说出从昨天到现在变了什么。 
+
+你可以用环境变量 `${CLAUDE_PLUGIN_DATA} `拿到一个稳定目录来存数据，关于在 Skills 里持久化数据的更多内容见： [https://code.claude.com/docs/en/plugins-reference#persistent-data-directory](https://code.claude.com/docs/en/plugins-reference#persistent-data-directory)。 
+
+### 存放脚本，再生成代码
+
+你能给 Claude 的最强工具之一就是代码。给 Claude 脚本和库，能让它把回合花在组合上，决定下一步做什么，而不是重建样板。
+
+例如，在你的 `data-science` Skill 里，你可以放一组从事件源取数的函数。为了让 Claude 做复杂分析，你可以给它这样一组辅助函数：
+
+Claude 就可以即时生成脚本，把这些能力组合起来，回答「星期二发生了什么？」这类提示。
+
+### 使用按需 hooks 
+
+Skills 可以包含只在该 Skill 被调用时激活、并且只在本次会话期间有效的 hooks。把它们留给那些你不想一直开着、但有时极其有用的、更有态度的 hooks。
+
+例如：
+
+- `/`**`careful`**` `— 通过 Bash 上的 PreToolUse matcher 拦截 rm -rf、DROP TABLE、force-push、kubectl delete。你只想在知道自己在碰生产时打开它——一直开着会把人逼疯。
+- `/`**`freeze`** — 拦截不在指定目录里的任何 Edit/Write。调试时很有用：「我想加日志，却总是一不小心把无关代码也『修』了。”
+
+## 分发 Skills
+
+Skills 最大的好处之一，是你可以和团队其他人分享它们。
+
+和别人分享 Skills，大致有两种方式：
+
+- 把 Skills 检入仓库（放在 `./.claude/skills`）
+- 做成 **plugin**，并准备一个 Claude Code Plugin marketplace，让用户可以上传和安装 plugins（详见[文档](https://code.claude.com/docs/en/plugin-marketplaces)）
+
+对跨不多几个仓库工作的小团队来说，把 Skills 检入仓库就很好用。但每一个检入的 Skill 也会给模型上下文添一点东西。规模上去之后，内部 plugin marketplace 让你可以分发 Skills，让团队自己决定安装哪些，还可以带上初始化流程。
+
+## 管理 Skills marketplace
+
+如何决定哪些 Skills 进 marketplace？人们怎样提交？
+
+在 Anthropic，我们没有一个中心团队来拍板；我们试着让最有用的 Skills 自然长出来。如果有人有一个想让别人试试的 Skill，他们可以把它上传到 GitHub 的 sandbox 文件夹，并在 Slack 或其他论坛里把链接指给大家。
+
+一旦一个 Skill 有了势头（这由 Skill 所有者自己判断），他们就可以提 PR，把它搬进 marketplace。
+
+## 组合 Skills 
+
+你可能希望 Skills 互相依赖。例如，你可能有一个上传文件的 Skill，还有一个生成 CSV 并上传的 Skill。这类依赖管理目前还没有原生做进 marketplace 或 Skills，但你可以直接按名字引用其他 Skills，只要它们已安装，模型就会调用它们。
+
+## 衡量 Skills
+
+为了了解一个 Skill 表现如何，我们用一个 PreToolUse hook 记录公司内的 Skill 使用情况（[示例代码在此](https://gist.github.com/ThariqS/24defad423d701746e23dc19aace4de5)）。这样我们就能找出受欢迎的 Skills，或触发次数低于预期的那些。
+
+## 开始使用
+
+Skills 的最佳实践仍在演进。我们最好的 Skills，大多始于几行字和一个陷阱，然后因为人们在 Claude 撞上新边界情况时不断往里加东西而变好。 
+
+理解 Skills 最好的办法就是动手、试验，看看对你什么管用。 
+
+- 查看[我们的 Skills 文档](https://code.claude.com/docs/en/skills)
+- [找一些示例 Skills 来定制](https://github.com/anthropics/skills)
+
+*本文作者是 Anthropic 技术团队成员 Thariq Shihipar，他在 Claude Code 上工作。*</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Claude Code</span>
-            <span class="article-date">June 3, 2026</span>
-            
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-heather);">
+            <img class="hero-illo-img" src="/assets/illustrations/lessons-from-building-claude-code-how-we-use-skills.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">构建 Claude Code 的经验：我们如何使用 Skills</h1>
-          <a href="/posts/lessons-from-building-claude-code-how-we-use-skills/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>Skills 已经成为 Claude Code 中使用最广泛的扩展机制之一。它灵活、易于创建，也易于分发。</p><p>但这种灵活性也让人难以判断怎样用才最有效。什么样的 Skills 值得去做？Skill 应该如何组织结构？什么时候适合分享给他人？</p><p>在 Anthropic，我们大规模地在 Claude Code 中使用 Skills，目前处于活跃使用状态的就有数百个。以下是我们利用 Skills 加速开发的经验总结。</p><h2>什么是 Skills？</h2><p>Skills 是由指令、脚本和资源组成的文件夹，智能体可以发现并使用它们，从而更准确、更高效地完成任务。本文假设读者已了解 Skills 的基础知识；如果你是新手，建议先学习我们在 Skilljar 上的<a href="https://anthropic.skilljar.com/introduction-to-agent-skills">智能体 Skills 入门课程</a>。</p><p>我们经常听到一个关于 Skills 的误解：它们“只是一些 markdown 文件”。实际上，Skills 是文件夹，可以包含脚本、素材、数据等，智能体能够发现、探索并操作这些内容。&nbsp;</p><p>在 Claude Code 中，Skills 还拥有<a href="https://code.claude.com/docs/en/skills#frontmatter-reference">丰富多样的配置选项</a>，包括注册动态 hooks。</p><p>我们发现，Claude Code 中最有效的一些 Skills，正是充分利用了这些配置选项和文件夹结构的那些。 </p></div>
+            <h1 class="article-title u-text-style-h1">构建 Claude Code 的经验：我们如何使用 Skills</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>我们在 Anthropic 内部构建并规模化数百个 skills 的收获。</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/product/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">June 3, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/lessons-from-building-claude-code-how-we-use-skills/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/lessons-from-building-claude-code-how-we-use-skills" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>Skills 已经成为 Claude Code 中使用最广泛的扩展机制之一。它灵活、易于创建，也易于分发。</p><p>但这种灵活性也让人难以判断怎样用才最有效。什么样的 Skills 值得去做？Skill 应该如何组织结构？什么时候适合分享给他人？</p><p>在 Anthropic，我们大规模地在 Claude Code 中使用 Skills，目前处于活跃使用状态的就有数百个。以下是我们利用 Skills 加速开发的经验总结。</p><h2>什么是 Skills？</h2><p>Skills 是由指令、脚本和资源组成的文件夹，智能体可以发现并使用它们，从而更准确、更高效地完成任务。本文假设读者已了解 Skills 的基础知识；如果你是新手，建议先学习我们在 Skilljar 上的<a href="https://anthropic.skilljar.com/introduction-to-agent-skills">智能体 Skills 入门课程</a>。</p><p>我们经常听到一个关于 Skills 的误解：它们“只是一些 markdown 文件”。实际上，Skills 是文件夹，可以包含脚本、素材、数据等，智能体能够发现、探索并操作这些内容。&nbsp;</p><p>在 Claude Code 中，Skills 还拥有<a href="https://code.claude.com/docs/en/skills#frontmatter-reference">丰富多样的配置选项</a>，包括注册动态 hooks。</p><p>我们发现，Claude Code 中最有效的一些 Skills，正是充分利用了这些配置选项和文件夹结构的那些。 </p><h2>Skills 的类型</h2><p>把 Anthropic 内部的 Skills 全部盘点一遍之后，我们注意到它们聚成九类。最好的 Skills 干净地落在其中一类；想做太多的那些会横跨好几类，并把智能体搞糊涂。这不是一份定论清单，但它是一个有用的框架，用来找出你自己的 Skills 库还缺什么。&nbsp;</p><figure style="max-width:2048pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="The Claude Code team categorized our internal skills and found that they could be bucketed into nine distinct categories." src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1f3a763cec27e2f026439c_b7942952.png" loading="lazy"></div><figcaption>Claude Code 团队把内部 Skills 归了类，发现它们可以分成九个不同类别。</figcaption></figure><h3><strong>1. 库与 API 参考</strong></h3><p>这类 Skills 解释如何正确使用某个库、CLI 或 SDK。对象既可以是内部库，也可以是 Claude Code 有时不太会用的常见库。它们通常会带上一文件夹参考代码片段，以及一份给 Claude 写脚本时避开的陷阱清单。</p><p>例如：</p><ul role="list"><li><code>billing-lib</code> — 你的内部计费库：边界情况、踩坑点等。</li><li><code>internal-platform-cli </code>— 内部 CLI 包装器的每一条子命令，以及何时使用它们的示例。</li><li><code>sandbox-proxy </code>— 为开发工作配置组织的出口网关：哪些主机可达，如何调试 “connection refused”，如何加一条 allowlist 条目。</li></ul><h3><strong>2. 产品验证</strong></h3><p>这类 Skills 描述如何测试或验证你的代码是否在工作。它们常常和 playwright、tmux 或其他外部验证工具配对。</p><p>在我们内部，验证类 Skills 对 Claude 输出质量的可测影响最大。值得让一位工程师花上一整周，只把验证 Skills 做到出色。</p><p>可以考虑让 Claude 把自己的输出录成视频，这样你能精确看到它测了什么；也可以在每一步对状态强制做可编程断言。这些通常靠在 Skill 里放进各种脚本完成。</p><p>例如：</p><ul role="list"><li><code>signup-flow-driver </code>— 在无头浏览器里走完注册 → 邮箱验证 → 引导，并在每一步用 hooks 断言状态</li><li><code>checkout-verifier </code>— 用 Stripe 测试卡驱动结账 UI，验证发票真的落到正确状态</li><li><code>tmux-cli-driver </code>— 用于需要 TTY 的交互式 CLI 测试</li></ul><h3><strong>3. 数据拉取与分析</strong></h3><p>这类 Skills 接到你的数据和监控栈。它们可能包含带凭证拉取数据的库、具体的仪表盘 id 等，以及常见工作流或取数路径的说明。</p><p>例如：</p><ul role="list"><li><code>funnel-query </code>— 「要看注册 → 激活 → 付费，该 join 哪些事件」，以及真正持有规范 user_id 的那张表</li><li><code>cohort-compare</code> — 比较两个队列的留存或转化，标出统计显著的差异，并链到分群定义</li><li><code>grafana </code>— 数据源 UID、集群名、问题 → 仪表盘查找表</li><li><code>datadog </code>— 字段对照（@request_id vs trace_id）、服务列表、指标前缀约定</li></ul><h3><strong>4. 业务流程与团队自动化</strong></h3><p>这类 Skills 把重复工作流收成一条命令。它们通常是相当简单的指令，但可能对其他 Skills 或 MCP 有更复杂的依赖。对这类 Skills 来说，把以往结果存进日志文件，能帮助模型保持一致，并对照该工作流的历史执行做反思。</p><p>例如：</p><ul role="list"><li><code>standup-post </code>— 汇总工单系统、GitHub 动态和此前的 Slack → 格式化站会，只报增量</li><li><code>create-&lt;ticket-system&gt;-ticket</code> — 强制 schema（合法枚举值、必填字段），再加上创建后工作流（提醒审查者、在 Slack 里贴链接）</li><li><code>weekly-recap</code> — 已合并 PR + 已关闭工单 + 部署 → 格式化周报</li></ul><h3><strong>5. 代码脚手架与模板</strong></h3><p>这类 Skills 为代码库里的特定功能生成框架样板。你可以把它们和可组合的脚本搭配使用。当你的脚手架带有自然语言要求、单靠代码覆盖不住时，它们尤其有用。&nbsp;</p><p>例如：</p><ul role="list"><li><code>new-&lt;framework&gt;-workflow </code>— 用你们的注解脚手架出一个新服务/工作流/handler</li><li><code>new-migration </code>— 你们的迁移文件模板，外加常见陷阱</li><li><code>create-app</code> — 新建内部应用，预接好你们的鉴权、日志和部署配置</li></ul><h3><strong>6. 代码质量与审查</strong></h3><p>这类 Skills 在组织内强制代码质量，并帮助审查代码。它们可以包含确定性脚本或工具，以追求最大稳健性。你可能希望它们作为 hooks 的一部分、或在 GitHub Action 里自动运行。&nbsp;</p><ul role="list"><li><code>adversarial-review </code>— 拉起一个新上下文的子智能体来挑刺，落实修复，迭代到发现只剩吹毛求疵为止</li><li><code>code-style </code>— 强制代码风格，尤其是 Claude 默认不太会写好的那些。</li><li><code>testing-practices</code> — 关于如何写测试、测什么的说明。</li></ul><h3><strong>7. CI/CD 与部署</strong></h3><p>这类 Skills 帮助你在代码库里拉取、推送和部署代码。它们可能引用其他 Skills 来收集数据。</p><p>例如：</p><ul role="list"><li><code>babysit-pr </code>— 监控一个 PR → 重试不稳定的 CI → 解决合并冲突 → 打开自动合并</li><li><code>deploy-&lt;service&gt;</code> — 构建 → 冒烟测试 → 按错误率对比逐步放量 → 回归时自动回滚</li><li><code>cherry-pick-prod</code> — 隔离 worktree → cherry-pick → 解决冲突 → 按模板开 PR</li></ul><h3><strong>8. Runbooks</strong></h3><p>这类 Skills 接住一个症状（比如 Slack 线程、告警或错误签名），走完一次多工具调查，并产出结构化报告。</p><p>例如：</p><ul role="list"><li><code>&lt;service&gt;-debugging </code>— 为流量最高的服务把症状 → 工具 → 查询模式映射起来</li><li><code>oncall-runner </code>— 拉取告警 → 检查常见嫌疑人 → 格式化发现</li><li><code>log-correlator </code>— 给定一个 request ID，从所有可能碰过它的系统里拉出匹配日志</li></ul><h3><strong>9. 基础设施运维</strong></h3><p>这类 Skills 执行例行维护和操作流程，其中一些涉及破坏性动作，因而受益于护栏。它们让工程师在关键操作里更容易按最佳实践走。</p><p>例如：</p><ul role="list"><li><code>&lt;resource&gt;-orphans</code> — 找出孤儿 pod/volume → 发到 Slack → 浸泡期 → 用户确认 → 级联清理</li><li><code>dependency-management </code>— 你们组织的依赖审批工作流</li><li><code>cost-investigation </code>— 「为什么存储/出口账单突然飙了」，带上具体的 bucket 和查询模式</li></ul><h2>制作 Skills 的技巧</h2><p>决定要做哪个 Skill 之后，该怎么写？下面是 Claude Code 团队制作 Skills 的一些最佳实践、技巧和窍门</p><h3>别说显而易见的事</h3><figure style="max-width:820pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1f3a763cec27e2f02643a2_6f109d87.png" loading="lazy"></div></figure><p>Claude 已经会写代码，也能读你的代码库。一个只是复述 Claude 默认就会做的事情的 Skill，只会增加上下文，不增加价值。如果你发布的 Skill 主要关乎知识，就把重点放在能把 Claude 推出惯常思路的信息上。</p><p><a href="https://github.com/anthropics/skills/blob/main/skills/frontend-design/SKILL.md">frontend design skill</a> 是很好的例子；它由 Anthropic 的一位工程师和客户反复迭代，用来提升 Claude 的设计品味，避开 Inter 字体和紫色渐变这类经典套路。&nbsp;</p><h3>建一个 Gotchas 小节</h3><p>任何 Skill 里信号最强的内容，都是 Gotchas 小节。这些小节应当从 Claude 使用你的 Skill 时常见的失败点长出来。理想情况下，你会随时间更新 Skill，把这些陷阱收进去。</p><p>例如：</p><p>“<code>subscriptions</code> 表是只追加的。你要的那一行是 version 最高的那条，不是 <code>created_at</code> 最近的那条。”“这个字段在 API 网关叫 <code>@request_id </code>，在计费服务叫 <code>trace_id</code>。它们是同一个值。”“即使 Stripe webhook 其实没处理成功，预发环境也会返回 200。真实状态去查 <code>payment_events </code>。”</p><h3>利用文件系统和渐进披露</h3><figure style="max-width:2048pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1f3a763cec27e2f026439f_0e0f23c0.png" loading="lazy"></div><figcaption>SKILL.md 指向若干其他文件，供 Claude 在特定情况下参考。例如，如果一个任务处于 pending，就应参考 stuck-jobs.md。</figcaption></figure><p>正如前面所说，一个 Skill 是一个文件夹，而不只是一个 markdown 文件。你应当把整个文件系统想成一种上下文工程和渐进披露。告诉 Claude 你的 Skill 里有哪些文件，它会在合适的时候去读。</p><p>最简单的渐进披露，是指向其他 markdown 文件给 Claude 用。例如，你可以把详细的函数签名和使用示例拆到 <code>references/api.md</code>。</p><p>另一个例子：如果最终产出是一个 markdown 文件，你可以在 <code>assets/</code> 里放一份模板文件，让它复制后使用。</p><p>你可以准备参考文档、脚本、示例等文件夹，帮助 Claude 更有效地工作。&nbsp;</p><h3>避免把 Claude 逼上一条轨道</h3><p>Claude 通常会尽量遵守你的指令，而 Skills 又非常可复用，所以你要小心别把指令写得太死。给 Claude 它需要的信息，同时给它按情境调整的空间。&nbsp;</p><p>例如：</p><figure style="max-width:1440pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1f3a763cec27e2f02643ae_3c108f2c.png" loading="lazy"></div></figure><h3>想清楚初始化</h3><figure style="max-width:1404pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1f3a763cec27e2f02643a8_d5e89124.png" loading="lazy"></div><figcaption>上面这个 Skill 的写法是：如果配置里没有 Slack 频道，就向用户提问。</figcaption></figure><p>有些 Skills 需要用用户提供的上下文来完成初始化。例如，如果你在做一个把站会发到 Slack 的 Skill，可能希望 Claude 先问要发到哪个 Slack 频道。</p><p>一个好的模式是把这些初始化信息存在 Skill 目录里的 config.json，就像上面的例子。如果配置还没设好，智能体就可以向用户提问。</p><p>如果你希望智能体提出结构化的多选题，可以指示 Claude 使用 AskUserQuestion 工具。&nbsp;</p><h3>描述写给模型看，不是写给人看</h3><p>Claude Code 启动一次会话时，会列出每个可用 Skill 及其 description。这份清单就是 Claude 扫描「这次请求有没有对应 Skill？」的依据。因此 description 字段不是摘要，而是何时触发这个 Skill 的说明。</p><figure style="max-width:1640pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1f3a763cec27e2f0264399_a60f7943.png" loading="lazy"></div><figcaption>在 description 里写上 Skill 的触发词会很有帮助，比如 “babysit”。</figcaption></figure><p>‍</p><h3>帮 Claude 记住</h3><figure style="max-width:1440pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1f3a763cec27e2f02643b1_9159a9b1.png" loading="lazy"></div><figcaption>这份文本日志帮助 Claude 记住过往事件，比如审查过 Sarah 的 auth PR。</figcaption></figure><p>有些 Skills 可以通过在内部存数据，带上某种记忆。你可以存进只追加的文本日志或 JSON 文件这么简单的东西，也可以存进 SQLite 数据库这么复杂的东西。</p><p>例如，一个 <code>standup-post</code> Skill 可以维护一份 standups.log，记下它写过的每一条，于是你下次再跑时，Claude 会读自己的历史，并说出从昨天到现在变了什么。&nbsp;</p><p>你可以用环境变量 <code>${CLAUDE_PLUGIN_DATA} </code>拿到一个稳定目录来存数据，关于在 Skills 里持久化数据的更多内容见： <a href="https://code.claude.com/docs/en/plugins-reference#persistent-data-directory">https://code.claude.com/docs/en/plugins-reference#persistent-data-directory</a>。&nbsp;</p><h3>存放脚本，再生成代码</h3><p>你能给 Claude 的最强工具之一就是代码。给 Claude 脚本和库，能让它把回合花在组合上，决定下一步做什么，而不是重建样板。</p><p>例如，在你的 <code>data-science</code> Skill 里，你可以放一组从事件源取数的函数。为了让 Claude 做复杂分析，你可以给它这样一组辅助函数：</p><figure style="max-width:1440pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1f3a763cec27e2f02643ab_00319576.png" loading="lazy"></div></figure><p>Claude 就可以即时生成脚本，把这些能力组合起来，回答「星期二发生了什么？」这类提示。</p><figure style="max-width:1440pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1f3a763cec27e2f02643a5_32329bf3.png" loading="lazy"></div></figure><h3>使用按需 hooks&nbsp;</h3><p>Skills 可以包含只在该 Skill 被调用时激活、并且只在本次会话期间有效的 hooks。把它们留给那些你不想一直开着、但有时极其有用的、更有态度的 hooks。</p><p>例如：</p><ul role="list"><li><code>/</code><strong><code>careful</code></strong><code> </code>— 通过 Bash 上的 PreToolUse matcher 拦截 rm -rf、DROP TABLE、force-push、kubectl delete。你只想在知道自己在碰生产时打开它——一直开着会把人逼疯。</li><li><code>/</code><strong><code>freeze</code></strong> — 拦截不在指定目录里的任何 Edit/Write。调试时很有用：「我想加日志，却总是一不小心把无关代码也『修』了。”</li></ul><h2>分发 Skills</h2><p>Skills 最大的好处之一，是你可以和团队其他人分享它们。</p><p>和别人分享 Skills，大致有两种方式：</p><ul role="list"><li>把 Skills 检入仓库（放在 <code>./.claude/skills</code>）</li><li>做成 <strong>plugin</strong>，并准备一个 Claude Code Plugin marketplace，让用户可以上传和安装 plugins（详见<a href="https://code.claude.com/docs/en/plugin-marketplaces">文档</a>）</li></ul><p>对跨不多几个仓库工作的小团队来说，把 Skills 检入仓库就很好用。但每一个检入的 Skill 也会给模型上下文添一点东西。规模上去之后，内部 plugin marketplace 让你可以分发 Skills，让团队自己决定安装哪些，还可以带上初始化流程。</p><h2>管理 Skills marketplace</h2><p>如何决定哪些 Skills 进 marketplace？人们怎样提交？</p><p>在 Anthropic，我们没有一个中心团队来拍板；我们试着让最有用的 Skills 自然长出来。如果有人有一个想让别人试试的 Skill，他们可以把它上传到 GitHub 的 sandbox 文件夹，并在 Slack 或其他论坛里把链接指给大家。</p><p>一旦一个 Skill 有了势头（这由 Skill 所有者自己判断），他们就可以提 PR，把它搬进 marketplace。</p><h2>组合 Skills&nbsp;</h2><p>你可能希望 Skills 互相依赖。例如，你可能有一个上传文件的 Skill，还有一个生成 CSV 并上传的 Skill。这类依赖管理目前还没有原生做进 marketplace 或 Skills，但你可以直接按名字引用其他 Skills，只要它们已安装，模型就会调用它们。</p><h2>衡量 Skills</h2><p>为了了解一个 Skill 表现如何，我们用一个 PreToolUse hook 记录公司内的 Skill 使用情况（<a href="https://gist.github.com/ThariqS/24defad423d701746e23dc19aace4de5">示例代码在此</a>）。这样我们就能找出受欢迎的 Skills，或触发次数低于预期的那些。</p><h2>开始使用</h2><p>Skills 的最佳实践仍在演进。我们最好的 Skills，大多始于几行字和一个陷阱，然后因为人们在 Claude 撞上新边界情况时不断往里加东西而变好。&nbsp;</p><p>理解 Skills 最好的办法就是动手、试验，看看对你什么管用。&nbsp;</p><ul role="list"><li>查看<a href="https://code.claude.com/docs/en/skills">我们的 Skills 文档</a></li><li><a href="https://github.com/anthropics/skills">找一些示例 Skills 来定制</a></li></ul><p><em>本文作者是 Anthropic 技术团队成员 Thariq Shihipar，他在 Claude Code 上工作。</em></p></div>
+
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/lessons-from-building-claude-code-how-we-use-skills" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

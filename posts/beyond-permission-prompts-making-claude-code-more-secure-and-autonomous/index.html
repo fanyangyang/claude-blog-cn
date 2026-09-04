@@ -4,54 +4,236 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>超越权限提示：让 Claude Code 更安全、更自主 — Claude Blog 中文翻译</title>
-  <meta name="description" content="超越权限提示：让 Claude Code 更安全、更自主">
+  <meta name="description" content="In Claude Code, Claude writes, tests, and debugs code alongside you, navigating your codebase, editing multiple files, and running commands to verify its work. Giving Claude this much access to your codebase and files can introduce risks, especially in the case of prompt injection, such as Claude deleting files you didn't intend.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/beyond-permission-prompts-making-claude-code-more-secure-and-autonomous" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>超越权限提示：让 Claude Code 更安全、更自主</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/beyond-permission-prompts-making-claude-code-more-secure-and-autonomous" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/beyond-permission-prompts-making-claude-code-more-secure-and-autonomous/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># 超越权限提示：让 Claude Code 更安全、更自主
+
+In Claude Code, Claude writes, tests, and debugs code alongside you, navigating your codebase, editing multiple files, and running commands to verify its work. Giving Claude this much access to your codebase and files can introduce risks, especially in the case of prompt injection, such as Claude deleting files you didn't intend.
+
+为帮助应对这一问题，我们在 Claude Code 中基于沙箱推出了两项新功能，它们既为开发者提供更安全的工作场所，也让 Claude 能更自主地运行，并减少权限提示。这些功能是**原生沙箱**的例子：在设定的边界内让 Claude 自由工作，从而同时提升安全性和自主性。
+
+## 我们目前保护用户安全的做法
+
+Claude Code 采用基于权限的模型：默认只读，这意味着它在做出修改或运行任何命令之前都会请求许可。也有一些例外：我们用静态分析自动放行 echo 或 cat 这类安全命令，但大多数操作仍需要明确批准。
+
+但不断点击“批准”会拖慢开发，并可能导致“批准疲劳”，用户可能不再仔细看自己批准了什么。为了让 Claude Code 既更安全又更有效，我们希望找到更好的方法。 
+
+## 沙箱：更安全、更自主的做法
+
+沙箱预先划定边界，让 Claude 可以在其中更自由地工作，而不必为每个动作请求许可。 
+
+随着这次对 Claude Code 的更新，我们转向这一做法。我们的沙箱方法建立在操作系统级功能之上，以启用两项新功能，它们都基于以下两类边界：
+
+- **文件系统隔离**，** **确保 Claude 只能访问或修改特定目录。这在防止被提示注入的 Claude 修改敏感系统文件时尤其重要。
+- **网络隔离**，** **确保 Claude 只能连接到已批准的服务器。这能防止被提示注入的 Claude 泄露敏感信息或下载恶意软件。
+
+值得注意的是，有效的沙箱需要文件系统隔离*和*网络隔离同时存在。没有网络隔离，被攻陷的 agent 可能把 SSH 密钥等敏感文件外泄；没有文件系统隔离，被攻陷的 agent 很容易逃出沙箱并获得网络访问。正是同时使用这两种技术，我们才能为 Claude Code 用户提供更安全的 agentic 体验。
+
+### Claude Code 中的两项新沙箱功能
+
+#### 沙箱化 bash 工具：无需权限提示即可安全执行 bash
+
+今天，我们推出一个新的沙箱运行时（研究预览），让你可以精确指定 agent 可以访问哪些目录和网络主机，而无需启动和管理容器的开销。它可用于为任意进程、agent 和 MCP server 加沙箱。现已作为开源研究预览提供：  [Github link?]
+在 Claude Code 中，我们用这个运行时为 bash 工具加沙箱，让 Claude 能在你设定的限制内运行命令。这些命令默认更安全，需要的用户权限提示更少，因此 Claude 可以更自主地运行。如果 Claude 试图访问沙箱*之外*的内容，你会立即收到通知，并可以选择是否允许。 
+
+我们建立在 Linux bubblewrap 和 MacOS seatbelt 等操作系统级原语之上，在 OS 层强制执行这些限制。它们不仅覆盖 Claude Code 的直接交互，也覆盖该命令派生出的任何脚本、程序或子进程。
+如上所述，这个沙箱同时强制执行：
+
+- **文件系统隔离， **允许对当前工作目录进行读写，但阻止修改其外的任何文件。 
+- **网络隔离， **只允许通过连接到沙箱外代理服务器的 unix domain socket 访问互联网。该代理服务器强制限制进程可以连接的域名，并处理对新请求域名的用户确认。如果你希望进一步提升安全性，我们还支持定制该代理，对出站流量强制执行任意规则。 
+
+‍
+
+这两个组件都可配置：你可以轻松允许或禁止特定文件路径或域名。 
+
+沙箱确保即使提示注入成功，也会被完全隔离，无法影响用户的整体安全。这样，被攻陷的 Claude Code 无法窃取你的 SSH 密钥，也无法回连到攻击者的服务器。
+
+要开始使用此功能，请运行：`claude --sandbox`，并在此阅读我们安全模型的更多技术细节。
+
+为了让其他团队更容易构建更安全的 agent，我们已开源 [XXX]。我们相信其他 AI 公司应考虑为自己的 agent 采用这项技术，以增强其安全态势。 
+
+ 
+
+#### Claude Code on the web：在云端安全运行 Claude Code
+
+今天，我们还发布了 [Claude Code on the web](https://docs.claude.com/en/docs/claude-code/claude-code-on-the-web)，让用户能在云端的隔离沙箱中运行 Claude Code。Claude Code on the web 会在隔离沙箱中执行每一次 Claude Code 会话，使其能以安全的方式充分访问自己的服务器。我们设计这个沙箱，确保敏感凭证（例如 git 凭证或签名密钥）永远不会进入沙箱环境。这样，即使沙箱中运行的代码被攻陷，用户也能免于进一步伤害。 
+
+Claude Code on the web 使用一个定制代理服务，透明处理所有 git 交互。在沙箱内，git 客户端用定制的、带范围的凭证向该服务认证。代理验证该凭证以及 git 交互的内容（例如确保只推送到已配置的分支），然后在把请求发往 GitHub 之前附上正确的认证令牌。 
+
+## 开始使用
+
+我们新的沙箱化 bash 工具和 Claude Code on the web，为用 Claude 做工程工作的开发者在安全性和生产力上都带来了显著改进。 
+
+要开始使用这些工具：
+
+- 运行 `claude --sandbox`，并查看[我们的文档](https://docs.claude.com/en/docs/claude-code/sandboxing)了解如何配置这个沙箱。 
+- 前往 [claude.com/code](http://claude.ai/code) 试用 Claude Code on the web。   
+
+‍
+
+或者，如果你正在构建自己的 agent，请查看我们开源的沙箱代码，并考虑把它集成到你的工作中。我们期待看到你构建的成果。  
+
+## FAQ
+
+### 如何使用 Claude Code？
+
+要开始使用 Claude Code，你需要设置 API key 并按照所提供的文档操作。文档会引导你完成发起请求和有效处理响应的过程。
+
+### Claude 的应用领域有哪些？
+
+从聊天机器人到自动内容生成，Claude 的通用性使它成为企业和开发者都有价值的工具。
+
+### Claude 如何随时间改进？
+
+用户反馈在 Claude 的改进中起着关键作用。通过分析用户交互，开发者可以识别需要增强的地方并实施必要的变更。</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Claude Code</span>
-            <span class="article-date">October 8, 2025</span>
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
             
+            <h1 class="article-title u-text-style-h1">超越权限提示：让 Claude Code 更安全、更自主</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>In Claude Code, Claude writes, tests, and debugs code alongside you, navigating your codebase, editing multiple files, and running commands to verify its work. Giving Claude this much access to your codebase and files can introduce risks, especially in the case of prompt injection, such as Claude deleting files you didn't intend.</p></div>
           </div>
-          <h1 class="article-title">超越权限提示：让 Claude Code 更安全、更自主</h1>
-          <a href="/posts/beyond-permission-prompts-making-claude-code-more-secure-and-autonomous/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p id="">为了帮助解决这一问题，我们在 Claude Code 中引入了两项基于沙盒（sandboxing）的新功能，二者都旨在为开发者提供一个更安全的工作环境，同时让 Claude 能够更自主地运行，减少权限确认提示。这些功能是<strong id="">原生沙盒</strong>的典范：通过划定明确的边界让 Claude 在其中自由工作，既提升了安全性，也增强了自主性。</p><h2 id="">我们目前保障用户安全的方式</h2><p id="">Claude Code 采用基于权限的模型：默认情况下它是只读的，这意味着在进行任何修改或运行任何命令之前都需要请求许可。也有一些例外情况：我们使用静态分析来自动放行 echo 或 cat 等安全命令，但大多数操作仍需明确批准。</p><p id="">然而，不断点击“批准”会拖慢开发节奏，还可能导致“批准疲劳”——用户可能不再仔细审视自己批准了什么。为了让 Claude Code 既更安全又更高效，我们希望找到一种更好的方法。</p><h2 id="">沙盒：更安全也更自主的方式</h2><p id="">沙盒预先划定边界，让 Claude 可以在其中更自由地工作，而不必为每个操作单独请求许可。</p><p id="">通过对 Claude Code 的更新，我们正转向这种方式。我们的沙盒方案构建在操作系统级特性之上，以此实现两项新功能，它们分别基于以下两类边界：</p><ol id=""><li id=""><strong id="">文件系统隔离</strong>，<strong id=""> </strong>确保 Claude 只能访问或修改特定目录。这对于防止被提示词注入的 Claude 修改敏感系统文件尤为重要。</li><li id=""><strong id="">网络隔离</strong>，<strong id=""> </strong>确保 Claude 只能连接到已获批准的服务器。这可以防止被提示词注入的 Claude 泄露敏感信息或下载恶意软件。</li></ol><p id="">值得注意的是，有效的沙盒需要<em id="">同时</em>具备文件系统隔离和网络隔离。没有网络隔离，被攻陷的代理可能窃取 SSH 密钥等敏感文件；没有文件系统隔离，被攻陷的代理则可能轻易逃出沙盒并获得网络访问权限。正是通过同时使用这两种技术，我们才能为 Claude Code 用户提供更安全的智能体体验。</p><h3 id="">Claude Code 中的两项沙盒新功能</h3><h4 id="">沙盒化 bash 工具：无需权限提示的安全 bash 执行</h4><p id="">今天，我们推出了一种全新的沙盒运行时（research preview 中提供），它让你可以精确指定代理能够访问哪些目录和网络主机，而无需承担启动和管理容器的开销。它可以用于对任意进程、代理和 MCP 服务器进行沙盒化。该运行时已作为开源研究预览版发布，地址如下：[Github link?]<br>在 Claude Code 中，我们使用这一运行时对 bash 工具进行沙盒化，使 Claude 可以在你设定的限制范围内运行命令。这些命令默认更安全，所需的用户权限提示更少，因此 Claude 可以更自主地运行。如果 Claude 尝试访问沙盒<em id="">之外</em>的资源，你会立即收到通知，并可选择是否允许。</p><p id="">我们基于 <a id="" href="https://github.com/containers/bubblewrap">Linux bubblewrap</a> 和 MacOS seatbelt 等操作系统级原语构建了这一功能，以便在 OS 层面强制执行这些限制。它们不仅覆盖 Claude Code 的直接交互，还覆盖该命令衍生的任何脚本、程序或子进程。<br>如前所述，此沙盒同时实现了：</p><ol id=""><li id=""><strong id="">文件系统隔离</strong>：允许对当前工作目录进行读写，但阻止对其之外的任何文件进行修改。</li><li id=""><strong id="">网络隔离</strong>：仅允许通过连接到沙盒外部代理服务器的 unix domain socket 进行互联网访问。这个代理服务器会对进程可连接的域名施加限制，并在出现新请求的域名时处理用户确认。如果你希望获得更高的安全性，我们还支持自定义这个代理，以便对出站流量强制执行任意规则。</li></ol><p id="">‍</p><p id="">这两个组件都是可配置的：你可以轻松选择允许或禁止特定的文件路径或域名。</p><figure id="" class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:1600px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="1600px"><div id=""><img id="" alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e6c0f6e8c717994091347a_60aa4f4b.png" width="auto" height="auto" loading="auto"></div></figure><p id="">沙盒确保即使提示词注入攻击得逞，它也会被完全隔离，无法影响用户的整体安全。这样一来，被攻陷的 Claude Code 无法窃取你的 SSH 密钥，也无法向攻击者的服务器回传数据。</p><p id="">要开始使用此功能，请运行：<code id="">claude --sandbox</code>，并在我们的文档中阅读有关我们安全模型的更多技术细节。</p><p id="">为了帮助其他团队更容易构建更安全的代理，我们已将 [XXX] 开源。我们认为其他 AI 公司也应考虑在其自己的代理中采用这项技术，以增强代理的安全态势。</p><p id="">&nbsp;</p><h4 id="">Claude Code on the web：在云端安全地运行 Claude Code</h4><p id="">今天，我们还发布了 <a id="" href="https://docs.claude.com/en/docs/claude-code/claude-code-on-the-web">Claude Code on the web</a>，让用户能够在云端的一个隔离沙盒中运行 Claude Code。Claude Code on the web 将每个 Claude Code 会话放在一个隔离沙盒中执行，在其中它可以安全地完全访问其服务器。我们在设计这个沙盒时确保敏感凭证（如 git 凭证或签名密钥）绝不会进入沙盒环境。这样一来，即使沙盒中运行的代码被攻陷，用户也不会受到进一步伤害。</p><p id="">Claude Code on the web 使用一个自定义代理服务来透明地处理所有 git 交互。在沙盒内部，git 客户端使用一个专门构建的限定范围凭证向该服务进行身份验证。代理会校验此凭证以及 git 交互的内容（例如确保仅推送到配置的分支），然后在把请求发送到 GitHub 之前附加正确的身份验证令牌。</p><figure id="" class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:1600px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="1600px"><div id=""><img id="" alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e6c0f6e8c717994091347d_7b19e1a8.png" width="auto" height="auto" loading="auto"></div></figure><h2 id="">开始使用</h2><p id="">我们的全新沙盒化 bash 工具和 Claude Code on the web 为使用 Claude 开展工程工作的开发者在安全性和生产力两方面都带来了显著提升。</p><p id="">要开始使用这些工具：</p><ol id=""><li id="">运行 `claude --sandbox` 并查阅<a id="" href="https://docs.claude.com/en/docs/claude-code/sandboxing">我们的文档</a>了解如何配置此沙盒。</li><li id="">访问 <a id="" href="http://claude.ai/code">claude.com/code</a> 体验 Claude Code on the web。&nbsp;&nbsp;&nbsp;</li></ol><p id="">‍</p><p id="">如果你正在构建自己的代理，也可以查看我们开源的沙盒代码，并考虑将其集成到你的工作中。我们期待看到你构建的成果。</p></div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/product/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">October 8, 2025</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/beyond-permission-prompts-making-claude-code-more-secure-and-autonomous/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/beyond-permission-prompts-making-claude-code-more-secure-and-autonomous" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p id="">为帮助应对这一问题，我们在 Claude Code 中基于沙箱推出了两项新功能，它们既为开发者提供更安全的工作场所，也让 Claude 能更自主地运行，并减少权限提示。这些功能是<strong id="">原生沙箱</strong>的例子：在设定的边界内让 Claude 自由工作，从而同时提升安全性和自主性。</p><h2 id="">我们目前保护用户安全的做法</h2><p id="">Claude Code 采用基于权限的模型：默认只读，这意味着它在做出修改或运行任何命令之前都会请求许可。也有一些例外：我们用静态分析自动放行 echo 或 cat 这类安全命令，但大多数操作仍需要明确批准。</p><p id="">但不断点击“批准”会拖慢开发，并可能导致“批准疲劳”，用户可能不再仔细看自己批准了什么。为了让 Claude Code 既更安全又更有效，我们希望找到更好的方法。&nbsp;</p><h2 id="">沙箱：更安全、更自主的做法</h2><p id="">沙箱预先划定边界，让 Claude 可以在其中更自由地工作，而不必为每个动作请求许可。&nbsp;</p><p id="">随着这次对 Claude Code 的更新，我们转向这一做法。我们的沙箱方法建立在操作系统级功能之上，以启用两项新功能，它们都基于以下两类边界：</p><ol id=""><li id=""><strong id="">文件系统隔离</strong>，<strong id=""> </strong>确保 Claude 只能访问或修改特定目录。这在防止被提示注入的 Claude 修改敏感系统文件时尤其重要。</li><li id=""><strong id="">网络隔离</strong>，<strong id=""> </strong>确保 Claude 只能连接到已批准的服务器。这能防止被提示注入的 Claude 泄露敏感信息或下载恶意软件。</li></ol><p id="">值得注意的是，有效的沙箱需要文件系统隔离<em id="">和</em>网络隔离同时存在。没有网络隔离，被攻陷的 agent 可能把 SSH 密钥等敏感文件外泄；没有文件系统隔离，被攻陷的 agent 很容易逃出沙箱并获得网络访问。正是同时使用这两种技术，我们才能为 Claude Code 用户提供更安全的 agentic 体验。</p><h3 id="">Claude Code 中的两项新沙箱功能</h3><h4 id="">沙箱化 bash 工具：无需权限提示即可安全执行 bash</h4><p id="">今天，我们推出一个新的沙箱运行时（研究预览），让你可以精确指定 agent 可以访问哪些目录和网络主机，而无需启动和管理容器的开销。它可用于为任意进程、agent 和 MCP server 加沙箱。现已作为开源研究预览提供：&nbsp; [Github link?]<br>在 Claude Code 中，我们用这个运行时为 bash 工具加沙箱，让 Claude 能在你设定的限制内运行命令。这些命令默认更安全，需要的用户权限提示更少，因此 Claude 可以更自主地运行。如果 Claude 试图访问沙箱<em id="">之外</em>的内容，你会立即收到通知，并可以选择是否允许。&nbsp;</p><p id="">我们建立在 Linux bubblewrap 和 MacOS seatbelt 等操作系统级原语之上，在 OS 层强制执行这些限制。它们不仅覆盖 Claude Code 的直接交互，也覆盖该命令派生出的任何脚本、程序或子进程。<br>如上所述，这个沙箱同时强制执行：</p><ol id=""><li id=""><strong id="">文件系统隔离， </strong>允许对当前工作目录进行读写，但阻止修改其外的任何文件。&nbsp;</li><li id=""><strong id="">网络隔离， </strong>只允许通过连接到沙箱外代理服务器的 unix domain socket 访问互联网。该代理服务器强制限制进程可以连接的域名，并处理对新请求域名的用户确认。如果你希望进一步提升安全性，我们还支持定制该代理，对出站流量强制执行任意规则。&nbsp;</li></ol><p id="">‍</p><p id="">这两个组件都可配置：你可以轻松允许或禁止特定文件路径或域名。&nbsp;</p><figure id="" class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:1600px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="1600px"><div id=""><img id="" alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e6c0f6e8c717994091347a_60aa4f4b.png" width="auto" height="auto" loading="auto"></div></figure><p id="">沙箱确保即使提示注入成功，也会被完全隔离，无法影响用户的整体安全。这样，被攻陷的 Claude Code 无法窃取你的 SSH 密钥，也无法回连到攻击者的服务器。</p><p id="">要开始使用此功能，请运行：<code id="">claude --sandbox</code>，并在此阅读我们安全模型的更多技术细节。</p><p id="">为了让其他团队更容易构建更安全的 agent，我们已开源 [XXX]。我们相信其他 AI 公司应考虑为自己的 agent 采用这项技术，以增强其安全态势。&nbsp;</p><p id="">&nbsp;</p><h4 id="">Claude Code on the web：在云端安全运行 Claude Code</h4><p id="">今天，我们还发布了 <a id="" href="https://docs.claude.com/en/docs/claude-code/claude-code-on-the-web">Claude Code on the web</a>，让用户能在云端的隔离沙箱中运行 Claude Code。Claude Code on the web 会在隔离沙箱中执行每一次 Claude Code 会话，使其能以安全的方式充分访问自己的服务器。我们设计这个沙箱，确保敏感凭证（例如 git 凭证或签名密钥）永远不会进入沙箱环境。这样，即使沙箱中运行的代码被攻陷，用户也能免于进一步伤害。&nbsp;</p><p id="">Claude Code on the web 使用一个定制代理服务，透明处理所有 git 交互。在沙箱内，git 客户端用定制的、带范围的凭证向该服务认证。代理验证该凭证以及 git 交互的内容（例如确保只推送到已配置的分支），然后在把请求发往 GitHub 之前附上正确的认证令牌。&nbsp;</p><figure id="" class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:1600px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="1600px"><div id=""><img id="" alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e6c0f6e8c717994091347d_7b19e1a8.png" width="auto" height="auto" loading="auto"></div></figure><h2 id="">开始使用</h2><p id="">我们新的沙箱化 bash 工具和 Claude Code on the web，为用 Claude 做工程工作的开发者在安全性和生产力上都带来了显著改进。&nbsp;</p><p id="">要开始使用这些工具：</p><ol id=""><li id="">运行 `claude --sandbox`，并查看<a id="" href="https://docs.claude.com/en/docs/claude-code/sandboxing">我们的文档</a>了解如何配置这个沙箱。&nbsp;</li><li id="">前往 <a id="" href="http://claude.ai/code">claude.com/code</a> 试用 Claude Code on the web。&nbsp;&nbsp;&nbsp;</li></ol><p id="">‍</p><p id="">或者，如果你正在构建自己的 agent，请查看我们开源的沙箱代码，并考虑把它集成到你的工作中。我们期待看到你构建的成果。&nbsp; </p><h2>FAQ</h2><div class="article-faq"><h3>如何使用 Claude Code？</h3><p>要开始使用 Claude Code，你需要设置 API key 并按照所提供的文档操作。文档会引导你完成发起请求和有效处理响应的过程。</p><h3>Claude 的应用领域有哪些？</h3><p>从聊天机器人到自动内容生成，Claude 的通用性使它成为企业和开发者都有价值的工具。</p><h3>Claude 如何随时间改进？</h3><p>用户反馈在 Claude 的改进中起着关键作用。通过分析用户交互，开发者可以识别需要增强的地方并实施必要的变更。</p></div></div>
+
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/beyond-permission-prompts-making-claude-code-more-secure-and-autonomous" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

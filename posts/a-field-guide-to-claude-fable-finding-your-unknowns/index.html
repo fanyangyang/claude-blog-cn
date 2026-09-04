@@ -4,54 +4,340 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Claude Fable 5 实战指南：发现你的未知项 — Claude Blog 中文翻译</title>
-  <meta name="description" content="Claude Fable 5 实战指南：发现你的未知项">
+  <meta name="description" content="Anthropic 团队分享的 Claude Fable 智能体式编码实践：如何在实现之前、之中和之后发现你的未知项。">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/a-field-guide-to-claude-fable-finding-your-unknowns" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>Claude Fable 5 实战指南：发现你的未知项</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/a-field-guide-to-claude-fable-finding-your-unknowns" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/a-field-guide-to-claude-fable-finding-your-unknowns/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># Claude Fable 5 实战指南：发现你的未知项
+
+Anthropic 团队分享的 Claude Fable 智能体式编码实践：如何在实现之前、之中和之后发现你的未知项。
+
+使用 Claude Code 时，我常常想起地图与疆域（the map and the territory）的区别。
+
+地图是对待完成工作的描绘，是我的提示词、Skills 和上下文，也就是我交给 Claude 的东西。疆域则是工作真正发生的地方——代码库、真实世界，以及它实际存在的约束。
+
+地图与疆域之间的差异，我称之为*未知项（unknowns）*。当 Claude 遇到未知项时，它需要基于对我意图的最佳猜测来做决定。要做的工作越多，Claude 可能遇到的未知项就越多。
+
+Claude Fable 是第一个让我觉得：工作质量的瓶颈，在于我阐明这些未知项的能力的模型。
+
+重要的是，仅靠提前规划并不总是足够。你可能在实现深处才发现未知项，也可能这些未知项恰恰在提示你：这个问题其实应该换一种方式来解决。
+
+我发现，与 Fable 协作是一个迭代的过程：在实现之前、之中和之后，不断发现我的未知项。 
+
+## 认清你的未知项
+
+你的未知项是什么？当我带着一个问题来找 Claude 时，我通常会从 4 个方向拆开：
+
+- **Known Knowns：**基本上就是我提示词里已经写明的东西。我告诉 agent 我想要什么？
+- **Known Unknowns：**哪些事情我还没想清楚，但我知道自己还没想清楚？
+- **Unknown Knowns：**哪些事情太理所当然，我永远不会写下来，但一旦看见就能认出来？
+- **Unknown Unknowns：**哪些事情我根本没考虑过？我不知道自己还缺哪些知识？我知不知道一件事能做到多好？
+
+最出色的 agentic coder 未知项相对很少。看 [Boris](https://www.linkedin.com/in/bcherny) 或 [Jarred](https://www.linkedin.com/in/jarred-sumner-a8772425) 写提示词，我一眼就能感觉到他们非常清楚自己要什么。他们和代码库、和模型行为都处在深度同步的状态。 
+
+但他们也会把未知项算进计划里。在很多方面，减少未知项、并为未知项做准备，就是 agentic coding 这项**技能**。好在这是一项可以练的技能，而且练的方式就是和 Claude 一起工作。
+
+## 帮 Claude 帮你
+
+给 Claude 下指令需要一种精细的平衡。太具体，Claude 会照着走，哪怕中途转向更合适；太含糊，Claude 又常常按行业最佳实践做选择和假设，而这些未必适合你手头的任务。
+
+如果你没有把未知项算进去，两种情况都会失手。你不知道哪段路会布满障碍，也不知道哪段路其实很畅通，但你仍然希望 Claude 拐一拐。
+
+Claude 能帮你更快发现未知项。它可以极快地检索你的代码库和互联网，对大多数主题知道的也比你多。它从失败里迭代，也比你更快。
+
+这个过程最重要的一步，是把你的起点告诉 Claude。比如，告诉它你现在想到哪一步了；说明你对这个问题和代码库的经验；让它像思想搭档一样和你一起想。
+
+这篇文章里，我会写下一些我用来挖出这些未知项的模式，包括： 
+
+**实现前：**
+
+- Blind spot pass
+- 头脑风暴和原型
+- 访谈
+- 参考
+- 实现计划
+
+**实现中：**
+
+- 实现笔记
+
+**实现后**
+
+- 提案和讲解
+- 测验
+
+## 实现前
+
+### Blind Spot Pass
+
+开工时最有用的事情之一，就是搞清楚自己的盲区。比如，你要在代码库一块不熟悉的地方写功能，或用 Claude 帮你做设计迭代这类不熟悉的工作，你很可能有大量**unknown unknowns**。
+
+你可能不知道该问什么问题、好的标准是什么、历史上做过哪些工作，或该躲开哪些坑。
+
+这种时候，可以让 Claude 帮你找出 unknown unknowns，并解释给你听。我喜欢直接用 “blind spot pass” 和 “unknown unknowns” 这两个词。把你是谁、你已经知道什么告诉它，通常很重要，这样 Claude 才知道该怎样开始和你协作。
+
+**示例提示词**：
+
+- “I'm working on adding a new auth provider but I know nothing about the auth modules in this codebase. Can you do a blind spot pass to help me figure out my relevant unknown unknowns and help me prompt you better.”
+
+- “I don’t know what color grading is but I need to grade this video. Can you teach me to understand my unknown unknowns about color grading, so that I can prompt better?”
+
+### 头脑风暴和原型
+
+当我在一块充满**unknown knowns** 的领域工作时，也就是那些标准只有看见才说得清的标准，我喜欢让 Claude 和我一起头脑风暴、做原型。 
+
+在原型阶段尽早识别并说清 unknown knowns 非常值钱，因为拖到实现阶段再发现，（相对来说）会贵很多。功能或规格上的小变化，会在代码里带来完全不同的实现，而让 agent 回退先前的改动也会更难。
+
+比如，你可能只想看看在一个 frame 上加一颗按钮长什么样，并不想接后端路由，也不想在前端再维护一份状态。
+
+另一个例子是视觉设计。对我来说，它很难用语言讲清楚，但我看见就知道自己要什么。这种时候，我会要同一件 artifact 的几种设计方向。 
+
+我几乎每次编码会话都会先做一轮探索或头脑风暴。这能帮我带着意图去界定项目范围。Claude 常常会找到我自己会漏掉的高价值路径，有时也会只见树木不见森林。头脑风暴能避免我把范围定得太窄或太宽。 
+
+**示例提示词： **
+
+- &quot;I want a dashboard for this data but I have no visual taste and don't know what's possible. Make me an HTML page with 4 wildly different design directions so I can react to them.”
+
+- “Before wiring anything up, make a single HTML file mocking the new editor toolbar with fake data. I want to react to the layout before you touch the real app.&quot;
+
+-  &quot;Here's my rough problem: users churn after onboarding. Search the codebase and brainstorm 10 places we could intervene, from cheapest to most ambitious. I'll tell you which ones resonate.&quot;
+
+### 访谈
+
+头脑风暴做够之后，我多半仍有未知项。
+
+这时我会让 Claude 就任何未知项或含糊之处采访我。让 Claude 采访你时，尽量把问题的上下文给它，好引导它的问题。 
+
+‍**示例提示词：**
+
+- &quot;Interview me one question at a time about anything ambiguous, prioritize questions where my answer would change the architecture.&quot;
+
+### 参考
+
+有时你没法把想要的东西讲细。比如你没有那套语言，或事情太复杂，讲清楚要花很久。
+
+这时最好的办法就是参考。你可以放示意图、文档或图片，但最好的参考绝对是*源代码*。 
+
+如果你有一个以某种方式实现某事的库，或一个你很喜欢的设计组件，直接把 Fable 指到那个文件夹，告诉它该看什么，哪怕语言不同也没关系。相比截图，这能给 Claude 丰富得多的标记和结构细节。
+
+**示例提示词：**
+
+- &quot;This Rust crate in vendor/rate-limiter implements the exact backoff behavior I want. Read it and reimplement the same semantics in our TypeScript API client.&quot;
+
+### 实现计划
+
+当我觉得可以动手实现时，我通常会让 Claude 先写一份实现计划给我审。计划会聚焦那些最可能改动的部分，比如数据模型、类型接口或 UX 流程。这样 Claude 就能把我真正可能要改的东西摊开来。 
+
+**示例提示词：**
+
+- &quot;Write an implementation plan in HTML, but lead with the decisions I'm most likely to tweak with: data model changes, new type interfaces, and anything user-facing. Bury the mechanical refactoring at the bottom, I trust you on that part.&quot;
+
+## 实现中
+
+### 实现笔记
+
+计划满意之后，我会开一个新会话，把相关 artifact 放进提示词。这样 Claude 有一个干净的上下文窗口，同时又带着规划阶段整理出的全部信息。比如，我可能会放入一份规格文件和一个原型，然后让 agent 去实现。
+
+但事实是，无论你规划多少，未知的未知项总会藏在某处。agent 可能在工作中发现，因为代码里的某个边界情况，必须换一条路。
+
+我会让 Claude Code 维护一份临时的 ‘implementation-notes.md’（或 .html）文件，记下它做的决策，好让我们下次尝试时能学到东西。 
+
+**示例提示词：**
+
+- &quot;Keep an implementation-notes.md file. If you hit an edge case that forces you to deviate from the plan, pick the conservative option, log it under 'Deviations', and keep going.&quot;
+
+## 实现后
+
+### 提案和讲解
+
+把东西做出来之后，最重要的一步往往是拿到认同和批准。  在最终文档里做提案和讲解 artifact 能帮你：
+
+- 当评审者一开始带着和你一样的未知项时，加快他们的理解
+- 当专家想确认你已经考虑到他们会预见到的未知项和常见失败点时，加快批准
+
+**示例提示词：**
+
+- &quot;Package the prototype, the spec, and the implementation notes into a single doc I can drop in Slack to get buy-in. Lead with the demo GIF.&quot;
+
+### 测验
+
+一次长会话之后，Claude 可能已经做完了远超我意识到的工作。只看代码 diff，我对发生了什么只能有浅层理解，因为很多行为取决于已有的代码路径。
+
+先给 Claude 一批上下文，再让它就这次变更考我，能帮我搞清楚到底发生了什么。我只有在测验全对之后才会合并。
+
+**示例提示词：**
+
+- “I want to make sure I understand everything that's happened in this change. Give me a HTML report on the changes for me to read and understand with context, intuition, what was done, etc. and a quiz at the bottom on the changes that I must pass.”
+
+## 这些如何凑在一起：发布 Fable
+
+[Fable 的发布视频](https://x.com/ClaudeDevs/status/2064399512664526853)从头到尾都是用 Claude Code 剪的。这对我是一个新领域，我也绝不是专家。  
+
+所以我从自己已经知道的地方起步。我知道 Claude 能用代码剪视频、做转写，但不确定够不够准。然后我让 Claude 给我讲 Whisper 这类转写是怎么工作的，以及我能不能用 ffmpeg 准确切掉 um、长停顿之类的东西。
+
+我希望 Claude 做一个和我说的词对齐的 UI，但不确定做不做得成，于是我让 Claude 用 Remotion 加一份转写做一段原型视频，看看能不能跑通。
+
+最后，视频本身看起来有点闷，我知道这和调色有关，但我其实不太懂什么是调色。我第一轮想让 Claude 先做几个变体给我选，后来发现自己并不知道调色里的「好」长什么样。于是我改让 Claude 教我调色，好发现我的未知项。 
+
+## 让地图对上疆域
+
+模型越好，正确方法能做成的事就越多。当一项长周期任务交回来是错的，多半是你需要花更多时间定义未知项，或写一份能让你和 Claude 在未知项里调整的实现计划。 
+
+每一份讲解、每一次头脑风暴、每一场访谈、每一个原型、每一份参考，都是在修复成本变高之前，便宜地找出你不知道的东西。 
+
+所以，下一个项目开始时，先让 Claude 帮你找出未知项。
+
+关于与 Fable 一代模型协作时的上下文一侧，见[上下文工程的新规则](https://claude.com/blog/the-new-rules-of-context-engineering-for-claude-5-generation-models)。
+
+*本文作者是 Anthropic 技术团队成员 Thariq Shihipar。*</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Claude Code</span>
-            <span class="article-date">July 6, 2026</span>
-            
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-sky);">
+            <img class="hero-illo-img" src="/assets/illustrations/a-field-guide-to-claude-fable-finding-your-unknowns.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">Claude Fable 5 实战指南：发现你的未知项</h1>
-          <a href="/posts/a-field-guide-to-claude-fable-finding-your-unknowns/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>使用 Claude Code 时，我常常想起地图与疆域（the map and the territory）的区别。</p><p>地图是对待完成工作的描绘，是我的提示词、Skills 和上下文，也就是我交给 Claude 的东西。疆域则是工作真正发生的地方——代码库、真实世界，以及它实际存在的约束。</p><figure style="max-width:1000pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a4be4919e159adcdfa3ec1c_94358c3c.png" loading="lazy"></div></figure><p>地图与疆域之间的差异，我称之为<em>未知项（unknowns）</em>。当 Claude 遇到未知项时，它需要基于对我意图的最佳猜测来做决定。要做的工作越多，Claude 可能遇到的未知项就越多。</p><p>Claude Fable 是第一个让我觉得：工作质量的瓶颈，在于我阐明这些未知项的能力的模型。</p><p>重要的是，仅靠提前规划并不总是足够。你可能在实现深处才发现未知项，也可能这些未知项恰恰在提示你：这个问题其实应该换一种方式来解决。</p><p>我发现，与 Fable 协作是一个迭代的过程：在实现之前、之中和之后，不断发现我的未知项。</p></div>
+            <h1 class="article-title u-text-style-h1">Claude Fable 5 实战指南：发现你的未知项</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>Anthropic 团队分享的 Claude Fable 智能体式编码实践：如何在实现之前、之中和之后发现你的未知项。</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/product/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">July 6, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/a-field-guide-to-claude-fable-finding-your-unknowns/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/a-field-guide-to-claude-fable-finding-your-unknowns" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>使用 Claude Code 时，我常常想起地图与疆域（the map and the territory）的区别。</p><p>地图是对待完成工作的描绘，是我的提示词、Skills 和上下文，也就是我交给 Claude 的东西。疆域则是工作真正发生的地方——代码库、真实世界，以及它实际存在的约束。</p><figure style="max-width:1000pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a4be4919e159adcdfa3ec1c_94358c3c.png" loading="lazy"></div></figure><p>地图与疆域之间的差异，我称之为<em>未知项（unknowns）</em>。当 Claude 遇到未知项时，它需要基于对我意图的最佳猜测来做决定。要做的工作越多，Claude 可能遇到的未知项就越多。</p><p>Claude Fable 是第一个让我觉得：工作质量的瓶颈，在于我阐明这些未知项的能力的模型。</p><p>重要的是，仅靠提前规划并不总是足够。你可能在实现深处才发现未知项，也可能这些未知项恰恰在提示你：这个问题其实应该换一种方式来解决。</p><p>我发现，与 Fable 协作是一个迭代的过程：在实现之前、之中和之后，不断发现我的未知项。&nbsp;</p><h2>认清你的未知项</h2><p>你的未知项是什么？当我带着一个问题来找 Claude 时，我通常会从 4 个方向拆开：</p><ul role="list"><li><strong>Known Knowns：</strong>基本上就是我提示词里已经写明的东西。我告诉 agent 我想要什么？</li><li><strong>Known Unknowns：</strong>哪些事情我还没想清楚，但我知道自己还没想清楚？</li><li><strong>Unknown Knowns：</strong>哪些事情太理所当然，我永远不会写下来，但一旦看见就能认出来？</li><li><strong>Unknown Unknowns：</strong>哪些事情我根本没考虑过？我不知道自己还缺哪些知识？我知不知道一件事能做到多好？</li></ul><p>最出色的 agentic coder 未知项相对很少。看 <a href="https://www.linkedin.com/in/bcherny">Boris</a> 或 <a href="https://www.linkedin.com/in/jarred-sumner-a8772425">Jarred</a> 写提示词，我一眼就能感觉到他们非常清楚自己要什么。他们和代码库、和模型行为都处在深度同步的状态。&nbsp;</p><figure style="max-width:1000pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a4be4919e159adcdfa3ec52_cc0ee2de.png" loading="lazy"></div></figure><p>但他们也会把未知项算进计划里。在很多方面，减少未知项、并为未知项做准备，就是 agentic coding 这项<strong>技能</strong>。好在这是一项可以练的技能，而且练的方式就是和 Claude 一起工作。</p><h2>帮 Claude 帮你</h2><figure style="max-width:1000pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a4be4919e159adcdfa3ec55_c4646783.png" loading="lazy"></div></figure><p>给 Claude 下指令需要一种精细的平衡。太具体，Claude 会照着走，哪怕中途转向更合适；太含糊，Claude 又常常按行业最佳实践做选择和假设，而这些未必适合你手头的任务。</p><p>如果你没有把未知项算进去，两种情况都会失手。你不知道哪段路会布满障碍，也不知道哪段路其实很畅通，但你仍然希望 Claude 拐一拐。</p><p>Claude 能帮你更快发现未知项。它可以极快地检索你的代码库和互联网，对大多数主题知道的也比你多。它从失败里迭代，也比你更快。</p><p>这个过程最重要的一步，是把你的起点告诉 Claude。比如，告诉它你现在想到哪一步了；说明你对这个问题和代码库的经验；让它像思想搭档一样和你一起想。</p><p>这篇文章里，我会写下一些我用来挖出这些未知项的模式，包括：&nbsp;</p><p><strong>实现前：</strong></p><ul role="list"><li>Blind spot pass</li><li>头脑风暴和原型</li><li>访谈</li><li>参考</li><li>实现计划</li></ul><p><strong>实现中：</strong></p><ul role="list"><li>实现笔记</li></ul><p><strong>实现后</strong></p><ul role="list"><li>提案和讲解</li><li>测验</li></ul><h2>实现前</h2><h3>Blind Spot Pass</h3><p>开工时最有用的事情之一，就是搞清楚自己的盲区。比如，你要在代码库一块不熟悉的地方写功能，或用 Claude 帮你做设计迭代这类不熟悉的工作，你很可能有大量<strong>unknown unknowns</strong>。</p><p>你可能不知道该问什么问题、好的标准是什么、历史上做过哪些工作，或该躲开哪些坑。</p><p>这种时候，可以让 Claude 帮你找出 unknown unknowns，并解释给你听。我喜欢直接用 “blind spot pass” 和 “unknown unknowns” 这两个词。把你是谁、你已经知道什么告诉它，通常很重要，这样 Claude 才知道该怎样开始和你协作。</p><p><strong>示例提示词</strong>：</p><ul role="list"><li>“I'm working on adding a new auth provider but I know nothing about the auth modules in this codebase. Can you do a blind spot pass to help me figure out my relevant unknown unknowns and help me prompt you better.”</li></ul><ul role="list"><li>“I don’t know what color grading is but I need to grade this video. Can you teach me to understand my unknown unknowns about color grading, so that I can prompt better?”</li></ul><h3>头脑风暴和原型</h3><p>当我在一块充满<strong>unknown knowns</strong> 的领域工作时，也就是那些标准只有看见才说得清的标准，我喜欢让 Claude 和我一起头脑风暴、做原型。&nbsp;</p><p>在原型阶段尽早识别并说清 unknown knowns 非常值钱，因为拖到实现阶段再发现，（相对来说）会贵很多。功能或规格上的小变化，会在代码里带来完全不同的实现，而让 agent 回退先前的改动也会更难。</p><p>比如，你可能只想看看在一个 frame 上加一颗按钮长什么样，并不想接后端路由，也不想在前端再维护一份状态。</p><p>另一个例子是视觉设计。对我来说，它很难用语言讲清楚，但我看见就知道自己要什么。这种时候，我会要同一件 artifact 的几种设计方向。&nbsp;</p><p>我几乎每次编码会话都会先做一轮探索或头脑风暴。这能帮我带着意图去界定项目范围。Claude 常常会找到我自己会漏掉的高价值路径，有时也会只见树木不见森林。头脑风暴能避免我把范围定得太窄或太宽。&nbsp;</p><p><strong>示例提示词：&nbsp;</strong></p><ul role="list"><li>"I want a dashboard for this data but I have no visual taste and don't know what's possible. Make me an HTML page with 4 wildly different design directions so I can react to them.”</li></ul><ul role="list"><li>“Before wiring anything up, make a single HTML file mocking the new editor toolbar with fake data. I want to react to the layout before you touch the real app."</li></ul><ul role="list"><li>&nbsp;"Here's my rough problem: users churn after onboarding. Search the codebase and brainstorm 10 places we could intervene, from cheapest to most ambitious. I'll tell you which ones resonate."</li></ul><h3>访谈</h3><p>头脑风暴做够之后，我多半仍有未知项。</p><p>这时我会让 Claude 就任何未知项或含糊之处采访我。让 Claude 采访你时，尽量把问题的上下文给它，好引导它的问题。&nbsp;</p><p>‍<strong>示例提示词：</strong></p><ul role="list"><li>"Interview me one question at a time about anything ambiguous, prioritize questions where my answer would change the architecture."</li></ul><h3>参考</h3><p>有时你没法把想要的东西讲细。比如你没有那套语言，或事情太复杂，讲清楚要花很久。</p><p>这时最好的办法就是参考。你可以放示意图、文档或图片，但最好的参考绝对是<em>源代码</em>。&nbsp;</p><p>如果你有一个以某种方式实现某事的库，或一个你很喜欢的设计组件，直接把 Fable 指到那个文件夹，告诉它该看什么，哪怕语言不同也没关系。相比截图，这能给 Claude 丰富得多的标记和结构细节。</p><p><strong>示例提示词：</strong></p><ul role="list"><li>"This Rust crate in vendor/rate-limiter implements the exact backoff behavior I want. Read it and reimplement the same semantics in our TypeScript API client."</li></ul><h3>实现计划</h3><p>当我觉得可以动手实现时，我通常会让 Claude 先写一份实现计划给我审。计划会聚焦那些最可能改动的部分，比如数据模型、类型接口或 UX 流程。这样 Claude 就能把我真正可能要改的东西摊开来。&nbsp;</p><p><strong>示例提示词：</strong></p><ul role="list"><li>"Write an implementation plan in HTML, but lead with the decisions I'm most likely to tweak with: data model changes, new type interfaces, and anything user-facing. Bury the mechanical refactoring at the bottom, I trust you on that part."</li></ul><h2>实现中</h2><h3>实现笔记</h3><p>计划满意之后，我会开一个新会话，把相关 artifact 放进提示词。这样 Claude 有一个干净的上下文窗口，同时又带着规划阶段整理出的全部信息。比如，我可能会放入一份规格文件和一个原型，然后让 agent 去实现。</p><p>但事实是，无论你规划多少，未知的未知项总会藏在某处。agent 可能在工作中发现，因为代码里的某个边界情况，必须换一条路。</p><p>我会让 Claude Code 维护一份临时的 ‘implementation-notes.md’（或 .html）文件，记下它做的决策，好让我们下次尝试时能学到东西。&nbsp;</p><p><strong>示例提示词：</strong></p><ul role="list"><li>"Keep an implementation-notes.md file. If you hit an edge case that forces you to deviate from the plan, pick the conservative option, log it under 'Deviations', and keep going."</li></ul><h2>实现后</h2><h3>提案和讲解</h3><p>把东西做出来之后，最重要的一步往往是拿到认同和批准。&nbsp; 在最终文档里做提案和讲解 artifact 能帮你：</p><ul role="list"><li>当评审者一开始带着和你一样的未知项时，加快他们的理解</li><li>当专家想确认你已经考虑到他们会预见到的未知项和常见失败点时，加快批准</li></ul><p><strong>示例提示词：</strong></p><ul role="list"><li>"Package the prototype, the spec, and the implementation notes into a single doc I can drop in Slack to get buy-in. Lead with the demo GIF."</li></ul><h3>测验</h3><p>一次长会话之后，Claude 可能已经做完了远超我意识到的工作。只看代码 diff，我对发生了什么只能有浅层理解，因为很多行为取决于已有的代码路径。</p><p>先给 Claude 一批上下文，再让它就这次变更考我，能帮我搞清楚到底发生了什么。我只有在测验全对之后才会合并。</p><p><strong>示例提示词：</strong></p><ul role="list"><li>“I want to make sure I understand everything that's happened in this change. Give me a HTML report on the changes for me to read and understand with context, intuition, what was done, etc. and a quiz at the bottom on the changes that I must pass.”</li></ul><h2>这些如何凑在一起：发布 Fable</h2><p><a href="https://x.com/ClaudeDevs/status/2064399512664526853">Fable 的发布视频</a>从头到尾都是用 Claude Code 剪的。这对我是一个新领域，我也绝不是专家。&nbsp;&nbsp;</p><p>所以我从自己已经知道的地方起步。我知道 Claude 能用代码剪视频、做转写，但不确定够不够准。然后我让 Claude 给我讲 Whisper 这类转写是怎么工作的，以及我能不能用 ffmpeg 准确切掉 um、长停顿之类的东西。</p><p>我希望 Claude 做一个和我说的词对齐的 UI，但不确定做不做得成，于是我让 Claude 用 Remotion 加一份转写做一段原型视频，看看能不能跑通。</p><p>最后，视频本身看起来有点闷，我知道这和调色有关，但我其实不太懂什么是调色。我第一轮想让 Claude 先做几个变体给我选，后来发现自己并不知道调色里的「好」长什么样。于是我改让 Claude 教我调色，好发现我的未知项。&nbsp;</p><h2>让地图对上疆域</h2><p>模型越好，正确方法能做成的事就越多。当一项长周期任务交回来是错的，多半是你需要花更多时间定义未知项，或写一份能让你和 Claude 在未知项里调整的实现计划。&nbsp;</p><p>每一份讲解、每一次头脑风暴、每一场访谈、每一个原型、每一份参考，都是在修复成本变高之前，便宜地找出你不知道的东西。&nbsp;</p><p>所以，下一个项目开始时，先让 Claude 帮你找出未知项。</p><p>关于与 Fable 一代模型协作时的上下文一侧，见<a href="https://claude.com/blog/the-new-rules-of-context-engineering-for-claude-5-generation-models">上下文工程的新规则</a>。</p><p><em>本文作者是 Anthropic 技术团队成员 Thariq Shihipar。</em></p></div>
+
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/a-field-guide-to-claude-fable-finding-your-unknowns" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

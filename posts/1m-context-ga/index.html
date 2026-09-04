@@ -4,54 +4,205 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>1M 上下文窗口正式发布，适用于 Opus 4.6 和 Sonnet 4.6 — Claude Blog 中文翻译</title>
-  <meta name="description" content="1M 上下文窗口正式发布，适用于 Opus 4.6 和 Sonnet 4.6">
+  <meta name="description" content="Standard pricing now applies across the full 1M window for both models, with no long-context premium. Media limits expand to 600 images or PDF pages.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/1m-context-ga" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>1M 上下文窗口正式发布，适用于 Opus 4.6 和 Sonnet 4.6</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/1m-context-ga" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/1m-context-ga/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># 1M 上下文窗口正式发布，适用于 Opus 4.6 和 Sonnet 4.6
+
+Standard pricing now applies across the full 1M window for both models, with no long-context premium. Media limits expand to 600 images or PDF pages.
+
+Claude Opus 4.6 和 Sonnet 4.6 现已在 Claude Platform 上以标准定价提供完整的 1M 上下文窗口。标准定价覆盖整个窗口——Opus 4.6 为每百万 token $5/$25，Sonnet 4.6 为 $3/$15。没有倍率：90 万 token 的请求与 9 千 token 的请求按相同的每 token 费率计费。
+
+**正式发布带来的变化：**
+
+- **一个价格，完整上下文窗口。**不再有长上下文溢价。 
+- **任意上下文长度都享受完整速率限制。**你账户的标准吞吐适用于整个窗口。
+- **每次请求的媒体容量提升 6 倍**。最多 600 张图片或 PDF 页，此前为 100。即日起可在 Claude Platform 原生环境、Microsoft Foundry 以及 Google Cloud 的 Vertex AI 上使用。 
+- ​​**无需 beta header。**超过 200K token 的请求会自动生效。如果你已经在发送 beta header，它会被忽略，因此无需改代码。
+
+**1M 上下文现已包含在面向 Max、Team 和 Enterprise 用户、使用 Opus 4.6 的 Claude Code 中。**Opus 4.6 会话会自动使用完整的 1M 上下文窗口，意味着更少的 compaction，对话也能保留得更完整。此前 1M 上下文需要额外用量。
+
+### **经得起检验的长上下文**
+
+一百万 token 的上下文只有在模型能召回正确细节并跨内容推理时才有意义。Opus 4.6 在 MRCR v2 上拿到 78.3%，是该上下文长度下前沿模型中的最高分。
+
+Claude Opus 4.6 and Sonnet 4.6 maintain accuracy across the full 1M window. Long context retrieval has improved with each model generation.这意味着你可以加载整个代码库、数千页合同，或一个长时运行 agent 的完整轨迹——工具调用、观察、中间推理——并直接使用。此前长上下文工作所需的工程处理、有损摘要和上下文清理不再必要。完整对话可以保持原样。
+
+Claude Code 搜索 Datadog、Braintrust、数据库和源码时可能烧掉 10 万以上 token。然后 compaction 启动。细节消失。你开始原地打转地调试。有了 1M 上下文，我可以搜索、再搜索、汇总边界情况并提出修复——全都在同一个窗口里完成。
+
+Anton Biryukov, Software Engineer在 Opus 4.6 的 1M 上下文窗口之前，用户一加载大型 PDF、数据集或图片，我们就必须做 compaction——恰恰在最重要的工作上丢掉保真度。我们看到 compaction 事件减少了 15%。现在我们的 agent 能把这些都记住，连续运行数小时也不会忘记第一页读过的内容。
+
+Jon Bell, CPO带 1M 上下文窗口的 Opus 4.6 让我们的 Devin Review agent 显著更有效。大型 diff 装不进 200K 上下文窗口，agent 只能把上下文切片，导致更多轮次，并丢失跨文件依赖。有了 1M 上下文，我们把完整 diff 一次性喂进去，用更简单、更省 token 的 harness 就能得到更高质量的审查。
+
+Adhyyan Sekhsaria, Founding EngineerEve 默认使用 1M 上下文，因为原告律师最难的问题需要它。无论是交叉对照 400 页的庭审笔录，还是在整份案件材料中找出关键关联，扩大后的上下文窗口都让我们给出比以前明显更高质量的答案。
+
+Mauricio Wulfovich, ML Engineer科学发现需要同时跨越研究文献、数学框架、数据库和仿真代码进行推理。Claude Opus 4.6 的 1M 上下文和扩大的媒体上限，让我们的 agentic 系统能在单次过程中综合数百篇论文、证明和代码库，帮助我们大幅加速基础与应用物理研究。
+
+Dr. Alex Wissner-Gross, Co-Founder有了 Claude 的 1M 上下文，内部律师可以把一份 100 页合伙协议的五轮修改放进同一次会话，终于看清谈判的完整弧线。不必再在版本之间来回切换，也不必丢掉三轮之前改过什么。
+
+Bardia Pourvakil, Co-founder and CTO大规模生产系统有无穷无尽的上下文，生产事故也可能非常复杂。借助 Claude 的 1M 上下文窗口，我们能从第一次告警到修复，始终把每一个实体、信号和工作假设置于视野之内，而不必反复 compaction，也不必牺牲这些系统的细微之处。
+
+Mayank Agarwal, Founder &amp; CTO我们把 Opus 的上下文窗口从 200k 提到 500k，agent 反而跑得更高效——总体用的 token 更少。开销更少，更聚焦手头的目标。
+
+Izzy Miller, AI Research Lead真实世界的电子表格任务需要深入研究以及复杂的多步骤计划。Claude 的 1M 上下文窗口让我们能保持任务依从性，并关注细节。
+
+Tarun Amasa, CEO
+### **开始使用**
+
+1M 上下文即日起可在 Claude Platform 原生环境使用，也可通过 Amazon Bedrock、Google Cloud 的 Vertex AI 和 Microsoft Foundry 使用。使用 Opus 4.6 的 Claude Code Max、Team 和 Enterprise 用户会自动默认使用 1M 上下文。
+
+详情见我们的 [文档](https://platform.claude.com/docs/en/build-with-claude/context-windows)和 [定价](https://platform.claude.com/docs/en/about-claude/pricing)。
+
+‍</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Product announcements</span>
-            <span class="article-date">March 13, 2026</span>
-            
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-clay);">
+            <img class="hero-illo-img" src="/assets/illustrations/1m-context-ga.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">1M 上下文窗口正式发布，适用于 Opus 4.6 和 Sonnet 4.6</h1>
-          <a href="/posts/1m-context-ga/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>Claude Opus 4.6 和 Sonnet 4.6 现已在 Claude Platform 上以标准价格提供完整的 1M 上下文窗口。标准价格适用于整个窗口——Opus 4.6 为每百万 token $5/$25，Sonnet 4.6 为 $3/$15。没有任何加价系数：一个 900K token 的请求与一个 9K token 的请求按完全相同的单价计费。</p><p><strong>正式发布（GA）后的新变化：</strong></p><ul role="list"><li><strong>一个价格，完整上下文窗口。</strong>没有长上下文溢价。</li><li><strong>所有上下文长度均享有完整速率限制。</strong>你账户的标准吞吐量适用于整个窗口。</li><li><strong>每次请求可处理的媒体数量提升 6 倍。</strong>最多支持 600 张图片或 PDF 页面，此前为 100。即日起在 Claude Platform（原生）、Microsoft Foundry 和 Google Cloud 的 Vertex AI 上可用。</li><li>​​<strong>无需 beta header。</strong>超过 200K token 的请求自动生效。如果你已经在发送 beta header，它会被忽略，因此无需修改任何代码。</li></ul><p><strong>使用 Opus 4.6 的 Claude Code Max、Team 和 Enterprise 用户现在已包含 1M 上下文。</strong>Opus 4.6 会话可以自动使用完整的 1M 上下文窗口，这意味着更少的压缩（compaction）操作，以及更多得以完整保留的对话。此前 1M 上下文需要额外付费使用。</p><h3><strong>经得起考验的长上下文</strong></h3><p>一百万 token 的上下文只有在模型能够回忆起正确的细节并在其中进行推理时才有意义。Opus 4.6 在 MRCR v2 上取得 78.3% 的成绩，是该上下文长度下前沿模型中的最高水平。</p><figure style="max-width:1920pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69b49c06e1c573f3ce50276b_image%20(3).png" loading="lazy"></div><figcaption>Claude Opus 4.6 和 Sonnet 4.6 在完整的 1M 窗口内保持准确率。长上下文检索能力随每一代模型不断提升。</figcaption></figure><p>这意味着你可以加载整个代码库、数千页的合同，或者一个长时间运行 agent 的完整轨迹——包括工具调用、观察结果和中间推理——并直接加以使用。长上下文工作以前所需的工程处理、有损摘要和上下文清理，现在都不再需要。完整的对话将原样保留。</p></div>
+            <h1 class="article-title u-text-style-h1">1M 上下文窗口正式发布，适用于 Opus 4.6 和 Sonnet 4.6</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>Standard pricing now applies across the full 1M window for both models, with no long-context premium. Media limits expand to 600 images or PDF pages.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <div class="hero-detail-value-stack"><a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/announcements" target="_blank" rel="noopener noreferrer">Product announcements</a><div class="hero-detail-value u-text-style-body-3">Enterprise AI</div></div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <div class="hero-detail-value-stack"><a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/platform/api" target="_blank" rel="noopener noreferrer">Claude Platform</a><div class="hero-detail-value u-text-style-body-3">Claude Code</div></div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">March 13, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/1m-context-ga/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/1m-context-ga" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>Claude Opus 4.6 和 Sonnet 4.6 现已在 Claude Platform 上以标准定价提供完整的 1M 上下文窗口。标准定价覆盖整个窗口——Opus 4.6 为每百万 token $5/$25，Sonnet 4.6 为 $3/$15。没有倍率：90 万 token 的请求与 9 千 token 的请求按相同的每 token 费率计费。</p><p><strong>正式发布带来的变化：</strong></p><ul role="list"><li><strong>一个价格，完整上下文窗口。</strong>不再有长上下文溢价。&nbsp;</li><li><strong>任意上下文长度都享受完整速率限制。</strong>你账户的标准吞吐适用于整个窗口。</li><li><strong>每次请求的媒体容量提升 6 倍</strong>。最多 600 张图片或 PDF 页，此前为 100。即日起可在 Claude Platform 原生环境、Microsoft Foundry 以及 Google Cloud 的 Vertex AI 上使用。 </li><li>​​<strong>无需 beta header。</strong>超过 200K token 的请求会自动生效。如果你已经在发送 beta header，它会被忽略，因此无需改代码。</li></ul><p><strong>1M 上下文现已包含在面向 Max、Team 和 Enterprise 用户、使用 Opus 4.6 的 Claude Code 中。</strong>Opus 4.6 会话会自动使用完整的 1M 上下文窗口，意味着更少的 compaction，对话也能保留得更完整。此前 1M 上下文需要额外用量。</p><h3><strong>经得起检验的长上下文</strong></h3><p>一百万 token 的上下文只有在模型能召回正确细节并跨内容推理时才有意义。Opus 4.6 在 MRCR v2 上拿到 78.3%，是该上下文长度下前沿模型中的最高分。</p><figure style="max-width:1920pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69b49c06e1c573f3ce50276b_image%20(3).png" loading="lazy"></div><figcaption>Claude Opus 4.6 and Sonnet 4.6 maintain accuracy across the full 1M window. Long context retrieval has improved with each model generation.</figcaption></figure><p>这意味着你可以加载整个代码库、数千页合同，或一个长时运行 agent 的完整轨迹——工具调用、观察、中间推理——并直接使用。此前长上下文工作所需的工程处理、有损摘要和上下文清理不再必要。完整对话可以保持原样。</p><div class="article-testimonials" role="list"><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68b5ad6788c7a1b711a85623_Ramp_light.svg" alt="68b5ad6788c7a1b711a85623 Ramp" loading="lazy"><blockquote><p>Claude Code 搜索 Datadog、Braintrust、数据库和源码时可能烧掉 10 万以上 token。然后 compaction 启动。细节消失。你开始原地打转地调试。有了 1M 上下文，我可以搜索、再搜索、汇总边界情况并提出修复——全都在同一个窗口里完成。</p></blockquote><figcaption class="article-testimonial-caption">Anton Biryukov, Software Engineer</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69b23e943b167e62bb019de7_Logo_green.svg" alt="69b23e943b167e62bb019de7 green" loading="lazy"><blockquote><p>在 Opus 4.6 的 1M 上下文窗口之前，用户一加载大型 PDF、数据集或图片，我们就必须做 compaction——恰恰在最重要的工作上丢掉保真度。我们看到 compaction 事件减少了 15%。现在我们的 agent 能把这些都记住，连续运行数小时也不会忘记第一页读过的内容。</p></blockquote><figcaption class="article-testimonial-caption">Jon Bell, CPO</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a29deb8193497afd3b2cd24_brand-logo-cognition-black.svg" alt="6a29deb8193497afd3b2cd24 brand cognition" loading="lazy"><blockquote><p>带 1M 上下文窗口的 Opus 4.6 让我们的 Devin Review agent 显著更有效。大型 diff 装不进 200K 上下文窗口，agent 只能把上下文切片，导致更多轮次，并丢失跨文件依赖。有了 1M 上下文，我们把完整 diff 一次性喂进去，用更简单、更省 token 的 harness 就能得到更高质量的审查。</p></blockquote><figcaption class="article-testimonial-caption">Adhyyan Sekhsaria, Founding Engineer</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69ebbdde1a3d17f2d9e91607_eve-light-mode.svg" alt="69ebbdde1a3d17f2d9e91607 eve mode" loading="lazy"><blockquote><p>Eve 默认使用 1M 上下文，因为原告律师最难的问题需要它。无论是交叉对照 400 页的庭审笔录，还是在整份案件材料中找出关键关联，扩大后的上下文窗口都让我们给出比以前明显更高质量的答案。</p></blockquote><figcaption class="article-testimonial-caption">Mauricio Wulfovich, ML Engineer</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69b2420c325130a6b3466795_Physical%20Superintelligence%20Logo%20-%20Dark.svg" alt="69b2420c325130a6b3466795 Physical%20Superintelligence%20Logo%20 %20Dark" loading="lazy"><blockquote><p>科学发现需要同时跨越研究文献、数学框架、数据库和仿真代码进行推理。Claude Opus 4.6 的 1M 上下文和扩大的媒体上限，让我们的 agentic 系统能在单次过程中综合数百篇论文、证明和代码库，帮助我们大幅加速基础与应用物理研究。</p></blockquote><figcaption class="article-testimonial-caption">Dr. Alex Wissner-Gross, Co-Founder</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69b1d248b84e40f85eca3f68_GC%20AI%20220px%20navy%20(1).png" alt="69b1d248b84e40f85eca3f68 GC%20AI%20220px%20navy%20(1)" loading="lazy"><blockquote><p>有了 Claude 的 1M 上下文，内部律师可以把一份 100 页合伙协议的五轮修改放进同一次会话，终于看清谈判的完整弧线。不必再在版本之间来回切换，也不必丢掉三轮之前改过什么。</p></blockquote><figcaption class="article-testimonial-caption">Bardia Pourvakil, Co-founder and CTO</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69b31397615d221067e19bda_Resolve%20SVG%20original%20color.svg" alt="69b31397615d221067e19bda Resolve%20SVG%20original%20color" loading="lazy"><blockquote><p>大规模生产系统有无穷无尽的上下文，生产事故也可能非常复杂。借助 Claude 的 1M 上下文窗口，我们能从第一次告警到修复，始终把每一个实体、信号和工作假设置于视野之内，而不必反复 compaction，也不必牺牲这些系统的细微之处。</p></blockquote><figcaption class="article-testimonial-caption">Mayank Agarwal, Founder &amp; CTO</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69016becf0259a067d4331fa_logo_hex-light.svg" alt="69016becf0259a067d4331fa hex" loading="lazy"><blockquote><p>我们把 Opus 的上下文窗口从 200k 提到 500k，agent 反而跑得更高效——总体用的 token 更少。开销更少，更聚焦手头的目标。</p></blockquote><figcaption class="article-testimonial-caption">Izzy Miller, AI Research Lead</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69f258769ad971ea1c706eff_endex-light-mode.svg" alt="69f258769ad971ea1c706eff endex mode" loading="lazy"><blockquote><p>真实世界的电子表格任务需要深入研究以及复杂的多步骤计划。Claude 的 1M 上下文窗口让我们能保持任务依从性，并关注细节。</p></blockquote><figcaption class="article-testimonial-caption">Tarun Amasa, CEO</figcaption></figure></div><h3><strong>开始使用</strong></h3><p>1M 上下文即日起可在 Claude Platform 原生环境使用，也可通过 Amazon Bedrock、Google Cloud 的 Vertex AI 和 Microsoft Foundry 使用。使用 Opus 4.6 的 Claude Code Max、Team 和 Enterprise 用户会自动默认使用 1M 上下文。</p><p>详情见我们的 <a href="https://platform.claude.com/docs/en/build-with-claude/context-windows">文档</a>和 <a href="https://platform.claude.com/docs/en/about-claude/pricing">定价</a>。</p><p>‍</p></div>
+
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/1m-context-ga" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

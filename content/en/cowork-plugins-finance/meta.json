@@ -13,5 +13,20 @@
   "translatedTitle": "面向金融的 Cowork 与 plugins",
   "translated": true,
   "translatedAt": "2026-09-02T04:18:55.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI",
+      "Agents"
+    ],
+    "product": [
+      "Claude Enterprise"
+    ],
+    "usecase": []
+  },
+  "subtitle": "New plugins built for how finance actually works, plus cross-app workflows that move with you from Excel to PowerPoint to final deliverable.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/solutions/enterprise"
 }

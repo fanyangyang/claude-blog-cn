@@ -6,11 +6,11 @@
     <description>Anthropic Claude 官方博客的中文翻译</description>
     <atom:link href="https://fanyangyang.github.io/claude-blog-cn/rss.xml" rel="self" type="application/rss+xml"/>
     <language>zh-CN</language>
-    <lastBuildDate>Wed, 02 Sep 2026 22:14:04 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 03 Sep 2026 11:40:32 GMT</lastBuildDate>
     <item>
-      <title>A guide to the anatomy of effective commerce agents</title>
-      <link>https://fanyangyang.github.io/claude-blog-cn/posts/the-anatomy-of-effective-commerce-agents/en.html</link>
-      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/the-anatomy-of-effective-commerce-agents/en.html</guid>
+      <title>高效电商智能体深度剖析</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/the-anatomy-of-effective-commerce-agents/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/the-anatomy-of-effective-commerce-agents/</guid>
       <pubDate>Tue, 01 Sep 2026 16:00:00 GMT</pubDate>
       <category>Agents</category>
     </item>
@@ -57,14 +57,14 @@
       <category>Product announcements</category>
     </item>
     <item>
-      <title>Bain &amp; Company 加入 Claude Partner Network，成为全球优先合作伙伴</title>
+      <title>Bain &amp; Company 加入 Claude Partner Network，成为全球首要合作伙伴</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/bain-company-joins-the-claude-partner-network-as-a-global-premier-partner/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/bain-company-joins-the-claude-partner-network-as-a-global-premier-partner/</guid>
       <pubDate>Mon, 24 Aug 2026 16:00:00 GMT</pubDate>
       <category>Enterprise AI</category>
     </item>
     <item>
-      <title>Claude 的记忆随处可用，内容由你决定</title>
+      <title>Claude 的记忆功能全面可用，内容由你决定</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claudes-memory-works-everywhere-and-you-decide-whats-in-it/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claudes-memory-works-everywhere-and-you-decide-whats-in-it/</guid>
       <pubDate>Mon, 24 Aug 2026 16:00:00 GMT</pubDate>
@@ -85,42 +85,42 @@
       <category>Product announcements</category>
     </item>
     <item>
-      <title>AI 原生 SDLC 实战手册</title>
+      <title>AI 原生软件开发生命周期手册</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/the-ai-native-sdlc-playbook/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/the-ai-native-sdlc-playbook/</guid>
       <pubDate>Thu, 20 Aug 2026 16:00:00 GMT</pubDate>
       <category>Enterprise AI</category>
     </item>
     <item>
-      <title>Anthropic 的 AI 教学与学习方法</title>
+      <title>Anthropic 的 AI 教学与学习方法论</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/anthropics-approach-to-teaching-and-learning-ai/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/anthropics-approach-to-teaching-and-learning-ai/</guid>
       <pubDate>Wed, 19 Aug 2026 16:00:00 GMT</pubDate>
       <category>Product announcements</category>
     </item>
     <item>
-      <title>monday.com 如何把平台重塑为人与 agent 协作的 agent 优先产品</title>
+      <title>monday.com 如何将平台转变为人类与 AI 代理协作的产品</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/how-monday-com-transformed-its-platform-into-an-agent-first-product-where-humans-and-agents-collaborate/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/how-monday-com-transformed-its-platform-into-an-agent-first-product-where-humans-and-agents-collaborate/</guid>
       <pubDate>Wed, 19 Aug 2026 16:00:00 GMT</pubDate>
       <category>Agents</category>
     </item>
     <item>
-      <title>面向创业公司的 Claude Code 指南</title>
+      <title>创业公司 Claude Code 指南</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-code-guide-for-startups/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-code-guide-for-startups/</guid>
       <pubDate>Wed, 19 Aug 2026 16:00:00 GMT</pubDate>
       <category>Claude Code</category>
     </item>
     <item>
-      <title>使用 Computer use、Skills API 和 Files API 构建生产级智能体</title>
+      <title>Computer Use、Skills API 和 Files API 现已全面可用</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/computer-use-skills-api-files-api/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/computer-use-skills-api-files-api/</guid>
       <pubDate>Wed, 19 Aug 2026 16:00:00 GMT</pubDate>
       <category>Product announcements</category>
     </item>
     <item>
-      <title>把对话变成知识：Slack 如何构建人机协作团队</title>
+      <title>将对话转化为知识：Slack 如何构建人机协作团队</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/turning-conversation-into-knowledge-how-slack-builds-human-agent-teams/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/turning-conversation-into-knowledge-how-slack-builds-human-agent-teams/</guid>
       <pubDate>Tue, 18 Aug 2026 16:00:00 GMT</pubDate>
@@ -456,7 +456,7 @@
       <category>Enterprise AI</category>
     </item>
     <item>
-      <title>Claude Code 现已支持 artifacts</title>
+      <title>Claude Code 现已支持 Artifacts</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/artifacts-in-claude-code/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/artifacts-in-claude-code/</guid>
       <pubDate>Wed, 17 Jun 2026 16:00:00 GMT</pubDate>
@@ -519,7 +519,7 @@
       <category>Product announcements</category>
     </item>
     <item>
-      <title>在 Foundation Models 框架中使用 Claude，为 Apple 平台构建智能应用</title>
+      <title>Claude 支持苹果 Foundation Models 框架</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-for-foundation-models/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-for-foundation-models/</guid>
       <pubDate>Sun, 07 Jun 2026 16:00:00 GMT</pubDate>
@@ -806,7 +806,7 @@
       <category>Claude Code</category>
     </item>
     <item>
-      <title>Claude 新增面向日常生活的连接器</title>
+      <title>Claude 新增日常连接器</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/connectors-for-everyday-life/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/connectors-for-everyday-life/</guid>
       <pubDate>Wed, 22 Apr 2026 16:00:00 GMT</pubDate>
@@ -848,7 +848,7 @@
       <category>Claude Code</category>
     </item>
     <item>
-      <title>为并行智能体重新设计桌面端 Claude Code</title>
+      <title>桌面版 Claude Code 重新设计：支持并行代理</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-code-desktop-redesign/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-code-desktop-redesign/</guid>
       <pubDate>Mon, 13 Apr 2026 16:00:00 GMT</pubDate>
@@ -862,7 +862,7 @@
       <category>Product announcements</category>
     </item>
     <item>
-      <title>为 AI 加速的攻击面做好准备：安全项目应对指南</title>
+      <title>为 AI 加速的攻击做好安全准备</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/preparing-your-security-program-for-ai-accelerated-offense/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/preparing-your-security-program-for-ai-accelerated-offense/</guid>
       <pubDate>Thu, 09 Apr 2026 16:00:00 GMT</pubDate>

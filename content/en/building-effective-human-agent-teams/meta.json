@@ -13,5 +13,21 @@
   "translatedTitle": "构建高效的人机协作团队",
   "translated": true,
   "translatedAt": "2026-09-02T04:27:42.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Tag"
+    ],
+    "usecase": [
+      "Agents"
+    ]
+  },
+  "subtitle": "The way we work with AI is evolving from a single-player to a multiplayer experience, where humans and agents work together as a team to achieve shared goals. We share examples of this new way of working in action.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/product/tag"
 }

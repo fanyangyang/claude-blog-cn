@@ -13,5 +13,19 @@
   "translatedTitle": "在前沿工作：为什么 Base44 把最具挑战性的工程任务托付给 Claude Fable 5",
   "translated": true,
   "translatedAt": "2026-09-02T04:00:00.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Platform"
+    ],
+    "usecase": []
+  },
+  "subtitle": "Yoav Orlev, Head of Product at Base44, joined the vibe coding platform as its first employee and has seen his team build on every Claude model since Sonnet 4. Here's why he thinks Claude Fable 5 is the first model that reasons about software the way a senior engineer would, and what that frees the rest of his team to build.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/platform/api"
 }

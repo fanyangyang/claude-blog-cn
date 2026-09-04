@@ -13,5 +13,21 @@
   "translatedTitle": "AWS Trainium2 上的 Claude 3.5 Haiku 与 Amazon Bedrock 中的模型蒸馏",
   "translated": true,
   "translatedAt": "2026-09-02T04:44:54.905Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Enterprise"
+    ],
+    "usecase": [
+      "Business"
+    ]
+  },
+  "subtitle": "We're bringing faster inference to Claude 3.5 Haiku through AWS Trainium2 optimization and enabling model distillation in Amazon Bedrock to help you achieve frontier-level performance at lower costs.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/solutions/enterprise"
 }

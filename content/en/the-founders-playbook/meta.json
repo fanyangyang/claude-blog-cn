@@ -13,5 +13,24 @@
   "translatedTitle": "创始人手册：构建 AI 原生创业公司",
   "translated": true,
   "translatedAt": "2026-09-02T04:16:06Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Claude Code"
+    ],
+    "product": [
+      "Claude Cowork",
+      "Claude Platform",
+      "Claude Code",
+      "Claude apps"
+    ],
+    "usecase": [
+      "Startups"
+    ]
+  },
+  "subtitle": "We share how founders are using AI at every stage of the startup journey, with practical exercises, frameworks, and prompts for using Claude.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/claude-code",
+  "productUrl": "https://claude.com/product/cowork"
 }

@@ -13,5 +13,24 @@
   "translatedTitle": "在前沿工作：Thomson Reuters 如何为高风险专业工作构建 AI",
   "translated": true,
   "translatedAt": "2026-09-02T04:15:00.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Platform",
+      "Claude Enterprise",
+      "Claude Code"
+    ],
+    "usecase": [
+      "Legal",
+      "Work"
+    ]
+  },
+  "subtitle": "Joel Hron, CTO at Thomson Reuters, has spent years putting AI inside products trusted by lawyers and accountants. Here is why he considers Claude Fable 5 a critical evolution in what’s possible with AI for knowledge work.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/platform/api"
 }

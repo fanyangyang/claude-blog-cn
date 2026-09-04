@@ -3,40 +3,367 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>为 AI 加速的攻击面做好准备：安全项目应对指南 — Claude Blog 中文翻译</title>
-  <meta name="description" content="为 AI 加速的攻击面做好准备：安全项目应对指南">
+  <title>为 AI 加速的攻击做好安全准备 — Claude Blog 中文翻译</title>
+  <meta name="description" content="AI is changing the speed at which vulnerabilities are found and exploited. We're publishing an initial set of recommendations to shore up your defenses based on our own findings and security practices.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/preparing-your-security-program-for-ai-accelerated-offense" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>为 AI 加速的攻击做好安全准备</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/preparing-your-security-program-for-ai-accelerated-offense" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/preparing-your-security-program-for-ai-accelerated-offense/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># 为 AI 加速的攻击做好安全准备
+
+AI is changing the speed at which vulnerabilities are found and exploited. We're publishing an initial set of recommendations to shore up your defenses based on our own findings and security practices.
+
+本周早些时候，我们宣布了 Project Glasswing——这是我们的一项紧迫尝试，旨在让我们最新前沿模型 Claude Mythos Preview 的强大网络安全能力服务于防御目的。在那篇[公告](https://www.anthropic.com/glasswing)及[配套的技术博客文章](https://red.anthropic.com/2026/mythos-preview/)中，我们描述了 AI 模型正在如何快速降低发现和利用软件漏洞所需的资源、时间和技能。
+
+着眼于 AI 的闪电式进步，我们还指出，用不了多久，同等能力水平的模型就会广泛可得。在未来 24 个月内，大量在代码中沉睡多年、无人察觉的漏洞将被 AI 模型发现，并被串联成可用的漏洞利用程序。事实上，公开可用、能力低于 Mythos 水平的模型已经能够[发现严重漏洞](https://www.anthropic.com/news/mozilla-firefox-security)——这些漏洞曾被传统评审长期遗漏。
+
+所幸，这是一把双刃剑：攻击者可以用 AI 提速，采用 AI 工具的防御者同样可以。在这篇文章中，我们基于安全团队和研究人员在使用前沿 AI 模型保护真实代码库和系统过程中的观察与心得，提供安全建议和实操提示。在迈入 AI 驱动的网络安全时代之际，希望安全团队和其他读者能从这些建议中受益。
+
+下文中的许多建议本就属于现有的安全共识；我们根据实践中哪些控制措施站得住脚、哪些正在失效来排定优先级。如果你的组织按 SOC 2 和 ISO 27001 进行汇报，这些建议可以直接对应到你已经在跟踪的控制项上。
+
+随着我们和 Project Glasswing 合作伙伴网络安全工作的推进，我们将持续更新这份指南。
+
+## **现在就该做的事**
+
+### **1. 关闭补丁窗口期**
+
+AI 模型非常擅长在未打补丁的系统中识别已知、已有补丁的漏洞特征。把一个补丁逆向成可用的漏洞利用程序，正是这类模型最擅长的机械分析。这意味着，从补丁发布到漏洞利用程序出现之间的窗口正在不断收窄。
+
+- *立即修补 *[*CISA 已知被利用漏洞（KEV）目录*](https://www.cisa.gov/known-exploited-vulnerabilities-catalog)* 中的所有内容。*该目录收录的是已确认正被积极利用的漏洞。这个列表上任何可从网络访问的东西，都应按紧急事件对待。
+
+- *用 *[*EPSS*](https://www.first.org/epss/)* 为其余漏洞排定优先级。*漏洞利用预测评分系统（EPSS）每天更新，给出某个特定 CVE（通用漏洞和暴露）在未来 30 天内被利用的概率。先修补 KEV 列表，再修补所有超过选定 EPSS 阈值的漏洞，能帮你把成千上万个未处理的 CVE 变成一个可管理的队列。
+
+- *缩短互联网暴露系统的补丁时间。*我们建议：对面向互联网的应用，在漏洞利用程序出现后 24 小时内完成修补；其他漏洞也应在数天内完成。
+
+- *在可接受自动更新引发停机风险的前提下，自动化补丁部署和重启。*人工审批环节会带来延迟，而延迟如今正是首要风险。
+
+**实操提示：**大多数云和操作系统厂商都已提供补丁自动化，启用它往往只是一次简单的配置变更。对于容器镜像和依赖清单，多个开源扫描器可以作为单个持续集成步骤运行，并用 KEV 目录和 EPSS 的数据为 CVE 加注，优先级排序是内置的。
+
+### **2. 为大幅增加的漏洞报告量做好准备**
+
+在大约未来两年里，你用来接收、排定优先级和修复漏洞（包括自己代码中的漏洞和从供应商处购买的软件中的漏洞）的流程，将承受远超今天的压力。你的漏洞管理流程应当为来自供应商和上游的更多补丁做好规划。
+
+- *为漏洞发现量增长一个数量级做规划。*接收、分诊和修复跟踪等环节需要跟上不断暴露的漏洞数量。如果你的安全会议仍围绕一张电子表格和每周例会展开，你多半跟不上节奏。值得考虑引入一定程度的自动化——当然要保持人在环中，以应对这里的巨大数量。
+
+- *检查开源依赖的安全性。*大多数软件供应链的主体是开源软件。而大多数开源项目没有服务级别协议，也没有维持高安全水平的承诺。[OpenSSF Scorecard](https://securityscorecards.dev/) 会根据分支保护、模糊测试覆盖率、签名发布和维护者活跃度等信号自动为每个依赖评分。它可以在 CI 中运行，帮助识别无人维护的包。
+
+- *对供应商提出同样的要求。*你的第三方风险管理流程应当询问供应商：他们自己为加速的漏洞利用时间线做了哪些准备，他们是否在扫描自己的代码。
+
+‍**实操提示：**可以研究评估漏洞代码可达性的开源软件和第三方服务。构建自动化流程，将新的软件更新持续交付到你的 IT 和生产基础设施，并通过对更新做回归测试，建立“可以快速部署”的信心。
+
+上面提到了这些流程的自动化。AI 可以在多个重要方面提供帮助：
+
+- *加速分诊。*分诊是瓶颈，因为它需要专家评审和分类。前沿模型可以将发现与现有积压工作去重，利用对你资产的了解来评估暴露程度，并起草修复工单，其中受影响的代码路径已被预先标出。
+
+- *检查依赖的冗余。*大多数大型代码库会积累多个做同一件事的库（好几个 HTTP 客户端、好几个 JSON 解析器）。这给攻击者提供了更多可乘之机，而你在功能上毫无收益。让一个 LLM 读一遍 lockfile，问它哪些依赖相互重叠（以及迁移和整合会是什么样），这是一小时就能完成的练习，而且往往物超所值。
+
+- *AI 升级自动化。*前沿模型越来越有能力随漏洞报告一并生成补丁。当报告清晰详尽、甚至附带概念验证时，模型可以直接测试补丁，确认利用路径已被封堵。它还可以直接自动化接受上游补丁的过程，验证升级不会破坏测试或内部系统。
+
+- *AI 供应商化（vendoring）。*有些小型依赖在 OpenSSF Scorecard 上得分很差——也许是因为它们已无人积极维护。你不应继续依赖这些包，而应考虑让 LLM 编写自己的代码，重新实现你实际用到的那部分功能。
+
+### **3. 在发布前发现 bug**
+
+预防总是胜于补救。你应当假设到达生产环境的 bug 终会被发现，因此安全测试必须大幅提前。
+
+- *在持续集成流水线中加入静态分析和 AI 辅助代码评审，*并对高置信度的发现阻断合并。如果误报让这难以落地，你不应取消检查，而应解决工具问题。[OWASP 应用安全验证标准](https://owasp.org/www-project-application-security-verification-standard/)定义了在三种不同严格程度上“通过”测试分别意味着什么。
+
+- *在持续交付流水线中加入自动化渗透测试。*你可以对预发环境运行攻击者将对你的生产系统运行的同类扫描。
+
+- *加固构建流水线。能在提交和部署之间注入代码的攻击者根本不需要找漏洞。[SLSA](https://slsa.dev/) 安全框架提供了一条分级路径：较低层级确定哪个提交产出了哪个制品，较高层级让构建过程本身可验证。
+
+- 采纳 *[*Secure by Design*](https://www.cisa.gov/securebydesign)*（设计即安全）实践。*CISA 的承诺条款（默认多因素认证、无默认密码、透明的漏洞报告）是一个合理的最低门槛。
+
+- *新代码优先选用内存安全语言。*严重漏洞中有很大一部分是内存安全 bug，而这类 bug 在 Rust、Go 或托管运行时中不会发生。CISA、NSA 和英国[NCSC](https://www.ncsc.gov.uk/) 已[发布了实用的路线图](https://www.cisa.gov/resources-tools/resources/case-memory-safe-roadmaps)。现有的 C/C++ 代码不必重写，但新增 C/C++ 代码应当要求说明理由。AI 辅助的重写如今也越来越可行。
+
+**实操提示：**以 CI action 形式运行、内置 OWASP Top 10 和语言专属规则集的静态应用安全测试（SAST）工具已经广泛可得，既有开源方案，也内置在代码托管平台中（GitHub 上的 CodeQL 是最常见的起点）。在评估构建来源方面，OpenSSF 发布了一个[可复用的工作流](https://github.com/slsa-framework/slsa-github-generator)，可以从 GitHub Actions 生成 SLSA Level 3 证明；采用它的工作量远比 SLSA 规范暗示的要少。
+
+和前面一样，用 AI 加速这项工作也有几个明确的机会：*** ***
+
+- *AI 漏洞扫描。*这里的逻辑很直接：你应该在攻击者之前，用他们会用的同类模型先扫描自己的代码和系统。这种方式只需要一个隔离的 agent、一个过滤噪声的验证步骤，以及一条接入你现有分诊流程的通道。今天用一个 LLM 就能做到。***如果本节你只落实一件事，就落实这一件。***
+
+- *补丁生成。*当 SAST 或扫描器产出一个发现时，前沿模型通常能为它提出补丁。这并没有取消评审的必要，但它把开发者的工作从“理解 bug 并编写修复”变成了“验证所提修复是否正确”。后者更快。同样的思路也适用于内存安全迁移：LLM 可以把一个自包含的 C 模块连同测试一起移植到 Rust；评审者只需验证等价性，而不必从零开始写。
+
+### **4. 找出代码中已有的漏洞**
+
+打补丁解决的是你所依赖软件中的已知漏洞，但你自己的代码库中还藏着未知的漏洞。大多数长期运行的生产代码被人类评审过许多次，却从未被前沿模型检视过，而这类分析[往往会浮现出新的、此前被忽视的问题](https://www.youtube.com/watch?v=_IDbFLu9Ug8)。主动扫描可以在攻击者之前，识别出处在现代 LLM 能力范围之内的漏洞。
+
+- *按暴露程度排定优先级。*从解析不可信输入、执行认证或授权判断、或可从互联网访问的代码入手。这些路径上的发现最有可能是要紧的。
+
+- *把遗留代码包括进来。*早于现行评审实践的代码，或原作者早已离开的代码，往往最近受到的检视最少，也最能从一次全新扫描中获益。
+
+- *为修复预留预算。*对老旧代码做一次结构良好的模型扫描，产出的发现通常比一次 SAST 铺开要少，但其中真实问题的占比更高。要规划出修 bug 的工程时间。
+
+**实操提示：**挑一个当前少人认领的面向互联网的服务，扫描它的输入处理和认证逻辑。让 agent 在隔离环境中运行，并加一个验证步骤，确保你只在确认的发现上行动。认真做完一个服务，就是估算更大范围项目成本的合理基础。
+
+### **5. 为失陷而设计**
+
+攻击者总会试图在某处立足。你需要限制他们从那里能触及的范围。
+
+那些靠增加摩擦——让攻击变得*繁琐*——而非硬性屏障来体现价值的缓解措施（多余的跳板跳数、速率限制、非标准端口、基于短信的 MFA），面对一个能把繁琐步骤硬啃下来的对手，效果要差得多。下面我们的建议偏向那些即使攻击者拥有无限耐心也依然成立的控制：与硬件绑定的凭据、会过期的令牌，以及根本不存在的网络路径，而不是仅仅“不方便”的路径。
+
+- *采用零信任架构。*对服务之间的每一个请求进行认证和授权，就像它来自互联网一样。CISA 的[零信任成熟度模型](https://www.cisa.gov/zero-trust-maturity-model)和 NCSC 的[零信任原则](https://www.ncsc.gov.uk/collection/zero-trust-architecture)都提供了分阶段的采纳路径。
+
+- *把访问绑定到经过验证的硬件，而非凭据。*生产系统和敏感的内部工具应只能从具有硬件身份证明的受管员工设备访问，并配合抗钓鱼的 2FA（FIDO2 或 passkey）。仅凭被窃取的凭据绝不应足以获得访问权限。甚至生产服务之间的调用也应根植于硬件身份。
+
+- *按身份隔离服务。*** **一台被攻陷的构建服务器不应能查询生产数据库。一台被攻陷的笔记本电脑不应能触及构建基础设施。要在接收端强制执行这一点：每个工作负载都应携带自己的加密身份，每个服务都只应接受其策略中点名的特定调用方的连接。网络分段仍可缩小影响面和噪声，但它只是兜底手段。
+
+- *用短生命周期令牌取代长期密钥。*静态 API 密钥、硬编码凭据和共享的服务账号密码，是拥有模型辅助代码分析能力的攻击者最先找到的东西之一。请使用由身份提供商签发的、短生命周期且范围收窄的令牌。
+
+**实操提示：**完整的零信任是一个多年期项目，但一个身份感知访问代理（identity-aware access proxy）可以在不根本改动内部服务架构的前提下，把“设备已验证 + MFA 把关”的访问放到它们面前。每个主要云厂商都提供原生方案，面向本地数据中心和多云环境也有多个开源及商业替代品。至于密钥，每家主流云都有托管密钥存储；把共享最广泛的那一个凭据迁移进去并轮换掉，对其余凭据的治理是一个有用的破局动作。
+
+### **6. 减少并盘点你的暴露面**
+
+本节基于两条重要原则。第一，你无法防御你不知道的系统。第二，暴露面越小，可攻击的东西就越少。
+
+- *维护一份最新的清单，*覆盖你系统中所有面向互联网的主机、服务和 API 端点。攻击者可以跑自动化侦察，你的清单至少要同样准确。把这些系统纳入你的渗透测试和红队演练。
+
+- *下线不再使用的系统。*没有明确负责人的遗留服务通常也是没打补丁的。
+
+- *最小化每个服务的暴露面。*网络入口默认拒绝（default-deny），并将 API 面收窄到实际所需。
+
+***实操提示：***全网扫描索引是公开可查的；用你自己的 IP 段和域名去查询，就能看到攻击者侦察时看到的东西。至于云上资产，原生的清单工具（AWS Config、Azure Resource Graph、GCP Asset Inventory）已经存在，功夫在于如何查询它们。
+
+AI 在这里也能直接帮忙：
+
+- *清理过时代码和系统。*识别无用代码很繁琐——但如上所述，AI 模型擅长繁琐任务。一个拥有代码库和流量日志读取权限的模型，可以列出没有调用方、也没有流量的端点，进而解释移除每一个会影响什么。
+
+- *自主外部红队。*从外部把一个 AI 攻击 agent 指向你自己的边界，不给凭据、不给源码访问权。然后，让它做攻击者会做的事：摸清哪些可达、做指纹识别，并尝试把发现的东西串联成一个立足点。这种自动化红队能抓到源码扫描看不到的东西：被遗忘的主机、暴露的管理接口、默认凭据和配置错误的存储。按与清单刷新相同的节奏运行它。
+
+### **7. 缩短事件响应时间**
+
+漏洞利用程序可能在补丁发布后几小时内出现。耗时数天的响应流程已经太慢了。以下是一些缩短事件响应时间的思路：
+
+- *在告警队列的最前端放一个模型。*每一条进入的告警，都应先经过一轮自动化的初步调查，再交到人手里。这种对 SIEM（安全信息与事件管理）平台拥有只读权限、配备一组范围明确的查询工具的“分诊 agent”，可以把你的注意力引向最需要人类判断的告警。
+
+- *把工具驻留时间和覆盖率放在第一位。*这两项是 AI 自动化最有能力改善的指标；而当利用窗口缩短时，它们也最为关键。
+
+- *自动化事件相关的记录工作。*在活跃事件期间，模型应当负责记录、采集证据、并行推进多条调查线，并起草复盘和根因分析。相反，*人*应当负责遏制决策、披露决策和客户沟通决策。事件中人类的决策速度，绝不应被本可交给 AI 的事项（如证据收集或撰写报告）拖慢。
+
+- *让模型驱动检测飞轮。*摄取[威胁情报](https://platform.claude.com/cookbook/tool-use-threat-intel-enrichment-agent)、生成候选检测规则、狩猎匹配、调整触发条件，这些都已在前沿模型的能力范围之内，它们可以端到端地跑完整个流程。
+
+- *做一次五起事件同时发生的桌面演练。**** ***标准演练的假设是：一个带可用利用程序的严重 CVE 在周一爆发。以我们现在看到的 AI 能力，这可能并不明智。要真正压测你的响应能力，你应该演练一周内五起事件接连来袭的版本。
+
+- *用 *[*MITRE ATT&amp;CK*](https://attack.mitre.org/)* 来映射检测覆盖率。*ATT&amp;CK 提供了一套大多数检测工具已在使用的攻击技术标准词汇。知道哪些技术你能检测到（哪些不能），比“提升检测能力”这种笼统目标有用得多。应优先覆盖横向移动和凭据访问。
+
+- *提前建立紧急变更流程。**** ***针对生产补丁的两周变更审批周期，本身就是安全风险。紧急遏制动作（如下线某项服务、轮换某个凭据、封堵某条网络路径）也是如此。应当事先决定谁有权批准这些动作，以及能有多快。
+
+**实操提示：**挑一条噪声很大、已知误报率很高的规则。把一个前沿模型接入它的告警流，赋予其对底层数据的只读权限，让它为每次触发产出一份结构化的处置意见。用两周时间测量其与人类评审员的一致率。如果一致率可以接受，再扩展到下一条规则。一次性把整个队列全自动化并不划算。另外，[Atomic Red Team](https://atomicredteam.io/) 是一个由小型、安全的测试组成的开源库，与 ATT&amp;CK 技术一一映射；跑上几个，再核对现有日志真正检测到了哪些，是一个下午就能完成的练习，还能产出一张具体的覆盖图。
+
+以下是一些 AI 帮助缩短响应时间的方式：
+
+- *100% 覆盖的第一轮分诊。*一个范围明确的分诊 agent 可以调查每一条告警（而人类可能只看超过某个严重级别阈值的），并产出人可以接受、拒绝或升级的结构化处置意见。让这一切成立的机制是：给模型一个最小的工具集（查询、思考、报告），让它自己选择调查策略，再对照运营指标衡量产出。
+
+- *事件记录员和并行调查员。*在活跃事件期间，模型可以实时记录、为采集到的证据打上时间戳、推进响应者尚未顾及的独立调查线，并在事件结束后根据记录起草复盘报告。这是前沿模型在安全工作中最不起眼的应用——但很可能是影响最大的一个。
+
+- *对自身环境的主动狩猎。*能在源码中找漏洞的同类 agent，也可以在你的遥测数据中狩猎错误配置和失陷指标。可以按与外部攻击面扫描相同的节奏运行它。
+
+## **向他人提交漏洞报告的建议**
+
+如果你在扫描代码——无论是你自己的依赖、开源项目还是厂商产品——并向上游报告发现，报告的质量决定了是否有人会采取行动。开源维护者已经在接收大量低质量的自动化报告，许多人已开始无视任何看起来像 AI 生成的东西。只增加数量而不增加信号，会让问题对所有相关方——包括你自己——变得更糟。
+
+只有当一个人验证过报告并愿意署名时，才应发送报告。具体来说：
+
+- *用平实的语言说明 bug 及其影响。*维护者应当能从第一段就明白哪里出了问题、为什么重要，而不需要运行任何东西。
+
+- *逐步走一遍代码路径。*展示输入从哪里进入、在哪里被错误处理、后果在哪里发生。正是这部分，把一个真实发现和一次模式匹配区分开来。
+
+- *提供可运行的复现。*一个维护者跑得起来的概念验证，或一个会失败的测试用例，比任何长篇解释都更可信。
+
+- *附上你自己作为维护者也会接受的补丁提案。*补丁证明了报告者对代码库的理解足够深，能以符合项目惯例的方式修复问题。
+
+- *提前披露 AI 的参与。*如果是模型发现的 bug 或起草的报告，在第一行就说明。维护者反正会知道；隐瞒它付出的信誉代价远大于坦白。
+
+- *尊重维护者的判断。*如果他们拒绝了报告，你应当坦然接受。做一个好打交道的人所积累的善意，胜过在某个 bug 上争个输赢。
+
+**实操提示：**发送漏洞报告前有一个有用的自查方法：关掉编辑器，凭记忆解释这个 bug。如果脱离模型输出你就说不清哪里出了问题，说明你的理解还不足以提交报告。
+
+## **如果你没有安全团队**
+
+上面的建议大多假设你的组织有专职的安全职能部门。如果你是一个小型组织、独立开发者或开源维护者，风险相同，但行动更简单：
+
+- *开启自动更新，*覆盖操作系统、浏览器和所有提供此功能的应用。这是可采取的最有效的单一动作，且无需持续投入。
+
+- *优先使用托管服务，而非自建。*让拥有安全团队的厂商来运行数据库、认证和邮件，把打补丁的担子交给他们。这类托管服务的成本，几乎总是低于一次安全事件的代价。
+
+- *在所有支持的账户上使用 passkey 或硬件安全密钥。*短信验证码可能被拦截，密码会被重复使用；硬件密钥无法被钓鱼。
+
+- *启用代码托管平台上的免费安全工具。*GitHub 的 Dependabot、密钥扫描和 CodeQL 对公开仓库免费，能捕捉到企业级工具所捕捉内容的相当比例。启用它们只需几分钟。
+
+*如果你维护一个开源项目，请发布一份 `SECURITY.md`*` `说明该联系谁，以及对方联系后会得到什么。AI 辅助扫描意味着你会收到比以前更多的漏洞报告。有些会很有价值，有些则是自动化噪声。一个清晰的接收流程能帮你区分二者，也向善意报告者传递信号：他们的努力不会白费。
+
+  
+    
+      
+        
+          主题
+          参考
+        
+
+      
+
+      
+        
+          补丁优先级
+          
+            [CISA KEV Catalog](https://www.cisa.gov/known-exploited-vulnerabilities-catalog),
+            [FIRST EPSS](https://www.first.org/epss/),
+            [CISA BOD 22-01](https://www.cisa.gov/news-events/directives/bod-22-01-reducing-significant-risk-known-exploited-vulnerabilities)
+          
+        
+
+        
+          基线控制
+          
+            [ACSC Essential Eight](https://www.cyber.gov.au/business-government/asds-cyber-security-frameworks/essential-eight),
+            [CISA CPGs](https://www.cisa.gov/cross-sector-cybersecurity-performance-goals),
+            [CIS Controls v8](https://www.cisecurity.org/controls),
+            [NCSC 10 Steps](https://www.ncsc.gov.uk/collection/10-steps)
+          
+        
+
+        
+          安全开发
+          
+            [NIST SSDF (SP 800-218)](https://csrc.nist.gov/Projects/ssdf),
+            [OWASP ASVS](https://owasp.org/www-project-application-security-verification-standard/),
+            [OWASP SAMM](https://owaspsamm.org/),
+            [CISA Secure by Design](https://www.cisa.gov/securebydesign)
+          
+        
+
+        
+          内存安全
+          
+            [CISA/NSA Memory Safe Roadmaps](https://www.cisa.gov/resources-tools/resources/case-memory-safe-roadmaps)
+          
+        
+
+        
+          供应链与构建完整性
+          
+            [SLSA](https://slsa.dev/),
+            [OpenSSF Scorecards](https://securityscorecards.dev/),
+            [CISA SBOM resources](https://www.cisa.gov/sbom),
+            [NIST SP 800-161](https://csrc.nist.gov/pubs/sp/800/161/r1/final)
+          
+        
+
+        
+          零信任
+          
+            [CISA Zero Trust Maturity Model](https://www.cisa.gov/zero-trust-maturity-model),
+            [NIST SP 800-207](https://csrc.nist.gov/pubs/sp/800/207/final),
+            [NCSC Zero Trust Principles](https://www.ncsc.gov.uk/collection/zero-trust-architecture)
+          
+        
+
+        
+          检测与响应
+          
+            [MITRE ATT&amp;CK](https://attack.mitre.org/),
+            [MITRE D3FEND](https://d3fend.mitre.org/)
+          
+        
+
+        
+          项目框架
+          
+            [NIST Cybersecurity Framework 2.0](https://www.nist.gov/cyberframework),
+            [NCSC Cyber Assessment Framework](https://www.ncsc.gov.uk/collection/cyber-assessment-framework)
+          
+        
+
+      
+
+    
+
+  
+
+### **致谢**
+
+本文由 Anthropic 安全工程与研究团队成员撰写，包括 Donny Greenberg、Jason Clinton、Michael Moore、Abel Ribbink 和 Jackie Bow，Jannet Park、Gabby Curtis 和 Stuart Ritchie 亦有贡献。</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Agents</span>
-            <span class="article-date">April 10, 2026</span>
-            
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-olive);">
+            <img class="hero-illo-img" src="/assets/illustrations/preparing-your-security-program-for-ai-accelerated-offense.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">为 AI 加速的攻击面做好准备：安全项目应对指南</h1>
-          <a href="/posts/preparing-your-security-program-for-ai-accelerated-offense/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>本周早些时候，我们宣布了 Project Glasswing——这是我们的一项紧迫尝试，旨在让我们最新前沿模型 Claude Mythos Preview 的强大网络安全能力服务于防御目的。在那篇<a href="https://www.anthropic.com/glasswing" target="_blank">公告</a>及<a href="https://red.anthropic.com/2026/mythos-preview/" target="_blank">配套的技术博客文章</a>中，我们描述了 AI 模型正在如何快速降低发现和利用软件漏洞所需的资源、时间和技能。</p>
+            <h1 class="article-title u-text-style-h1">为 AI 加速的攻击做好安全准备</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>AI is changing the speed at which vulnerabilities are found and exploited. We're publishing an initial set of recommendations to shore up your defenses based on our own findings and security practices.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/agents" target="_blank" rel="noopener noreferrer">Agents</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/solutions/enterprise" target="_blank" rel="noopener noreferrer">Claude Enterprise</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">April 10, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/preparing-your-security-program-for-ai-accelerated-offense/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>本周早些时候，我们宣布了 Project Glasswing——这是我们的一项紧迫尝试，旨在让我们最新前沿模型 Claude Mythos Preview 的强大网络安全能力服务于防御目的。在那篇<a href="https://www.anthropic.com/glasswing" target="_blank">公告</a>及<a href="https://red.anthropic.com/2026/mythos-preview/" target="_blank">配套的技术博客文章</a>中，我们描述了 AI 模型正在如何快速降低发现和利用软件漏洞所需的资源、时间和技能。</p>
 <p>着眼于 AI 的闪电式进步，我们还指出，用不了多久，同等能力水平的模型就会广泛可得。在未来 24 个月内，大量在代码中沉睡多年、无人察觉的漏洞将被 AI 模型发现，并被串联成可用的漏洞利用程序。事实上，公开可用、能力低于 Mythos 水平的模型已经能够<a href="https://www.anthropic.com/news/mozilla-firefox-security" target="_blank">发现严重漏洞</a>——这些漏洞曾被传统评审长期遗漏。</p>
 <p>所幸，这是一把双刃剑：攻击者可以用 AI 提速，采用 AI 工具的防御者同样可以。在这篇文章中，我们基于安全团队和研究人员在使用前沿 AI 模型保护真实代码库和系统过程中的观察与心得，提供安全建议和实操提示。在迈入 AI 驱动的网络安全时代之际，希望安全团队和其他读者能从这些建议中受益。</p>
 <p>下文中的许多建议本就属于现有的安全共识；我们根据实践中哪些控制措施站得住脚、哪些正在失效来排定优先级。如果你的组织按 SOC 2 和 ISO 27001 进行汇报，这些建议可以直接对应到你已经在跟踪的控制项上。</p>
@@ -233,21 +560,70 @@
 <p>本文由 Anthropic 安全工程与研究团队成员撰写，包括 Donny Greenberg、Jason Clinton、Michael Moore、Abel Ribbink 和 Jackie Bow，Jannet Park、Gabby Curtis 和 Stuart Ritchie 亦有贡献。</p>
 </div>
 
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/preparing-your-security-program-for-ai-accelerated-offense" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/preparing-your-security-program-for-ai-accelerated-offense" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

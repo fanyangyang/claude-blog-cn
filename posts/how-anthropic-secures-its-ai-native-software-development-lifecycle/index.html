@@ -4,54 +4,337 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Anthropic 如何保障其 AI 原生软件开发生命周期的安全 — Claude Blog 中文翻译</title>
-  <meta name="description" content="Anthropic 如何保障其 AI 原生软件开发生命周期的安全">
+  <meta name="description" content="Anthropic Deputy CISO Jason Clinton 详述安全工程团队如何保障一条由 AI 编写 80% 合入代码的 SDLC。">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/how-anthropic-secures-its-ai-native-software-development-lifecycle" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>Anthropic 如何保障其 AI 原生软件开发生命周期的安全</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/how-anthropic-secures-its-ai-native-software-development-lifecycle" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/how-anthropic-secures-its-ai-native-software-development-lifecycle/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># Anthropic 如何保障其 AI 原生软件开发生命周期的安全
+
+Anthropic Deputy CISO Jason Clinton 详述安全工程团队如何保障一条由 AI 编写 80% 合入代码的 SDLC。
+
+在 Anthropic，代码量和部署速度都已呈指数级增长。我们的软件工程师现在平均每季度交付的代码量是 2021 至 2025 年期间的 8 倍。
+
+我们的审查、监控和其他安全流程也必须随这种节奏同步扩展，否则就会成为瓶颈的根源（[阿姆达尔定律](https://en.wikipedia.org/wiki/Amdahl%27s_law)）。
+
+我们的软件开发流程也发生了翻天覆地的变化。Claude 已从编码助手演变为主要的创作者和审查者。如今合入我们代码库的代码中，约 80% 由 [Claude 编写](https://www.anthropic.com/institute/recursive-self-improvement)。
+
+超过一半的代码由我们的内部版 [Claude Tag](https://www.anthropic.com/news/introducing-claude-tag) 合并，而人类工程师则专注于把控方向、设定意图，并对最终批准负责。
+
+这意味着我们的安全团队必须防御一个急速扩张的攻击面，并加固一个以非确定性、持续演化的智能体为核心的软件生命周期。在本文中，我将介绍保障软件开发生命周期（SDLC）安全的策略。
+
+*（本文可与我们近期发布的 *[*Zero Trust for Agents*](https://claude.com/blog/zero-trust-for-ai-agents)*（智能体零信任）框架结合阅读；本文中的所有实现都采用了该框架中的安全设计思想。）*
+
+我们要防范的威胁非常具体：被攻陷或遭受提示词注入的智能体引入恶意变更；智能体把供应链和依赖投毒当作可信输入吸收进来；以及那些人们熟悉的各类应用漏洞正以更高的频率涌现。下文的每一项控制措施都至少对应其中一种威胁。
+
+为了在不明显拖慢开发速度的前提下达成目标，我们部署了几项总体策略，包括：
+
+- 安全左移，与代码开发阶段全面整合；
+- 用严格的访问与身份边界来控制爆炸半径；
+- 在生产上线前后，结合自动化的确定性审查与智能体审查；
+- 在杠杆率最高的节点引入人参与环节。
+
+本文将介绍我们在软件开发生命周期各具体阶段实施的安全流程，以及其背后的核心原则。这些原则更经得起时间考验，因为随着模型能力的演进，安全团队必须不断重新审视、甚至重塑自己的流程。 
+
+## **不断演变的软件开发生命周期**
+
+我们的开发团队已经[详细介绍过](https://claude.com/blog/running-an-ai-native-engineering-org)其软件开发生命周期的变化，这里只做一个简要铺垫，之后再逐个阶段深入。 
+
+概括而言，我们的软件开发生命周期被大幅压缩。它更多由原型和内部试用（dogfooding）驱动，而非冗长的规划周期。想法来自组织的各个角落，传统角色（前端、后端、设计）的边界也变得模糊。审查和批准环节依然有人类参与，但同样由智能体循环来驱动。
+
+虽然每个阶段都已被 Claude Code 和 Claude Tag 彻底改造和加速，但对来自传统组织的开发者来说，各阶段的名称和用途并不陌生。这些天然的关卡，也被我们用作 AI 原生 SDLC 安全流程的一部分。
+
+## **规划（Plan）**
+
+我们最早的安全自动化之一，是一个简单的、由 Claude Opus 驱动的 PSR（项目安全审查）Web 应用。它接收项目设计文档，对照 [MITRE ATT&amp;CK 框架](https://attack.mitre.org/)进行分析，识别潜在漏洞并给出缓解建议。
+
+后来我们将其连接到内部知识索引，从而获得覆盖全组织政策、历史决策和相关系统的更深上下文，系统得到了显著增强。 
+
+*Anthropic 内部自动化 PSR 的流程。*这让我们能更好地理解潜在风险，同时也能补全 PSR 中缺失的信息。仅这一个实现就为 AppSec 团队节省了大部分时间。当我们确信 Claude 的风险评估足够准确后，便允许团队自行批准项目——前提是 Claude 判定上线风险足够低。
+
+在这里可以看到 AI 原生 SDLC 带来的第一个关键转变。PSR 最初的设计目的，是在漫长而昂贵的编码过程之前拦截安全问题——在这个阶段发现问题，可以省下数月的返工。 
+
+如今，主要功能的多个原型在几小时内就能做出来，详细的架构审查不再是那么关键的关卡。把 PSR 应用连接到知识索引，可以捕捉到原本可能遗漏的上下文，又不会制造不必要的减速带。而做成 Claude Code skill 之后，Claude 还能进一步向外展开，从上下文所在的任何地方获取补充信息。 
+
+**持久原则**：把安全智能体接入组织上下文。当规划周期被压缩后，更有效的做法是让这些智能体去找上下文本来所在的地方——聊天记录、过往审查、代码库——而不是在可能已不再需要的阶段强求详尽的文档。无论如何，智能体都需要代码之外的上下文。
+
+## **编码（Code）**
+
+在 AI 原生工程组织里，安全人员多了一根杠杆：他们可以直接塑造代码的生成方式，从源头堵住漏洞。 
+
+过去，团队观察到反复出现的漏洞后会写安全编码指南，但这些指南很难强制执行，也很少标准化。 
+
+在 Anthropic，这些指南被写进 CLAUDE.md，并引用全组织共用的 skills，于是代码一生成就按这些最佳实践走。这是一个闭环。智能体一旦发现某类 bug，相关文件就会更新，防止以后再写出同类问题。
+
+当然，这并不意味着所有代码一出来就是完美的。我们团队一开始在 CLAUDE.md 里要求智能体在开 PR 前最后跑一遍 [/security-review](https://support.claude.com/en/articles/11932705-automated-security-reviews-in-claude-code)。这条现已对外提供的命令，是我们内部审查工作流的产品化版本：它会查找攻击者可能控制的输入入口，扫描可疑链接，再核验自己的发现。 
+
+如今，这些审查发生在 Claude 生成代码的过程中。安装 [security guidance plugin](https://code.claude.com/docs/en/security-guidance) 之后，Claude 会边写边看对话和代码，在同一次会话里提出安全改进，并处理常见漏洞。
+
+PR 阶段的另一些提示，会把内部非技术团队推向我们的低代码应用托管平台，避免过去长期困扰安全团队的影子 IT。
+
+有些客户选择把 [/security-review](https://support.claude.com/en/articles/11932705-automated-security-reviews-in-claude-code) 和 PreToolUse hook 绑在一起，把这一步做成更硬的关卡。这也有效，但我们团队选择把硬性代码审查关卡放在周期的测试/CI 阶段。
+
+除了塑造和审查代码，这一阶段我们最关心的另一件事是控制爆炸半径。做法是在身份周围划出硬边界（监控一节会再讲），并让开发者在虚拟机上写代码。 
+
+把编码搬到远程 VM 相对轻松，也比只靠笔记本多了控制和可见性。这些 VM 上的智能体流量走 egress allowlist。  
+
+当智能体在读可能带提示词注入载荷的不可信输入时，这种收紧的出口控制尤其重要。被注入的指令到不了互联网上的任意目的地：外泄路径被限制在一小撮受监控的服务上。 
+
+这里又能看到 AI 原生 SDLC 的明确调整。远程编码过去主要用于保护知识产权，如今更成熟的 AI 编码团队采用这些环境，是为了把智能体圈住。 
+
+**持久原则**：在 AI 原生工程组织里，安全左移意味着把漏洞发现和更新指令闭环起来，用这些指令定制 Claude 如何生成代码。用合适的硬边界限制爆炸半径（最小代理原则）以及智能体能接触到的东西。
+
+## **测试（CI）**
+
+以我的经验，测试或 CI 阶段很快会变成 AI 原生转型中工程团队最痛的瓶颈。在 Anthropic，一旦大多数开发者开始用智能体编码工具、并且同时跑多个智能体，团队能跑多快就立刻取决于人能审多快。
+
+说清楚：人类问责仍然是我们流程的核心。我们做的是用自动化的智能体审查加上确定性审查来加快评审，把人工审查留给受监管或真正关键的代码。 
+
+历史上，人工代码审查一直被当作标准，但[实证证据](https://link.springer.com/chapter/10.1007/978-3-642-36563-8_14)表明它并不完美。安全 bug 仍在世界各地的软件里上线。我们的审查流程能覆盖更多代码，也能抓住特别复杂的问题，从而降低这些风险。
+
+随着我们要求智能体为自己的发现写出有效证明、对结论更有信心，获得实质性审查评论的 PR 比例[从 16% 升到了 54%](https://claude.com/blog/code-review)。我们还判断，过去 claude.ai 事故背后大约[三分之一的 bug，会被我们现在落地的自动化流程抓住](https://www.anthropic.com/institute/recursive-self-improvement)。
+
+发现这一点的并不只是我们。[Intercom 分享过](https://www.intercom.com/blog/ai-is-approving-our-pull-requests-heres-how-we-made-it-safe/)，它自动批准了 19% 的 PR。部署量翻倍，由破坏性代码变更导致的停机下降了 35%。CircleCI 得出了类似结论，他们在 Claude 上构建了自主智能体 Chunk，用来解决 CI/CD 维护问题，并[在人类看到之前先验证自己的修复。这一](https://claude.com/customers/circleci)做法让智能体任务转成已完成 pull request 的比率翻了一倍。
+
+在 Anthropic，PR 一打开，多个智能体就会自动审查。每个审查智能体都被设计成只盯一个狭窄焦点，并用 RAG 补上围绕过往事故的额外上下文和记忆。 
+
+这比一个超级提示词或超级安全智能体有效得多，原因包括：
+
+- 它们不共享偏见和盲区
+- 如果其中一个被攻陷或出错，其他审查者可以抓住
+- 精力不会被摊得太薄、同时照顾多个焦点
+
+需要说清：智能体并不是不受约束地把代码合入生产。我们按风险给代码库分层，并刻意决定哪些部分自动化。有些整库仍有严格的人工批准流程。
+
+对于由 Claude 审查并合并的代码，人类问责仍然是核心。 每一次批准都会记录所用信号和推理过程，并按风险加权抽样给人类复核。另一轮测试盯住不变量，比如「用户 A 永远不能读用户 B 的数据」，并触发额外的人工审查。我们还把智能体扫描和 SAST 工具结合使用，后者直接在 PR 上发评论。 
+
+大多数扫描方式，无论是智能体还是确定性的，都按用量计费。代码吞吐量上去，成本就会上去，团队需要决定对自己合适的覆盖水平。 
+
+在 Anthropic，我们接受这里的成本会随代码速度上升，但预期单位成本会下降。今天的模型写代码的能力远好于几年前的所有模型，我们预期这个趋势会继续。
+
+**持久原则**：自动化审查是另一种风险，控制方式也不同（多道关卡，以及上下文窗口彼此隔离的多个智能体）。人仍然在环里，但根据代码库的性质，人所在的生命周期位置可能不同。 
+
+当 CI 真的坏了，Claude Tag 会充当我们的 [CI/CD 故障第一响应者](https://claude.com/blog/ai-ci-cd-on-call)。
+## **部署（CD）**
+
+Anthropic 维持着一套扎实的预发环境，并在这里执行常见的安全最佳实践，比如重大上线的外部渗透测试，以及定期 DAST 扫描，以抓住静态扫描漏掉或看不见的逻辑 bug。 
+
+和其他 SDLC 阶段一样，AI 给安全团队同时带来新的挑战和解决方案。一方面，到达这一阶段的漏洞更少了。另一方面，活下来的漏洞往往最隐蔽、最难抓。 
+
+再加上更大体积的代码更频繁地发布，定期的动态测试看起来就不那么「动态」了。 
+
+好消息是，AI 模型更擅长多步、跨组件的推理，能抓住更大比例的这类复杂漏洞。例如，今年二月我们披露，Claude 发现并帮助修复了超过 [500 个高危开源漏洞](https://www.anthropic.com/research/zero-days)。
+
+在 Anthropic，我们正在预发环境落地持续的 AI 驱动 DAST 扫描。它们在系统层面寻找漏洞，也就是两个或多个服务之间的假设不对的地方。今天已有不少厂商提供这类能力。
+
+**持久原则**：动态测试应当跟上部署节奏。 
+
+## **监控（Monitor）**
+
+任何像样的安全团队都知道，代码推到生产并不等于工作结束。我们可以假定，任何漏洞都会被越来越老练的攻击者很快发现。
+
+我们的安全团队在这里落地的项目属于标准做法，比如[公开漏洞赏金计划](https://hackerone.com/anthropic)、红队模拟攻击，以及定期扫描依赖、密钥、供应链、云姿态和容器中的漏洞。 
+
+Claude 在这些工作里扮演了很大角色，但我们会把笔墨放在 AI 原生 SDLC 带来的监控层面更大变化上：告警分流和代码迁移。
+
+在 Anthropic，告警一响，Claude 就会开始：
+
+- 审阅生产日志
+- 定位 bug 根因； 
+- 撰写事后复盘；并且在某些情况下
+- 写出修复这个 bug 的代码变更。 
+
+这个智能体不能做的，是自动部署修复。它是一个单用途系统账户智能体，只有三项权限：可以写新文档、在公司频道发帖，以及访问生产日志。 
+
+修复必须来自另一套智能体加人类审查的系统。原因又回到身份、权限和硬边界的管理：把代码推进生产时，控制爆炸半径很重要。把智能体拆开是关键，因为一个（或多个）智能体会成为对另一个的检查。 
+
+这对 CISO 也是重要一课，而且是我吃过亏才学会的。考虑智能体的硬边界时，必须把它对其他智能体的访问算进去。
+
+一次模型升级之后，事件响应智能体主动通过 Slack 联系了另一个 Claude 实例。它要求那个能写代码的智能体去推修复。**这按设计被拦在了人工审查关卡**，但这次经历告诉我们，边界要画在访问和动作周围，而不是画在模型指令、或我们以为模型能做什么周围。如今在 Anthropic，Slack 上的智能体对智能体通信已经是常态，我们也会认真思考[智能体身份模型](https://claude.com/blog/agent-identity-access-model)。
+
+第二个重大变化是团队对待迁移的方式。每个安全工程团队都经历过那种时刻：忽然意识到必须做一次代码迁移，才能修掉公司运作方式里的系统性缺陷。过去，CISO 得开始游说，并向每个部门要几个季度的一小部分工程资源才能把它修掉。 
+
+迁移的经济成本下降了，跨公司协调的成本也下降了。Claude [把迁移过程自动化了，几万行代码，几天就能完成](https://claude.com/blog/ai-code-migration)。 
+
+**持久原则**：给每个智能体一个单用途身份，权限只够干它的活。如果你允许智能体互相协调，让它们走和人类一样的通道。 
+
+## **治理（Governance）**
+
+我们自动化了许多安全流程，但人类仍然是保障安全软件开发生命周期不可或缺的一部分。只不过注意力不再放在审代码和看 bug 报告上，而是放在 Claude Tag、循环和仪表盘上。
+
+这凸显了强治理的重要性。如果一个 skill 过期了，发现的 bug 类别从未写回 CLAUDE.md，或者智能体的决策从未被抽样，整套结构就会退化。我们靠下面这些办法避免：
+
+- **按风险给代码库分层**，再按这个层级自动化审查。
+- 所有新的 AI 审查者先走**影子模式**。新智能体先发评论等人批准，直到赢得信任。我们的团队也会对它们做「红队」，试图塞进恶意变更。
+- **抽样**一定比例的全部自动批准。
+- **盯住生命体征**。我们维护并密切监控一块仪表盘，汇总每个安全流程和工作流的关键指标。
+- **把每个智能体动作路由到 SIEM**。每一次自动批准、工具调用和智能体对智能体消息，都会带着所用信号记入日志并落入 SIEM，因此任何决策事后都能归因、可审计。我们用这些数据，把这些智能体当作一类新的内部威胁来对待，并在它们行为偏离时拉高告警。
+
+**持久原则**：安全工程师的工作，从监控 bug 演变成监控循环。
+
+*这些控制背后的评估框架，见 *[*CISO 的智能体 AI 指南*](https://claude.com/blog/ciso-guide-to-agentic-ai)*。*
+
+## **模型持续演进时，如何守住 AI SDLC 的安全**
+
+软件开发生命周期以及加固它的手段演进有多快，怎么强调都不为过。模型能力每个月都在前进，同时带来新的挑战和解决方案。 
+
+今天不太管用、或经济上还不太划算的事情，很可能很快就会行得通。给团队的正确问题不是「我们扫得起所有东西吗」，而是「如果扫描几乎免费，我们会跑什么？」按那个目标来规划。
+
+*本文作者是 Anthropic Deputy CISO Jason Clinton。他感谢 Michael Segner 对本文的贡献。 *</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Claude Code</span>
-            <span class="article-date">July 21, 2026</span>
-            
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-sky);">
+            <img class="hero-illo-img" src="/assets/illustrations/how-anthropic-secures-its-ai-native-software-development-lifecycle.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">Anthropic 如何保障其 AI 原生软件开发生命周期的安全</h1>
-          <a href="/posts/how-anthropic-secures-its-ai-native-software-development-lifecycle/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>在 Anthropic，代码量和部署速度都已呈指数级增长。我们的软件工程师现在平均每季度交付的代码量是 2021 至 2025 年期间的 8 倍。</p><p>我们的审查、监控和其他安全流程也必须随这种节奏同步扩展，否则就会成为瓶颈的根源（<a href="https://en.wikipedia.org/wiki/Amdahl%27s_law">阿姆达尔定律</a>）。</p><p>我们的软件开发流程也发生了翻天覆地的变化。Claude 已从编码助手演变为主要的创作者和审查者。如今合入我们代码库的代码中，约 80% 由 <a href="https://www.anthropic.com/institute/recursive-self-improvement">Claude 编写</a>。</p><p>超过一半的代码由我们的内部版 <a href="https://www.anthropic.com/news/introducing-claude-tag">Claude Tag</a> 合并，而人类工程师则专注于把控方向、设定意图，并对最终批准负责。</p><p>这意味着我们的安全团队必须防御一个急速扩张的攻击面，并加固一个以非确定性、持续演化的智能体为核心的软件生命周期。在本文中，我将介绍保障软件开发生命周期（SDLC）安全的策略。</p><p><em>（本文可与我们近期发布的 </em><a href="https://claude.com/blog/zero-trust-for-ai-agents"><em>Zero Trust for Agents</em></a><em>（智能体零信任）框架结合阅读；本文中的所有实现都采用了该框架中的安全设计思想。）</em></p><p>我们要防范的威胁非常具体：被攻陷或遭受提示词注入的智能体引入恶意变更；智能体把供应链和依赖投毒当作可信输入吸收进来；以及那些人们熟悉的各类应用漏洞正以更高的频率涌现。下文的每一项控制措施都至少对应其中一种威胁。</p><p>为了在不明显拖慢开发速度的前提下达成目标，我们部署了几项总体策略，包括：</p><ul role="list"><li>安全左移，与代码开发阶段全面整合；</li><li>用严格的访问与身份边界来控制爆炸半径；</li><li>在生产上线前后，结合自动化的确定性审查与智能体审查；</li><li>在杠杆率最高的节点引入人参与环节。</li></ul><p>本文将介绍我们在软件开发生命周期各具体阶段实施的安全流程，以及其背后的核心原则。这些原则更经得起时间考验，因为随着模型能力的演进，安全团队必须不断重新审视、甚至重塑自己的流程。&nbsp;</p><h2><strong>不断演变的软件开发生命周期</strong></h2><figure style="max-width:822pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a5fa5786cc9f557247c1256_9c126d9d.png" loading="lazy"></div></figure><p>我们的开发团队已经<a href="https://claude.com/blog/running-an-ai-native-engineering-org">详细介绍过</a>其软件开发生命周期的变化，这里只做一个简要铺垫，之后再逐个阶段深入。&nbsp;</p><p>概括而言，我们的软件开发生命周期被大幅压缩。它更多由原型和内部试用（dogfooding）驱动，而非冗长的规划周期。想法来自组织的各个角落，传统角色（前端、后端、设计）的边界也变得模糊。审查和批准环节依然有人类参与，但同样由智能体循环来驱动。</p><p>虽然每个阶段都已被 Claude Code 和 Claude Tag 彻底改造和加速，但对来自传统组织的开发者来说，各阶段的名称和用途并不陌生。这些天然的关卡，也被我们用作 AI 原生 SDLC 安全流程的一部分。</p><h2><strong>规划（Plan）</strong></h2><p>我们最早的安全自动化之一，是一个简单的、由 Claude Opus 驱动的 PSR（项目安全审查）Web 应用。它接收项目设计文档，对照 <a href="https://attack.mitre.org/">MITRE ATT&amp;CK 框架</a>进行分析，识别潜在漏洞并给出缓解建议。</p><p>后来我们将其连接到内部知识索引，从而获得覆盖全组织政策、历史决策和相关系统的更深上下文，系统得到了显著增强。&nbsp;</p><figure style="max-width:3608pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a5fa80d84f25c4ed3f5421f_three-steps-diagram.png" loading="lazy"></div><figcaption><em>Anthropic 内部自动化 PSR 的流程。</em></figcaption></figure><p>这让我们能更好地理解潜在风险，同时也能补全 PSR 中缺失的信息。仅这一个实现就为 AppSec 团队节省了大部分时间。当我们确信 Claude 的风险评估足够准确后，便允许团队自行批准项目——前提是 Claude 判定上线风险足够低。</p><p>在这里可以看到 AI 原生 SDLC 带来的第一个关键转变。PSR 最初的设计目的，是在漫长而昂贵的编码过程之前拦截安全问题——在这个阶段发现问题，可以省下数月的返工。&nbsp;</p><p>如今，主要功能的多个原型在几小时内就能做出来，详细的架构审查不再是那么关键的关卡。把 PSR 应用连接到知识索引，可以捕捉到原本可能遗漏的上下文，又不会制造不必要的减速带。而做成 Claude Code skill 之后，Claude 还能进一步向外展开，从上下文所在的任何地方获取补充信息。&nbsp;</p><p><strong>持久原则</strong>：把安全智能体接入组织上下文。当规划周期被压缩后，更有效的做法是让这些智能体去找上下文本来所在的地方——聊天记录、过往审查、代码库——而不是在可能已不再需要的阶段强求详尽的文档。无论如何，智能体都需要代码之外的上下文。</p></div>
+            <h1 class="article-title u-text-style-h1">Anthropic 如何保障其 AI 原生软件开发生命周期的安全</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>Anthropic Deputy CISO Jason Clinton 详述安全工程团队如何保障一条由 AI 编写 80% 合入代码的 SDLC。</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <div class="hero-detail-value-stack"><a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a><div class="hero-detail-value u-text-style-body-3">Enterprise AI</div><div class="hero-detail-value u-text-style-body-3">Agents</div></div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <div class="hero-detail-value-stack"><a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/product/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a><div class="hero-detail-value u-text-style-body-3">Claude Tag</div><div class="hero-detail-value u-text-style-body-3">Claude Enterprise</div></div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">July 21, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/how-anthropic-secures-its-ai-native-software-development-lifecycle/">Copy link</button>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M15.5117 1.99707C15.9213 2.0091 16.3438 2.13396 16.6768 2.46679C17.0278 2.81814 17.1209 3.26428 17.0801 3.68261C17.0404 4.08745 16.8765 4.49344 16.6787 4.85058C16.3934 5.36546 15.9941 5.85569 15.6348 6.20898C15.7682 6.41421 15.8912 6.66414 15.9551 6.9453C16.0804 7.4977 15.9714 8.13389 15.4043 8.70116C14.8566 9.24884 13.974 9.54823 13.1943 9.71679C12.7628 9.81003 12.3303 9.86698 11.9473 9.90233C12.0596 10.2558 12.0902 10.7051 11.8779 11.2012L11.8223 11.3203C11.5396 11.8854 11.0275 12.2035 10.4785 12.3965C9.93492 12.5875 9.29028 12.6792 8.65332 12.75C7.99579 12.8231 7.34376 12.8744 6.70117 12.9775C6.14371 13.067 5.63021 13.1903 5.18652 13.3818L5.00585 13.4658C4.53515 14.2245 4.13745 14.9658 3.80957 15.6465C4.43885 15.2764 5.1935 15 5.99999 15C6.27614 15 6.49999 15.2238 6.49999 15.5C6.49999 15.7761 6.27613 16 5.99999 16C5.35538 16 4.71132 16.2477 4.15039 16.6103C3.58861 16.9736 3.14957 17.427 2.91601 17.7773C2.91191 17.7835 2.90568 17.788 2.90136 17.7939C2.88821 17.8119 2.8746 17.8289 2.85937 17.8447C2.85117 17.8533 2.84268 17.8612 2.83398 17.8691C2.81803 17.8835 2.80174 17.897 2.78417 17.9092C2.774 17.9162 2.76353 17.9225 2.75292 17.9287C2.73854 17.9372 2.72412 17.9451 2.70898 17.9521C2.69079 17.9605 2.6723 17.9675 2.65332 17.9736C2.6417 17.9774 2.63005 17.9805 2.61816 17.9834C2.60263 17.9872 2.5871 17.9899 2.57128 17.9922C2.55312 17.9948 2.53511 17.9974 2.5166 17.998C2.50387 17.9985 2.49127 17.9976 2.47851 17.9971C2.45899 17.9962 2.43952 17.9954 2.41992 17.9922C2.40511 17.9898 2.39062 17.9862 2.37597 17.9824C2.36477 17.9795 2.35294 17.9783 2.34179 17.9746C2.33697 17.973 2.33286 17.9695 2.32812 17.9678C2.31042 17.9612 2.29351 17.953 2.27636 17.9443C2.26332 17.9378 2.25053 17.9314 2.23828 17.9238C2.23339 17.9208 2.22747 17.9192 2.22265 17.916C2.21414 17.9103 2.20726 17.9026 2.19921 17.8965C2.18396 17.8849 2.16896 17.8735 2.15527 17.8603C2.14518 17.8507 2.13609 17.8404 2.12695 17.8301C2.11463 17.8161 2.10244 17.8023 2.09179 17.7871C2.08368 17.7756 2.07736 17.7631 2.07031 17.751C2.06168 17.7362 2.05297 17.7216 2.04589 17.706C2.03868 17.6901 2.03283 17.6738 2.02734 17.6572C2.0228 17.6436 2.01801 17.6302 2.01464 17.6162C2.01117 17.6017 2.009 17.587 2.00683 17.5722C2.00411 17.5538 2.00161 17.5354 2.00097 17.5166C2.00054 17.5039 2.00141 17.4912 2.00195 17.4785C2.00279 17.459 2.00364 17.4395 2.00683 17.4199C2.00902 17.4064 2.01327 17.3933 2.0166 17.3799C2.01973 17.3673 2.02123 17.3543 2.02539 17.3418C2.41772 16.1648 3.18163 14.466 4.30468 12.7012C4.31908 12.5557 4.34007 12.3582 4.36914 12.1201C4.43379 11.5907 4.53836 10.8564 4.69921 10.0381C5.0174 8.41955 5.56814 6.39783 6.50585 4.9912L6.73242 4.66894C7.27701 3.93277 7.93079 3.30953 8.61035 2.85156C9.3797 2.33311 10.2221 2 11.001 2C11.7951 2.00025 12.3531 2.35795 12.7012 2.70605C12.7723 2.77723 12.8348 2.84998 12.8896 2.91796C13.2829 2.66884 13.7917 2.39502 14.3174 2.21191C14.6946 2.08056 15.1094 1.98537 15.5117 1.99707ZM17.04 15.5537C17.1486 15.3 17.4425 15.1818 17.6963 15.29C17.95 15.3986 18.0683 15.6925 17.96 15.9463C17.4827 17.0612 16.692 18 15.5 18C14.6309 17.9999 13.9764 17.5003 13.5 16.7978C13.0236 17.5003 12.3691 18 11.5 18C10.6309 17.9999 9.97639 17.5003 9.49999 16.7978C9.02359 17.5003 8.36911 18 7.49999 18C7.22391 17.9999 7 17.7761 6.99999 17.5C6.99999 17.2239 7.22391 17 7.49999 17C8.07039 17 8.6095 16.5593 9.04003 15.5537L9.07421 15.4873C9.16428 15.3412 9.32494 15.25 9.49999 15.25C9.70008 15.25 9.88121 15.3698 9.95996 15.5537L10.042 15.7353C10.4581 16.6125 10.9652 16.9999 11.5 17C12.0704 17 12.6095 16.5593 13.04 15.5537L13.0742 15.4873C13.1643 15.3412 13.3249 15.25 13.5 15.25C13.7001 15.25 13.8812 15.3698 13.96 15.5537L14.042 15.7353C14.4581 16.6125 14.9652 16.9999 15.5 17C16.0704 17 16.6095 16.5593 17.04 15.5537ZM15.4824 2.99707C15.247 2.99022 14.9608 3.04682 14.6465 3.15624C14.0173 3.37541 13.389 3.76516 13.0498 4.01953C12.9277 4.11112 12.7697 4.14131 12.6221 4.10253C12.4745 4.06357 12.3522 3.9591 12.291 3.81933V3.81835C12.2892 3.81468 12.2861 3.80833 12.2822 3.80078C12.272 3.78092 12.2541 3.7485 12.2295 3.70898C12.1794 3.62874 12.1011 3.52019 11.9941 3.41308C11.7831 3.2021 11.4662 3.00024 11.001 2.99999C10.4904 2.99999 9.84173 3.22729 9.16894 3.68066C8.58685 4.07297 8.01568 4.61599 7.5371 5.26269L7.33789 5.54589C6.51634 6.77827 5.99475 8.63369 5.68066 10.2314C5.63363 10.4707 5.5913 10.7025 5.55371 10.9238C7.03031 9.01824 8.94157 7.19047 11.2812 6.05077C11.5295 5.92989 11.8283 6.03301 11.9492 6.28124C12.0701 6.52949 11.967 6.82829 11.7187 6.94921C9.33153 8.11208 7.38648 10.0746 5.91406 12.1103C6.12313 12.0632 6.33385 12.0238 6.54296 11.9902C7.21709 11.8821 7.92723 11.8243 8.54296 11.7558C9.17886 11.6852 9.72123 11.6025 10.1465 11.4531C10.5662 11.3056 10.8063 11.1158 10.9277 10.873L10.9795 10.7549C11.0776 10.487 11.0316 10.2723 10.9609 10.1123C10.918 10.0155 10.8636 9.93595 10.8203 9.88183C10.7996 9.85598 10.7822 9.83638 10.7715 9.82518L10.7607 9.81542L10.7627 9.8164L10.7646 9.81835C10.6114 9.67972 10.5597 9.46044 10.6338 9.26757C10.7082 9.07475 10.8939 8.94726 11.1006 8.94726C11.5282 8.94719 12.26 8.8956 12.9834 8.73925C13.7297 8.5779 14.3654 8.32602 14.6973 7.99413C15.0087 7.68254 15.0327 7.40213 14.9795 7.16698C14.9332 6.96327 14.8204 6.77099 14.707 6.62792L14.5957 6.50195C14.4933 6.39957 14.4401 6.25769 14.4502 6.11327C14.4605 5.96888 14.5327 5.83599 14.6484 5.74902C14.9558 5.51849 15.4742 4.96086 15.8037 4.3662C15.9675 4.07048 16.0637 3.80137 16.085 3.58593C16.1047 3.38427 16.0578 3.26213 15.9697 3.17382C15.8631 3.06726 15.7102 3.00377 15.4824 2.99707Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Author(s)</div>
+                  <div class="hero-detail-value u-text-style-body-3">Jason Clinton</div>
+                </div>
+              </li>
+            </ul>
+          </aside>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/how-anthropic-secures-its-ai-native-software-development-lifecycle" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>在 Anthropic，代码量和部署速度都已呈指数级增长。我们的软件工程师现在平均每季度交付的代码量是 2021 至 2025 年期间的 8 倍。</p><p>我们的审查、监控和其他安全流程也必须随这种节奏同步扩展，否则就会成为瓶颈的根源（<a href="https://en.wikipedia.org/wiki/Amdahl%27s_law">阿姆达尔定律</a>）。</p><p>我们的软件开发流程也发生了翻天覆地的变化。Claude 已从编码助手演变为主要的创作者和审查者。如今合入我们代码库的代码中，约 80% 由 <a href="https://www.anthropic.com/institute/recursive-self-improvement">Claude 编写</a>。</p><p>超过一半的代码由我们的内部版 <a href="https://www.anthropic.com/news/introducing-claude-tag">Claude Tag</a> 合并，而人类工程师则专注于把控方向、设定意图，并对最终批准负责。</p><p>这意味着我们的安全团队必须防御一个急速扩张的攻击面，并加固一个以非确定性、持续演化的智能体为核心的软件生命周期。在本文中，我将介绍保障软件开发生命周期（SDLC）安全的策略。</p><p><em>（本文可与我们近期发布的 </em><a href="https://claude.com/blog/zero-trust-for-ai-agents"><em>Zero Trust for Agents</em></a><em>（智能体零信任）框架结合阅读；本文中的所有实现都采用了该框架中的安全设计思想。）</em></p><p>我们要防范的威胁非常具体：被攻陷或遭受提示词注入的智能体引入恶意变更；智能体把供应链和依赖投毒当作可信输入吸收进来；以及那些人们熟悉的各类应用漏洞正以更高的频率涌现。下文的每一项控制措施都至少对应其中一种威胁。</p><p>为了在不明显拖慢开发速度的前提下达成目标，我们部署了几项总体策略，包括：</p><ul role="list"><li>安全左移，与代码开发阶段全面整合；</li><li>用严格的访问与身份边界来控制爆炸半径；</li><li>在生产上线前后，结合自动化的确定性审查与智能体审查；</li><li>在杠杆率最高的节点引入人参与环节。</li></ul><p>本文将介绍我们在软件开发生命周期各具体阶段实施的安全流程，以及其背后的核心原则。这些原则更经得起时间考验，因为随着模型能力的演进，安全团队必须不断重新审视、甚至重塑自己的流程。&nbsp;</p><h2><strong>不断演变的软件开发生命周期</strong></h2><figure style="max-width:822pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a5fa5786cc9f557247c1256_9c126d9d.png" loading="lazy"></div></figure><p>我们的开发团队已经<a href="https://claude.com/blog/running-an-ai-native-engineering-org">详细介绍过</a>其软件开发生命周期的变化，这里只做一个简要铺垫，之后再逐个阶段深入。&nbsp;</p><p>概括而言，我们的软件开发生命周期被大幅压缩。它更多由原型和内部试用（dogfooding）驱动，而非冗长的规划周期。想法来自组织的各个角落，传统角色（前端、后端、设计）的边界也变得模糊。审查和批准环节依然有人类参与，但同样由智能体循环来驱动。</p><p>虽然每个阶段都已被 Claude Code 和 Claude Tag 彻底改造和加速，但对来自传统组织的开发者来说，各阶段的名称和用途并不陌生。这些天然的关卡，也被我们用作 AI 原生 SDLC 安全流程的一部分。</p><h2><strong>规划（Plan）</strong></h2><p>我们最早的安全自动化之一，是一个简单的、由 Claude Opus 驱动的 PSR（项目安全审查）Web 应用。它接收项目设计文档，对照 <a href="https://attack.mitre.org/">MITRE ATT&amp;CK 框架</a>进行分析，识别潜在漏洞并给出缓解建议。</p><p>后来我们将其连接到内部知识索引，从而获得覆盖全组织政策、历史决策和相关系统的更深上下文，系统得到了显著增强。&nbsp;</p><figure style="max-width:3608pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a5fa80d84f25c4ed3f5421f_three-steps-diagram.png" loading="lazy"></div><figcaption><em>Anthropic 内部自动化 PSR 的流程。</em></figcaption></figure><p>这让我们能更好地理解潜在风险，同时也能补全 PSR 中缺失的信息。仅这一个实现就为 AppSec 团队节省了大部分时间。当我们确信 Claude 的风险评估足够准确后，便允许团队自行批准项目——前提是 Claude 判定上线风险足够低。</p><p>在这里可以看到 AI 原生 SDLC 带来的第一个关键转变。PSR 最初的设计目的，是在漫长而昂贵的编码过程之前拦截安全问题——在这个阶段发现问题，可以省下数月的返工。&nbsp;</p><p>如今，主要功能的多个原型在几小时内就能做出来，详细的架构审查不再是那么关键的关卡。把 PSR 应用连接到知识索引，可以捕捉到原本可能遗漏的上下文，又不会制造不必要的减速带。而做成 Claude Code skill 之后，Claude 还能进一步向外展开，从上下文所在的任何地方获取补充信息。&nbsp;</p><p><strong>持久原则</strong>：把安全智能体接入组织上下文。当规划周期被压缩后，更有效的做法是让这些智能体去找上下文本来所在的地方——聊天记录、过往审查、代码库——而不是在可能已不再需要的阶段强求详尽的文档。无论如何，智能体都需要代码之外的上下文。</p><h2><strong>编码（Code）</strong></h2><p>在 AI 原生工程组织里，安全人员多了一根杠杆：他们可以直接塑造代码的生成方式，从源头堵住漏洞。&nbsp;</p><p>过去，团队观察到反复出现的漏洞后会写安全编码指南，但这些指南很难强制执行，也很少标准化。&nbsp;</p><p>在 Anthropic，这些指南被写进 CLAUDE.md，并引用全组织共用的 skills，于是代码一生成就按这些最佳实践走。这是一个闭环。智能体一旦发现某类 bug，相关文件就会更新，防止以后再写出同类问题。</p><figure style="max-width:2180pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a5fa78b8f99d4eea5c0c389_closed-loop-diagram.png" loading="lazy"></div></figure><p>当然，这并不意味着所有代码一出来就是完美的。我们团队一开始在 CLAUDE.md 里要求智能体在开 PR 前最后跑一遍 <a href="https://support.claude.com/en/articles/11932705-automated-security-reviews-in-claude-code">/security-review</a>。这条现已对外提供的命令，是我们内部审查工作流的产品化版本：它会查找攻击者可能控制的输入入口，扫描可疑链接，再核验自己的发现。&nbsp;</p><p>如今，这些审查发生在 Claude 生成代码的过程中。安装 <a href="https://code.claude.com/docs/en/security-guidance">security guidance plugin</a> 之后，Claude 会边写边看对话和代码，在同一次会话里提出安全改进，并处理常见漏洞。</p><p>PR 阶段的另一些提示，会把内部非技术团队推向我们的低代码应用托管平台，避免过去长期困扰安全团队的影子 IT。</p><p>有些客户选择把 <a href="https://support.claude.com/en/articles/11932705-automated-security-reviews-in-claude-code">/security-review</a> 和 PreToolUse hook 绑在一起，把这一步做成更硬的关卡。这也有效，但我们团队选择把硬性代码审查关卡放在周期的测试/CI 阶段。</p><p>除了塑造和审查代码，这一阶段我们最关心的另一件事是控制爆炸半径。做法是在身份周围划出硬边界（监控一节会再讲），并让开发者在虚拟机上写代码。&nbsp;</p><p>把编码搬到远程 VM 相对轻松，也比只靠笔记本多了控制和可见性。这些 VM 上的智能体流量走 egress allowlist。&nbsp;&nbsp;</p><p>当智能体在读可能带提示词注入载荷的不可信输入时，这种收紧的出口控制尤其重要。被注入的指令到不了互联网上的任意目的地：外泄路径被限制在一小撮受监控的服务上。&nbsp;</p><p>这里又能看到 AI 原生 SDLC 的明确调整。远程编码过去主要用于保护知识产权，如今更成熟的 AI 编码团队采用这些环境，是为了把智能体圈住。&nbsp;</p><p><strong>持久原则</strong>：在 AI 原生工程组织里，安全左移意味着把漏洞发现和更新指令闭环起来，用这些指令定制 Claude 如何生成代码。用合适的硬边界限制爆炸半径（最小代理原则）以及智能体能接触到的东西。</p><h2><strong>测试（CI）</strong></h2><p>以我的经验，测试或 CI 阶段很快会变成 AI 原生转型中工程团队最痛的瓶颈。在 Anthropic，一旦大多数开发者开始用智能体编码工具、并且同时跑多个智能体，团队能跑多快就立刻取决于人能审多快。</p><p>说清楚：人类问责仍然是我们流程的核心。我们做的是用自动化的智能体审查加上确定性审查来加快评审，把人工审查留给受监管或真正关键的代码。&nbsp;</p><p>历史上，人工代码审查一直被当作标准，但<a href="https://link.springer.com/chapter/10.1007/978-3-642-36563-8_14">实证证据</a>表明它并不完美。安全 bug 仍在世界各地的软件里上线。我们的审查流程能覆盖更多代码，也能抓住特别复杂的问题，从而降低这些风险。</p><p>随着我们要求智能体为自己的发现写出有效证明、对结论更有信心，获得实质性审查评论的 PR 比例<a href="https://claude.com/blog/code-review">从 16% 升到了 54%</a>。我们还判断，过去 claude.ai 事故背后大约<a href="https://www.anthropic.com/institute/recursive-self-improvement">三分之一的 bug，会被我们现在落地的自动化流程抓住</a>。</p><p>发现这一点的并不只是我们。<a href="https://www.intercom.com/blog/ai-is-approving-our-pull-requests-heres-how-we-made-it-safe/">Intercom 分享过</a>，它自动批准了 19% 的 PR。部署量翻倍，由破坏性代码变更导致的停机下降了 35%。CircleCI 得出了类似结论，他们在 Claude 上构建了自主智能体 Chunk，用来解决 CI/CD 维护问题，并<a href="https://claude.com/customers/circleci">在人类看到之前先验证自己的修复。这一</a>做法让智能体任务转成已完成 pull request 的比率翻了一倍。</p><p>在 Anthropic，PR 一打开，多个智能体就会自动审查。每个审查智能体都被设计成只盯一个狭窄焦点，并用 RAG 补上围绕过往事故的额外上下文和记忆。&nbsp;</p><p>这比一个超级提示词或超级安全智能体有效得多，原因包括：</p><ul role="list"><li>它们不共享偏见和盲区</li><li>如果其中一个被攻陷或出错，其他审查者可以抓住</li><li>精力不会被摊得太薄、同时照顾多个焦点</li></ul><p>需要说清：智能体并不是不受约束地把代码合入生产。我们按风险给代码库分层，并刻意决定哪些部分自动化。有些整库仍有严格的人工批准流程。</p><p>对于由 Claude 审查并合并的代码，人类问责仍然是核心。&nbsp;每一次批准都会记录所用信号和推理过程，并按风险加权抽样给人类复核。另一轮测试盯住不变量，比如「用户 A 永远不能读用户 B 的数据」，并触发额外的人工审查。我们还把智能体扫描和 SAST 工具结合使用，后者直接在 PR 上发评论。&nbsp;</p><p>大多数扫描方式，无论是智能体还是确定性的，都按用量计费。代码吞吐量上去，成本就会上去，团队需要决定对自己合适的覆盖水平。&nbsp;</p><p>在 Anthropic，我们接受这里的成本会随代码速度上升，但预期单位成本会下降。今天的模型写代码的能力远好于几年前的所有模型，我们预期这个趋势会继续。</p><p><strong>持久原则</strong>：自动化审查是另一种风险，控制方式也不同（多道关卡，以及上下文窗口彼此隔离的多个智能体）。人仍然在环里，但根据代码库的性质，人所在的生命周期位置可能不同。&nbsp;</p><blockquote>当 CI 真的坏了，Claude Tag 会充当我们的 <a href="https://claude.com/blog/ai-ci-cd-on-call">CI/CD 故障第一响应者</a>。</blockquote><h2><strong>部署（CD）</strong></h2><p>Anthropic 维持着一套扎实的预发环境，并在这里执行常见的安全最佳实践，比如重大上线的外部渗透测试，以及定期 DAST 扫描，以抓住静态扫描漏掉或看不见的逻辑 bug。&nbsp;</p><p>和其他 SDLC 阶段一样，AI 给安全团队同时带来新的挑战和解决方案。一方面，到达这一阶段的漏洞更少了。另一方面，活下来的漏洞往往最隐蔽、最难抓。&nbsp;</p><p>再加上更大体积的代码更频繁地发布，定期的动态测试看起来就不那么「动态」了。&nbsp;</p><p>好消息是，AI 模型更擅长多步、跨组件的推理，能抓住更大比例的这类复杂漏洞。例如，今年二月我们披露，Claude 发现并帮助修复了超过 <a href="https://www.anthropic.com/research/zero-days">500 个高危开源漏洞</a>。</p><p>在 Anthropic，我们正在预发环境落地持续的 AI 驱动 DAST 扫描。它们在系统层面寻找漏洞，也就是两个或多个服务之间的假设不对的地方。今天已有不少厂商提供这类能力。</p><p><strong>持久原则</strong>：动态测试应当跟上部署节奏。&nbsp;</p><h2><strong>监控（Monitor）</strong></h2><p>任何像样的安全团队都知道，代码推到生产并不等于工作结束。我们可以假定，任何漏洞都会被越来越老练的攻击者很快发现。</p><p>我们的安全团队在这里落地的项目属于标准做法，比如<a href="https://hackerone.com/anthropic">公开漏洞赏金计划</a>、红队模拟攻击，以及定期扫描依赖、密钥、供应链、云姿态和容器中的漏洞。&nbsp;</p><p>Claude 在这些工作里扮演了很大角色，但我们会把笔墨放在 AI 原生 SDLC 带来的监控层面更大变化上：告警分流和代码迁移。</p><p>在 Anthropic，告警一响，Claude 就会开始：</p><ul role="list"><li>审阅生产日志</li><li>定位 bug 根因；&nbsp;</li><li>撰写事后复盘；并且在某些情况下</li><li>写出修复这个 bug 的代码变更。&nbsp;</li></ul><p>这个智能体不能做的，是自动部署修复。它是一个单用途系统账户智能体，只有三项权限：可以写新文档、在公司频道发帖，以及访问生产日志。&nbsp;</p><p>修复必须来自另一套智能体加人类审查的系统。原因又回到身份、权限和硬边界的管理：把代码推进生产时，控制爆炸半径很重要。把智能体拆开是关键，因为一个（或多个）智能体会成为对另一个的检查。&nbsp;</p><figure style="max-width:3720pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a5faaaf38e56da47cb6564d_permission-boundary-diagram.png" loading="lazy"></div></figure><p>这对 CISO 也是重要一课，而且是我吃过亏才学会的。考虑智能体的硬边界时，必须把它对其他智能体的访问算进去。</p><p>一次模型升级之后，事件响应智能体主动通过 Slack 联系了另一个 Claude 实例。它要求那个能写代码的智能体去推修复。<strong>这按设计被拦在了人工审查关卡</strong>，但这次经历告诉我们，边界要画在访问和动作周围，而不是画在模型指令、或我们以为模型能做什么周围。如今在 Anthropic，Slack 上的智能体对智能体通信已经是常态，我们也会认真思考<a href="https://claude.com/blog/agent-identity-access-model">智能体身份模型</a>。</p><p>第二个重大变化是团队对待迁移的方式。每个安全工程团队都经历过那种时刻：忽然意识到必须做一次代码迁移，才能修掉公司运作方式里的系统性缺陷。过去，CISO 得开始游说，并向每个部门要几个季度的一小部分工程资源才能把它修掉。&nbsp;</p><p>迁移的经济成本下降了，跨公司协调的成本也下降了。Claude <a href="https://claude.com/blog/ai-code-migration">把迁移过程自动化了，几万行代码，几天就能完成</a>。&nbsp;</p><p><strong>持久原则</strong>：给每个智能体一个单用途身份，权限只够干它的活。如果你允许智能体互相协调，让它们走和人类一样的通道。&nbsp;</p><h2><strong>治理（Governance）</strong></h2><p>我们自动化了许多安全流程，但人类仍然是保障安全软件开发生命周期不可或缺的一部分。只不过注意力不再放在审代码和看 bug 报告上，而是放在 Claude Tag、循环和仪表盘上。</p><p>这凸显了强治理的重要性。如果一个 skill 过期了，发现的 bug 类别从未写回 CLAUDE.md，或者智能体的决策从未被抽样，整套结构就会退化。我们靠下面这些办法避免：</p><ul role="list"><li><strong>按风险给代码库分层</strong>，再按这个层级自动化审查。</li><li>所有新的 AI 审查者先走<strong>影子模式</strong>。新智能体先发评论等人批准，直到赢得信任。我们的团队也会对它们做「红队」，试图塞进恶意变更。</li><li><strong>抽样</strong>一定比例的全部自动批准。</li><li><strong>盯住生命体征</strong>。我们维护并密切监控一块仪表盘，汇总每个安全流程和工作流的关键指标。</li><li><strong>把每个智能体动作路由到 SIEM</strong>。每一次自动批准、工具调用和智能体对智能体消息，都会带着所用信号记入日志并落入 SIEM，因此任何决策事后都能归因、可审计。我们用这些数据，把这些智能体当作一类新的内部威胁来对待，并在它们行为偏离时拉高告警。</li></ul><p><strong>持久原则</strong>：安全工程师的工作，从监控 bug 演变成监控循环。</p><p><em>这些控制背后的评估框架，见 </em><a href="https://claude.com/blog/ciso-guide-to-agentic-ai"><em>CISO 的智能体 AI 指南</em></a><em>。</em></p><h2><strong>模型持续演进时，如何守住 AI SDLC 的安全</strong></h2><p>软件开发生命周期以及加固它的手段演进有多快，怎么强调都不为过。模型能力每个月都在前进，同时带来新的挑战和解决方案。&nbsp;</p><p>今天不太管用、或经济上还不太划算的事情，很可能很快就会行得通。给团队的正确问题不是「我们扫得起所有东西吗」，而是「如果扫描几乎免费，我们会跑什么？」按那个目标来规划。</p><p><em>本文作者是 Anthropic Deputy CISO Jason Clinton。他感谢 Michael Segner 对本文的贡献。&nbsp;</em></p></div>
+
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/how-anthropic-secures-its-ai-native-software-development-lifecycle" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

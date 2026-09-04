@@ -13,5 +13,19 @@
   "translatedTitle": "为每个任务配备专属 harness：Claude Code 中的动态工作流",
   "translated": true,
   "translatedAt": "2026-09-02T04:37:57Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Claude Code"
+    ],
+    "product": [],
+    "usecase": []
+  },
+  "subtitle": "Claude Code can now write and orchestrate its own multi-agent harness on the fly. Here's how dynamic workflows work, and the patterns that get the most out of them.",
+  "authors": [
+    "Thariq Shihipar"
+  ],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/claude-code",
+  "productUrl": ""
 }

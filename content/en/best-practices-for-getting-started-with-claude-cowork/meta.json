@@ -13,5 +13,22 @@
   "translatedTitle": "Claude Cowork 上手最佳实践",
   "translated": true,
   "translatedAt": "2026-09-02T04:08:57Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Cowork"
+    ],
+    "usecase": [
+      "Work",
+      "Productivity"
+    ]
+  },
+  "subtitle": "Austin Lau, growth marketing lead at Anthropic, explains when to use Claude Cowork, how to decide what workflows to delegate, and concrete steps to get started. On June 4, Austin will share how he uses Claude Cowork for marketing.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/product/cowork"
 }

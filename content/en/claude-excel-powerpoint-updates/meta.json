@@ -13,5 +13,19 @@
   "translatedTitle": "Claude for Excel 与 PowerPoint 能力再升级",
   "translated": true,
   "translatedAt": "2026-09-02T04:13:28.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Enterprise"
+    ],
+    "usecase": []
+  },
+  "subtitle": "Claude for Excel and PowerPoint now share full context across open files, and skills make any workflow instantly repeatable.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/solutions/enterprise"
 }

@@ -13,5 +13,23 @@
   "translatedTitle": "Claude 现已支持更多安全与合规工具",
   "translated": true,
   "translatedAt": "2026-09-02T04:16:06Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Enterprise",
+      "Claude Platform"
+    ],
+    "usecase": [
+      "Work",
+      "Business"
+    ]
+  },
+  "subtitle": "Today we're introducing integrations with notable security and compliance tools. Now IT and security teams can govern Claude across our platform and suite of products, the same way they govern other applications in their stack.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/solutions/enterprise"
 }

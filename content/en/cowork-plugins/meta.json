@@ -13,5 +13,27 @@
   "translatedTitle": "用插件定制 Cowork",
   "translated": true,
   "translatedAt": "2026-09-02T04:22:24.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements",
+      "Agents"
+    ],
+    "product": [
+      "Claude Enterprise"
+    ],
+    "usecase": [
+      "Agents",
+      "Business",
+      "Financial services",
+      "Productivity",
+      "Sales",
+      "Legal"
+    ]
+  },
+  "subtitle": "We built Cowork to bring the power of Claude Code to everyone. Today, we're adding support for plugins, which let you bundle any skills, connectors, slash commands, and sub-agents together to turn Claude into a specialist for your role, team, and company.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/solutions/enterprise"
 }

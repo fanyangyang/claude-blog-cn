@@ -4,39 +4,148 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>在开发者控制台中生成更好的提示词 — Claude Blog 中文翻译</title>
-  <meta name="description" content="在开发者控制台中生成更好的提示词">
+  <meta name="description" content="Claude now generates production-ready prompt templates, helping developers create effective prompts faster.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/prompt-generator" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>在开发者控制台中生成更好的提示词</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/prompt-generator" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/prompt-generator/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># 在开发者控制台中生成更好的提示词
+
+Claude now generates production-ready prompt templates, helping developers create effective prompts faster.
+
+你现在可以在 Anthropic Console 中生成可直接用于生产环境的提示词模板。只需描述你想实现的目标，Claude 就会运用思维链推理等提示词工程技术，创建一个有效、精确且可靠的提示词。
+
+该功能既为提示词工程的新手而设计，也能为经验丰富的提示词工程师节省时间。如果你能为提示词生成器提供关于任务和期望输出格式的详细信息，将会获得最佳效果。
+
+尽管生成的提示词并不总能产出完美的结果，但它们往往优于提示词工程新手手写的提示词。生成的提示词模板还可以编辑，你可以快速调整它们以获得最佳性能。
+
+## 提示词最佳实践
+
+这项新功能生成的提示词模板运用了我们的许多[提示词工程最佳实践](https://docs.anthropic.com/en/docs/prompt-engineering)。其中之一是[角色设定](https://docs.anthropic.com/en/docs/give-claude-a-role)（role setting），即引导 Claude 扮演所选任务领域专家的角色。在我们的内容审核示例中，角色设定如下：
+
+`You will be acting as a content moderator to classify chat transcripts as either approved or rejected based on a provided content moderation policy.`另一项实践是[思维链](https://docs.anthropic.com/en/docs/let-claude-think)（chain of thought）推理，即给 Claude 时间和空间，让它在回答之前先整理思路。这能让它对复杂问题给出更全面、更有理有据的回答。当我们要求它根据客户的历史交易生成一个产品推荐提示词时，具体实现如下：
+
+`In a &lt;scratchpad&gt;, brainstorm 3 different product recommendations you could make to this customer based on their transaction history. For each potential recommendation, provide a brief rationale explaining why you think it would be a good fit for this customer.`此外，模板通常会把&quot;变量&quot;——即可插入自定义数据的输入字段——放在 [XML 标签](https://docs.anthropic.com/en/docs/use-xml-tags)之间。这遵循了另一项关键最佳实践：通过清晰的结构来明确划分提示词的不同部分。当我们要求生成一个将代码翻译为 Python 的提示词时，可以看到较长且含义较模糊的 {{CODE}} 变量由 XML 标签标记，而简单的 {{LANGUAGE}} 变量则以行内形式嵌入。
+
+`Your task is to translate a piece of code from another programming language into Python.
+
+Here is the code to translate:
+
+&lt;code&gt;
+{{CODE}}
+&lt;/code&gt;
+
+The code is written in {{LANGUAGE}}.`在某些情况下，你会看到 Claude 编写[示例输入和输出](https://docs.anthropic.com/en/docs/use-examples)，为它自己明确方向，说明它认为你想要的答案类型。你可以编辑这些示例，使其符合你期望的输出格式。
+
+## 幕后原理
+
+提示词生成器基于一个很长的提示词，而这个提示词本身也运用了前面提到的许多技术。
+
+- 它包含大量任务描述和提示词模板的示例，向 Claude 展示如何从任务描述得到提示词模板。
+- 它鼓励 Claude 在编写模板之前先规划好将要生成的模板结构，给 Claude 时间整理思路。
+- 它有一条由 XML 标签构成的坚实&quot;骨架&quot;，标记每个部分的开始和结束，以增强可读性。
+
+你可以在这个 [Colab 笔记本](https://colab.research.google.com/drive/1SoAajN8CBYTl79VyTwxtxncfCWlHlyy9#scrollTo=NTOiFKNxqoq2)中查看完整的提示词。
+
+## 将提示词模板用作评估工具
+
+你从提示词生成器得到的模板中，变量将采用 [handlebars](https://handlebarsjs.com/) 表示法，正如前面内容审核示例所示：
+
+Unknown block type &quot;codeBlock&quot;, specify a component for it in the `components.types` option
+
+在这个示例中，你可以随后上传你的内容策略和各种不同的聊天记录，观察 Claude 的表现。这一过程让你能够确保应用在各种情况下都能做出恰当响应。
+
+## 客户聚焦：ZoomInfo
+
+市场进入（go-to-market）平台 ZoomInfo 使用 Claude 为客户提供可执行的建议、创造价值。他们借助提示词生成功能，大幅缩短了构建 RAG 应用 MVP 的时间，同时提升了输出质量。
+
+&quot;Anthropic 全新的提示词生成器功能让我们能够更快地产出可用于生产环境的结果。它点出了我此前未曾使用的性能提升技巧，显著减少了调优应用所花的时间，&quot;ZoomInfo 首席数据科学家 Spencer Fox 表示。&quot;我们构建了一个新的 RAG 应用，短短几天就达到了 MVP，提示词打磨时间缩短了 80%。&quot;
+
+## 开始使用
+
+要开始用 Claude 构建可直接投产的提示词，请访问 [Anthropic API](https://console.anthropic.com/)。</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Product announcements</span>
-            <span class="article-date">May 20, 2024</span>
-            
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-clay);">
+            <img class="hero-illo-img" src="/assets/illustrations/prompt-generator.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">在开发者控制台中生成更好的提示词</h1>
-          <a href="/posts/prompt-generator/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>你现在可以在 Anthropic Console 中生成可直接用于生产环境的提示词模板。只需描述你想实现的目标，Claude 就会运用思维链推理等提示词工程技术，创建一个有效、精确且可靠的提示词。</p><p>该功能既为提示词工程的新手而设计，也能为经验丰富的提示词工程师节省时间。如果你能为提示词生成器提供关于任务和期望输出格式的详细信息，将会获得最佳效果。</p><p>尽管生成的提示词并不总能产出完美的结果，但它们往往优于提示词工程新手手写的提示词。生成的提示词模板还可以编辑，你可以快速调整它们以获得最佳性能。</p><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/Ig3HlWNHcpY" title="Console 中的提示词辅助：内容审核" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><h2>提示词最佳实践</h2><p>这项新功能生成的提示词模板运用了我们的许多<a target="_blank" href="https://docs.anthropic.com/en/docs/prompt-engineering">提示词工程最佳实践</a>。其中之一是<a target="_blank" href="https://docs.anthropic.com/en/docs/give-claude-a-role">角色设定</a>（role setting），即引导 Claude 扮演所选任务领域专家的角色。在我们的内容审核示例中，角色设定如下：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-javascript" style="white-space:pre-wrap"><span><span>You will be acting </span><span style="color:#dcc6e0">as</span><span> a content moderator to classify chat transcripts </span><span style="color:#dcc6e0">as</span><span> either approved or rejected based on a provided content moderation policy.</span></span></code></pre><p>另一项实践是<a target="_blank" href="https://docs.anthropic.com/en/docs/let-claude-think">思维链</a>（chain of thought）推理，即给 Claude 时间和空间，让它在回答之前先整理思路。这能让它对复杂问题给出更全面、更有理有据的回答。当我们要求它根据客户的历史交易生成一个产品推荐提示词时，具体实现如下：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-javascript" style="white-space:pre-wrap"><span><span>In a &lt;scratchpad&gt;, brainstorm </span><span style="color:#f5ab35">3</span><span> different product recommendations you could make to </span><span style="color:#f5ab35">this</span><span> customer based on their transaction history. For each potential recommendation, provide a brief rationale explaining why you think it would be a good fit </span><span style="color:#dcc6e0">for</span><span> </span><span style="color:#f5ab35">this</span><span> customer.</span></span></code></pre><p>此外，模板通常会把"变量"——即可插入自定义数据的输入字段——放在 <a target="_blank" href="https://docs.anthropic.com/en/docs/use-xml-tags">XML 标签</a>之间。这遵循了另一项关键最佳实践：通过清晰的结构来明确划分提示词的不同部分。当我们要求生成一个将代码翻译为 Python 的提示词时，可以看到较长且含义较模糊的 {{CODE}} 变量由 XML 标签标记，而简单的 {{LANGUAGE}} 变量则以行内形式嵌入。</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-javascript" style="white-space:pre-wrap"><span><span>Your task is to translate a piece </span><span style="color:#dcc6e0">of</span><span> code </span><span style="color:#dcc6e0">from</span><span> another programming language into Python.
+            <h1 class="article-title u-text-style-h1">在开发者控制台中生成更好的提示词</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>Claude now generates production-ready prompt templates, helping developers create effective prompts faster.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/announcements" target="_blank" rel="noopener noreferrer">Product announcements</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/platform/api" target="_blank" rel="noopener noreferrer">Claude Platform</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">May 20, 2024</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/prompt-generator/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>你现在可以在 Anthropic Console 中生成可直接用于生产环境的提示词模板。只需描述你想实现的目标，Claude 就会运用思维链推理等提示词工程技术，创建一个有效、精确且可靠的提示词。</p><p>该功能既为提示词工程的新手而设计，也能为经验丰富的提示词工程师节省时间。如果你能为提示词生成器提供关于任务和期望输出格式的详细信息，将会获得最佳效果。</p><p>尽管生成的提示词并不总能产出完美的结果，但它们往往优于提示词工程新手手写的提示词。生成的提示词模板还可以编辑，你可以快速调整它们以获得最佳性能。</p><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/Ig3HlWNHcpY" title="Console 中的提示词辅助：内容审核" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><h2>提示词最佳实践</h2><p>这项新功能生成的提示词模板运用了我们的许多<a target="_blank" href="https://docs.anthropic.com/en/docs/prompt-engineering">提示词工程最佳实践</a>。其中之一是<a target="_blank" href="https://docs.anthropic.com/en/docs/give-claude-a-role">角色设定</a>（role setting），即引导 Claude 扮演所选任务领域专家的角色。在我们的内容审核示例中，角色设定如下：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-javascript" style="white-space:pre-wrap"><span><span>You will be acting </span><span style="color:#dcc6e0">as</span><span> a content moderator to classify chat transcripts </span><span style="color:#dcc6e0">as</span><span> either approved or rejected based on a provided content moderation policy.</span></span></code></pre><p>另一项实践是<a target="_blank" href="https://docs.anthropic.com/en/docs/let-claude-think">思维链</a>（chain of thought）推理，即给 Claude 时间和空间，让它在回答之前先整理思路。这能让它对复杂问题给出更全面、更有理有据的回答。当我们要求它根据客户的历史交易生成一个产品推荐提示词时，具体实现如下：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-javascript" style="white-space:pre-wrap"><span><span>In a &lt;scratchpad&gt;, brainstorm </span><span style="color:#f5ab35">3</span><span> different product recommendations you could make to </span><span style="color:#f5ab35">this</span><span> customer based on their transaction history. For each potential recommendation, provide a brief rationale explaining why you think it would be a good fit </span><span style="color:#dcc6e0">for</span><span> </span><span style="color:#f5ab35">this</span><span> customer.</span></span></code></pre><p>此外，模板通常会把"变量"——即可插入自定义数据的输入字段——放在 <a target="_blank" href="https://docs.anthropic.com/en/docs/use-xml-tags">XML 标签</a>之间。这遵循了另一项关键最佳实践：通过清晰的结构来明确划分提示词的不同部分。当我们要求生成一个将代码翻译为 Python 的提示词时，可以看到较长且含义较模糊的 {{CODE}} 变量由 XML 标签标记，而简单的 {{LANGUAGE}} 变量则以行内形式嵌入。</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-javascript" style="white-space:pre-wrap"><span><span>Your task is to translate a piece </span><span style="color:#dcc6e0">of</span><span> code </span><span style="color:#dcc6e0">from</span><span> another programming language into Python.
 </span></span><span>
 </span><span>Here is the code to translate:
 </span><span>
@@ -45,21 +154,70 @@
 </span><span><span class="xml"></span><span class="xml" style="color:#ffa07a">&lt;/</span><span class="xml" style="color:#ffa07a">code</span><span class="xml" style="color:#ffa07a">&gt;</span><span>
 </span></span><span>
 </span><span><span>The code is written </span><span style="color:#dcc6e0">in</span><span> {{LANGUAGE}}.</span></span></code></pre><p>在某些情况下，你会看到 Claude 编写<a target="_blank" href="https://docs.anthropic.com/en/docs/use-examples">示例输入和输出</a>，为它自己明确方向，说明它认为你想要的答案类型。你可以编辑这些示例，使其符合你期望的输出格式。</p><h2>幕后原理</h2><p>提示词生成器基于一个很长的提示词，而这个提示词本身也运用了前面提到的许多技术。</p><ul role="list"><li>它包含大量任务描述和提示词模板的示例，向 Claude 展示如何从任务描述得到提示词模板。</li><li>它鼓励 Claude 在编写模板之前先规划好将要生成的模板结构，给 Claude 时间整理思路。</li><li>它有一条由 XML 标签构成的坚实"骨架"，标记每个部分的开始和结束，以增强可读性。</li></ul><p>你可以在这个 <a target="_blank" href="https://colab.research.google.com/drive/1SoAajN8CBYTl79VyTwxtxncfCWlHlyy9#scrollTo=NTOiFKNxqoq2">Colab 笔记本</a>中查看完整的提示词。</p><h2>将提示词模板用作评估工具</h2><p>你从提示词生成器得到的模板中，变量将采用 <a target="_blank" href="https://handlebarsjs.com/">handlebars</a> 表示法，正如前面内容审核示例所示：</p><p>Unknown block type "codeBlock", specify a component for it in the `components.types` option</p><p>在这个示例中，你可以随后上传你的内容策略和各种不同的聊天记录，观察 Claude 的表现。这一过程让你能够确保应用在各种情况下都能做出恰当响应。</p><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/aQpbp-Ra2Rk" title="Console 中的提示词辅助：邮件分诊" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><h2>客户聚焦：ZoomInfo</h2><p>市场进入（go-to-market）平台 ZoomInfo 使用 Claude 为客户提供可执行的建议、创造价值。他们借助提示词生成功能，大幅缩短了构建 RAG 应用 MVP 的时间，同时提升了输出质量。</p><p>"Anthropic 全新的提示词生成器功能让我们能够更快地产出可用于生产环境的结果。它点出了我此前未曾使用的性能提升技巧，显著减少了调优应用所花的时间，"ZoomInfo 首席数据科学家 Spencer Fox 表示。"我们构建了一个新的 RAG 应用，短短几天就达到了 MVP，提示词打磨时间缩短了 80%。"</p><h2>开始使用</h2><p>要开始用 Claude 构建可直接投产的提示词，请访问 <a href="https://console.anthropic.com/">Anthropic API</a>。</p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/prompt-generator" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/prompt-generator" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

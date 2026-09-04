@@ -13,5 +13,22 @@
   "translatedTitle": "在金融服务领域构建 AI 智能体",
   "translated": true,
   "translatedAt": "2026-09-02T04:55:16.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Agents",
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Platform"
+    ],
+    "usecase": [
+      "Financial services"
+    ]
+  },
+  "subtitle": "Financial institutions are deploying autonomous AI systems to improve operations while navigating regulatory complexity and risk. Here's how.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/agents",
+  "productUrl": "https://claude.com/platform/api"
 }

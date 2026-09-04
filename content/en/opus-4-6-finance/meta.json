@@ -13,5 +13,19 @@
   "translatedTitle": "用 Claude Opus 4.6 推进金融行业",
   "translated": true,
   "translatedAt": "2026-09-02T04:22:24.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude apps"
+    ],
+    "usecase": []
+  },
+  "subtitle": "With Claude Opus 4.6, finance teams get better reasoning on complex analyses, cleaner first-pass deliverables, and new tools built for where analysts actually spend their time.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": ""
 }

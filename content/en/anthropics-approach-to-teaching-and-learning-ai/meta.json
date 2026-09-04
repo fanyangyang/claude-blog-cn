@@ -13,5 +13,21 @@
   "illustrationBg": "Cactus",
   "translatedTitle": "Anthropic 的 AI 教学与学习方法",
   "translatedAt": "2026-09-02T05:12:35.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements",
+      "Enterprise AI"
+    ],
+    "product": [],
+    "usecase": [
+      "Agents",
+      "Productivity"
+    ]
+  },
+  "subtitle": "Claude Academy gives users the educational tools they need to learn how to use AI effectively. In this post, we highlight why we’re launching it and how our own approach to teaching and learning influenced its development.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": ""
 }

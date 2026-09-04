@@ -13,5 +13,23 @@
   "translatedTitle": "在生产环境中运行自动模式",
   "translated": true,
   "translatedAt": "2026-09-02T04:30:13.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Claude Code"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": [
+      "Coding"
+    ]
+  },
+  "subtitle": "How the teams at Nuro, Gusto, and Garner Health use auto mode to balance speed and safety at production scale.",
+  "authors": [
+    "Molly Vorwerck"
+  ],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/claude-code",
+  "productUrl": "https://claude.com/product/claude-code"
 }

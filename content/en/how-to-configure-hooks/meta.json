@@ -13,5 +13,19 @@
   "translatedTitle": "Claude Code 高阶自定义：如何配置 Hooks",
   "translated": true,
   "translatedAt": "2026-09-02T04:54:25.809Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Claude Code"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": []
+  },
+  "subtitle": "Learn how to configure Claude Code hooks to automate repetitive tasks, enforce project rules, and inject dynamic context into your coding sessions.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/claude-code",
+  "productUrl": "https://claude.com/product/claude-code"
 }

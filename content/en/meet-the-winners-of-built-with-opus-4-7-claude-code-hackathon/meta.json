@@ -13,5 +13,21 @@
   "translatedTitle": "Built with Opus 4.7 Claude Code 黑客马拉松获胜者专访",
   "translated": true,
   "translatedAt": "2026-09-02T04:24:57Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Claude Code"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": [
+      "Coding"
+    ]
+  },
+  "subtitle": "From medical training and electronics repair to coding education and factory maintenance, see the projects built by the winners of our latest virtual hackathon.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/claude-code",
+  "productUrl": "https://claude.com/product/claude-code"
 }

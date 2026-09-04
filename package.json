@@ -4,9 +4,12 @@
   "private": true,
   "scripts": {
     "fetch": "node scripts/fetch-blog.js",
+    "extract": "node scripts/extract-content.js",
     "build": "node scripts/build-site.js",
     "deploy": "node scripts/build-site.js",
-    "sync": "node scripts/fetch-blog.js && node scripts/build-site.js"
+    "sync": "node scripts/fetch-blog.js && node scripts/check-completeness.js && node scripts/build-site.js",
+    "check:content": "node scripts/check-completeness.js",
+    "check:translate": "node scripts/check-translations.js"
   },
   "dependencies": {
     "cheerio": "^1.0.0",

@@ -13,5 +13,23 @@
   "illustrationBg": "Clay",
   "translatedTitle": "Claude in Chrome 现已全面可用",
   "translatedAt": "2026-09-01T11:19:19.935Z",
-  "translateLang": "zh"
+  "translateLang": "zh",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Cowork",
+      "Claude apps"
+    ],
+    "usecase": [
+      "Work",
+      "Productivity"
+    ]
+  },
+  "subtitle": "Give Claude a task in your browser, work across tabs, and continue the conversation in the desktop, mobile, and web apps.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/product/cowork"
 }

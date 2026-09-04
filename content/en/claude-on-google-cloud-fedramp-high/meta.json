@@ -13,5 +13,21 @@
   "translatedTitle": "Google Cloud Vertex AI 上的 Claude：获得 FedRAMP High 与 IL2 授权",
   "translated": true,
   "translatedAt": "2026-09-02T04:44:54.905Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Platform"
+    ],
+    "usecase": [
+      "Government"
+    ]
+  },
+  "subtitle": "Claude is now authorized for FedRAMP High and IL2 workloads on Google Cloud's Vertex AI, enabling federal agencies and defense organizations to use our models while meeting strict compliance requirements.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/platform/api"
 }

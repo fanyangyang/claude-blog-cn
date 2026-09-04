@@ -13,5 +13,22 @@
   "translatedTitle": "像带新开发者一样上手 Claude Code：来自 17 年开发经验的心得",
   "translated": true,
   "translatedAt": "2026-09-02T04:32:12.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Claude Code"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": [
+      "Health care and life sciences",
+      "Coding"
+    ]
+  },
+  "subtitle": "The methodology that onboards new developers to MacCoss Lab's 700,000-line codebase works on Claude Code, too. Here's how Brendan MacLean, a Claude Developer Ambassador whose lab is part of our Claude for Open Source program, did it.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/claude-code",
+  "productUrl": "https://claude.com/product/claude-code"
 }

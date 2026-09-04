@@ -4,39 +4,161 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>顾问策略：为 agent 提供一次智能升级 — Claude Blog 中文翻译</title>
-  <meta name="description" content="顾问策略：为 agent 提供一次智能升级">
+  <meta name="description" content="Pair Opus as an advisor with Sonnet or Haiku as an executor, and get near Opus-level intelligence in your agents at a fraction of the cost.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/the-advisor-strategy" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>顾问策略：为 agent 提供一次智能升级</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/the-advisor-strategy" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/the-advisor-strategy/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># 顾问策略：为 agent 提供一次智能升级
+
+Pair Opus as an advisor with Sonnet or Haiku as an executor, and get near Opus-level intelligence in your agents at a fraction of the cost.
+
+希望在智能与成本之间取得更好平衡的开发者，逐渐汇聚到一种我们称之为“顾问策略”（advisor strategy）的做法上：让 Opus 担任顾问（advisor），搭配 Sonnet 或 Haiku 担任执行者（executor）。这样既能为你的 agent 带来接近 Opus 级别的智能，又能把成本控制在接近 Sonnet 的水平。
+
+今天我们在 Claude Platform 上推出 advisor 工具，让顾问策略只需在你的 API 调用中改动一行即可落地。
+
+## 用顾问策略构建高性价比的 agent 
+
+在顾问策略中，Sonnet 或 Haiku 作为执行者端到端地运行任务——调用工具、读取结果、不断迭代逼近解决方案。当执行者遇到自己难以合理解决的决策点时，会向作为顾问的 Opus 求教。Opus 访问共享上下文后返回一个计划、一处修正或一个停止信号，执行者随即继续。顾问从不调用工具，也不产出面向用户的输出，只为执行者提供指导。
+
+这颠覆了一种常见的子 agent 模式——由更大的编排模型分解工作并委派给更小的工人模型。在顾问策略中，由更小、更具成本优势的模型驱动执行，并在需要时向上升级求助，无需任务分解、工人池或编排逻辑。前沿级别的推理只在执行者真正需要时才介入，其余运行过程都保持在执行者级别的成本上。
+
+在我们的评测中，配备 Opus 顾问的 Sonnet 在[ SWE-bench Multilingual](https://www.swebench.com/multilingual.html)1 上比单独使用 Sonnet 提高了 2.7 个百分点，同时每个 agentic 任务的成本降低了 11.9%。
+
+## **advisor 工具 **
+
+我们通过 [**advisor 工具**](https://platform.claude.com/docs/en/agents-and-tools/tool-use/advisor-tool)将顾问策略引入我们的 API。这是一项服务端工具，Sonnet 和 Haiku 在需要针对特定任务获得指导或帮助时会自动调用它。
+
+在我们的评测中，配备 Opus 顾问的 Sonnet 在 BrowseComp2 和 Terminal-Bench 2.03 基准测试中的得分均有提升，且每个任务的成本低于单独使用 Sonnet。
+
+顾问策略同样适用于以 Haiku 作为执行者的场景。在 BrowseComp 上，配备 Opus 顾问的 Haiku 拿到了 41.2% 的得分，是其单打独斗成绩（19.7%）的两倍多。配备 Opus 顾问的 Haiku 得分比单独使用的 Sonnet 低 29%，但每个任务的成本低 85%。顾问会增加相对 Haiku 单独使用的成本，但两者合计的价格仍然只是 Sonnet 的一小部分，这使它成为那些需要兼顾智能与成本的高并发任务的强力选项。
+
+在 Messages API 请求中声明** **advisor_20260301，模型交接就发生在一次 /v1/messages 请求内部——无需额外往返，也无需额外管理上下文。由执行者模型自行决定何时调用它。一旦调用，我们会把精心筛选的上下文路由给顾问模型，返回计划后执行者在同一请求内继续运行。
+
+`response = client.messages.create(
+    model=&quot;claude-sonnet-4-6&quot;,  # executor
+    tools=[
+        {
+            &quot;type&quot;: &quot;advisor_20260301&quot;,
+            &quot;name&quot;: &quot;advisor&quot;,
+            &quot;model&quot;: &quot;claude-opus-4-6&quot;,
+            &quot;max_uses&quot;: 3,
+        },
+    10|        # ... your other tools
+    ],
+    messages=[...]
+)
+
+# Advisor tokens reported separately
+# in the usage block.`**计费方式。**顾问 token 按顾问模型的费率计费；执行者 token 按执行者模型的费率计费。由于顾问只生成一份简短的计划（通常 400-700 个文本 token），而全部输出由执行者以更低的费率完成，因此总成本远低于端到端运行顾问模型。**
+内建成本控制。**设置 max_uses 即可限制每次请求中顾问的调用次数。顾问 token 会在 usage 块中单独上报，方便你按层级追踪开销。
+
+**与现有工具协同工作。**advisor 工具只是 Messages API 请求中的又一个条目。你的 agent 可以在同一个循环里[搜索网页](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool)、[执行代码](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool)，并向 Opus 求教。
+
+“在复杂任务上它能做出更好的架构决策，在简单任务上又不会增加额外开销。计划和执行轨迹简直判若云泥。”
+
+Eric Simmons, CEO and Founder, Bolt“我们在 agent 轮次、工具调用和总分上都看到了明显提升——比我们自己做的规划工具还要好。”
+
+Kay Zhu, Cofounder &amp; CTO, Genspark“在结构化文档抽取任务上，advisor 工具让 Haiku 4.5 能按复杂度按需向 Opus 4.6 求教，动态扩展智能，以低 5 倍的成本达到前沿模型的质量。”
+
+Anuraj Pandey, Machine Learning Engineer, Eve Legal
+## 开始使用
+
+** **advisor 工具** **现已在 Claude Platform 原生环境中以 beta 形式提供。上手步骤：
+
+- 添加 beta 功能请求头：anthropic-beta: advisor-tool-2026-03-01
+- 在 Messages API 请求中加入 advisor_20260301
+- 根据你的用例调整 [system prompt](https://platform.claude.com/docs/en/agents-and-tools/tool-use/advisor-tool#suggested-system-prompt-for-coding-tasks)
+
+我们建议用你现有的评测套件分别跑一遍单独的 Sonnet、以 Sonnet 为执行者搭配 Opus 顾问，以及单独的 Opus。更多信息见 [文档](https://platform.claude.com/docs/en/agents-and-tools/tool-use/advisor-tool)。
+
+## 脚注
+
+- **SWE-bench Multilingual:** 单独的 Sonnet 4.6 使用了 adaptive thinking。Sonnet 4.6 + Advisor 使用了我们建议的编程 system prompt，并关闭了 thinking。两组都使用 high effort，以及 bash 和文件编辑工具。分数为 300 道题、覆盖九种语言、五次试验的平均值。所有运行均以 Opus 4.6 作为顾问模型。
+- **BrowseComp: **所有运行均关闭 thinking，并使用 web search 和 web fetch 工具。Sonnet 4.6 使用 medium effort。Sonnet 4.6 + Advisor 使用了我们建议的编程 system prompt；Haiku 4.5 + Advisor 没有使用。未使用 programmatic tool calling 或 context compaction。分数基于 1,266 道题，每题一次尝试。所有运行均以 Opus 4.6 作为顾问模型。**‍**
+- **Terminal-Bench 2.0: **所有运行均关闭 thinking，并使用 bash 和文件编辑工具。Sonnet 4.6 使用 medium effort。两组顾问运行都没有使用我们建议的编程 system prompt。每项任务在隔离的 pod 中运行，资源为 3 倍分配，超时为 1 倍。分数为 89 项任务、每项五次尝试的平均值。所有运行均以 Opus 4.6 作为顾问模型。</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Product announcements</span>
-            <span class="article-date">April 9, 2026</span>
-            
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-clay);">
+            <img class="hero-illo-img" src="/assets/illustrations/the-advisor-strategy.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">顾问策略：为 agent 提供一次智能升级</h1>
-          <a href="/posts/the-advisor-strategy/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>希望在智能与成本之间取得更好平衡的开发者，逐渐汇聚到一种我们称之为“顾问策略”（advisor strategy）的做法上：让 Opus 担任顾问（advisor），搭配 Sonnet 或 Haiku 担任执行者（executor）。这样既能为你的 agent 带来接近 Opus 级别的智能，又能把成本控制在接近 Sonnet 的水平。</p><p>今天我们在 Claude Platform 上推出 advisor 工具，让顾问策略只需在你的 API 调用中改动一行即可落地。</p><h2>用顾问策略构建高性价比的 agent&nbsp;</h2><figure style="max-width:1600pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69d7a8216b96ea826922fcf4_e9f8286d.png" loading="lazy"></div></figure><p>在顾问策略中，Sonnet 或 Haiku 作为执行者端到端地运行任务——调用工具、读取结果、不断迭代逼近解决方案。当执行者遇到自己难以合理解决的决策点时，会向作为顾问的 Opus 求教。Opus 访问共享上下文后返回一个计划、一处修正或一个停止信号，执行者随即继续。顾问从不调用工具，也不产出面向用户的输出，只为执行者提供指导。</p><p>这颠覆了一种常见的子 agent 模式——由更大的编排模型分解工作并委派给更小的工人模型。在顾问策略中，由更小、更具成本优势的模型驱动执行，并在需要时向上升级求助，无需任务分解、工人池或编排逻辑。前沿级别的推理只在执行者真正需要时才介入，其余运行过程都保持在执行者级别的成本上。</p><p>在我们的评测中，配备 Opus 顾问的 Sonnet 在<a href="https://www.swebench.com/multilingual.html"> SWE-bench Multilingual</a><sup>1</sup> 上比单独使用 Sonnet 提高了 2.7 个百分点，同时每个 agentic 任务的成本降低了 11.9%。</p><figure style="max-width:3840px" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69d908f43209164823554d52_Claude-Blog-Advisor-tool-SWE-bench-Multilingual.png" loading="lazy"></div></figure><h2><strong>advisor 工具&nbsp;</strong></h2><p>我们通过 <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/advisor-tool"><strong>advisor 工具</strong></a>将顾问策略引入我们的 API。这是一项服务端工具，Sonnet 和 Haiku 在需要针对特定任务获得指导或帮助时会自动调用它。</p><p>在我们的评测中，配备 Opus 顾问的 Sonnet 在 BrowseComp<sup>2</sup> 和 Terminal-Bench 2.0<sup>3</sup> 基准测试中的得分均有提升，且每个任务的成本低于单独使用 Sonnet。</p><figure style="max-width:1600pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69d7a8216b96ea826922fcfa_880b9e59.png" loading="lazy"></div></figure><p>顾问策略同样适用于以 Haiku 作为执行者的场景。在 BrowseComp 上，配备 Opus 顾问的 Haiku 拿到了 41.2% 的得分，是其单打独斗成绩（19.7%）的两倍多。配备 Opus 顾问的 Haiku 得分比单独使用的 Sonnet 低 29%，但每个任务的成本低 85%。顾问会增加相对 Haiku 单独使用的成本，但两者合计的价格仍然只是 Sonnet 的一小部分，这使它成为那些需要兼顾智能与成本的高并发任务的强力选项。</p><figure style="max-width:1600pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69d7a8216b96ea826922fcfd_ca657f5f.png" loading="lazy"></div></figure><p><br>在 Messages API 请求中声明<strong> </strong>advisor_20260301，模型交接就发生在一次 /v1/messages 请求内部——无需额外往返，也无需额外管理上下文。由执行者模型自行决定何时调用它。一旦调用，我们会把精心筛选的上下文路由给顾问模型，返回计划后执行者在同一请求内继续运行。<br></p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-python" style="white-space:pre-wrap"><span><span>response = client.messages.create(
+            <h1 class="article-title u-text-style-h1">顾问策略：为 agent 提供一次智能升级</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>Pair Opus as an advisor with Sonnet or Haiku as an executor, and get near Opus-level intelligence in your agents at a fraction of the cost.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/announcements" target="_blank" rel="noopener noreferrer">Product announcements</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/platform/api" target="_blank" rel="noopener noreferrer">Claude Platform</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">April 9, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/the-advisor-strategy/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>希望在智能与成本之间取得更好平衡的开发者，逐渐汇聚到一种我们称之为“顾问策略”（advisor strategy）的做法上：让 Opus 担任顾问（advisor），搭配 Sonnet 或 Haiku 担任执行者（executor）。这样既能为你的 agent 带来接近 Opus 级别的智能，又能把成本控制在接近 Sonnet 的水平。</p><p>今天我们在 Claude Platform 上推出 advisor 工具，让顾问策略只需在你的 API 调用中改动一行即可落地。</p><h2>用顾问策略构建高性价比的 agent&nbsp;</h2><figure style="max-width:1600pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69d7a8216b96ea826922fcf4_e9f8286d.png" loading="lazy"></div></figure><p>在顾问策略中，Sonnet 或 Haiku 作为执行者端到端地运行任务——调用工具、读取结果、不断迭代逼近解决方案。当执行者遇到自己难以合理解决的决策点时，会向作为顾问的 Opus 求教。Opus 访问共享上下文后返回一个计划、一处修正或一个停止信号，执行者随即继续。顾问从不调用工具，也不产出面向用户的输出，只为执行者提供指导。</p><p>这颠覆了一种常见的子 agent 模式——由更大的编排模型分解工作并委派给更小的工人模型。在顾问策略中，由更小、更具成本优势的模型驱动执行，并在需要时向上升级求助，无需任务分解、工人池或编排逻辑。前沿级别的推理只在执行者真正需要时才介入，其余运行过程都保持在执行者级别的成本上。</p><p>在我们的评测中，配备 Opus 顾问的 Sonnet 在<a href="https://www.swebench.com/multilingual.html"> SWE-bench Multilingual</a><sup>1</sup> 上比单独使用 Sonnet 提高了 2.7 个百分点，同时每个 agentic 任务的成本降低了 11.9%。</p><figure style="max-width:3840px" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69d908f43209164823554d52_Claude-Blog-Advisor-tool-SWE-bench-Multilingual.png" loading="lazy"></div></figure><h2><strong>advisor 工具&nbsp;</strong></h2><p>我们通过 <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/advisor-tool"><strong>advisor 工具</strong></a>将顾问策略引入我们的 API。这是一项服务端工具，Sonnet 和 Haiku 在需要针对特定任务获得指导或帮助时会自动调用它。</p><p>在我们的评测中，配备 Opus 顾问的 Sonnet 在 BrowseComp<sup>2</sup> 和 Terminal-Bench 2.0<sup>3</sup> 基准测试中的得分均有提升，且每个任务的成本低于单独使用 Sonnet。</p><figure style="max-width:1600pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69d7a8216b96ea826922fcfa_880b9e59.png" loading="lazy"></div></figure><p>顾问策略同样适用于以 Haiku 作为执行者的场景。在 BrowseComp 上，配备 Opus 顾问的 Haiku 拿到了 41.2% 的得分，是其单打独斗成绩（19.7%）的两倍多。配备 Opus 顾问的 Haiku 得分比单独使用的 Sonnet 低 29%，但每个任务的成本低 85%。顾问会增加相对 Haiku 单独使用的成本，但两者合计的价格仍然只是 Sonnet 的一小部分，这使它成为那些需要兼顾智能与成本的高并发任务的强力选项。</p><figure style="max-width:1600pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69d7a8216b96ea826922fcfd_ca657f5f.png" loading="lazy"></div></figure><p><br>在 Messages API 请求中声明<strong> </strong>advisor_20260301，模型交接就发生在一次 /v1/messages 请求内部——无需额外往返，也无需额外管理上下文。由执行者模型自行决定何时调用它。一旦调用，我们会把精心筛选的上下文路由给顾问模型，返回计划后执行者在同一请求内继续运行。<br></p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-python" style="white-space:pre-wrap"><span><span>response = client.messages.create(
 </span></span><span><span>    model=</span><span style="color:#abe338">"claude-sonnet-4-6"</span><span>,  </span><span style="color:#d4d0ab"># executor</span><span>
 </span></span><span>    tools=[
 </span><span>        {
@@ -45,28 +167,78 @@
 </span></span><span><span>            </span><span style="color:#abe338">"model"</span><span>: </span><span style="color:#abe338">"claude-opus-4-6"</span><span>,
 </span></span><span><span>            </span><span style="color:#abe338">"max_uses"</span><span>: </span><span style="color:#f5ab35">3</span><span>,
 </span></span><span>        },
-</span><span><span>        </span><span style="color:#d4d0ab"># ... your other tools</span><span>
+    10|</span><span><span>        </span><span style="color:#d4d0ab"># ... your other tools</span><span>
 </span></span><span>    ],
 </span><span>    messages=[...]
 </span><span>)
 </span><span>
 </span><span><span></span><span style="color:#d4d0ab"># Advisor tokens reported separately</span><span>
-</span></span><span><span></span><span style="color:#d4d0ab"># in the usage block.</span></span></code></pre><p><strong>计费方式。</strong>顾问 token 按顾问模型的费率计费；执行者 token 按执行者模型的费率计费。由于顾问只生成一份简短的计划（通常 400-700 个文本 token），而全部输出由执行者以更低的费率完成，因此总成本远低于端到端运行顾问模型。<strong><br>内建成本控制。</strong>设置 max_uses 即可限制每次请求中顾问的调用次数。顾问 token 会在 usage 块中单独上报，方便你按层级追踪开销。</p><p><strong>与现有工具协同工作。</strong>advisor 工具只是 Messages API 请求中的又一个条目。你的 agent 可以在同一个循环里<a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool">搜索网页</a>、<a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool">执行代码</a>，并向 Opus 求教。</p></div>
+</span></span><span><span></span><span style="color:#d4d0ab"># in the usage block.</span></span></code></pre><p><strong>计费方式。</strong>顾问 token 按顾问模型的费率计费；执行者 token 按执行者模型的费率计费。由于顾问只生成一份简短的计划（通常 400-700 个文本 token），而全部输出由执行者以更低的费率完成，因此总成本远低于端到端运行顾问模型。<strong><br>内建成本控制。</strong>设置 max_uses 即可限制每次请求中顾问的调用次数。顾问 token 会在 usage 块中单独上报，方便你按层级追踪开销。</p><p><strong>与现有工具协同工作。</strong>advisor 工具只是 Messages API 请求中的又一个条目。你的 agent 可以在同一个循环里<a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool">搜索网页</a>、<a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool">执行代码</a>，并向 Opus 求教。</p><div class="article-testimonials" role="list"><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69f26e70e1444e31742ca027_logo_boltupdatedlogo-light-mode.svg" alt="69f26e70e1444e31742ca027 boltupdatedlogo mode" loading="lazy"><blockquote><p>“在复杂任务上它能做出更好的架构决策，在简单任务上又不会增加额外开销。计划和执行轨迹简直判若云泥。”</p></blockquote><figcaption class="article-testimonial-caption">Eric Simmons, CEO and Founder, Bolt</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68c33d3cb4813a779adb7133_cs-logo-genspark-light-theme.svg" alt="68c33d3cb4813a779adb7133 cs genspark theme" loading="lazy"><blockquote><p>“我们在 agent 轮次、工具调用和总分上都看到了明显提升——比我们自己做的规划工具还要好。”</p></blockquote><figcaption class="article-testimonial-caption">Kay Zhu, Cofounder &amp; CTO, Genspark</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69ebbdde1a3d17f2d9e91607_eve-light-mode.svg" alt="69ebbdde1a3d17f2d9e91607 eve mode" loading="lazy"><blockquote><p>“在结构化文档抽取任务上，advisor 工具让 Haiku 4.5 能按复杂度按需向 Opus 4.6 求教，动态扩展智能，以低 5 倍的成本达到前沿模型的质量。”</p></blockquote><figcaption class="article-testimonial-caption">Anuraj Pandey, Machine Learning Engineer, Eve Legal</figcaption></figure></div><h2>开始使用</h2><p><strong> </strong>advisor 工具<strong> </strong>现已在 Claude Platform 原生环境中以 beta 形式提供。上手步骤：</p><ol role="list"><li>添加 beta 功能请求头：anthropic-beta: advisor-tool-2026-03-01</li><li>在 Messages API 请求中加入 advisor_20260301</li><li>根据你的用例调整 <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/advisor-tool#suggested-system-prompt-for-coding-tasks">system prompt</a></li></ol><p>我们建议用你现有的评测套件分别跑一遍单独的 Sonnet、以 Sonnet 为执行者搭配 Opus 顾问，以及单独的 Opus。更多信息见 <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/advisor-tool">文档</a>。</p><h2>脚注</h2><ol role="list"><li><strong>SWE-bench Multilingual:</strong> 单独的 Sonnet 4.6 使用了 adaptive thinking。Sonnet 4.6 + Advisor 使用了我们建议的编程 system prompt，并关闭了 thinking。两组都使用 high effort，以及 bash 和文件编辑工具。分数为 300 道题、覆盖九种语言、五次试验的平均值。所有运行均以 Opus 4.6 作为顾问模型。</li><li><strong>BrowseComp: </strong>所有运行均关闭 thinking，并使用 web search 和 web fetch 工具。Sonnet 4.6 使用 medium effort。Sonnet 4.6 + Advisor 使用了我们建议的编程 system prompt；Haiku 4.5 + Advisor 没有使用。未使用 programmatic tool calling 或 context compaction。分数基于 1,266 道题，每题一次尝试。所有运行均以 Opus 4.6 作为顾问模型。<strong>‍</strong></li><li><strong>Terminal-Bench 2.0: </strong>所有运行均关闭 thinking，并使用 bash 和文件编辑工具。Sonnet 4.6 使用 medium effort。两组顾问运行都没有使用我们建议的编程 system prompt。每项任务在隔离的 pod 中运行，资源为 3 倍分配，超时为 1 倍。分数为 89 项任务、每项五次尝试的平均值。所有运行均以 Opus 4.6 作为顾问模型。</li></ol></div>
+
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/the-advisor-strategy" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/the-advisor-strategy" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

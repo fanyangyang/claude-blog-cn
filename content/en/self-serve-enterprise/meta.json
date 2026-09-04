@@ -13,5 +13,23 @@
   "translatedTitle": "Claude Enterprise 现已支持自助开通",
   "translated": true,
   "translatedAt": "2026-09-02T04:22:24.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Enterprise"
+    ],
+    "usecase": [
+      "Business",
+      "Work",
+      "Productivity"
+    ]
+  },
+  "subtitle": "Starting today, any organization can purchase Claude Enterprise directly on our website with no sales conversation required. Set up your workspace, configure SSO, and start inviting team members in minutes.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/solutions/enterprise"
 }

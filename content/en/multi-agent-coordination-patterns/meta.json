@@ -13,5 +13,21 @@
   "translatedTitle": "多 agent 协调模式：五种方法及其适用场景",
   "translated": true,
   "translatedAt": "2026-09-02T04:50:51Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Agents"
+    ],
+    "product": [
+      "Claude Platform"
+    ],
+    "usecase": [
+      "Coding"
+    ]
+  },
+  "subtitle": "Five multi-agent coordination patterns, their trade-offs, and when to evolve from one to another.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/agents",
+  "productUrl": "https://claude.com/platform/api"
 }

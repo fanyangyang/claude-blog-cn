@@ -13,5 +13,17 @@
   "translatedTitle": "守卫前沿：JetBrains 如何评估和部署 Claude Fable 5",
   "translated": true,
   "translatedAt": "2026-09-02T04:30:13.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [],
+    "usecase": []
+  },
+  "subtitle": "JetBrains Agent Systems CTO Vladislav Tankov on how the company evaluates frontier models against its private repositories, when his team reaches for Claude Fable 5, and why he treats safeguards and data retention as central to working with them.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": ""
 }

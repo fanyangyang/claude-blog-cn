@@ -13,5 +13,21 @@
   "translatedTitle": "为企业构建 AI 智能体",
   "translated": true,
   "translatedAt": "2026-09-02T04:19:19.723Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Agents"
+    ],
+    "product": [
+      "Claude Cowork"
+    ],
+    "usecase": [
+      "Work"
+    ]
+  },
+  "subtitle": "In this guide, we share how leading organizations are using agents to transform their work today, and how Claude Cowork brings these capabilities to every team.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/agents",
+  "productUrl": "https://claude.com/product/cowork"
 }

@@ -13,5 +13,22 @@
   "translatedTitle": "用 Claude 更快修复软件 Bug",
   "translated": true,
   "translatedAt": "2026-09-02T04:44:02.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Claude Code"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": [
+      "Coding",
+      "Productivity"
+    ]
+  },
+  "subtitle": "Turn debugging from detective work into systematic problem-solving. Analyze errors, trace root causes, and implement fixes faster.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/claude-code",
+  "productUrl": "https://claude.com/product/claude-code"
 }

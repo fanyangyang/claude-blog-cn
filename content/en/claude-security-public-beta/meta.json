@@ -13,5 +13,19 @@
   "translatedTitle": "Claude Security 现已开启公开测试",
   "translated": true,
   "translatedAt": "2026-09-02T04:20:29.710Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Security"
+    ],
+    "usecase": []
+  },
+  "subtitle": "Claude Security is now in public beta for Claude Enterprise customers. Scan code for vulnerabilities and generate proposed fixes with Opus 4.7, on the Claude Platform, or through technology and services partners building with Claude.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/product/claude-security"
 }

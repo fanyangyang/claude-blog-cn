@@ -4,39 +4,1126 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Claude 计算机与浏览器使用的最佳实践 — Claude Blog 中文翻译</title>
-  <meta name="description" content="Claude 计算机与浏览器使用的最佳实践">
+  <meta name="description" content="Practical guidance for developers building computer and browser use integrations with the Claude model family.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/best-practices-for-computer-and-browser-use-with-claude" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>Claude 计算机与浏览器使用的最佳实践</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/best-practices-for-computer-and-browser-use-with-claude" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/best-practices-for-computer-and-browser-use-with-claude/en.html">阅读英文原文 →</a>
       </div>
-    </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Agents</span>
-            <span class="article-date">May 13, 2026</span>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># Claude 计算机与浏览器使用的最佳实践
+
+Practical guidance for developers building computer and browser use integrations with the Claude model family.
+
+Claude 的[最新模型](https://www.anthropic.com/news/claude-sonnet-4-6) 在计算机使用（computer use）和浏览器使用（browser use）能力上迈出了一大步。凭借这些特性，LLM 如今能够驱动越来越复杂的智能体系统，承担真正的工作，比如构建软件应用、跨多种异构技术自动化工作流。
+
+在这篇博文中，我们分享将 Claude 用于计算机和浏览器使用的最佳实践，从简单的配置调整到更高级的集成模式应有尽有。希望这篇文章能为你把 Claude 的计算机和浏览器使用能力集成到自己产品中提供帮助。我们还发布了一个新的[演示实现](https://github.com/anthropics/claude-quickstarts/tree/main/computer-use-best-practices)，它封装了其中一部分最佳实践，并提供了一些在 Claude 计算机使用能力之上进行开发的实用工具。
+
+*请注意，除非另有说明，这些建议适用于 Claude 4.6 系列（Opus 4.6、Sonnet 4.6、Haiku 4.5）和 Claude Opus 4.7。当 4.6 系列与 Opus 4.7 的指引有所不同时，我们会在文中就地注明。我们的结论基于内部实验，未来可能随着新模型和新技术的出现而更新。*
+
+# **入门：分辨率与缩放**
+
+点击准确率是任何计算机使用集成的根基。如果点击落点不对，下游一切都无法工作：表单填不了、按钮按不了、工作流失败。而影响最大的单一优化恰恰也是最简单的之一：在把截图发给 API 之前预先降采样。
+
+## **确保缩放正确**
+
+当你把截图发给 Claude 的 Computer Use API 时，模型会查看它并在你指定的 display_width_px / display_height_px 坐标空间中返回点击坐标。但有一个重要约束：API 对图像尺寸有内部处理上限。超出上限的图像会在模型看到之前被降采样，这意味着模型是在一个劣化版的图像上点击，而你的 harness 却期望坐标对齐原始分辨率。
+
+对于 Claude 4.6 系列模型，API 的限制是：
+
+- **最长边上限**：1568 像素
+- **总像素上限**：115 万像素
+- 超出**任一**限制的图像都会被内部降采样
+
+我们的 Opus 4.7 模型支持更高的分辨率，限制为：
+
+- **最长边上限**：2576 像素
+- **总像素上限**：375 万像素
+- 超出**任一**限制的图像都会被内部降采样
+
+当坐标空间与模型实际感知的图像不一致时，模型预测的点击会落在与它实际看到的图像不同的显示比例上。这正是高分辨率下点击不准的首要原因。解决办法很直接：在把截图发给 API 之前，务必将其降采样到限制以内。我们持续观察到图像超限会显著降低准确率，而这一处修改的价值胜过几乎所有其他优化。
+
+## **推荐分辨率**
+
+**从 1280x720 开始。**对大多数用例来说，这是一个安全、实用的默认选择。它占用大约 80% 的像素预算，稳稳处于最长边和总像素两个限制之内，而且是模型在训练中见过的标准分辨率。无论现代 Web UI 还是老式桌面应用，它都表现良好。
+
+**如果你使用的是 Opus 4.7，我们建议从 1080p 开始**，因为相对 720p 有实质性的质量提升，并在 token 用量和性能之间取得良好平衡。
+
+**对于希望最大化模型接收到的视觉信息的开发者**，我们还推荐&quot;max API fit&quot;（最大化贴合 API 限制）方案：根据源图像的原生宽高比为每张图像计算最优分辨率：
+
+`import math
+
+# 1568 for 4.6 family, 2576 for Opus 4.7
+MAX_LONG_EDGE = 1568
+
+# 1.15MP for 4.6 family, 3.75MP for Opus 4.7
+MAX_PIXELS = 1_150_000
+
+def compute_max_api_fit(native_w, native_h):
+    &quot;&quot;&quot;Compute the largest resolution that fits API limits
+    while preserving aspect ratio.&quot;&quot;&quot;
+    aspect = native_w / native_h
+
+    # Compute max dimensions from pixel budget
+    h_from_pixels = math.sqrt(MAX_PIXELS / aspect)
+    w_from_pixels = h_from_pixels * aspect
+
+    # Apply long edge constraint
+    if native_w &gt;= native_h:
+        w = min(w_from_pixels, MAX_LONG_EDGE)
+        h = w / aspect
+    else:
+        h = min(h_from_pixels, MAX_LONG_EDGE)
+        w = h * aspect
+
+    # Never upscale beyond native
+    w = min(w, native_w)
+    h = min(h, native_h)
+
+    return int(w), int(h)`这个方案稍复杂，但能避免宽高比失真，并充分利用每张图像可用的像素预算。相比固定 1280x720，准确率的提升有限，但实现简单直接，避免了把 16:9 源图强行塞进 4:3 显示分辨率时产生的失真。
+
+**应避免的分辨率：**
+
+- **原生分辨率（未缩放）**：除非你的源图像恰好低于分辨率限制，否则发送原生分辨率的截图是点击准确率不佳的最常见原因。
+- **过低的分辨率（低于 960x540）**：低分辨率图像会丢失太多细节，模型无法准确识别小型 UI 元素。
+- **如果在 MacOS 上：** 浏览器使用中一个常见问题是，MacOS 上的截图常常以设备像素比 2 捕获，这意味着你得到的图像分辨率可能是屏幕坐标的 2 倍。
+- **如果使用 4.6 系列，请避免 1920x1080 及以上：**这些超出了像素限制，会被静默降采样。Opus 4.7 的上限更高（375 万像素），1080p 和 1440p 都在预算之内；但未经降采样的原生 4K 仍应避免。
+
+## **坐标缩放**
+
+如果你在发送前调整了截图尺寸，模型返回的点击坐标就是基于你指定的显示分辨率的。在执行点击之前，你必须把这些坐标换算回实际的屏幕分辨率：
+
+`# Your screen is screen_w x screen_h
+# You sent a screenshot resized to display_w x display_h
+scale_x = screen_w / display_w
+scale_y = screen_h / display_h
+
+screen_x = int(api_returned_x * scale_x)
+screen_y = int(api_returned_y * scale_y)`这一步简单但至关重要：如果忘记换算，或者`display_width_px` / `display_height_px`与所发图像的实际尺寸不符，每一次点击都会出现固定的偏移
+
+## **messages 数组中的内容顺序**
+
+构造 messages 内容数组时，请把文本指令放在图像*之前*，如下面的代码片段所示。这样模型在处理截图时就知道要找什么，从而提升点击准确率。
+
+`# RECOMMENDED — text instruction first, then screenshot:
+content = [
+    {&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;Click on the Submit button&quot;},
+    {&quot;type&quot;: &quot;image&quot;, &quot;source&quot;: {&quot;type&quot;: &quot;base64&quot;, &quot;media_type&quot;: &quot;image/png&quot;, &quot;data&quot;: screenshot_b64}},
+]
+
+# NOT RECOMMENDED — image first, then text:
+content = [
+    {&quot;type&quot;: &quot;image&quot;, &quot;source&quot;: {&quot;type&quot;: &quot;base64&quot;, &quot;media_type&quot;: &quot;image/png&quot;, &quot;data&quot;: screenshot_b64}},
+    {&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;Click on the Submit button&quot;},
+]`
+## **诊断点击问题**
+
+如果点击没有命中目标，往往可以归结为以下原因之一： 
+
+  
+    
+      
+        
+          症状
+          可能原因
+          尝试这样做
+        
+      
+      
+        
+          点击始终朝某个方向偏移
+          
             
+
+              - `display_width_px` / `display_height_px`与实际发送的图像尺寸不符
+
+              - 截图超出 API 限制，被静默降采样
+
+              - 内容顺序是图像在前而非文本在前
+
+            
+
+          
+          
+            
+
+              - 确保显示尺寸与你缩放后的截图完全一致，而不是原生分辨率
+
+              - 预先降采样到 1280x720，或使用`compute_max_api_fit`
+
+              - 把文本指令移到 content 数组中图像之前
+
+            
+
+          
+        
+        
+          点击落在大致正确的区域但未命中目标
+          
+            
+
+              - 目标非常小（复选框、图标、开关）
+
+              - 源图像分辨率很高（4K+），降采样时丢失了细节
+
+              - 强行使用非原生宽高比导致的比例失真
+
+            
+
+          
+          
+            
+
+              - 启用`enable_zoom: True`（适用于信息密集的 UI）
+
+              - 以较低 DPI 捕获，或在降采样前裁剪到相关屏幕区域
+
+              - 缩放时保持源图像的宽高比
+
+            
+
+          
+        
+        
+          模型点到了完全错误的元素
+          
+            
+
+              - 指令含糊（存在多个类似提交按钮时只说&quot;点击 Submit&quot;）
+
+              - 目标附近存在视觉上相似的元素
+
+              - UI 过于复杂，单条指令不足以描述
+
+            
+
+          
+          
+            
+
+              - 使用带位置信息的更具体提示词（&quot;点击表单右下角的蓝色 Submit 按钮&quot;）
+
+              - 把复杂交互拆成更小的步骤
+
+              - 提供关于页面布局的额外上下文
+
+            
+
+          
+        
+        
+          整体准确率都很差
+          
+            
+
+              - 发送的截图超出了 API 限制
+
+              - 源图像来自超高分辨率显示器（4K+），压缩比极端
+
+              - 分辨率过低，丢失了关键细节
+
+            
+
+          
+          
+            
+
+              - 把所有截图预先降采样到限制以内
+
+              - 对于 4K+ 源图像，在 4.6 系列上 Sonnet 比 Opus 4.6 更耐受重度降采样。在 Opus 4.7 上这个差距基本消失，请使用 4.7 的像素预算（最高 375 万像素），从源头上减少所需的降采样。
+
+              - 以 1280x720 作为基线尝试；如果损失过大，请使用`compute_max_api_fit`
+
+            
+
+          
+        
+      
+    
+  
+
+## **点击任务的模型选择**
+
+根据我们的内部测试，Claude Sonnet 4.6 在点击的机械精度上往往更高（空间定位更准、几乎不失手），而 Claude Opus 4.6 推理能力更强。当源图像需要重度降采样时，Sonnet 4.6 也更稳健。 
+
+Opus 4.7 缩小了这一差距：测试发现它的点击精度已与 Sonnet 4.6 大致相当，加上更高的分辨率预算从源头上减少了降采样的需要，当你既想要 Opus 级别的推理又想要出色的点击精度时，它是一个有力的选择。
+
+对大多数任务，我们建议从 Sonnet 4.6 开始，它在点击准确率、推理和成本之间提供了最佳平衡。需要更强推理时（尤其是使用高分辨率源图像时）选择 Opus 4.7。当延迟优先时，Haiku 4.5 仍是极好的选择。高级工作流还可以采用编排器 + 子智能体模式：由推理模型负责规划和决策，Sonnet 或 Haiku 执行机械性的点击步骤。
+
+## **处理小目标**
+
+目标越小，点击准确率越低。大中型 UI 元素（按钮、输入框和标准菜单项）在安全区内的各种分辨率下都可靠。真正的挑战在于小型和微型目标，比如复选框、系统托盘图标、下拉箭头、小型开关和树形视图的展开/折叠按钮。
+
+如果你的应用需要频繁点击小目标，请考虑以下策略：
+
+**在信息密集的 UI 中使用缩放。**Claude 4.6 和 4.7 系列模型支持缩放能力，让模型在点击前以更高分辨率检视特定屏幕区域。请在你的[工具配置](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool):
+
+`{
+    &quot;type&quot;: &quot;computer_20251124&quot;,
+    &quot;name&quot;: &quot;computer&quot;,
+    &quot;display_width_px&quot;: 1280,
+    &quot;display_height_px&quot;: 720,
+    &quot;enable_zoom&quot;: True
+}`**把目标变大。**如果你能控制被自动化的 UI，增大点击目标的尺寸（哪怕只是稍微）对可靠性的影响会不成比例地大。具体可以降低系统 DPI、在浏览器中放大页面，或调整 UI 缩放设置。
+
+**对微型目标使用键盘替代方案。**对于非常小的元素（如系统托盘图标或微型复选框），键盘快捷键或基于 Tab 的导航可能比点击更可靠。如果工作流允许，可以提示模型在特定步骤使用键盘交互，以提高成功率。
+
+**考虑源图像分辨率。**从 4K+ 显示器截取、再压缩到 720p 的截图会丢失大量细节（例如原生 3840x2160 下 16px 的复选框，在 1280x720 显示分辨率下只剩约 5px，目标变得更小、更难点中）。如果你在使用超高分辨率显示器，请考虑使用 Opus 4.7，它的分辨率上限高于之前的模型。如果使用 4.6 系列模型，可以考虑以较低 DPI 捕获、利用显示缩放放大 UI 元素，或只截取屏幕的相关区域而非整个屏幕。由于这些模型用更少的像素表达更多的信息，我们观察到源图像尺寸越大性能越差，因为需要更重的压缩。 
+
+## **我们测试过但无效的方案**
+
+我们在内部评估中试验了几种流行的优化技术，没有发现这些方法带来稳定的提升，不过结果可能因具体场景而异：
+
+- **把图像切成小块**：把截图切成四象限或多个区域分开发送，并没有提升点击准确率。
+- **叠加带坐标的网格图案**：在截图上叠加可视化坐标网格来帮助模型定位目标，没有产生稳定的收益。
+- **缩放算法的选择**：PIL LANCZOS、sips 及其他常见缩放算法的结果完全相同。用你的技术栈里最顺手的即可。
+
+## **检视失败**
+
+如果尝试了上述修复后模型行为仍然反常，请记录完整的交互记录，并把预测的点击位置叠加到源截图上，弄清模型实际看到了什么、做了什么判断。
+
+有些失败根本与点击准确率无关。例如，某些下拉菜单可能会调出浏览器视口捕获不到的系统级 UI——模型看起来像是任务失败，但它只是看不见自己需要交互的那个菜单。这种情况下，模型应改用其他方式，比如执行 JavaScript、键盘导航，或直接操作文档对象模型（DOM），而不是点击。
+
+## **快速参考**
+
+*如何为计算机使用缩放并准备图像*
+
+`import math
+from PIL import Image
+import base64
+import io
+
+# 1568 for 4.6 family, 2576 for Opus 4.7
+MAX_LONG_EDGE = 1568
+
+# 1.15MP for 4.6 family, 3.75MP for Opus 4.7
+MAX_PIXELS = 1_150_000
+
+def prepare_screenshot(screenshot: Image.Image, native_w: int, native_h: int) -&gt; tuple[str, int, int]:
+    &quot;&quot;&quot;Resize a screenshot to fit API limits and return base64 + display dimensions.&quot;&quot;&quot;
+
+    # Option A: Fixed 720p (simple, reliable)
+    display_w, display_h = 1280, 720
+
+    # Option B: Max API fit (maximizes fidelity)
+    # display_w, display_h = compute_max_api_fit(native_w, native_h)
+
+    resized = screenshot.resize((display_w, display_h), Image.LANCZOS)
+
+    buffer = io.BytesIO()
+    resized.save(buffer, format=&quot;PNG&quot;)
+    b64 = base64.standard_b64encode(buffer.getvalue()).decode()
+
+    return b64, display_w, display_h
+
+def scale_coordinates(api_x: int, api_y: int, display_w: int, display_h: int,
+                      screen_w: int, screen_h: int) -&gt; tuple[int, int]:
+    &quot;&quot;&quot;Scale API-returned coordinates back to native screen space.&quot;&quot;&quot;
+    screen_x = int(api_x * (screen_w / display_w))
+    screen_y = int(api_y * (screen_h / display_h))
+    return screen_x, screen_y
+
+def compute_max_api_fit(native_w: int, native_h: int) -&gt; tuple[int, int]:
+    &quot;&quot;&quot;Compute the largest resolution that fits API limits while preserving aspect ratio.&quot;&quot;&quot;
+    aspect = native_w / native_h
+    h_from_pixels = math.sqrt(MAX_PIXELS / aspect)
+    w_from_pixels = h_from_pixels * aspect
+
+    if native_w &gt;= native_h:
+        w = min(w_from_pixels, MAX_LONG_EDGE)
+        h = w / aspect
+    else:
+        h = min(h_from_pixels, MAX_LONG_EDGE)
+        w = h * aspect
+
+    w = min(w, native_w)
+    h = min(h, native_h)
+    return int(w), int(h)`**用法：**
+
+`import anthropic
+from PIL import Image
+
+client = anthropic.Anthropic()
+
+# Capture screenshot (your method here)
+screenshot = Image.open(&quot;screenshot.png&quot;)
+native_w, native_h = screenshot.size
+
+# Prepare for API
+b64, display_w, display_h = prepare_screenshot(screenshot, native_w, native_h)
+
+# Send to Claude — text before image
+response = client.beta.messages.create(
+    model=&quot;claude-sonnet-4-6&quot;,
+    max_tokens=4096,
+    betas=[&quot;computer-use-2025-11-24&quot;],
+    messages=[{
+        &quot;role&quot;: &quot;user&quot;,
+        &quot;content&quot;: [
+            {&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;Click on the Submit button&quot;},
+            {&quot;type&quot;: &quot;image&quot;, &quot;source&quot;: {&quot;type&quot;: &quot;base64&quot;, &quot;media_type&quot;: &quot;image/png&quot;, &quot;data&quot;: b64}},
+        ]
+    }],
+    tools=[{
+        &quot;type&quot;: &quot;computer_20251124&quot;,
+        &quot;name&quot;: &quot;computer&quot;,
+        &quot;display_width_px&quot;: display_w,
+        &quot;display_height_px&quot;: display_h,
+    }],
+)
+
+# Scale coordinates back for execution
+api_x, api_y = extract_click_coords(response)  # your parsing logic
+screen_x, screen_y = scale_coordinates(api_x, api_y, display_w, display_h, native_w, native_h)`
+# **为计算机使用调优思考投入**
+
+Claude 的最新模型支持[自适应思考（adaptive thinking）](https://platform.claude.com/docs/en/build-with-claude/adaptive-thinking)，这一设置让 Claude 自行决定在行动之前对中间步骤推理多少。无需手动设置思考 token 预算，自适应思考让 Claude 根据每个请求的复杂度动态决定何时以及多大程度地使用扩展思考。对计算机使用来说，这意味着 Claude 可以想清楚屏幕上看到的内容、规划多步交互，并在落笔点击或按键之前自我纠正。
+
+在自适应思考下，Claude 的思考深度通过 thinking 参数的投入级别控制：low、medium、high、xhigh（Opus 4.7 专属）和 max。思考越多，每个动作的推理越充分，但输出 token 也越多，延迟和成本也随之上升。
+
+一个自然的问题：视模型而定，计算机使用的最优思考量是多少？
+
+## **Claude Opus 4.7**
+
+我们在一组端到端 UI 自动化任务上测试了每个思考投入级别，任务覆盖桌面应用、浏览器和多应用工作流。
+
+**Opus 4.7 优于 4.6 系列。**在 OSWorld Verified 基准上，我们发现 Opus 在相同 token 用量和投入设置下优于所有 4.6 系列模型。Opus 4.7 以 low 投入取得的成绩与 Sonnet 4.6 以 max 投入相当，而每任务 token 用量只有约 1/10。对困难任务来说，Opus 4.7 是显而易见的选择。
+
+**将投入设为`high`**时，任务成功率接近最高，而输出 token 大约只有`max`的一半。与 Opus 4.6 相比，low、medium 和 high 的 token 用量大致相同，同时在 OSWorld 上的得分都有提升。内部测试中，max 投入使用的 token 更多，也拿到了最好的成绩。下表概述了我们关于何时使用各思考投入级别的建议。
+
+### **投入级别建议**
+
+  
+    
+      
+        
+          场景
+          思考投入
+          原因
+        
+      
+      
+        
+          大多数用例的默认选择
+          `high`
+          Opus 4.7 最适合困难任务。使用 high 能给模型足够的推理能力来规划复杂的多步交互，同时不会显著增加 token 用量。
+        
+        
+          高吞吐 / 成本敏感
+          `low`
+          token 用量更低，而质量介于 Opus 4.6 的 high 与 max 投入设置之间。
+        
+        
+          简单、明确的工作流 / 最快
+          建议尝试 Sonnet 4.6
+          当低延迟是最高优先级时使用。适用于 UI 稳定、流程已知的短小可预测任务。
+        
+        
+          复杂的一次性任务
+          `max`
+          当任务极具挑战且必须一次做对时使用。
+        
+      
+    
+  
+
+## **Claude 4.6 系列模型**
+
+我们在一组端到端 UI 自动化任务上测试了每个思考投入级别，任务覆盖桌面应用、浏览器和多应用工作流。
+
+有两个规律值得注意：
+
+‍**medium 投入是最佳平衡点。**将投入设为 medium 时，任务成功率接近最高，而输出 token 大约只有 high 的一半。超过 medium 之后，性能提升趋于平缓。值得注意的是，当任务可以重试时，medium 和 high 最终会收敛到相同的成功率。也就是说，high 投入有助于模型第一次就做对困难任务，但若允许多次尝试，medium 能以更低的成本同样可靠地达成。
+
+**一点点思考就能走很远。**low 投入是一个出人意料地强劲的选项。它实际消耗的总输出 token 比完全关闭思考*还要少*（模型犯错更少、重试轮次更少），同时准确率与不思考持平或略高。这使它成为成本敏感、高吞吐工作负载的最佳选择。下表概述了我们的投入建议。
+
+### **投入级别建议**
+
+  
+    
+      
+        
+          场景
+          思考投入
+          原因
+        
+      
+      
+        
+          大多数用例的默认选择
+          `medium`
+          准确率与成本的最佳比值。给模型足够的推理来规划多步交互，又不会过度思考。配合重试机制，能以一半的 token 成本达到 high 的表现。
+        
+        
+          高吞吐 / 成本敏感
+          `low`
+          比不思考更准确，同时因错误和重试更少而 token 用量更低。
+        
+        
+          简单、明确的工作流 / 最快
+          关闭思考
+          当低延迟是最高优先级时使用。适用于 UI 稳定、流程已知的短小可预测任务。
+        
+        
+          复杂的一次性任务
+          `high`
+          当任务有挑战且必须一次做对时使用。如果你的系统支持重试，medium 最终可能达到同样的成功率。
+        
+      
+    
+  
+我们不推荐在计算机使用中使用`max`投入。在我们的测试中，它相对`high`没有带来准确率收益，却进一步推高了输出 token 成本。UI 任务本质上偏感知而非深度逻辑，额外的推理预算要么用不上，要么导致过度思考。请记住，随着模型演进，这条建议也会变化。
+
+## **medium 投入级别的配置示例**
+
+`import anthropic
+
+client = anthropic.Anthropic()
+
+response = client.beta.messages.create(
+    model=&quot;claude-sonnet-4-6&quot;,
+    max_tokens=16000,
+    betas=[&quot;computer-use-2025-11-24&quot;],
+    thinking={&quot;type&quot;: &quot;adaptive&quot;},
+    output_config={&quot;effort&quot;: &quot;medium&quot;},
+    messages=[...],
+    tools=[
+        {
+            &quot;type&quot;: &quot;computer_20251124&quot;,
+            &quot;name&quot;: &quot;computer&quot;,
+            &quot;display_width_px&quot;: 1280,
+            &quot;display_height_px&quot;: 720,
+        }
+    ],
+)`
+## **为什么更多思考并不总是有用**
+
+UI 自动化任务与编程或数学问题有本质区别。大多数计算机使用动作是感知性和机械性的：识别正确的元素、点在正确的位置，而非深度逻辑推理。思考在以下情况最有帮助：
+
+- 在开始前规划多步序列（例如&quot;我需要打开设置，进入隐私，然后关闭跟踪&quot;）
+- 从意外的 UI 状态中恢复（例如出现了预料之外的对话框）
+- 把屏幕上的信息与任务指令相互对照
+- 在专业软件上完成有挑战的项目
+
+# **提升安全性：善用提示词注入分类器**
+
+*本节介绍提示词注入防护。如果使用我们的官方 computer use 工具头，该防护默认免费提供。如果你有兴趣在自定义的计算机或浏览器使用工具上启用它，请填写我们的* [*提示词注入分类器意向表（Prompt Injection Classifiers Interest Form）。*](https://docs.google.com/forms/d/e/1FAIpQLSfXj6rXC-SUQEYHCLabwUe5JuYiYyJ29Ja-KP7EhLIPlyz0tw/viewform?usp=dialog)
+
+计算机使用智能体天生就要与不可信内容打交道。Claude 处理的每一张截图、每一个网页或应用 UI，都可能包含对抗性指令——隐藏文字、被篡改的图像、欺骗性 UI 元素，或试图劫持智能体行为的社会工程手段。这个攻击面与你完全掌控输入的典型 API 集成有本质区别。在计算机使用中，模型的输入是开放的互联网和智能体正在操作的任何软件。
+
+随着计算机使用智能体能力越来越强、部署越来越广，提示词注入的风险也水涨船高。一个能点击、输入、导航的智能体，可能被诱导执行现实世界的动作，比如填写表单、下载文件或访问恶意 URL。对任何生产部署而言，针对这类攻击建立稳固防御都必不可少。
+
+## **我们如何做提示词注入防御**
+
+我们已详细撰文介绍我们在浏览器和计算机使用方面的[提示词注入防御方法](https://www.anthropic.com/research/prompt-injection-defenses)。我们的防御策略在多个层面运作：
+
+**训练时的鲁棒性。**我们用强化学习把抗提示词注入能力直接内建到 Claude 中。训练时，Claude 会接触到嵌在模拟网页和应用 UI 中的注入内容，并在正确识别、拒绝执行恶意指令时获得奖励。这意味着 Claude 的第一道防线就是模型本身——它已经学会了区分合法的用户指令与任务执行中遇到的对抗性内容。
+
+**实时分类器。**我们运行探针，扫描进入 Claude 上下文窗口的内容，并标记潜在的提示词注入企图。这些探针能检测多种形态的对抗性指令——藏在页面内容里的文字、嵌在图像里的指令、专为欺骗智能体设计的 UI 元素——并在识别到攻击时调整 Claude 的行为。
+
+**持续红队演练。**我们的安全研究员持续探测这些防御，并参加外部对抗性评估，以检验防御体系对不断演进的攻击技术的鲁棒性。
+
+自最初的计算机使用研究预览以来，我们持续在所有三个层面大力投入。每一代新模型都引入了更强的训练期防御和更有能力的分类器，我们也扩大了红队评估的攻击技术范围。
+
+## **使用 Claude 内置的分类器**
+
+当你通过 API 使用 Claude 的[官方计算机使用工具](https://docs.anthropic.com/en/docs/agents-and-tools/computer-use)时，提示词注入分类器会在每次请求上自动运行。这些分类器与主模型推理并行工作，为请求增加的延迟约等于零，也不产生额外费用。
+
+启用这项保护无需任何配置。只要你使用官方的`computer_20251124`工具类型，它就默认开启。分类器会评估截图及其他内容中提示词注入的迹象，并据此影响 Claude 的回复。
+
+`# Classifiers run automatically when using the official CU tool — no extra config needed
+tools = [
+    {
+        &quot;type&quot;: &quot;computer_20251124&quot;,
+        &quot;name&quot;: &quot;computer&quot;,
+        &quot;display_width_px&quot;: 1280,
+        &quot;display_height_px&quot;: 720,
+    }
+]`
+## **如果你没有使用官方计算机使用工具**
+
+许多开发者使用自定义工具定义而非官方的`computer_20251124`工具类型来构建计算机使用集成，例如定义自己的截图和点击工具。如果你的情况正是如此，上述内置分类器目前不会在你的请求上运行。
+
+我们正在积极探索如何把提示词注入防护扩展到这些自定义实现。如果你正在构建不使用官方工具类型的计算机或浏览器使用集成，并对提示词注入分类器感兴趣，请[填写这份意向表](https://docs.google.com/forms/d/e/1FAIpQLSfXj6rXC-SUQEYHCLabwUe5JuYiYyJ29Ja-KP7EhLIPlyz0tw/viewform?usp=dialog)，该能力可用时我们会与你联系。
+
+## **无论是否使用分类器都适用的最佳实践**
+
+分类器只是一层防御，不是完整的解决方案。对任何计算机使用部署，我们推荐以下实践：
+
+**为高风险动作引入人工介入。**让智能体在执行不可逆动作（提交表单、购买、发送消息、修改数据）之前暂停并请求用户确认。无论分类器表现如何，这都是对提示词注入最有效的单一缓解措施。
+
+**限定智能体的权限。**限制智能体能做的事。如果你的工作流不需要下载文件，就不要给它下载文件的权限；不需要发邮件，就不要让它访问邮件客户端。缩小成功注入的影响范围，与阻止注入本身同样重要。
+
+**监控并记录智能体的动作。**记录智能体执行的完整动作序列，包括每一步的截图。这让你能检测异常行为、审计出错时发生了什么，并建立反馈回路，逐步提升系统的鲁棒性。
+
+**把所有网页内容视为不可信。**在设计智能体的系统提示词时，明确区分用户指令与任务执行中遇到的内容。提醒模型：网页、邮件或应用 UI 中的文字并非来自用户，不应被当作指令执行。
+
+# **计算机使用的上下文管理**
+
+构建计算机使用智能体时，截图累积得非常快。每个动作都会生成一张新图像，每张图像视分辨率大约消耗 1000-1800 个 token。扣除系统提示词、工具定义和文本内容后，一个 200k 的上下文窗口用不到 100 张截图就能填满。
+
+管理好这些上下文有两个目标：1) 控制总 token 有界；2) 保持提示词缓存有效，避免为相同前缀反复支付全价。我们发现，有效的[上下文管理](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)对长时运行智能体成本和延迟的影响，几乎胜过任何其他优化。本节介绍三个可以干净组合的层面：放置缓存断点、在不破坏缓存的前提下清理旧截图，以及在清理不够时对历史做摘要。
+
+## **放置缓存断点**
+
+只有当断点落在会跨轮复现的内容上时，提示词缓存才有用。API 总共支持四个缓存断点。把它们全放在稳定前缀（系统提示词、工具定义）上是浪费，因为该前缀命中一次后就不会失效，一个断点足矣。另外三个更应花在近期历史上——那里失效风险最高，节省也会在长会话中复利累积。
+
+我们建议：
+
+- **在系统提示词或末尾的工具定义上放一个断点。**这个前缀在一个会话内很少变化。
+- **在最近的工具结果上最多再放三个断点**，每轮前移并清除上一次的断点，以免超出四断点上限。
+
+把断点分散在较近的位置可以带来优雅降级。如果最近的断点失效了（例如因为图像清理、压缩或工具定义变更），更早的断点仍可能命中，你继续支付的是完整输入成本的 10% 而不是 100%。
+
+*缓存控制与断点设置示例：*
+
+`def set_trailing_cache_control(messages, max_breakpoints=3):
+    &quot;&quot;&quot;Place up to `max_breakpoints` ephemeral cache_control markers on the
+    most recent tool_result blocks, after clearing any existing markers.&quot;&quot;&quot;
+    for msg in messages:
+        for block in msg.get(&quot;content&quot;, []):
+            if isinstance(block, dict):
+                block.pop(&quot;cache_control&quot;, None)
+
+    placed = 0
+    for msg in reversed(messages):
+        for block in reversed(msg.get(&quot;content&quot;, [])):
+            if placed &gt;= max_breakpoints:
+                return
+            if isinstance(block, dict) and block.get(&quot;type&quot;) == &quot;tool_result&quot;:
+                block[&quot;cache_control&quot;] = {&quot;type&quot;: &quot;ephemeral&quot;}
+                placed += 1`
+## **方案 1：滚动缓冲（缓存友好）**
+
+控制 token 数量最简单的办法是只保留最近 N 张截图，其余丢弃。每次调用 API 前，遍历 messages 数组，把较旧的图像块替换成简短的占位符（例如写着&quot;[Image omitted]&quot;的文本块）。
+
+这个模式的朴素版本是每当截图过期就丢一张，这会每轮都改变前缀，持续使提示词缓存失效——滚动缓冲破坏缓存的名声就是这么来的。修正方法是批量清理：让前缀在连续若干轮内保持逐字节一致，然后一次性失效，随后再次稳定。
+
+我们验证过的一个具体模式是：
+
+- 完整保留最近 keep_n 张截图的原始分辨率。
+- 当截图总数超过 keep_n + interval 时，一次性把最旧的 interval 张截图替换为占位符。
+- 两次清理之间，messages 数组跨轮保持逐字节一致，因此缓存断点持续命中。
+
+合理的初始默认值：keep_n = 3，interval = 25。这些参数可调：interval 越大，清理事件越少（缓存效率更好），但上下文中全分辨率截图的尾巴越长（token 更多）。请在有代表性的轨迹上测量缓存命中率和总输入 token，再行调整。
+
+*在保留缓存断点的同时清理旧截图的示例：*
+
+`def prune_old_screenshots(messages, keep_n=3, interval=25):
+    &quot;&quot;&quot;Replace older screenshots with text placeholders in batches.
+    Only prunes when the total count exceeds keep_n + interval, so the
+    message prefix stays byte-stable for `interval` turns between prunes.&quot;&quot;&quot;
+    image_positions = [
+        (msg_idx, block_idx)
+        for msg_idx, msg in enumerate(messages)
+        for block_idx, block in enumerate(msg.get(&quot;content&quot;, []))
+        if isinstance(block, dict) and block.get(&quot;type&quot;) == &quot;image&quot;
+    ]
+    if len(image_positions) &lt;= keep_n + interval:
+        return messages
+
+    to_prune = image_positions[:-keep_n][-interval:]
+    for msg_idx, block_idx in to_prune:
+        messages[msg_idx][&quot;content&quot;][block_idx] = {
+            &quot;type&quot;: &quot;text&quot;,
+            &quot;text&quot;: &quot;[Image omitted]&quot;,
+        }
+    return messages`滚动缓冲仍有一个真实局限：缓冲区之外的东西就没了。最初的指令、智能体已经尝试过什么、任务进行到哪里，都随被清理的截图一起消失。对短任务（约 50 个动作以内）来说无妨；更长的任务请与压缩（compaction）结合使用。
+
+## **方案 2：基于 LLM 的压缩**
+
+与其无声地丢弃旧图像，不如在丢弃前对完整对话做摘要。摘要保留发生了什么、用户要求了什么、完成了哪些、从哪里继续。旁边再保留几张最近的截图，让智能体能看到它当前正在看的内容。
+
+压缩与缓存友好的滚动缓冲是互补的。轮与轮之间用滚动缓冲控制 token 增长；偶尔用压缩回收其余窗口空间而不丢失更早的上下文。每次压缩在设计上就是一次缓存失效，因此应让它少发生，而不是每隔几轮就来一次。
+
+### **摘要提示词**
+
+这个示例提示词提供了一个骨架，每一节都针对一种特定的失败模式。提示词必须涵盖智能体无需重读原始对话就能继续任务所需的一切，如下例所示： 
+
+`COMPACT_PROMPT = &quot;&quot;&quot;Your task is to create a detailed summary of this conversation that
+will REPLACE the conversation history. The agent will continue working with only this
+summary and a few recent screenshots as context.
+
+CRITICAL: Preserve ALL user instructions verbatim. User instructions are the most
+critical element. If they are lost, the agent will deviate from the task.
+
+Before providing your summary, analyze the conversation in  tags:
+1. Extract every user instruction, requirement, and constraint
+2. Identify if this is a repeatable workflow (e.g., processing N items)
+3. Chronologically trace what actions were taken and what happened
+
+Your summary MUST include these sections:
+
+1. USER INSTRUCTIONS:
+   - Complete initial task definition (verbatim when possible)
+   - ALL specific requirements and criteria
+   - Every &quot;DO NOT&quot;, &quot;ALWAYS&quot;, &quot;MUST&quot; instruction
+   - Any corrections or feedback that changed the approach
+
+2. TASK TEMPLATE (if this is a repeatable workflow):
+   - The pattern being repeated
+   - Decision criteria for each iteration
+   - Standard workflow steps
+   - Example of one completed iteration
+
+3. CONSTRAINTS AND RULES:
+   - All user-specified rules and restrictions
+   - Edge cases and exceptions discovered
+
+4. ACTIONS TAKEN:
+   - Pages visited and elements interacted with
+   - Forms filled and buttons clicked
+
+5. ERRORS AND FIXES:
+   - What went wrong and how it was resolved
+   - Approaches that failed (so they aren't retried)
+
+6. PROGRESS TRACKING:
+   - Items completed vs. remaining
+   - Current position in the workflow
+
+7. CURRENT STATE:
+   - Current application, URL and domain (optional)
+   - Important page state (logged in, form progress, etc.)
+
+8. NEXT STEP:
+   - Exactly what should be done next to continue
+&quot;&quot;&quot;`在上面的提示词中，**用户指令（User Instructions）**一节防止任务漂移：没有它，智能体在压缩后就会跑偏。**任务模板（Task Template）**一节捕获可重复的模式，让智能体在压缩后无需从零重新推导工作流即可继续迭代。**约束与规则（Constraints and Rules）**一节保留任务前设定或任务中发现的限制和边界情况，避免智能体违反它本已遵守的既有规则。**已执行动作（Actions Taken）**一节帮助跟踪过往进度。 **错误与修复（Errors and Fixes）**一节避免重试已失败的方案（&quot;我已经试过点击 Submit 了；不勾选 Terms 复选框是没用的&quot;）。**进度跟踪（Progress Tracking）**一节防止从头重来和跳过条目。**当前状态（Current State）**与**下一步（Next Step）**两节则给出明确的恢复入口。
+
+### **服务端压缩（beta）**
+
+使用这个提示词最简单的方式，是让 API 通过[服务端压缩（server-side compaction）](https://docs.anthropic.com/en/docs/build-with-claude/compaction)（beta）来处理压缩。把你的自定义摘要提示词作为`instructions`参数传入`context_management`，当输入 token 超过触发阈值时 API 会自动做摘要。`instructions`参数会完全替换默认的摘要提示词，因此模型遵循的就是上面那些章节。设置`pause_after_compaction`可以在压缩事件发生时附上最近的消息（包括截图）。
+
+*自动压缩工具的使用示例：*
+
+`# Minimal — turn on autocompaction with API defaults
+response = client.beta.messages.create(
+    model=&quot;claude-opus-4-7&quot;,
+    max_tokens=16000,
+    betas=[&quot;compact-2026-01-12&quot;, &quot;computer-use-2025-11-24&quot;],
+    context_management={&quot;edits&quot;: [{&quot;type&quot;: &quot;compact_20260112&quot;}]},
+    messages=[...],
+    tools=[...],
+)
+
+# Customized — set your own trigger threshold and summarization prompt
+response = client.beta.messages.create(
+    model=&quot;claude-opus-4-7&quot;,
+    max_tokens=16000,
+    betas=[&quot;compact-2026-01-12&quot;, &quot;computer-use-2025-11-24&quot;],
+    context_management={
+        &quot;edits&quot;: [
+            {
+                &quot;type&quot;: &quot;compact_20260112&quot;,
+                &quot;trigger&quot;: {&quot;type&quot;: &quot;input_tokens&quot;, &quot;value&quot;: 150_000},
+                &quot;instructions&quot;: COMPACT_PROMPT,
+            }
+        ]
+    },
+    messages=[...],
+    tools=[...],
+)`
+### **在客户端同步截断以对齐服务端**
+
+当 API 执行服务端压缩时，它会在自己那侧替换掉压缩前的内容，但你本地的 messages 数组仍保存着完整历史。如果后续每轮都继续发送完整历史，你将为服务端已不再需要的 token 买单；而且你的滚动缓冲清理器操作的消息切片与服务端实际看到的不一致，可能破坏你前面精心维护的缓存稳定前缀。
+
+解决办法是在客户端镜像服务端的截断，如下面的代码片段所示。当响应报告发生了压缩时，在下一轮之前把本地 messages 数组中压缩标记之前的所有内容删掉。这能让客户端与服务端的视图保持一致，滚动缓冲也能继续正确工作。
+
+`def truncate_to_last_compaction(messages, response):
+    &quot;&quot;&quot;If the server compacted on this turn, drop pre-compaction messages
+    locally so the next turn's cache prefix matches what the server sees.&quot;&quot;&quot;
+    context_mgmt = getattr(response, &quot;context_management&quot;, None)
+    if not context_mgmt or not context_mgmt.get(&quot;applied_edits&quot;):
+        return messages
+
+    compaction = next(
+        (e for e in context_mgmt[&quot;applied_edits&quot;] if e[&quot;type&quot;] == &quot;compact&quot;),
+        None,
+    )
+    if compaction is None:
+        return messages
+
+    keep_from = compaction[&quot;message_index_after_compaction&quot;]
+    return messages[keep_from:]`
+## **客户端压缩**
+
+如果你使用的模型不支持服务端压缩，或者你想要完全掌控，可以用同样的提示词在客户端实现压缩。每次 API 调用后，从响应的 usage 字段检查总输入 token 数。当它超过阈值（如上下文窗口的 90%）时，把对话发给摘要模型，以 COMPACT_PROMPT 作为系统提示词。然后用摘要加上几张最近的截图替换消息历史，继续智能体循环。
+
+## **组合起来**
+
+一个长时运行的计算机使用智能体，好的默认配置是这样的：
+
+- 稳定前缀上一个缓存断点，末尾工具结果上三个，每轮清除并重新放置。
+- 缓存友好的滚动缓冲，keep_n = 3、interval = 25，分批用占位符替换较旧的截图。
+- 约 150k 输入 token 时触发的服务端压缩（使用自定义提示词），外加一次客户端截断以保持两侧视图一致。
+
+有了这三层，一个典型的长程 CU 会话在绝大多数轮次都会命中提示词缓存，总输入 token 被控制在远低于上下文窗口的水平，并通过压缩事件保留足够的历史，智能体不会迷失任务。
+
+# **改进计算机和浏览器使用的实验性设置**
+
+下面这些模式是我们在自己的实现中测试过、前景可观但尚未成为普适推荐的技术。每一种都是用复杂度或成本换取特定工作负载上的潜在提升。我们把它们写在这里供你自己的工作流尝试，但请预期本节的指引会快速演进。
+
+## **批量工具**
+
+在更新后的参考实现中，我们在标准计算机和浏览器工具之外还提供了两个工具：`computer_batch`和`browser_batch`。它们各自接受一个子动作列表，并在一次工具调用中执行。例如，模型不必分别用点击、输入、按键三个轮次，而是可以发出一次包含全部三个动作的 computer_batch 调用。
+
+吸引力在于效率：一个包含 N 个机械动作的工作流只需一次往返而不是 N 次，这在长程任务上能显著缩短实际耗时和输出 token 开销。风险在于误差累积：如果动作 2 依赖动作 1 改变的视觉状态，而动作 1 失手了，批次中其余动作就会基于过时的假设执行，智能体甚至可能在从未见过实际状态截图的情况下越跑越偏。
+
+当子动作彼此独立、不依赖对方的视觉结果时（填写表单中的多个字段、串联键盘快捷键、滚动后点击已知目标），我们推荐使用批量工具。在探索式导航、错误恢复序列，或任何&quot;动作 1 失败就需要重新规划&quot;是真实状态的工作流中，我们不建议使用。
+
+由于批量工具是你自己的自定义定义，它们可以与标准计算机或浏览器工具干净地叠加。两种都保持可用，让模型自己选。
+
+## **advisor 工具（beta）**
+
+[advisor 工具](https://platform.claude.com/docs/en/agents-and-tools/tool-use/advisor-tool) 把一个执行模型与一个更高智能的顾问模型配对，执行模型可以在生成过程中向顾问寻求战略性指导。执行模型负责跑循环，当遇到需要更深推理的环节时，就调用顾问、拿到计划或纠偏建议，然后继续。这一切都在服务端的单次请求内完成，你这边无需额外往返。
+
+具体到计算机使用，这个模式在长程任务上最有用：大多数轮次是机械点击，但偶发的规划时刻（选择打开哪个标签页、从意外的模态框中恢复、决定是否放弃某个策略）能从 Opus 级推理中受益。你既能获得接近顾问模型独立完成的质量，而大部分 token 生成又按执行模型的费率计费。
+
+*启用 advisor 工具的示例：*
+
+`response = client.beta.messages.create(
+    model=&quot;claude-sonnet-4-6&quot;,
+    max_tokens=16000,
+    betas=[&quot;advisor-tool-2026-03-01&quot;, &quot;computer-use-2025-11-24&quot;],
+    tools=[
+        {
+            &quot;type&quot;: &quot;advisor_20260301&quot;,
+            &quot;name&quot;: &quot;advisor&quot;,
+            &quot;model&quot;: &quot;claude-opus-4-7&quot;,
+        },
+        {
+            &quot;type&quot;: &quot;computer_20251124&quot;,
+            &quot;name&quot;: &quot;computer&quot;,
+            &quot;display_width_px&quot;: 1280,
+            &quot;display_height_px&quot;: 720,
+        },
+    ],
+    messages=[...],
+)`advisor 工具的实用控制项包括：
+
+- **`max_uses`: **限制每次请求的顾问调用次数。当你想兜住最坏情况成本时很有用。
+- **在 harness 中设置会话级上限：**。顾问每次咨询按 Opus 4.7 费率计费，因此在超长会话中，你可能希望在若干次使用后不再提供顾问。
+- **顾问侧缓存：**。在多次调用的对话中，缓存顾问的前缀大约三次咨询后就开始划算。参考实现中我们默认使用 5 分钟的临时缓存。
+
+两件不那么显眼的事值得知道：advisor 运行时既没有工具也没有上下文管理，因此它不能替你点击或浏览，只返回文字建议。另外，在长程任务中执行模型并不总是记得 advisor 的存在，请看下面的提醒微扰一节。
+
+## **清理孤立的 advisor 块**
+
+当 advisor 工具触发时，执行模型会发出一个`server_tool_use`块（name 为 &quot;advisor&quot;），随后在返回内容中跟一个`advisor_tool_result`块。这些块与其他内容一起存在于你的 messages 数组中。
+
+如果你之后从 tools 数组中移除了 advisor 工具——因为触达会话级上限、更改了配置或切换了模型——先前那些`server_tool_use` / `advisor_tool_result`块就会变成孤块。下一次请求时 API 会返回 400，因为被引用的工具已不再声明。
+
+解决办法是发送前做一次简单遍历：只要某一轮禁用了 advisor，就遍历消息历史，剥离所有类型为`server_tool_use`（且 name == &quot;advisor&quot;）和`advisor_tool_result`.
+
+*移除过期 advisor 块的示例：*
+
+`def strip_orphaned_advisor_blocks(messages):
+    &quot;&quot;&quot;Remove advisor server_tool_use / tool_result blocks from history.
+    Call this before any request that doesn't include the advisor tool.&quot;&quot;&quot;
+    for msg in messages:
+        content = msg.get(&quot;content&quot;)
+        if not isinstance(content, list):
+            continue
+        msg[&quot;content&quot;] = [
+            block for block in content
+            if not (
+                isinstance(block, dict)
+                and (
+                    (block.get(&quot;type&quot;) == &quot;server_tool_use&quot;
+                     and block.get(&quot;name&quot;) == &quot;advisor&quot;)
+                    or block.get(&quot;type&quot;) == &quot;advisor_tool_result&quot;
+                )
+            )
+        ]
+    return messages`
+## **周期性提醒微扰**
+
+在长会话中，执行模型可能忘记有哪些工具可用，或忘了该优先用哪个。在我们的测试中，两种简短的提醒模式很有帮助：
+
+**批量提醒。**如果你提供了`computer_batch`或`browser_batch`，并发现模型在本该用批量调用时却连续发起单动作调用，可以在下一条工具结果后追加一条简短的系统级提示：&quot;记住，当连续动作不依赖中间截图时，你可以使用`computer_batch`把多个连续动作合并到一次工具调用中。&quot;目标是把模型拉回到批量的方向，而不是硬性规定具体时机。
+
+**advisor 提醒。**执行模型很容易忘记 advisor 工具的存在，尤其当它已经很多轮没被调用时。在超过约 20 轮未调用 advisor 的会话中，可以追加一条简短提醒，告知 advisor 可用于规划或纠偏时刻。参考实现中我们以 20 轮为周期追加一行提示。
+
+两种微扰都是轻量的上下文注入，不是对系统提示词的重写。每次追加只花费几十个输入 token。如果你的系统提示词已经很长，或缓存断点放置得很精确，请权衡这点提升是否值得增加的缓存失效风险。
+
+## **参考实现中的调试模式**
+
+当某个环节行为异常，而你不确定问题出在 harness、截图还是模型时，参考实现中的三个辅助工具值得一试，先别急着加日志：
+
+- **轨迹查看器（streamlit run viewer/app.py）。**加载一条录制好的轨迹，让你逐步查看智能体的每一轮：截图、思考、工具调用和用量。最适合在失败运行后回答&quot;模型当时到底看到了什么、做了什么决定？&quot;
+- **工具调试面板（uvicorn debug.server:app --reload）**。一个小型 Web UI，可以逐个试用每个工具：截图、捕获点击坐标、输入、滚动、缩放。适合确认你的捕获管线和坐标缩放是否真的产出了你期望的结果。
+- **定位演练场（uvicorn localize.server:app --reload --port 8001）**。上传任意图像，让模型指向某个目标，然后把预测坐标以显示分辨率和原生分辨率两种方式渲染回你的图像上。这是诊断点击失误究竟源自尺寸调整 bug、坐标缩放 bug，还是货真价实的模型错误的最快方法。当客户报告点击不佳、而你想单独复现故障时尤其有用。
+
+这些都不是构建可用集成的必需品；它们只是当默认反馈回路（记日志、重跑、眯着眼看记录）不够快时的调试辅助。
+
+## **提升可靠性：教 Claude**
+
+与其反复迭代文字提示词直到 Claude 做对某个工作流，你可以直接把正确的行为示范给它看。录制你自己执行任务的过程，在每一步捕获截图、动作和（可选的）语音解说，然后在 Claude 执行同一工作流时把这段演示作为上下文回放。录制的演示成为一份可复用的规范，Claude 会遵循它并适应实际 UI 状态的差异。
+
+我们在 Claude in Chrome 内部使用了这个模式（我们称之为&quot;Teach Mode&quot;），在这里分享出来是因为其底层思路对任何构建计算机或浏览器使用产品的人都普遍有用。它有两方面帮助：提升 Claude 大体掌握但偶尔出错的工作流的可靠性，以及解锁 Claude 仅凭文字提示词无法完成的全新工作流。核心思路（捕获演示，作为上下文回放）实现简单，且能很好地适配浏览器和桌面两种环境。
+
+### **核心理念：做给它看，而不是说给它听**
+
+传统的提示词工程要求用户用文字描述想要什么，然后在 AI 理解偏差时反复迭代。这个模式反其道而行：用户亲自演示任务，系统记录其动作、截图和（可选的）语音解说。回放时，Claude 收到完整演示作为上下文，遵循相同的步骤序列，并适应当前 UI 状态的任何差异。
+
+关键的洞见在于：回放不等于死板重放。Claude 把演示当作指引，同时对实际环境进行推理。如果按钮挪了位置或菜单重新组织过，Claude 能在当前 UI 中找到等价元素，而不是盲目点击录制下来的坐标。
+
+### **数据模型**
+
+基本单位是&quot;工作流步骤&quot;（workflow step），即录制期间捕获的单个动作。每个步骤把做了什么、在哪里做的、当时屏幕是什么样打包在一起：
+
+`from dataclasses import dataclass, field
+from typing import Literal, Optional
+
+@dataclass
+class WorkflowStep:
+    action: Literal[&quot;click&quot;, &quot;type&quot;, &quot;navigate&quot;, &quot;scroll&quot;, &quot;select&quot;]
+    description: str                         # Human-readable, e.g. &quot;Click the Submit button&quot;
+    timestamp: float
+    selector: Optional[str] = None           # CSS selector or XPath
+    coordinates: Optional[dict] = None       # {&quot;x&quot;: int, &quot;y&quot;: int}
+    url: Optional[str] = None
+    screenshot: Optional[str] = None         # Base64-encoded screenshot
+    viewport_dimensions: Optional[dict] = None  # {&quot;width&quot;: int, &quot;height&quot;: int}
+    speech_transcript: Optional[str] = None  # Voice narration, if captured
+    value: Optional[str] = None              # For type actions
+
+@dataclass
+class SavedWorkflow:
+    id: str
+    name: str                                # e.g. &quot;Submit expense report&quot;
+    steps: list[WorkflowStep] = field(default_factory=list)
+    description: Optional[str] = None        # AI-generated summary of the workflow
+    start_url: Optional[str] = None
+    created_at: float = 0.0
+    usage_count: int = 0`同时捕获选择器和坐标是有意为之：选择器对布局变化更稳健，而坐标提供了选择器失效时 Claude 可以使用的视觉兜底。存储视口尺寸则是为了在回放环境与录制环境不同步时能够缩放坐标。
+
+### **录制：捕获什么**
+
+至少要捕获点击事件、键盘输入、导航变化，以及每个动作时的一张截图。对每次点击，生成一段人类可读的描述（来自 aria-label、文本内容，或快速调用一次 Claude），并在截图的点击位置标注视觉标记：
+
+`def on_click(event):
+    step = WorkflowStep(
+        action=&quot;click&quot;,
+        selector=generate_selector(event.target),
+        coordinates={&quot;x&quot;: event.client_x, &quot;y&quot;: event.client_y},
+        url=current_url(),
+        description=generate_description(event.target),
+        timestamp=now(),
+        viewport_dimensions=get_viewport_size(),
+    )
+    # Annotate screenshot with a circle at the click position
+    screenshot = capture_screenshot()
+    step.screenshot = annotate_with_circle(screenshot, event.client_x, event.client_y)
+    workflow_steps.append(step)`这个标注（点击位置的彩色圆圈）有两个用途：帮助用户确认录制捕获的是正确的元素；在回放时向 Claude 精确展示动作发生的位置。你的回放提示词应说明这些标记是录制产物，不是实际 UI 的一部分。
+
+### **回放：构造提示词**
+
+这是最重要的一环。当用户触发一个已保存的工作流时，你要构造一条发给 Claude 的消息，包含三样东西：用户的意图、解释演示格式的上下文块，以及录制的截图。
+
+上下文块告诉 Claude 如何解读带标注的截图，以及当实际 UI 有差异时如何调整：
+
+`def generate_playback_context(steps: list[WorkflowStep]) -&gt; str:
+    steps_description = &quot;\n&quot;.join(
+        f&quot;Step {i+1}: {step.description}&quot;
+        for i, step in enumerate(steps)
+    )
+
+    return f&quot;&quot;&quot;&lt;demonstration_context&gt;
+The user has recorded a demonstration showing how to perform this task.
+
+RECORDED STEPS:
+{steps_description}
+
+ABOUT THE SCREENSHOTS:
+- Each screenshot shows the screen state when an action was taken
+- BLUE CIRCLES mark where the user clicked — these are recording annotations
+- The blue highlighting is NOT part of the actual interface
+- Your own screenshots will NOT have these markers
+
+HOW TO USE THIS DEMONSTRATION:
+1. Review all steps and screenshots to understand the complete workflow
+2. Take your own screenshot to see the CURRENT page state
+3. The blue highlights show which element to interact with — find it in your current view
+4. Follow the same sequence of actions, adapting to any differences
+5. If the UI has changed significantly, use judgment to find equivalent elements
+&lt;/demonstration_context&gt;&quot;&quot;&quot;`然后把用户的提示词、上下文块，以及每一步的截图（作为图像）组装成完整消息：
+
+`import anthropic
+
+client = anthropic.Anthropic()
+
+content = [
+    {&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: user_prompt},
+    {&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: generate_playback_context(workflow.steps)},
+]
+
+for i, step in enumerate(workflow.steps):
+    if step.screenshot:
+        content.append({&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: f&quot;[Step {i+1}: {step.description}]&quot;})
+        content.append({
+            &quot;type&quot;: &quot;image&quot;,
+            &quot;source&quot;: {&quot;type&quot;: &quot;base64&quot;, &quot;media_type&quot;: &quot;image/jpeg&quot;, &quot;data&quot;: step.screenshot},
+        })
+
+response = client.beta.messages.create(
+    model=&quot;claude-sonnet-4-6&quot;,
+    max_tokens=4096,
+    betas=[&quot;computer-use-2025-11-24&quot;],
+    messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: content}],
+    tools=[{
+        &quot;type&quot;: &quot;computer_20251124&quot;,
+        &quot;name&quot;: &quot;computer&quot;,
+        &quot;display_width_px&quot;: 1280,
+        &quot;display_height_px&quot;: 720,
+    }],
+)`
+### **回放模式**
+
+并非每个工作流都需要同样严格地遵循录制的演示。有些工作流太长，会消耗大量输入 token，最终拖慢延迟、推高成本。可以考虑在上下文提示词中加入一个严格度参数：
+
+**严格（Strict）：**严格按步骤执行；UI 变化过大时停下并报告。适合精确序列至关重要的合规敏感工作流。
+
+**自适应（Adaptive）：**把演示当作指引，但适应 UI 变化。这是大多数用例的最佳默认值——能优雅处理小幅布局偏移、按钮文案更新和菜单重组。
+
+‍**目标导向（Goal-oriented）：**聚焦最终结果；把录制的步骤当作提示而非指令。适用于 UI 频繁变化但目标不变的场景。可以先用一个模型对录制的演示做摘要（策略类似下一节所述），再把摘要传给 CU 模型。
+
+### **示例：端到端的报销单工作流**
+
+下面是一个已保存工作流的实际样貌。该工作流捕获了五个步骤：导航到报销表单、选择费用类型、在下拉菜单中选择&quot;Travel&quot;、输入金额、点击 Submit。
+
+`expense_workflow = SavedWorkflow(
+    id=&quot;wf_abc123&quot;,
+    name=&quot;Submit Expense Report&quot;,
+    start_url=&quot;https://expenses.company.com/new&quot;,
+    steps=[
+        WorkflowStep(
+            action=&quot;navigate&quot;,
+            url=&quot;https://expenses.company.com/new&quot;,
+            description=&quot;Navigate to new expense form&quot;,
+            timestamp=1700000000,
+        ),
+        WorkflowStep(
+            action=&quot;click&quot;,
+            selector=&quot;#expense-type-dropdown&quot;,
+            coordinates={&quot;x&quot;: 400, &quot;y&quot;: 200},
+            description=&quot;Click on expense type dropdown&quot;,
+            timestamp=1700000001,
+        ),
+        WorkflowStep(
+            action=&quot;click&quot;,
+            selector=&quot;[data-value='travel']&quot;,
+            coordinates={&quot;x&quot;: 400, &quot;y&quot;: 280},
+            description='Select &quot;Travel&quot; expense type',
+            timestamp=1700000002,
+        ),
+        WorkflowStep(
+            action=&quot;type&quot;,
+            selector=&quot;#amount-input&quot;,
+            value=&quot;150.00&quot;,
+            description=&quot;Enter expense amount&quot;,
+            timestamp=1700000003,
+        ),
+        WorkflowStep(
+            action=&quot;click&quot;,
+            selector=&quot;#submit-expense-btn&quot;,
+            coordinates={&quot;x&quot;: 1150, &quot;y&quot;: 420},
+            description=&quot;Click the Submit button&quot;,
+            speech_transcript=&quot;Now I'll click submit to send the report for approval&quot;,
+            timestamp=1700000004,
+        ),
+    ],
+)`当用户之后说&quot;帮我提交团队午餐的报销单（85.50 美元）&quot;时，回放服务会构造一个包含演示上下文、全部五张带标注截图以及新请求具体数值的提示词。Claude 清楚该点哪里、按什么顺序执行，并把金额和描述调整为与当前任务匹配。如果你的工作流因输入 token 量太大而不适合直接采用这种方式，可以先对工作流做压缩再当作示例使用。上下文管理的技巧请参见下一节。
+
+# **开始使用计算机和浏览器使用**
+
+这些实践反映了我们目前对&quot;什么让计算机使用集成在生产环境中可靠&quot;的最佳理解。它们适用于 Claude 4.6 系列和 Opus 4.7，并将随着新模型和新技术的出现而更新。
+
+随着你的集成日趋成熟，最重要的模式将取决于你的具体环境、目标应用和可靠性要求。*‍*
+
+*请从*[*计算机使用文档*](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool)*开始，查看我们对这些最佳实践的新*[*演示实现*](https://github.com/anthropics/claude-quickstarts/tree/main/computer-use-best-practices)*，或重温*[*最初的计算机使用研究文章*](https://www.anthropic.com/news/developing-computer-use)*，了解这些能力如何构建以及未来走向的背景。*
+
+*致谢：本文及配套演示由 Lucas Gonzalez 和 Luca Weihs 撰写。作者感谢 Molly Vorwerck、Javier Rando、Maya Nielan、Gabe Mulley 和 Brigit Brown 的贡献。*</textarea>
+    </div>
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-peach);">
+            <img class="hero-illo-img" src="/assets/illustrations/best-practices-for-computer-and-browser-use-with-claude.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">Claude 计算机与浏览器使用的最佳实践</h1>
-          <a href="/posts/best-practices-for-computer-and-browser-use-with-claude/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><div class="w-embed"><style>
+            <h1 class="article-title u-text-style-h1">Claude 计算机与浏览器使用的最佳实践</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>Practical guidance for developers building computer and browser use integrations with the Claude model family.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/agents" target="_blank" rel="noopener noreferrer">Agents</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/platform/api" target="_blank" rel="noopener noreferrer">Claude Platform</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">May 13, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/best-practices-for-computer-and-browser-use-with-claude/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><div class="w-embed"><style>
   /* Fluid breakout for blog embeds + code blocks */
   .u-rich-text-blog .w-embed,
   .u-rich-text-blog pre.w-code-block {
@@ -731,21 +1818,70 @@
 </span></span><span>        ),
 </span><span>    ],
 </span><span>)</span></code></pre><p>当用户之后说"帮我提交团队午餐的报销单（85.50 美元）"时，回放服务会构造一个包含演示上下文、全部五张带标注截图以及新请求具体数值的提示词。Claude 清楚该点哪里、按什么顺序执行，并把金额和描述调整为与当前任务匹配。如果你的工作流因输入 token 量太大而不适合直接采用这种方式，可以先对工作流做压缩再当作示例使用。上下文管理的技巧请参见下一节。</p><h1><strong>开始使用计算机和浏览器使用</strong></h1><p>这些实践反映了我们目前对"什么让计算机使用集成在生产环境中可靠"的最佳理解。它们适用于 Claude 4.6 系列和 Opus 4.7，并将随着新模型和新技术的出现而更新。</p><p>随着你的集成日趋成熟，最重要的模式将取决于你的具体环境、目标应用和可靠性要求。<em>‍</em></p><p><em>请从</em><a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool"><em>计算机使用文档</em></a><em>开始，查看我们对这些最佳实践的新</em><a href="https://github.com/anthropics/claude-quickstarts/tree/main/computer-use-best-practices"><em>演示实现</em></a><em>，或重温</em><a href="https://www.anthropic.com/news/developing-computer-use"><em>最初的计算机使用研究文章</em></a><em>，了解这些能力如何构建以及未来走向的背景。</em></p><p><em>致谢：本文及配套演示由 Lucas Gonzalez 和 Luca Weihs 撰写。作者感谢 Molly Vorwerck、Javier Rando、Maya Nielan、Gabe Mulley 和 Brigit Brown 的贡献。</em></p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/best-practices-for-computer-and-browser-use-with-claude" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/best-practices-for-computer-and-browser-use-with-claude" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

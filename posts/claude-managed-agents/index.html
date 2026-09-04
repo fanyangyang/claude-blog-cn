@@ -4,54 +4,234 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Claude Managed Agents：以 10 倍速度迈向生产环境 — Claude Blog 中文翻译</title>
-  <meta name="description" content="Claude Managed Agents：以 10 倍速度迈向生产环境">
+  <meta name="description" content="Announcing Claude Managed Agents, Anthropic's new suite of composable APIs for building and deploying cloud-hosted agents at scale.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/claude-managed-agents" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>Claude Managed Agents：以 10 倍速度迈向生产环境</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/claude-managed-agents" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/claude-managed-agents/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># Claude Managed Agents：以 10 倍速度迈向生产环境
+
+Announcing Claude Managed Agents, Anthropic's new suite of composable APIs for building and deploying cloud-hosted agents at scale.
+
+## Claude Managed Agents 解析
+
+Claude Managed Agents 是一套可组合的 API，用于大规模构建和部署云端托管的 agent。它将 Anthropic 托管的 harness 与涵盖状态、记忆、权限和定时执行的生产级基础设施结合在一起。
+
+在今天发布之前，构建 agent 意味着把开发周期耗费在安全基础设施、状态管理、权限控制上，并且每次模型升级都要重写 agent 循环。Managed Agents 将一个针对性能调优过的 agent harness 与生产级基础设施结合起来，让你从原型到上线只需数天而非数月。
+
+无论你要构建单一任务的执行器，还是复杂的多 agent 流水线，你都可以专注于用户体验，而不必操心运维开销。
+
+Managed Agents 现已在 Claude Platform 上开启公测。
+
+## **以 10 倍速度构建和部署 agent**
+
+要交付一个生产级 agent，需要沙箱化的代码执行、检查点机制、凭证管理、细粒度权限以及端到端追踪。这些基础设施工作动辄数月，才能轮到用户看得见的东西上线。
+
+Managed Agents 替你处理这些复杂性。你只需定义 agent 的任务、工具和护栏，我们在我们的基础设施上运行它。内建的编排 harness 会决定何时调用工具、如何管理上下文，以及如何从错误中恢复。
+
+Managed Agents 包括：
+
+- **生产级 agent **，安全沙箱、身份验证和工具执行均由我们代管。
+- **长时间运行的会话**，可自主运行数小时，即使连接中断，进度和产出也会持久保存。
+- **多 agent 协同**，agent 可以启动并指挥其他 agent，并行推进复杂工作（处于*研究预览*阶段，可在此处[申请访问](http://claude.com/form/claude-managed-agents)）。**‍**
+- **可信赖的治理**，通过内建的细粒度权限、身份管理和执行追踪，让 agent 在受控前提下访问真实系统。
+
+Claude Managed Agents architecture
+## **专为充分发挥 Claude 的能力而设计**
+
+Claude 模型为 agentic 工作而生。Managed Agents 专为 Claude 度身打造，让你用更少的投入获得更好的 agent 成果。 
+
+借助 Managed Agents，你只需定义目标和成功标准，Claude 会自我评估并持续迭代，直到达成目标（处于*研究预览*阶段，可在此处[申请访问](http://claude.com/form/claude-managed-agents)）。当你希望获得更紧密的控制时，它也支持传统的“提示—响应”式工作流。 
+
+在围绕结构化文件生成的内部测试中，Managed Agents 相比标准提示循环将任务成功率最多提升了 10 个百分点，且在最困难的问题上提升幅度最大。
+
+会话追踪、集成分析和故障排查指引直接内置于 Claude Console 之中，你可以审视每一次工具调用、每一个决策和每一种失败模式。
+
+## **各团队正在构建什么**
+
+各团队已经在用 Managed Agents 覆盖各种生产级场景，交付速度提升 10 倍。编码 agent 阅读代码库、规划修复方案并发起 PR。效率型 agent 加入项目、认领任务，与团队其他成员一起交付成果。财务和法务 agent 处理文档并提炼关键信息。在每一个案例中，数天内上线意味着更快为用户创造价值。
+
+- [**Notion**](https://claude.com/customers/notion-qa) 让团队直接在工作区内把工作委派给 Claude（现已在 Notion Custom Agents 内开启私测 alpha）。工程师用它发布代码，知识工作者则用它制作网站和演示文稿。数十个任务可以并行运行，整个团队同时协作打磨产出。
+- [**Rakuten**](https://claude.com/customers/rakuten-qa) 在产品、销售、市场和财务部门上线了接入 Slack 和 Teams 的企业级 agent，员工可以直接分配任务并收到电子表格、幻灯片和应用等交付物。每一个专家 agent 都在一周内部署完成。
+- [**Asana**](https://claude.com/customers/asana-qa)** **构建了 AI Teammates——在 Asana 项目中与人类并肩工作的协作式 AI agent，认领任务并起草交付物。借助 Managed Agents，该团队添加高级功能的速度远超以往。
+- [**Vibecode**](https://claude.com/customers/vibecode) 以 Managed Agents 作为默认集成方案，帮助客户从提示词直达已部署的应用，驱动新一代 AI 原生应用。用户现在搭建同样的基础设施至少比以前快 10 倍。[**‍**](https://claude.com/customers/sentry)
+- [**Sentry**](https://claude.com/customers/sentry) 将他们的调试 agent Seer 与一个由 Claude 驱动的 agent 配对——后者负责编写补丁并发起 PR——开发者从发现 Bug 到可评审的修复一气呵成。这项集成基于 Managed Agents，用数周而非数月就完成了上线。
+
+“我们希望 Notion 成为团队与 agent 协作、把事情做完的最佳场所。我们接入了 Claude Managed Agents，它能处理长时间运行的会话、管理记忆，并随时间交付高质量产出，从而让这一点成为可能。用户现在可以把开放式的复杂任务委派出去，从写代码到生成幻灯片和电子表格，全程不必离开 Notion。”
+
+Eric Liu, Product Manager“有了 Claude Managed Agents，我们的超级用户就像 Galileo 一样，能跨越单一专业或学科、在多个领域做出贡献。我们在一周内部署每个专家 agent，在工程、产品、销售、市场和财务中管理长时间运行的任务，并在沙箱环境中生成应用、提案幻灯片和电子表格。随着 agent 能力增强，Managed Agents 让我们在不必自建 agentic 基础设施的情况下安全扩展，从而把精力完全放在让创新在全公司普及上。”
+
+Yusuke Kaji, General Manager of AI for Business“Claude Managed Agents 大幅加快了我们开发 Asana AI Teammates 的速度，帮助我们更快交付高级能力，也让我们能把精力放在打造企业级的多人协作用户体验上。”
+
+Amritansh Raghav, CTO“在 Claude Managed Agents 出现之前，用户必须手动在沙箱中运行 LLM、管理它们的生命周期、为它们配备合适的工具并监督执行，这套流程搭起来可能要数周甚至数月。现在，只需几行代码，用户就能以至少快 10 倍的速度拉起同样的基础设施。这打开了开发者和 vibe coder 所能构建的边界。我们将会看到 Web 和移动端上 AI 原生应用的激增。”
+
+Ansh Nanda, Co-founder“事实证明，只告诉开发者代码哪里有问题还不够，他们还希望你一并修好。客户现在可以从 Seer 的根因分析，直接进入一个由 Claude 驱动、负责写修复并发起 PR 的 agent。我们选择 Claude Managed Agents，是因为它提供了安全、完全托管的 agent 运行时，让我们可以把精力放在交接环节周围的流畅开发者体验上。Managed Agents 不仅让我们用数周而非数月完成了最初的集成，还消除了维护定制 agent 基础设施的持续运维开销。”
+
+Indragie Karunaratne, Senior Director of Engineering, AI/ML“Atlassian 帮助企业在人类与 agent 之间编排工作。借助 Claude Managed Agents，我们可以在数周而非数月内，把面向开发者的 agent 直接做进团队已经依赖的工作流里，让客户从 Jira 就能分配任务。Managed Agents 处理了沙箱、会话和细粒度权限这些难点，因此我们的工程师可以少花时间在基础设施上，多花时间给最终用户做优秀功能。”
+
+Sanchan Saxena, SVP, Head of Product, Teamwork Collection“借助 Claude Managed Agents，我们构建了一套系统，能从用户的文档和往来函件中抽取信息，回答他们提出的任何问题，即便我们没有为检索这些数据专门做过工具。在 Managed Agents 之前，我们必须预判用户可能提出的每一个问题，并为每一个问题构建工具或提示工作流。现在，Managed Agents 可以按需现场写出所需的任何工具，从而几乎能处理任何用户查询。这把开发时间缩短了 10 倍，让我们可以把精力放在 UX 和接入更多数据源上。”
+
+Javed Qadrud-Din, CTO“Claude Managed Agents 让我们构建生产级会议准备 agent 的速度提升了 3 倍。我们从想法到上线只用了几天。我们的 agent 会在会前调研每一位参会者，找出推动对话前进真正重要的信息。自定义工具让我们能接入自己的日历和联系人数据，MCP 让连接会议记录工具、CRM 等外部系统变得简单，而托管 harness 则承担了繁重工作，包括沙箱执行和内置网络搜索。这让我们可以专注于做产品，而不是基础设施。”
+
+John Han, Co-founder
+## Claude Managed Agents 有哪些新能力
+
+新能力会定期加入。Agent 现在可以通过[内置记忆](https://claude.com/blog/claude-managed-agents-memory)跨会话学习，并借助[dreaming、outcomes 和多智能体编排](https://claude.com/blog/new-in-claude-managed-agents)自我改进。它们可以在[凭证存于 vault 的定时部署](https://claude.com/blog/whats-new-in-claude-managed-agents)中无人值守运行，也可以通过[自托管沙箱和 MCP tunnels](https://claude.com/blog/claude-managed-agents-updates)在你自己的边界内运转。
+
+## 开始使用
+
+Managed Agents 按用量计费。适用标准的 Claude Platform token 费率，外加活跃运行时每会话小时 $0.08。完整定价详见[文档](https://platform.claude.com/docs/en/about-claude/pricing#claude-managed-agents-pricing)。
+
+Managed Agents 现已在 Claude Platform 上线。阅读我们的[文档](https://platform.claude.com/docs/en/managed-agents/overview)了解更多，前往 [Claude Console](https://platform.claude.com/workspaces/default/agent-quickstart)，或使用我们的新 CLI 部署你的第一个 agent。
+
+开发者也可以使用最新版 Claude Code 以及内置的 claude-api Skill 来基于 Managed Agents 构建。只需说 “start onboarding for managed agents in Claude API” 即可开始。</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Product announcements</span>
-            <span class="article-date">April 8, 2026</span>
-            
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-clay);">
+            <img class="hero-illo-img" src="/assets/illustrations/claude-managed-agents.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">Claude Managed Agents：以 10 倍速度迈向生产环境</h1>
-          <a href="/posts/claude-managed-agents/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><h2>Claude Managed Agents 解析</h2><p>Claude Managed Agents 是一套可组合的 API，用于大规模构建和部署云端托管的 agent。它将 Anthropic 托管的 harness 与涵盖状态、记忆、权限和定时执行的生产级基础设施结合在一起。</p><p>在今天发布之前，构建 agent 意味着把开发周期耗费在安全基础设施、状态管理、权限控制上，并且每次模型升级都要重写 agent 循环。Managed Agents 将一个针对性能调优过的 agent harness 与生产级基础设施结合起来，让你从原型到上线只需数天而非数月。</p><p>无论你要构建单一任务的执行器，还是复杂的多 agent 流水线，你都可以专注于用户体验，而不必操心运维开销。</p><p>Managed Agents 现已在 Claude Platform 上开启公测。</p><h2><strong>以 10 倍速度构建和部署 agent</strong></h2><p>要交付一个生产级 agent，需要沙箱化的代码执行、检查点机制、凭证管理、细粒度权限以及端到端追踪。这些基础设施工作动辄数月，才能轮到用户看得见的东西上线。</p><p>Managed Agents 替你处理这些复杂性。你只需定义 agent 的任务、工具和护栏，我们在我们的基础设施上运行它。内建的编排 harness 会决定何时调用工具、如何管理上下文，以及如何从错误中恢复。</p><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/I1BvAHOsjBU" title="Introducing Claude Managed Agents" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><p>Managed Agents 包括：</p><ul role="list"><li><strong>生产级 agent</strong>，安全沙箱、身份验证和工具执行均由我们代管。</li><li><strong>长时间运行的会话</strong>，可自主运行数小时，即使连接中断，进度和产出也会持久保存。</li><li><strong>多 agent 协同</strong>，agent 可以启动并指挥其他 agent，并行推进复杂工作（处于<em>研究预览</em>阶段，可在此处<a href="http://claude.com/form/claude-managed-agents">申请访问</a>）。<strong>‍</strong></li><li><strong>可信赖的治理</strong>，通过内建的细粒度权限、身份管理和执行追踪，让 agent 在受控前提下访问真实系统。</li></ul><figure style="max-width:2032pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69d53a1b570fa207204f0111_Claude-Blog-Managed-Agents-Diagram-NoBorder.png" loading="lazy"></div><figcaption>Claude Managed Agents 架构</figcaption></figure><h2><strong>专为充分发挥 Claude 的能力而设计</strong></h2><p>Claude 模型为 agentic 工作而生。Managed Agents 专为 Claude 度身打造，让你用更少的投入获得更好的 agent 成果。&nbsp;</p><p>借助 Managed Agents，你只需定义目标和成功标准，Claude 会自我评估并持续迭代，直到达成目标（处于<em>研究预览</em>阶段，可在此处<a href="http://claude.com/form/claude-managed-agents">申请访问</a>）。当你希望获得更紧密的控制时，它也支持传统的“提示—响应”式工作流。&nbsp;</p><p>在围绕结构化文件生成的内部测试中，Managed Agents 相比标准提示循环将任务成功率最多提升了 10 个百分点，且在最困难的问题上提升幅度最大。</p><p>会话追踪、集成分析和故障排查指引直接内置于 Claude Console 之中，你可以审视每一次工具调用、每一个决策和每一种失败模式。</p><h2><strong>各团队正在构建什么</strong></h2><p>各团队已经在用 Managed Agents 覆盖各种生产级场景，交付速度提升 10 倍。编码 agent 阅读代码库、规划修复方案并发起 PR。效率型 agent 加入项目、认领任务，与团队其他成员一起交付成果。财务和法务 agent 处理文档并提炼关键信息。在每一个案例中，数天内上线意味着更快为用户创造价值。</p><figure style="padding-bottom:75%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/45hPRdfDEsI" title="How Notion built with Claude Managed Agents" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><ul role="list"><li><a href="https://claude.com/customers/notion-qa"><strong>Notion</strong></a> 让团队直接在工作区内把工作委派给 Claude（现已在 Notion Custom Agents 内开启私测 alpha）。工程师用它发布代码，知识工作者则用它制作网站和演示文稿。数十个任务可以并行运行，整个团队同时协作打磨产出。</li><li><a href="https://claude.com/customers/rakuten-qa"><strong>Rakuten</strong></a> 在产品、销售、市场和财务部门上线了接入 Slack 和 Teams 的企业级 agent，员工可以直接分配任务并收到电子表格、幻灯片和应用等交付物。每一个专家 agent 都在一周内部署完成。</li><li><a href="https://claude.com/customers/asana-qa"><strong>Asana</strong></a><strong> </strong>构建了 AI Teammates——在 Asana 项目中与人类并肩工作的协作式 AI agent，认领任务并起草交付物。借助 Managed Agents，该团队添加高级功能的速度远超以往。</li><li><a href="https://claude.com/customers/vibecode"><strong>Vibecode</strong></a> 以 Managed Agents 作为默认集成方案，帮助客户从提示词直达已部署的应用，驱动新一代 AI 原生应用。用户现在搭建同样的基础设施至少比以前快 10 倍。<a href="https://claude.com/customers/sentry"><strong>‍</strong></a></li><li><a href="https://claude.com/customers/sentry"><strong>Sentry</strong></a> 将他们的调试 agent Seer 与一个由 Claude 驱动的 agent 配对——后者负责编写补丁并发起 PR——开发者从发现 Bug 到可评审的修复一气呵成。这项集成基于 Managed Agents，用数周而非数月就完成了上线。</li></ul></div>
+            <h1 class="article-title u-text-style-h1">Claude Managed Agents：以 10 倍速度迈向生产环境</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>Announcing Claude Managed Agents, Anthropic's new suite of composable APIs for building and deploying cloud-hosted agents at scale.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/announcements" target="_blank" rel="noopener noreferrer">Product announcements</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/platform/api" target="_blank" rel="noopener noreferrer">Claude Platform</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">April 8, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/claude-managed-agents/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/claude-managed-agents" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><h2>Claude Managed Agents 解析</h2><p>Claude Managed Agents 是一套可组合的 API，用于大规模构建和部署云端托管的 agent。它将 Anthropic 托管的 harness 与涵盖状态、记忆、权限和定时执行的生产级基础设施结合在一起。</p><p>在今天发布之前，构建 agent 意味着把开发周期耗费在安全基础设施、状态管理、权限控制上，并且每次模型升级都要重写 agent 循环。Managed Agents 将一个针对性能调优过的 agent harness 与生产级基础设施结合起来，让你从原型到上线只需数天而非数月。</p><p>无论你要构建单一任务的执行器，还是复杂的多 agent 流水线，你都可以专注于用户体验，而不必操心运维开销。</p><p>Managed Agents 现已在 Claude Platform 上开启公测。</p><h2><strong>以 10 倍速度构建和部署 agent</strong></h2><p>要交付一个生产级 agent，需要沙箱化的代码执行、检查点机制、凭证管理、细粒度权限以及端到端追踪。这些基础设施工作动辄数月，才能轮到用户看得见的东西上线。</p><p>Managed Agents 替你处理这些复杂性。你只需定义 agent 的任务、工具和护栏，我们在我们的基础设施上运行它。内建的编排 harness 会决定何时调用工具、如何管理上下文，以及如何从错误中恢复。</p><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/I1BvAHOsjBU" title="Introducing Claude Managed Agents" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><p>Managed Agents 包括：</p><ul role="list"><li><strong>生产级 agent </strong>，安全沙箱、身份验证和工具执行均由我们代管。</li><li><strong>长时间运行的会话</strong>，可自主运行数小时，即使连接中断，进度和产出也会持久保存。</li><li><strong>多 agent 协同</strong>，agent 可以启动并指挥其他 agent，并行推进复杂工作（处于<em>研究预览</em>阶段，可在此处<a href="http://claude.com/form/claude-managed-agents">申请访问</a>）。<strong>‍</strong></li><li><strong>可信赖的治理</strong>，通过内建的细粒度权限、身份管理和执行追踪，让 agent 在受控前提下访问真实系统。</li></ul><figure style="max-width:2032pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69d53a1b570fa207204f0111_Claude-Blog-Managed-Agents-Diagram-NoBorder.png" loading="lazy"></div><figcaption>Claude Managed Agents architecture</figcaption></figure><h2><strong>专为充分发挥 Claude 的能力而设计</strong></h2><p>Claude 模型为 agentic 工作而生。Managed Agents 专为 Claude 度身打造，让你用更少的投入获得更好的 agent 成果。&nbsp;</p><p>借助 Managed Agents，你只需定义目标和成功标准，Claude 会自我评估并持续迭代，直到达成目标（处于<em>研究预览</em>阶段，可在此处<a href="http://claude.com/form/claude-managed-agents">申请访问</a>）。当你希望获得更紧密的控制时，它也支持传统的“提示—响应”式工作流。&nbsp;</p><p>在围绕结构化文件生成的内部测试中，Managed Agents 相比标准提示循环将任务成功率最多提升了 10 个百分点，且在最困难的问题上提升幅度最大。</p><p>会话追踪、集成分析和故障排查指引直接内置于 Claude Console 之中，你可以审视每一次工具调用、每一个决策和每一种失败模式。</p><h2><strong>各团队正在构建什么</strong></h2><p>各团队已经在用 Managed Agents 覆盖各种生产级场景，交付速度提升 10 倍。编码 agent 阅读代码库、规划修复方案并发起 PR。效率型 agent 加入项目、认领任务，与团队其他成员一起交付成果。财务和法务 agent 处理文档并提炼关键信息。在每一个案例中，数天内上线意味着更快为用户创造价值。</p><figure style="padding-bottom:75%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/45hPRdfDEsI" title="How Notion built with Claude Managed Agents" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><ul role="list"><li><a href="https://claude.com/customers/notion-qa"><strong>Notion</strong></a> 让团队直接在工作区内把工作委派给 Claude（现已在 Notion Custom Agents 内开启私测 alpha）。工程师用它发布代码，知识工作者则用它制作网站和演示文稿。数十个任务可以并行运行，整个团队同时协作打磨产出。</li><li><a href="https://claude.com/customers/rakuten-qa"><strong>Rakuten</strong></a> 在产品、销售、市场和财务部门上线了接入 Slack 和 Teams 的企业级 agent，员工可以直接分配任务并收到电子表格、幻灯片和应用等交付物。每一个专家 agent 都在一周内部署完成。</li><li><a href="https://claude.com/customers/asana-qa"><strong>Asana</strong></a><strong> </strong>构建了 AI Teammates——在 Asana 项目中与人类并肩工作的协作式 AI agent，认领任务并起草交付物。借助 Managed Agents，该团队添加高级功能的速度远超以往。</li><li><a href="https://claude.com/customers/vibecode"><strong>Vibecode</strong></a> 以 Managed Agents 作为默认集成方案，帮助客户从提示词直达已部署的应用，驱动新一代 AI 原生应用。用户现在搭建同样的基础设施至少比以前快 10 倍。<a href="https://claude.com/customers/sentry"><strong>‍</strong></a></li><li><a href="https://claude.com/customers/sentry"><strong>Sentry</strong></a> 将他们的调试 agent Seer 与一个由 Claude 驱动的 agent 配对——后者负责编写补丁并发起 PR——开发者从发现 Bug 到可评审的修复一气呵成。这项集成基于 Managed Agents，用数周而非数月就完成了上线。</li></ul><div class="article-testimonials" role="list"><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68ba17a186e44af7d97dae57_Frame.svg" alt="68ba17a186e44af7d97dae57 Frame" loading="lazy"><blockquote><p>“我们希望 Notion 成为团队与 agent 协作、把事情做完的最佳场所。我们接入了 Claude Managed Agents，它能处理长时间运行的会话、管理记忆，并随时间交付高质量产出，从而让这一点成为可能。用户现在可以把开放式的复杂任务委派出去，从写代码到生成幻灯片和电子表格，全程不必离开 Notion。”</p></blockquote><figcaption class="article-testimonial-caption">Eric Liu, Product Manager</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68d5faa6352b26bf7542cb9b_logo_rakuten-light.svg" alt="68d5faa6352b26bf7542cb9b rakuten" loading="lazy"><blockquote><p>“有了 Claude Managed Agents，我们的超级用户就像 Galileo 一样，能跨越单一专业或学科、在多个领域做出贡献。我们在一周内部署每个专家 agent，在工程、产品、销售、市场和财务中管理长时间运行的任务，并在沙箱环境中生成应用、提案幻灯片和电子表格。随着 agent 能力增强，Managed Agents 让我们在不必自建 agentic 基础设施的情况下安全扩展，从而把精力完全放在让创新在全公司普及上。”</p></blockquote><figcaption class="article-testimonial-caption">Yusuke Kaji, General Manager of AI for Business</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a3414e70a75001b66e8d27f_asana-black.svg" alt="6a3414e70a75001b66e8d27f asana" loading="lazy"><blockquote><p>“Claude Managed Agents 大幅加快了我们开发 Asana AI Teammates 的速度，帮助我们更快交付高级能力，也让我们能把精力放在打造企业级的多人协作用户体验上。”</p></blockquote><figcaption class="article-testimonial-caption">Amritansh Raghav, CTO</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69813caf8d50645af3af864f_logo_vibecode-light-mode.svg" alt="69813caf8d50645af3af864f vibecode mode" loading="lazy"><blockquote><p>“在 Claude Managed Agents 出现之前，用户必须手动在沙箱中运行 LLM、管理它们的生命周期、为它们配备合适的工具并监督执行，这套流程搭起来可能要数周甚至数月。现在，只需几行代码，用户就能以至少快 10 倍的速度拉起同样的基础设施。这打开了开发者和 vibe coder 所能构建的边界。我们将会看到 Web 和移动端上 AI 原生应用的激增。”</p></blockquote><figcaption class="article-testimonial-caption">Ansh Nanda, Co-founder</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68bf57518a91cc645d08ae1a_sentry-light-mode.svg" alt="68bf57518a91cc645d08ae1a sentry mode" loading="lazy"><blockquote><p>“事实证明，只告诉开发者代码哪里有问题还不够，他们还希望你一并修好。客户现在可以从 Seer 的根因分析，直接进入一个由 Claude 驱动、负责写修复并发起 PR 的 agent。我们选择 Claude Managed Agents，是因为它提供了安全、完全托管的 agent 运行时，让我们可以把精力放在交接环节周围的流畅开发者体验上。Managed Agents 不仅让我们用数周而非数月完成了最初的集成，还消除了维护定制 agent 基础设施的持续运维开销。”</p></blockquote><figcaption class="article-testimonial-caption">Indragie Karunaratne, Senior Director of Engineering, AI/ML</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68b5a84a22074cc407a84848_Atlassian_light.svg" alt="68b5a84a22074cc407a84848 Atlassian" loading="lazy"><blockquote><p>“Atlassian 帮助企业在人类与 agent 之间编排工作。借助 Claude Managed Agents，我们可以在数周而非数月内，把面向开发者的 agent 直接做进团队已经依赖的工作流里，让客户从 Jira 就能分配任务。Managed Agents 处理了沙箱、会话和细粒度权限这些难点，因此我们的工程师可以少花时间在基础设施上，多花时间给最终用户做优秀功能。”</p></blockquote><figcaption class="article-testimonial-caption">Sanchan Saxena, SVP, Head of Product, Teamwork Collection</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69d54700357e01220a808b6e_general-legal-light-mode.svg" alt="69d54700357e01220a808b6e general legal mode" loading="lazy"><blockquote><p>“借助 Claude Managed Agents，我们构建了一套系统，能从用户的文档和往来函件中抽取信息，回答他们提出的任何问题，即便我们没有为检索这些数据专门做过工具。在 Managed Agents 之前，我们必须预判用户可能提出的每一个问题，并为每一个问题构建工具或提示工作流。现在，Managed Agents 可以按需现场写出所需的任何工具，从而几乎能处理任何用户查询。这把开发时间缩短了 10 倍，让我们可以把精力放在 UX 和接入更多数据源上。”</p></blockquote><figcaption class="article-testimonial-caption">Javed Qadrud-Din, CTO</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69d546e8750a5d04702cf69a_blockit-light-mode.svg" alt="69d546e8750a5d04702cf69a blockit mode" loading="lazy"><blockquote><p>“Claude Managed Agents 让我们构建生产级会议准备 agent 的速度提升了 3 倍。我们从想法到上线只用了几天。我们的 agent 会在会前调研每一位参会者，找出推动对话前进真正重要的信息。自定义工具让我们能接入自己的日历和联系人数据，MCP 让连接会议记录工具、CRM 等外部系统变得简单，而托管 harness 则承担了繁重工作，包括沙箱执行和内置网络搜索。这让我们可以专注于做产品，而不是基础设施。”</p></blockquote><figcaption class="article-testimonial-caption">John Han, Co-founder</figcaption></figure></div><h2>Claude Managed Agents 有哪些新能力</h2><p>新能力会定期加入。Agent 现在可以通过<a href="https://claude.com/blog/claude-managed-agents-memory">内置记忆</a>跨会话学习，并借助<a href="https://claude.com/blog/new-in-claude-managed-agents">dreaming、outcomes 和多智能体编排</a>自我改进。它们可以在<a href="https://claude.com/blog/whats-new-in-claude-managed-agents">凭证存于 vault 的定时部署</a>中无人值守运行，也可以通过<a href="https://claude.com/blog/claude-managed-agents-updates">自托管沙箱和 MCP tunnels</a>在你自己的边界内运转。</p><h2>开始使用</h2><p>Managed Agents 按用量计费。适用标准的 Claude Platform token 费率，外加活跃运行时每会话小时 $0.08。完整定价详见<a href="https://platform.claude.com/docs/en/about-claude/pricing#claude-managed-agents-pricing">文档</a>。</p><p>Managed Agents 现已在 Claude Platform 上线。阅读我们的<a href="https://platform.claude.com/docs/en/managed-agents/overview">文档</a>了解更多，前往 <a href="https://platform.claude.com/workspaces/default/agent-quickstart">Claude Console</a>，或使用我们的新 CLI 部署你的第一个 agent。</p><p>开发者也可以使用最新版 Claude Code 以及内置的 claude-api Skill 来基于 Managed Agents 构建。只需说 “start onboarding for managed agents in Claude API” 即可开始。</p></div>
+
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/claude-managed-agents" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

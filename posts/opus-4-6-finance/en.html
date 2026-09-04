@@ -4,46 +4,163 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Advancing finance with Claude Opus 4.6 — Claude Blog CN</title>
-  <meta name="description" content="Advancing finance with Claude Opus 4.6">
+  <meta name="description" content="With Claude Opus 4.6, finance teams get better reasoning on complex analyses, cleaner first-pass deliverables, and new tools built for where analysts actually spend their time.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="/posts/opus-4-6-finance/" class="nav-link">中文版 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>Advancing finance with Claude Opus 4.6</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/opus-4-6-finance" target="_blank" rel="noopener noreferrer">Ask questions about this page</a>
+        <button type="button" class="explore-item" data-copy-markdown>Copy as markdown</button>
+        <a class="explore-item" href="/posts/opus-4-6-finance/">阅读中文翻译 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># Advancing finance with Claude Opus 4.6
+
+With Claude Opus 4.6, finance teams get better reasoning on complex analyses, cleaner first-pass deliverables, and new tools built for where analysts actually spend their time.
+
+[Claude Opus 4.6](https://www.anthropic.com/news/claude-opus-4-6) marks a step forward in AI for finance. It can be used to help professionals make decisions based on accurate information and clear analysis, and it produces deliverables with real polish. The model is substantially better than others in the market at financial reasoning, multitasking, and maintaining focus over longer multi-step tasks. 
+
+Alongside Claude Opus 4.6, we’re updating some of our existing products—and introducing a new one—to put these capabilities where analysts spend the majority of their time. [Cowork](https://claude.com/product/cowork) now delivers more polished outputs, such as financial models and presentations, on the first pass. [Claude in Excel](https://claude.com/claude-in-excel) is now better at handling long-running tasks, with Claude Opus 4.6 staying focused and accurate as financial models become more complex. And we’re releasing [Claude in PowerPoint](https://claude.com/claude-in-powerpoint) as a research preview in beta for natively building and iterating on decks and presentations.
+
+Our internal Real-World Finance evaluation measures Claude’s performance on ~50 investment and financial analysis use cases spanning spreadsheets, slide decks, and word document generation and review. These are tasks commonly performed by analysts across investment banking, private equity, public investing, and corporate finance. Claude Opus 4.6 improves by over 23 percentage points on Claude Sonnet 4.5, our state-of-the-art model just a few months ago.
+
+*This eval tests a combination of code execution and tool use agentic harnesses, and was scored based on a combination of rubrics and preferences that gauge finance domain knowledge, task completeness and accuracy, and presentation quality.*Together, these updates make Claude a much stronger partner for those across financial services and corporate finance.
+
+## Research, analyze, create
+
+Financial professionals use AI to research effectively across multiple data sources, support financial analyses, and create deliverables that their teams and customers can act on. Claude Opus 4.6 is best in class across all three dimensions.
+
+On research, Claude Opus 4.6 improves on both BrowseComp and DeepSearchQA, two benchmarks that test a model’s ability to extract specific information from large, unstructured data sources. In practice, this means that users can hand Claude a dense set of documents and receive a specific, focused answer, rather than a simple summary.
+
+On analysis, Claude Opus 4.6 is state-of-the-art at 60.7% (achieving a 5.47% improvement from Opus 4.5) on [Finance Agent](https://www.vals.ai/benchmarks/finance_agent), an external benchmark from Vals AI that evaluates models on research of SEC filings of public companies. Opus 4.6 is also state-of-the-art on the [TaxEval](https://www.vals.ai/benchmarks/tax_eval_v2) by Vals AI at 76.0%. 
+
+On creation, we use GDPval-AA to measure Claude’s performance on complex knowledge work, in addition to our Real-World Finance evaluation. With Claude Opus 4.6, structured outputs like spreadsheets and presentations come out right more often on the first pass. The side-by-side outputs below show how output quality has improved from Claude Opus 4.5 to Opus 4.6. These are examples of Claude’s first-pass performance on a commercial due diligence task (evaluating a potential acquisition)—the kind of work that would typically take a senior analyst two to three weeks to complete.
+
+“With Claude Opus 4.6, creating financial PowerPoints that used to take hours now takes minutes. We're seeing tangible improvements in attention to detail, spatial layout, and content structuring.” - **Aabhas Sharma, CTO, Hebbia**“The performance jump with Claude Opus 4.6 feels almost unbelievable. Real-world tasks that were challenging for Opus [4.5] suddenly became easy. This feels like a watershed moment for spreadsheet agents on Shortcut.” - **Nico Christie, Co-Founder &amp; CTO, Shortcut AI**
+## Better multitasking and first drafts
+
+The finance capabilities of Claude Opus 4.6 are easy to access with Cowork, a [new way to use Claude](https://claude.com/blog/cowork-research-preview) in our desktop app. 
+
+In Cowork, you give Claude access to a desktop folder of your choosing. Claude is able to read, edit, and create new files directly in that folder. For finance teams, this means you can kick off several analyses at once, while steering Claude’s thought process as it creates each deliverable to meet your standard.
+
+Cowork can also be customized [with plugins](https://claude.com/blog/cowork-plugins)—bundles of skills (which specify how to complete a task) and connectors to data on other platforms. With [our corporate finance plugin](https://claude.com/plugins/finance), for example, Claude immediately knows how to complete common workflows like journal entries, variance analyses, and reconciliation. You can also [build your own plugins](https://support.claude.com/en/articles/13345190-getting-started-with-cowork) to match how you like to work. 
+
+Cowork is [available](https://support.claude.com/en/articles/13345190-getting-started-with-cowork) as a desktop-only research preview in beta on all paid Claude plans1.
+
+## Go deeper without leaving your spreadsheet
+
+Claude in Excel brings Claude Opus 4.6 directly to your spreadsheets.  We’ve now made it better at planning and clarifying assumptions with users, especially as the task becomes more complex. It also now supports pivot table editing, chart modifications, conditional formatting, sorting and filtering, data validation, and finance-grade formatting. 
+
+Finally, we’ve added usability improvements, including auto-compaction for long conversations and drag-and-drop multi-file support. This means you’ll need to do much less copying and pasting between tabs. You can work with Claude on everything from financial models to client-ready workbooks, all in one place.
+
+“Claude in Excel powered by Claude Opus 4.6 represents a significant leap forward. From due diligence to financial modeling, it’s proving to be a remarkably powerful tool for our team - taking unstructured data and intelligently working with minimal prompting to meaningfully automate complex analysis. It’s an excellent example of AI augmenting investment professionals’ capabilities in tangible, time-saving ways.” - **Lloyd Hilton, Head of Hg Catalyst**“As one of Canada’s largest institutional investors, we’re constantly innovating and see AI at the forefront of shaping our future. Claude Opus 4.6's enhanced speed, precision, and capacity for complex tasks, like multi-tab analysis in Claude in Excel, unlock exciting possibilities for how we work.” - **Ben Letalik, Sr. Director, Digital Transformation &amp; Innovation, BCI**
+## Refine your presentations directly with Claude
+
+We’re also launching Claude in PowerPoint as a research preview in beta. Just like Claude in Excel, this brings Claude into your PowerPoint sidebar, letting it read your existing layouts, fonts, and masters before then creating new work in-line. Claude can build decks from client templates, make targeted edits to existing slides, and generate a great first-pass presentation from scratch. 
+
+Claude in PowerPoint is now available as a research preview for all users on a Max, Team, or Enterprise plan. 
+
+## Getting started
+
+Claude Opus 4.6 and our latest product updates make a whole range of new tasks possible. But AI for finance remains an active frontier. Users should continue to review Claude’s outputs to ensure it meets their specifications; particularly for high-stakes work, human judgment remains essential. As we continue to improve Claude’s capabilities, our aim is to equip finance industry professionals with ever-more powerful tools for research and analysis, and to help them focus on their most important work.
+
+Claude Opus 4.6, Cowork, and Claude in Excel are available on all paid Claude plans. To learn more about Claude in Excel, explore our [guide](https://support.claude.com/en/articles/12650343-claude-in-excel) and [video tutorial](https://claude.com/resources/tutorials/getting-started-with-claude-in-excel), and [get started here](https://claude.com/claude-in-excel). Claude in PowerPoint is available in research preview for all Max, Team, and Enterprise users, and you can [get started here](https://claude.com/claude-in-powerpoint). 
+
+To see how organizations are using these new features in action, [register for our webinar](https://anthropic.com/webinars/claude-in-excel-and-powerpoint). 
+
+‍
+
+*Cowork is *[*available*](https://support.claude.com/en/articles/13345190-getting-started-with-cowork)* as a desktop-only research preview on all paid Claude plans, starting with Mac (Windows coming soon).*‍
+
+‍
+
+‍</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Enterprise AI</span>
-            <span class="article-date">February 5, 2026</span>
-            <span class="lang-badge-large">EN</span>
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-sky);">
+            <img class="hero-illo-img" src="/assets/illustrations/opus-4-6-finance.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">Advancing finance with Claude Opus 4.6</h1>
-          <a href="/posts/opus-4-6-finance/" class="lang-toggle">阅读中文翻译 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p><a href="https://www.anthropic.com/news/claude-opus-4-6" target="_blank">Claude Opus 4.6</a> marks a step forward in AI for finance. It can be used to help professionals make decisions based on accurate information and clear analysis, and it produces deliverables with real polish. The model is substantially better than others in the market at financial reasoning, multitasking, and maintaining focus over longer multi-step tasks.&nbsp;</p><p>Alongside Claude Opus 4.6, we’re updating some of our existing products—and introducing a new one—to put these capabilities where analysts spend the majority of their time. <a href="https://claude.com/product/cowork">Cowork</a> now delivers more polished outputs, such as financial models and presentations, on the first pass. <a href="https://claude.com/claude-in-excel" target="_blank">Claude in Excel</a> is now better at handling long-running tasks, with Claude Opus 4.6 staying focused and accurate as financial models become more complex. And we’re releasing <a href="https://claude.com/claude-in-powerpoint" target="_blank">Claude in PowerPoint</a> as a research preview in beta for natively building and iterating on decks and presentations.</p><p>Our internal Real-World Finance evaluation measures Claude’s performance on ~50 investment and financial analysis use cases spanning spreadsheets, slide decks, and word document generation and review. These are tasks commonly performed by analysts across investment banking, private equity, public investing, and corporate finance. Claude Opus 4.6 improves by over 23 percentage points on Claude Sonnet 4.5, our state-of-the-art model just a few months ago.</p><figure style="max-width:3840pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6984b66b95b2a1a24ab26f64_Opus-4-6-Chart-Real-world-finance-no-subtext%402x%20(1).png" loading="lazy"></div><figcaption><em>This eval tests a combination of code execution and tool use agentic harnesses, and was scored based on a combination of rubrics and preferences that gauge finance domain knowledge, task completeness and accuracy, and presentation quality.</em></figcaption></figure><p>Together, these updates make Claude a much stronger partner for those across financial services and corporate finance.</p><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/KCSBAAQJp5Y" title="Claude Opus 4.6 for finance" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><h2>Research, analyze, create</h2><p>Financial professionals use AI to research effectively across multiple data sources, support financial analyses, and create deliverables that their teams and customers can act on. Claude Opus 4.6 is best in class across all three dimensions.</p><figure style="max-width:1300pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6984ad0f7e9fc5edd808036e_Opus_4-6_Finance-Tasks-Benchmark.png" loading="lazy"></div></figure><p>On research, Claude Opus 4.6 improves on both BrowseComp and DeepSearchQA, two benchmarks that test a model’s ability to extract specific information from large, unstructured data sources. In practice, this means that users can hand Claude a dense set of documents and receive a specific, focused answer, rather than a simple summary.</p><p>On analysis, Claude Opus 4.6 is state-of-the-art at 60.7% (achieving a 5.47% improvement from Opus 4.5) on <a href="https://www.vals.ai/benchmarks/finance_agent" target="_blank">Finance Agent</a>, an external benchmark from Vals AI that evaluates models on research of SEC filings of public companies. Opus 4.6 is also state-of-the-art on the <a href="https://www.vals.ai/benchmarks/tax_eval_v2" target="_blank">TaxEval</a> by Vals AI at 76.0%.&nbsp;</p><p>On creation, we use GDPval-AA to measure Claude’s performance on complex knowledge work, in addition to our Real-World Finance evaluation. With Claude Opus 4.6, structured outputs like spreadsheets and presentations come out right more often on the first pass. The side-by-side outputs below show how output quality has improved from Claude Opus 4.5 to Opus 4.6. These are examples of Claude’s first-pass performance on a commercial due diligence task (evaluating a potential acquisition)—the kind of work that would typically take a senior analyst two to three weeks to complete.</p><figure style="max-width:1920pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69860def3cf544958f0a7c43_Opus-46-Blog-Comparison-Excel%20(1).png" loading="lazy"></div></figure><figure style="max-width:1920pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69860e00c073500bc2eb26f4_Opus-46-Blog-Comparison-PowerPoint%20(1).png" loading="lazy"></div></figure><blockquote>“With Claude Opus 4.6, creating financial PowerPoints that used to take hours now takes minutes. We're seeing tangible improvements in attention to detail, spatial layout, and content structuring.” - <strong>Aabhas Sharma, CTO, Hebbia</strong></blockquote><blockquote>“The performance jump with Claude Opus 4.6 feels almost unbelievable. Real-world tasks that were challenging for Opus [4.5] suddenly became easy. This feels like a watershed moment for spreadsheet agents on Shortcut.” - <strong>Nico Christie, Co-Founder &amp; CTO, Shortcut AI</strong></blockquote><h2>Better multitasking and first drafts</h2><p>The finance capabilities of Claude Opus 4.6 are easy to access with Cowork, a <a href="https://claude.com/blog/cowork-research-preview" target="_blank">new way to use Claude</a> in our desktop app.&nbsp;</p><p>In Cowork, you give Claude access to a desktop folder of your choosing. Claude is able to read, edit, and create new files directly in that folder. For finance teams, this means you can kick off several analyses at once, while steering Claude’s thought process as it creates each deliverable to meet your standard.</p><p>Cowork can also be customized <a href="https://claude.com/blog/cowork-plugins" target="_blank">with plugins</a>—bundles of skills (which specify how to complete a task) and connectors to data on other platforms. With <a href="https://claude.com/plugins/finance" target="_blank">our corporate finance plugin</a>, for example, Claude immediately knows how to complete common workflows like journal entries, variance analyses, and reconciliation. You can also <a href="https://support.claude.com/en/articles/13345190-getting-started-with-cowork" target="_blank">build your own plugins</a> to match how you like to work.&nbsp;</p><p>Cowork is <a href="https://support.claude.com/en/articles/13345190-getting-started-with-cowork" target="_blank">available</a> as a desktop-only research preview in beta on all paid Claude plans<sup>1</sup>.</p><h2>Go deeper without leaving your spreadsheet</h2><p>Claude in Excel brings Claude Opus 4.6 directly to your spreadsheets.&nbsp; We’ve now made it better at planning and clarifying assumptions with users, especially as the task becomes more complex. It also now supports pivot table editing, chart modifications, conditional formatting, sorting and filtering, data validation, and finance-grade formatting.&nbsp;</p><p>Finally, we’ve added usability improvements, including auto-compaction for long conversations and drag-and-drop multi-file support. This means you’ll need to do much less copying and pasting between tabs. You can work with Claude on everything from financial models to client-ready workbooks, all in one place.</p><figure style="max-width:1280pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6984ae18765ce9ada0768cfc_ClaudeExcel-Blog-Hero-Desktop.png" loading="lazy"></div></figure><blockquote>“Claude in Excel powered by Claude Opus 4.6 represents a significant leap forward. From due diligence to financial modeling, it’s proving to be a remarkably powerful tool for our team - taking unstructured data and intelligently working with minimal prompting to meaningfully automate complex analysis. It’s an excellent example of AI augmenting investment professionals’ capabilities in tangible, time-saving ways.” - <strong>Lloyd Hilton, Head of Hg Catalyst</strong></blockquote><blockquote>“As one of Canada’s largest institutional investors, we’re constantly innovating and see AI at the forefront of shaping our future. Claude Opus 4.6's enhanced speed, precision, and capacity for complex tasks, like multi-tab analysis in Claude in Excel, unlock exciting possibilities for how we work.” - <strong>Ben Letalik, Sr. Director, Digital Transformation &amp; Innovation, BCI</strong></blockquote><h2>Refine your presentations directly with Claude</h2><p>We’re also launching Claude in PowerPoint as a research preview in beta. Just like Claude in Excel, this brings Claude into your PowerPoint sidebar, letting it read your existing layouts, fonts, and masters before then creating new work in-line. Claude can build decks from client templates, make targeted edits to existing slides, and generate a great first-pass presentation from scratch.&nbsp;</p><figure style="max-width:1280pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6984ae4566ef8dcf3a381733_ClaudePPT-Blog-Hero-Desktop.png" loading="lazy"></div></figure><p>Claude in PowerPoint is now available as a research preview for all users on a Max, Team, or Enterprise plan.&nbsp;</p><h2>Getting started</h2><p>Claude Opus 4.6 and our latest product updates make a whole range of new tasks possible. But AI for finance remains an active frontier. Users should continue to review Claude’s outputs to ensure it meets their specifications; particularly for high-stakes work, human judgment remains essential. As we continue to improve Claude’s capabilities, our aim is to equip finance industry professionals with ever-more powerful tools for research and analysis, and to help them focus on their most important work.</p><p>Claude Opus 4.6, Cowork, and Claude in Excel are available on all paid Claude plans. To learn more about Claude in Excel, explore our <a href="https://support.claude.com/en/articles/12650343-claude-in-excel" target="_blank">guide</a> and <a href="https://claude.com/resources/tutorials/getting-started-with-claude-in-excel" target="_blank">video tutorial</a>, and <a href="https://claude.com/claude-in-excel" target="_blank">get started here</a>. Claude in PowerPoint is available in research preview for all Max, Team, and Enterprise users, and you can <a href="https://claude.com/claude-in-powerpoint" target="_blank">get started here</a>.&nbsp;</p><p>To see how organizations are using these new features in action, <a href="https://anthropic.com/webinars/claude-in-excel-and-powerpoint" target="_blank">register for our webinar</a>.&nbsp;</p><p>‍</p><h6><em><sub>Cowork is </sub></em><a href="https://support.claude.com/en/articles/13345190-getting-started-with-cowork"><em><sub>available</sub></em></a><em><sub> as a desktop-only research preview on all paid Claude plans, starting with Mac (Windows coming soon).</sub></em></h6><p>‍</p><p>‍</p><p>‍</p></div>
+            <h1 class="article-title u-text-style-h1">Advancing finance with Claude Opus 4.6</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>With Claude Opus 4.6, finance teams get better reasoning on complex analyses, cleaner first-pass deliverables, and new tools built for where analysts actually spend their time.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/enterprise-ai" target="_blank" rel="noopener noreferrer">Enterprise AI</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <div class="hero-detail-value u-text-style-body-3">Claude apps</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">February 5, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/opus-4-6-finance/en.html">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/opus-4-6-finance" target="_blank">View original</a></p>
-          <p><a href="/">← Back to home</a></p>
-        </footer>
-      </article>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p><a href="https://www.anthropic.com/news/claude-opus-4-6" target="_blank">Claude Opus 4.6</a> marks a step forward in AI for finance. It can be used to help professionals make decisions based on accurate information and clear analysis, and it produces deliverables with real polish. The model is substantially better than others in the market at financial reasoning, multitasking, and maintaining focus over longer multi-step tasks.&nbsp;</p><p>Alongside Claude Opus 4.6, we’re updating some of our existing products—and introducing a new one—to put these capabilities where analysts spend the majority of their time. <a href="https://claude.com/product/cowork">Cowork</a> now delivers more polished outputs, such as financial models and presentations, on the first pass. <a href="https://claude.com/claude-in-excel" target="_blank">Claude in Excel</a> is now better at handling long-running tasks, with Claude Opus 4.6 staying focused and accurate as financial models become more complex. And we’re releasing <a href="https://claude.com/claude-in-powerpoint" target="_blank">Claude in PowerPoint</a> as a research preview in beta for natively building and iterating on decks and presentations.</p><p>Our internal Real-World Finance evaluation measures Claude’s performance on ~50 investment and financial analysis use cases spanning spreadsheets, slide decks, and word document generation and review. These are tasks commonly performed by analysts across investment banking, private equity, public investing, and corporate finance. Claude Opus 4.6 improves by over 23 percentage points on Claude Sonnet 4.5, our state-of-the-art model just a few months ago.</p><figure style="max-width:3840pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6984b66b95b2a1a24ab26f64_Opus-4-6-Chart-Real-world-finance-no-subtext%402x%20(1).png" loading="lazy"></div><figcaption><em>This eval tests a combination of code execution and tool use agentic harnesses, and was scored based on a combination of rubrics and preferences that gauge finance domain knowledge, task completeness and accuracy, and presentation quality.</em></figcaption></figure><p>Together, these updates make Claude a much stronger partner for those across financial services and corporate finance.</p><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/KCSBAAQJp5Y" title="Claude Opus 4.6 for finance" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><h2>Research, analyze, create</h2><p>Financial professionals use AI to research effectively across multiple data sources, support financial analyses, and create deliverables that their teams and customers can act on. Claude Opus 4.6 is best in class across all three dimensions.</p><figure style="max-width:1300pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6984ad0f7e9fc5edd808036e_Opus_4-6_Finance-Tasks-Benchmark.png" loading="lazy"></div></figure><p>On research, Claude Opus 4.6 improves on both BrowseComp and DeepSearchQA, two benchmarks that test a model’s ability to extract specific information from large, unstructured data sources. In practice, this means that users can hand Claude a dense set of documents and receive a specific, focused answer, rather than a simple summary.</p><p>On analysis, Claude Opus 4.6 is state-of-the-art at 60.7% (achieving a 5.47% improvement from Opus 4.5) on <a href="https://www.vals.ai/benchmarks/finance_agent" target="_blank">Finance Agent</a>, an external benchmark from Vals AI that evaluates models on research of SEC filings of public companies. Opus 4.6 is also state-of-the-art on the <a href="https://www.vals.ai/benchmarks/tax_eval_v2" target="_blank">TaxEval</a> by Vals AI at 76.0%.&nbsp;</p><p>On creation, we use GDPval-AA to measure Claude’s performance on complex knowledge work, in addition to our Real-World Finance evaluation. With Claude Opus 4.6, structured outputs like spreadsheets and presentations come out right more often on the first pass. The side-by-side outputs below show how output quality has improved from Claude Opus 4.5 to Opus 4.6. These are examples of Claude’s first-pass performance on a commercial due diligence task (evaluating a potential acquisition)—the kind of work that would typically take a senior analyst two to three weeks to complete.</p><figure style="max-width:1920pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69860def3cf544958f0a7c43_Opus-46-Blog-Comparison-Excel%20(1).png" loading="lazy"></div></figure><figure style="max-width:1920pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69860e00c073500bc2eb26f4_Opus-46-Blog-Comparison-PowerPoint%20(1).png" loading="lazy"></div></figure><blockquote>“With Claude Opus 4.6, creating financial PowerPoints that used to take hours now takes minutes. We're seeing tangible improvements in attention to detail, spatial layout, and content structuring.” - <strong>Aabhas Sharma, CTO, Hebbia</strong></blockquote><blockquote>“The performance jump with Claude Opus 4.6 feels almost unbelievable. Real-world tasks that were challenging for Opus [4.5] suddenly became easy. This feels like a watershed moment for spreadsheet agents on Shortcut.” - <strong>Nico Christie, Co-Founder &amp; CTO, Shortcut AI</strong></blockquote><h2>Better multitasking and first drafts</h2><p>The finance capabilities of Claude Opus 4.6 are easy to access with Cowork, a <a href="https://claude.com/blog/cowork-research-preview" target="_blank">new way to use Claude</a> in our desktop app.&nbsp;</p><p>In Cowork, you give Claude access to a desktop folder of your choosing. Claude is able to read, edit, and create new files directly in that folder. For finance teams, this means you can kick off several analyses at once, while steering Claude’s thought process as it creates each deliverable to meet your standard.</p><p>Cowork can also be customized <a href="https://claude.com/blog/cowork-plugins" target="_blank">with plugins</a>—bundles of skills (which specify how to complete a task) and connectors to data on other platforms. With <a href="https://claude.com/plugins/finance" target="_blank">our corporate finance plugin</a>, for example, Claude immediately knows how to complete common workflows like journal entries, variance analyses, and reconciliation. You can also <a href="https://support.claude.com/en/articles/13345190-getting-started-with-cowork" target="_blank">build your own plugins</a> to match how you like to work.&nbsp;</p><p>Cowork is <a href="https://support.claude.com/en/articles/13345190-getting-started-with-cowork" target="_blank">available</a> as a desktop-only research preview in beta on all paid Claude plans<sup>1</sup>.</p><h2>Go deeper without leaving your spreadsheet</h2><p>Claude in Excel brings Claude Opus 4.6 directly to your spreadsheets.&nbsp; We’ve now made it better at planning and clarifying assumptions with users, especially as the task becomes more complex. It also now supports pivot table editing, chart modifications, conditional formatting, sorting and filtering, data validation, and finance-grade formatting.&nbsp;</p><p>Finally, we’ve added usability improvements, including auto-compaction for long conversations and drag-and-drop multi-file support. This means you’ll need to do much less copying and pasting between tabs. You can work with Claude on everything from financial models to client-ready workbooks, all in one place.</p><figure style="max-width:1280pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6984ae18765ce9ada0768cfc_ClaudeExcel-Blog-Hero-Desktop.png" loading="lazy"></div></figure><blockquote>“Claude in Excel powered by Claude Opus 4.6 represents a significant leap forward. From due diligence to financial modeling, it’s proving to be a remarkably powerful tool for our team - taking unstructured data and intelligently working with minimal prompting to meaningfully automate complex analysis. It’s an excellent example of AI augmenting investment professionals’ capabilities in tangible, time-saving ways.” - <strong>Lloyd Hilton, Head of Hg Catalyst</strong></blockquote><blockquote>“As one of Canada’s largest institutional investors, we’re constantly innovating and see AI at the forefront of shaping our future. Claude Opus 4.6's enhanced speed, precision, and capacity for complex tasks, like multi-tab analysis in Claude in Excel, unlock exciting possibilities for how we work.” - <strong>Ben Letalik, Sr. Director, Digital Transformation &amp; Innovation, BCI</strong></blockquote><h2>Refine your presentations directly with Claude</h2><p>We’re also launching Claude in PowerPoint as a research preview in beta. Just like Claude in Excel, this brings Claude into your PowerPoint sidebar, letting it read your existing layouts, fonts, and masters before then creating new work in-line. Claude can build decks from client templates, make targeted edits to existing slides, and generate a great first-pass presentation from scratch.&nbsp;</p><figure style="max-width:1280pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6984ae4566ef8dcf3a381733_ClaudePPT-Blog-Hero-Desktop.png" loading="lazy"></div></figure><p>Claude in PowerPoint is now available as a research preview for all users on a Max, Team, or Enterprise plan.&nbsp;</p><h2>Getting started</h2><p>Claude Opus 4.6 and our latest product updates make a whole range of new tasks possible. But AI for finance remains an active frontier. Users should continue to review Claude’s outputs to ensure it meets their specifications; particularly for high-stakes work, human judgment remains essential. As we continue to improve Claude’s capabilities, our aim is to equip finance industry professionals with ever-more powerful tools for research and analysis, and to help them focus on their most important work.</p><p>Claude Opus 4.6, Cowork, and Claude in Excel are available on all paid Claude plans. To learn more about Claude in Excel, explore our <a href="https://support.claude.com/en/articles/12650343-claude-in-excel" target="_blank">guide</a> and <a href="https://claude.com/resources/tutorials/getting-started-with-claude-in-excel" target="_blank">video tutorial</a>, and <a href="https://claude.com/claude-in-excel" target="_blank">get started here</a>. Claude in PowerPoint is available in research preview for all Max, Team, and Enterprise users, and you can <a href="https://claude.com/claude-in-powerpoint" target="_blank">get started here</a>.&nbsp;</p><p>To see how organizations are using these new features in action, <a href="https://anthropic.com/webinars/claude-in-excel-and-powerpoint" target="_blank">register for our webinar</a>.&nbsp;</p><p>‍</p><h6><em><sub>Cowork is </sub></em><a href="https://support.claude.com/en/articles/13345190-getting-started-with-cowork"><em><sub>available</sub></em></a><em><sub> as a desktop-only research preview on all paid Claude plans, starting with Mac (Windows coming soon).</sub></em></h6><p>‍</p><p>‍</p><p>‍</p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/opus-4-6-finance" target="_blank">View original</a></p>
+              <p><a href="/">← Back to home</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
     </div>
   </main>
 <footer class="footer">
@@ -51,6 +168,53 @@
       <p>Content from <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · Translation by AI</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

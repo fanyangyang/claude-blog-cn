@@ -13,5 +13,20 @@
   "illustrationBg": "Clay",
   "translatedTitle": "为并行智能体重新设计桌面端 Claude Code",
   "translatedAt": "2026-09-02T05:14:34.865Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Claude Code",
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": []
+  },
+  "subtitle": "Today, we're releasing a redesign of the Claude Code desktop app, built to help you run more Claude Code tasks at once.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/claude-code",
+  "productUrl": "https://claude.com/product/claude-code"
 }

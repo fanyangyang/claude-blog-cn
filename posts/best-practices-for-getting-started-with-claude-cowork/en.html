@@ -4,39 +4,233 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Best practices for getting started with Claude Cowork — Claude Blog CN</title>
-  <meta name="description" content="Best practices for getting started with Claude Cowork">
+  <meta name="description" content="Austin Lau, growth marketing lead at Anthropic, explains when to use Claude Cowork, how to decide what workflows to delegate, and concrete steps to get started. On June 4, Austin will share how he uses Claude Cowork for marketing.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="/posts/best-practices-for-getting-started-with-claude-cowork/" class="nav-link">中文版 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>Best practices for getting started with Claude Cowork</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/best-practices-for-getting-started-with-claude-cowork" target="_blank" rel="noopener noreferrer">Ask questions about this page</a>
+        <button type="button" class="explore-item" data-copy-markdown>Copy as markdown</button>
+        <a class="explore-item" href="/posts/best-practices-for-getting-started-with-claude-cowork/">阅读中文翻译 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># Best practices for getting started with Claude Cowork
+
+Austin Lau, growth marketing lead at Anthropic, explains when to use Claude Cowork, how to decide what workflows to delegate, and concrete steps to get started. On June 4, Austin will share how he uses Claude Cowork for marketing.
+
+In 2024, we had Claude in a chat window. You asked a question and you got an answer, but it was up to you to turn that answer into something useful. In 2025, Claude Code let engineers ship at a pace that made the rest of us a little jealous. 
+
+This year, we can all catch up with [Claude Cowork](https://claude.com/product/cowork).
+
+I started using Claude Code last year for long, multi-step tasks that chat wasn’t equipped to handle. Within a week, I went from not knowing what a terminal was to building out [Claude Code workflows that completed 30-minute tasks in 30 seconds](https://claude.com/blog/how-anthropic-uses-claude-marketing). I was using Claude Code for non-technical work because Claude Cowork didn’t exist yet.  
+
+Now, 90% of my work happens in [Claude Cowork](https://claude.com/product/cowork). In this post, I'll show you how to tell which of your tasks belong there, walk through real examples from my own work, and get you to your first finished deliverable in about ten minutes.
+
+## Using Chat vs Claude Cowork vs Claude Code
+
+If your job is non-technical knowledge work–emails, decks, spreadsheets, docs, meetings, and &quot;can you pull together a summary of this”–then Claude Cowork is for you. You don't need to know how to code. You don't need to know what an &quot;agent&quot; is or how to build one. 
+
+If you've spent the last two years with an AI chat tab open among 100 other tabs and files, copy-pasting prompts or questions into it and copy-pasting the answers back out, you already know how to use Claude Cowork. It's that, minus the copy-pasting.
+
+The same Claude models power chat, Claude Cowork, Claude Code, Claude Design, and every other place Claude appears. These are separate workspaces that you use for different types of work, but the same models run inside all. Here’s a framework for how to think about when to use which one: 
+
+- **Chat** is often how knowledge workers get introduced to Claude. You bring what you have to Claude: upload a file, paste some text, describe what's going on, and get an answer. Chat is for answers, brainstorming, and thinking out loud.
+- **Claude Cowork** in the Claude desktop app flips that around. Instead of bringing your work to Claude, you bring Claude to your work. You point it at a folder on your computer, connect it to the apps you already use, and tell it what you want done. With Claude Cowork, you describe an outcome, step away, and come back to finished work.**‍**
+- **Claude Code** is made for developers building and shipping software. If your work lives in code, start there.
+
+Many people don't know that Claude Cowork and Claude Code run on the same [engine](https://code.claude.com/docs/en/how-claude-code-works) under the hood. 
+
+### When should you use Claude Cowork?
+
+Understanding when to use Claude Cowork vs chat is the spot where most people get stuck, so here's my rule of thumb:
+
+- **Use chat **if what you want fits in a few exchanges, like a question, an explanation, a brainstorm, or a gut check. 
+- **Use Claude Cowork** if what you need is a deliverable, for example, a file someone will open, a deck someone will present, or a spreadsheet to be sorted. Use it for anything that’s multi-step or touches more than one file/file type or more than one app, or that you'd describe as a task rather than a question. With Claude Cowork, you are *delegating* work to Claude.
+
+A few examples of where the line falls:
+
+  
+    
+      
+        
+        
+      
+      
+        
+          Sample question or task
+          Use
+        
+      
+      
+        
+          What should I cover in our business review meeting?
+          Chat
+        
+        
+          Read the last three months of meeting notes in this Google Drive folder and build me a QBR deck using our template.
+          Claude Cowork
+        
+        
+          How do I VLOOKUP something?
+          Chat
+        
+        
+          Go through my spreadsheets and change all the VLOOKUP to INDEX MATCH.
+          Claude Cowork
+        
+        
+          Suggest a better title tag and meta description for this page.
+          Chat
+        
+        
+          Use the new title tags and meta descriptions for these 30 pages from this sheet and update them using the CMS connector.
+          Claude Cowork
+        
+      
+    
+  
+The most common mistake is reaching for chat for everything and never feeling the difference Claude Cowork can make. The opposite mistake is handling Claude Cowork one-off questions, then waiting around for something chat would've answered in five seconds.
+
+### The five ingredients of a Claude Cowork-shaped task
+
+If you’re not sure what projects to delegate to Claude Cowork when you’re first getting started, run them through this checklist. You don't need all five criteria, but a good candidate hits a few:
+
+- **More than one thing goes in.** Multiple files, a whole folder, or a file plus some connectors. If there's only one input, chat probably handles it fine for the most part (you should still experiment).
+- **A file comes out.** You need a deliverable that you can attach, present, share, or repurpose: a doc, a deck, a spreadsheet, or a CSV. 
+- **You'll do it again.** One-offs are fine, but recurring tasks are the sweet spot. You can schedule them to run before you're even at your desk.
+- **You already know what good looks like**. You're familiar with the shape of the output, so you can tell in 15 seconds whether the output is right, wrong, or 70% there.**‍**
+- **The middle is the boring part.** The thinking lives at the start (deciding what you want) and the end (deciding if it's right). Everything in between (extract, compile, reconcile, and reformat) is what you hand off.
+
+## How I use Claude Cowork at Anthropic
+
+I manage growth marketing at Anthropic, so my examples are marketing-flavored. Don't read these looking for a workflow to copy—that's not going to be helpful in the long run. Watch how each one hits a few items from the checklist above, because that's the pattern you'll be looking for in your own Claude Cowork workflows.
+
+### Daily briefing
+
+The number of Slack channels and emails a marketer receives every day can be  overwhelming. I have a &quot;daily briefing&quot; task that runs every morning at 6am. Claude Cowork is connected to my Slack and Gmail, and my prompt tells it to review my unread emails and the channels I care about, sort them into buckets, and produce a short report.
+
+The report gives me a TLDR of what to look into, flagged emails grouped by type, channel summaries, and any overnight product-related incidents that could have impacted marketing. Anyone drowning in Slack and email can run some version of this workflow.
+
+### Budget pacing
+
+Part of my job includes budget pacing for performance marketing. It's the kind of work nobody wants because it's boring and tedious. Many performance marketing teams track daily spend and run rate in Google Sheets to estimate pacing to goal. Either you're manually exporting daily spend from each channel and pasting it into the sheet, or you're paying for a third-party tool to extract, transform, and load data for you. 
+
+With Claude Cowork, I connect to Google Ads and Meta Ads and create a live artifact (basically an HTML dashboard) in the desktop app that automatically pulls in my daily spend and calculates pacing for me. I can also just tell Claude in plain English how to filter my campaigns and what to look out for.
+
+Run that against the checklist above: multiple sources in (every channel's spend), a file out (in this case it's the dashboard), I rerun it constantly, and the middle is the mindless soul-sucking download-copy-paste grind I absolutely do not want to do myself. Since the ad platforms are integrated through my connectors, I can update this dashboard at any time.
+
+### Reporting
+
+Instead of exporting a pile of CSVs and building pivot tables or combining files manually, I have Claude Cowork connected to Google Search Console. It pulls what I care about (queries, countries, pages) and reconciles it into a single sheet, instead of Google's default of one CSV per dimension when you export data manually.
+
+I also give Claude the context on what to focus on, like looking at the last seven days vs the prior seven, filtering to only specific countries, flagging anything that moved meaningfully, and writing up the report in the template that I want. From there I can go ahead and tweak anything or ask Claude follow up questions.
+
+With scheduling in Claude Cowork, this runs automatically every week. Reporting used to take me ~30 minutes a week; now it takes five and I  spend them on the part that needs my judgement: filling in missing context and workshopping the callouts.
+
+These are just some examples of how I use Claude Cowork, but they barely scratch the surface. Check out another article I wrote that highlights a [more detailed walkthrough](https://www.linkedin.com/feed/update/urn:li:activity:7448056387772833795/) of another complex use case that spans plugins, skills, local MCPs, and [Dispatch](https://support.claude.com/en/articles/13947068-assign-tasks-from-anywhere-in-claude-cowork) for more best practices.
+
+## Your first 10 minutes with Claude Cowork
+
+First time opening the app? Here’s how to get started: 
+
+- Open the Claude desktop app and switch to the Claude Cowork tab.
+- Give Claude something to work with. Drop in a few files, point it at a folder on your computer, or connect an app you frequently use (Slack, Gmail, Notion, CRM, etc). The difference between a mediocre Claude Cowork output and a great one is almost never your prompt, but whether you're providing enough rich context for Claude to work with.
+- Tell Claude the outcome you want. Describe the deliverable you want at the end and provide any necessary context.
+- Start with a real task you know well. You'll see immediately where it's strong, where it needs context from you, and you already know what &quot;good&quot; looks like for it.
+- Make Claude ask you questions before it starts. This is the single most useful habit I’ve built. Include this as part of your prompt: *Before we begin, repeat my ask back to me so we're aligned, then ask me as many clarifying questions as you have.*
+
+This surfaces things you didn't think to specify, like which time period are we looking at, what does &quot;good&quot; mean here, or what edge cases do you know that Claude doesn't. The trap is assuming Claude already knows what's obvious to you. Answering five questions up front costs you 30 seconds. Finding those same gaps afterwards costs you time and tokens, and it's a pain to fix.
+
+Still not sure what to hand off? Ask Claude. Claude has memory and can search your past conversations, so you can ask it which tasks you do most often and which ones to try in Claude Cowork.
+
+### When I still reach for chat
+
+I still use chat extensively to talk through a positioning problem, pressure-test an idea before I commit to it, or to ask random questions like why my dog keeps licking the bed.
+
+The point isn't that chat is the &quot;old&quot; thing. Chat is for when the output is a thought in your head, and Claude Cowork is for when the output is something you’ll hand to someone else.
+
+## Go build something
+
+Pick one repetitive task you do every week, try using[ Claude Cowork](https://claude.com/product/cowork) for it, and see what comes back. The first few tasks might feel a little awkward, but after a few tries you'll quickly go from &quot;how do I use this&quot; to &quot;what do I hand it next.&quot;
+
+*This article was written by Austin Lau, on the growth team at Anthropic, and expresses his opinions, usage patterns, and advice on Claude Cowork.*</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Enterprise AI</span>
-            <span class="article-date">June 3, 2026</span>
-            <span class="lang-badge-large">EN</span>
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-heather);">
+            <img class="hero-illo-img" src="/assets/illustrations/best-practices-for-getting-started-with-claude-cowork.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">Best practices for getting started with Claude Cowork</h1>
-          <a href="/posts/best-practices-for-getting-started-with-claude-cowork/" class="lang-toggle">阅读中文翻译 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><div class="w-embed"><style>
+            <h1 class="article-title u-text-style-h1">Best practices for getting started with Claude Cowork</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>Austin Lau, growth marketing lead at Anthropic, explains when to use Claude Cowork, how to decide what workflows to delegate, and concrete steps to get started. On June 4, Austin will share how he uses Claude Cowork for marketing.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/enterprise-ai" target="_blank" rel="noopener noreferrer">Enterprise AI</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/product/cowork" target="_blank" rel="noopener noreferrer">Claude Cowork</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">June 3, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/best-practices-for-getting-started-with-claude-cowork/en.html">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><div class="w-embed"><style>
   /* Fluid breakout for blog embeds + code blocks */
   .u-rich-text-blog .w-embed,
   .u-rich-text-blog pre.w-code-block {
@@ -169,13 +363,15 @@
     </table>
   </div>
 </figure></div><p>The most common mistake is reaching for chat for everything and never feeling the difference Claude Cowork can make. The opposite mistake is handling Claude Cowork one-off questions, then waiting around for something chat would've answered in five seconds.</p><h3>The five ingredients of a Claude Cowork-shaped task</h3><p>If you’re not sure what projects to delegate to Claude Cowork when you’re first getting started, run them through this checklist. You don't need all five criteria, but a good candidate hits a few:</p><ol role="list"><li><strong>More than one thing goes in.</strong> Multiple files, a whole folder, or a file plus some connectors. If there's only one input, chat probably handles it fine for the most part (you should still experiment).</li><li><strong>A file comes out.</strong> You need a deliverable that you can attach, present, share, or repurpose: a doc, a deck, a spreadsheet, or a CSV.&nbsp;</li><li><strong>You'll do it again.</strong> One-offs are fine, but recurring tasks are the sweet spot. You can schedule them to run before you're even at your desk.</li><li><strong>You already know what good looks like</strong>. You're familiar with the shape of the output, so you can tell in 15 seconds whether the output is right, wrong, or 70% there.<strong>‍</strong></li><li><strong>The middle is the boring part.</strong> The thinking lives at the start (deciding what you want) and the end (deciding if it's right). Everything in between (extract, compile, reconcile, and reformat) is what you hand off.</li></ol><h2>How I use Claude Cowork at Anthropic</h2><p>I manage growth marketing at Anthropic, so my examples are marketing-flavored. Don't read these looking for a workflow to copy—that's not going to be helpful in the long run. Watch how each one hits a few items from the checklist above, because that's the pattern you'll be looking for in your own Claude Cowork workflows.</p><h3>Daily briefing</h3><p>The number of Slack channels and emails a marketer receives every day can be&nbsp; overwhelming. I have a "daily briefing" task that runs every morning at 6am. Claude Cowork is connected to my Slack and Gmail, and my prompt tells it to review my unread emails and the channels I care about, sort them into buckets, and produce a short report.</p><figure style="max-width:1815pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1e1e027cf5a76278798b40_CleanShot%202026-05-19%20at%2014.56.25.png" loading="lazy"></div></figure><p>The report gives me a TLDR of what to look into, flagged emails grouped by type, channel summaries, and any overnight product-related incidents that could have impacted marketing. Anyone drowning in Slack and email can run some version of this workflow.</p><h3>Budget pacing</h3><p>Part of my job includes budget pacing for performance marketing. It's the kind of work nobody wants because it's boring and tedious. Many performance marketing teams track daily spend and run rate in Google Sheets to estimate pacing to goal. Either you're manually exporting daily spend from each channel and pasting it into the sheet, or you're paying for a third-party tool to extract, transform, and load data for you. </p><figure style="max-width:4272pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1e1e995df01f6fda548ac6_CleanShot%202026-05-19%20at%2013.33.32%402x.png" loading="lazy"></div></figure><p>With Claude Cowork, I connect to Google Ads and Meta Ads and create a live artifact (basically an HTML dashboard) in the desktop app that automatically pulls in my daily spend and calculates pacing for me. I can also just tell Claude in plain English how to filter my campaigns and what to look out for.</p><p>Run that against the checklist above: multiple sources in (every channel's spend), a file out (in this case it's the dashboard), I rerun it constantly, and the middle is the mindless soul-sucking download-copy-paste grind I absolutely do not want to do myself. Since the ad platforms are integrated through my connectors, I can update this dashboard at any time.</p><h3>Reporting</h3><p>Instead of exporting a pile of CSVs and building pivot tables or combining files manually, I have Claude Cowork connected to Google Search Console. It pulls what I care about (queries, countries, pages) and reconciles it into a single sheet, instead of Google's default of one CSV per dimension when you export data manually.</p><figure style="max-width:3630pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1e1ed16cb3dd91de3b5612_CleanShot%202026-05-19%20at%2013.46.03%402x.png" loading="lazy"></div></figure><p>I also give Claude the context on what to focus on, like looking at the last seven days vs the prior seven, filtering to only specific countries, flagging anything that moved meaningfully, and writing up the report in the template that I want. From there I can go ahead and tweak anything or ask Claude follow up questions.</p><figure style="max-width:3630pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1e1f056c0d01abd9a59479_CleanShot%202026-05-19%20at%2013.46.22%402x.png" loading="lazy"></div></figure><p>With scheduling in Claude Cowork, this runs automatically every week. Reporting used to take me ~30 minutes a week; now it takes five and I&nbsp; spend them on the part that needs my judgement: filling in missing context and workshopping the callouts.</p><p>These are just some examples of how I use Claude Cowork, but they barely scratch the surface. Check out another article I wrote that highlights a <a href="https://www.linkedin.com/feed/update/urn:li:activity:7448056387772833795/" target="_blank">more detailed walkthrough</a> of another complex use case that spans plugins, skills, local MCPs, and <a href="https://support.claude.com/en/articles/13947068-assign-tasks-from-anywhere-in-claude-cowork" target="_blank">Dispatch</a> for more best practices.</p><h2>Your first 10 minutes with Claude Cowork</h2><p>First time opening the app? Here’s how to get started:&nbsp;</p><ol role="list"><li>Open the Claude desktop app and switch to the Claude Cowork tab.</li><li>Give Claude something to work with. Drop in a few files, point it at a folder on your computer, or connect an app you frequently use (Slack, Gmail, Notion, CRM, etc). The difference between a mediocre Claude Cowork output and a great one is almost never your prompt, but whether you're providing enough rich context for Claude to work with.</li><li>Tell Claude the outcome you want. Describe the deliverable you want at the end and provide any necessary context.</li><li>Start with a real task you know well. You'll see immediately where it's strong, where it needs context from you, and you already know what "good" looks like for it.</li><li>Make Claude ask you questions before it starts. This is the single most useful habit I’ve built. Include this as part of your prompt: <em>Before we begin, repeat my ask back to me so we're aligned, then ask me as many clarifying questions as you have.</em></li></ol><p>This surfaces things you didn't think to specify, like which time period are we looking at, what does "good" mean here, or what edge cases do you know that Claude doesn't. The trap is assuming Claude already knows what's obvious to you. Answering five questions up front costs you 30 seconds. Finding those same gaps afterwards costs you time and tokens, and it's a pain to fix.</p><p>Still not sure what to hand off? Ask Claude. Claude has memory and can search your past conversations, so you can ask it which tasks you do most often and which ones to try in Claude Cowork.</p><figure style="max-width:1815pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1e1f566c0d01abd9a5a6a9_CleanShot%202026-05-19%20at%2015.05.52.png" loading="lazy"></div></figure><h3>When I still reach for chat</h3><p>I still use chat extensively to talk through a positioning problem, pressure-test an idea before I commit to it, or to ask random questions like why my dog keeps licking the bed.</p><p>The point isn't that chat is the "old" thing. Chat is for when the output is a thought in your head, and Claude Cowork is for when the output is something you’ll hand to someone else.</p><h2>Go build something</h2><p>Pick one repetitive task you do every week, try using<a href="https://claude.com/product/cowork" target="_blank"> Claude Cowork</a> for it, and see what comes back. The first few tasks might feel a little awkward, but after a few tries you'll quickly go from "how do I use this" to "what do I hand it next."</p><p><em>This article was written by Austin Lau, on the growth team at Anthropic, and expresses his opinions, usage patterns, and advice on Claude Cowork.</em></p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/best-practices-for-getting-started-with-claude-cowork" target="_blank">View original</a></p>
+              <p><a href="/">← Back to home</a></p>
+            </footer>
+          </article>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/best-practices-for-getting-started-with-claude-cowork" target="_blank">View original</a></p>
-          <p><a href="/">← Back to home</a></p>
-        </footer>
-      </article>
+      </div>
     </div>
   </main>
 <footer class="footer">
@@ -183,6 +379,53 @@
       <p>Content from <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · Translation by AI</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

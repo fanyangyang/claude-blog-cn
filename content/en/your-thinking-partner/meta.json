@@ -13,5 +13,22 @@
   "translatedTitle": "Claude 新功能：让 Claude 成为你的思考伙伴",
   "translated": true,
   "translatedAt": "2026-09-02T04:54:25.809Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude apps"
+    ],
+    "usecase": [
+      "Work",
+      "Productivity"
+    ]
+  },
+  "subtitle": "Over the past several weeks, we've released features that help Claude transform your most creative ideas into finished work. Here's how.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": ""
 }

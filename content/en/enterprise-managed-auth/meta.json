@@ -13,5 +13,25 @@
   "translatedTitle": "集中管理 MCP 连接器的授权",
   "translated": true,
   "translatedAt": "2026-09-02T00:00:00.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI",
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Enterprise",
+      "Claude apps"
+    ],
+    "usecase": [
+      "Business",
+      "Productivity",
+      "Work"
+    ]
+  },
+  "subtitle": "Admins can now provision MCP connectors for their whole organization through their identity provider, starting with Okta. Users get connector access automatically on first login, with authorization configured centrally by their organization.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/solutions/enterprise"
 }

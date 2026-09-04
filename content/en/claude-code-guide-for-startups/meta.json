@@ -13,5 +13,23 @@
   "heroIndex": -1,
   "inGrid": true,
   "illustration": "assets/illustrations/claude-code-guide-for-startups.svg",
-  "illustrationBg": "Sky"
+  "illustrationBg": "Sky",
+  "facets": {
+    "category": [
+      "Claude Code"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": [
+      "Startups"
+    ]
+  },
+  "subtitle": "How fast-growing startups use Claude Code to ship—five operating principles drawn from interviews with more than a dozen companies.",
+  "authors": [
+    "Michael Segner"
+  ],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/claude-code",
+  "productUrl": "https://claude.com/product/claude-code"
 }

@@ -13,5 +13,21 @@
   "translatedTitle": "在法律行业部署 Claude",
   "translated": true,
   "translatedAt": "2026-09-02T04:16:06Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Cowork"
+    ],
+    "usecase": [
+      "Legal"
+    ]
+  },
+  "subtitle": "We share how legal professionals are using Claude to accelerate their most tedious workflows, covering when to use what product, new connectors, practice-area plugins, and a three-phase adoption roadmap.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/product/cowork"
 }

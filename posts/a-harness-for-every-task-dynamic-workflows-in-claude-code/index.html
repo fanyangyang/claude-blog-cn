@@ -4,54 +4,350 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>为每个任务配备专属 harness：Claude Code 中的动态工作流 — Claude Blog 中文翻译</title>
-  <meta name="description" content="为每个任务配备专属 harness：Claude Code 中的动态工作流">
+  <meta name="description" content="Claude Code can now write and orchestrate its own multi-agent harness on the fly. Here's how dynamic workflows work, and the patterns that get the most out of them.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/a-harness-for-every-task-dynamic-workflows-in-claude-code" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>为每个任务配备专属 harness：Claude Code 中的动态工作流</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/a-harness-for-every-task-dynamic-workflows-in-claude-code" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/a-harness-for-every-task-dynamic-workflows-in-claude-code/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># 为每个任务配备专属 harness：Claude Code 中的动态工作流
+
+Claude Code can now write and orchestrate its own multi-agent harness on the fly. Here's how dynamic workflows work, and the patterns that get the most out of them.
+
+上周，我们在 Claude Code 中发布了[动态工作流](https://code.claude.com/docs/en/workflows)。Claude 现在可以针对手头的任务，即时编写出专属的 [harness](https://code.claude.com/docs/en/glossary#agentic-harness)。
+
+Claude Code 默认的 harness 是为编码而生的，但它对许多其他类型的任务同样适用，因为事实证明，很多任务都与编码任务相似。不过，对于某些特定类别的任务，我们不得不在 Claude Code 之上构建定制的 harness 才能达到最佳性能，例如 [Research](https://support.claude.com/en/articles/11088861-using-research-on-claude)、[安全分析](https://support.claude.com/en/articles/11932705-automated-security-reviews-in-claude-code)、[agent teams](https://code.claude.com/docs/en/agent-teams) 或 [Code Review](https://code.claude.com/docs/en/code-review)。
+
+工作流让你能够动态创建构建在 Claude Code 之上的 harness，使 Claude 以更原生的方式解决上述所有问题。你还可以与他人分享和复用这些工作流。
+
+在本文中，我将分享我最初使用工作流的经验和心得，帮助你充分利用这一能力。请记住，最佳实践仍在形成之中：动态工作流通常会消耗更多 token，最适合复杂、高价值的任务。
+
+## 示例提示词
+
+在深入技术细节之前，我想先展示几个示例提示词，让你感受一下工作流的想象空间：
+
+&quot;这个测试大约每 50 次运行会失败 1 次。搭建一个工作流来复现它。围绕竞态条件提出多个相互竞争的假设，直到其中一个假设经受住所有证据的考验才许停下。&quot;
+
+&quot;用一个工作流检查我最近的 50 个会话，从中挖掘我反复犯的纠正性错误，并把反复出现的问题提炼成 `CLAUDE.md` 规则&quot;
+
+“用一个工作流梳理 Slack 中 #incidents 频道过去六个月的记录，找出那些反复出现但一直没人提工单的根本原因。”
+
+&quot;把我的商业计划书交给一个工作流，让不同的 agent 分别从投资人、客户和竞争对手的视角把它批个体无完肤。&quot;
+
+&quot;这里有一个装着 80 份简历的文件夹，用一个工作流为后端岗位对它们排序，并复核前十名。用 AskUserQuestion 工具采访我，制定评分标准。&quot;
+
+&quot;我需要给这个 CLI 工具起个名字。用一个工作流头脑风暴出一批候选，然后举办一场锦标赛选出前 3 名。&quot;
+
+&quot;用一个工作流把我们的 User 模型在所有地方重命名为 Account。&quot;
+
+“用一个工作流通读我的博客草稿，逐条对照代码库验证其中的每个技术论断，我不想发布任何有错的内容。”
+
+## 动态工作流的工作原理
+
+动态工作流会执行一个 JavaScript 文件，其中包含若干用于生成和协调 [subagents](https://code.claude.com/docs/en/sub-agents) 的特殊函数：
+
+动态工作流还包含标准 JavaScript 函数，如 JSON、Math 和 Array，帮助处理数据。
+
+尤其有用的一点是，动态工作流可以决定某个 agent 使用哪些模型，以及 subagent 是否在独立的 worktree 中运行，从而让 Claude 自行选择所需的智能水平和隔离程度。
+
+如果工作流被中断（例如因用户操作或终端退出），恢复会话后工作流可以从中断处继续执行。
+
+## 为什么需要动态工作流
+
+当你让默认的 Claude Code harness 执行任务时，它需要在同一个上下文窗口中同时完成规划和执行。对于许多编码任务来说这非常高效，但在长时间运行、大规模并行、高度结构化和/或对抗性任务上可能会出问题。
+
+这是因为 Claude 在单个上下文窗口中处理复杂任务的时间越长，就越容易受到几种特定失败模式的影响：
+
+- **Agent 懒惰（agentic laziness）**指 Claude 在完成一项特别复杂的多步骤任务之前就停下，并在部分进展后宣告任务完成，例如在安全审查中只处理了 50 项中的 35 项。
+- **自我偏好偏差（self-preferential bias）**指 Claude 倾向于偏爱自己的结果或发现，尤其是当被要求按照评分标准验证或评判它们时。
+- **目标漂移（goal drift）**指经过多轮对话后，尤其是压缩（compaction）之后，对最初目标的忠实度逐渐丧失。每一步摘要都是有损的，诸如边缘情况要求或&quot;不要做 X&quot;之类的约束细节可能会丢失。
+
+创建工作流有助于对抗这些问题：它通过编排多个拥有独立上下文窗口和聚焦、隔离目标的 Claude subagent 来完成。
+
+## 动态工作流 vs 静态工作流
+
+你可能此前用 Claude Agent SDK 或 `claude -p` 创建过静态工作流，把多个 Claude Code 实例协调在一起。
+
+但由于静态工作流必须兼容所有边缘情况，它们通常更通用。而借助 [Claude Opus 4.8](https://www.anthropic.com/news/claude-opus-4-8) 和动态工作流，Claude 已经足够智能，可以为你的具体用例编写量身定制的 harness。
+
+## 使用动态工作流的实用模式
+
+你可以直接让 Claude 创建一个动态工作流来开始使用，也可以使用触发词 “`ultracode`” 来确保 Claude Code 创建工作流。
+
+但为动态工作流建立一套心智模型，会帮助你理解何时使用它们，以及如何通过提示词引导 Claude。
+
+以下是 Claude 在构建工作流时可能会使用并组合的几种常见模式：
+
+### 分类后执行（classify-and-act）
+
+用一个分类器 agent 判断任务类型，再根据任务路由到不同的 agent 或行为。也可以在最后用分类器来决定输出。
+
+### 扇出后综合（fan-out-and-synthesize）
+
+把任务拆分成许多更小的步骤，每一步各跑一个 agent，然后综合这些结果。当存在大量小步骤，或者每一步都能从独立干净的上下文窗口中获益、互不干扰交叉污染时，这种模式特别有用。综合步骤是一道屏障——它会等所有扇出的 agent 完成，再把它们的结构化输出合并为一个结果。
+
+### 对抗性验证（adversarial verification）
+
+对每个生成的 agent，再单独生成一个 agent，按照评分标准或判定条件对其输出进行对抗性验证。
+
+### 生成后筛选（generate-and-filter）
+
+围绕一个主题生成一批想法，然后按评分标准或通过验证进行筛选，对重复项去重，只返回质量最高、经过检验的想法。
+
+### 锦标赛（tournament）
+
+不是分摊工作，而是让 agent 相互竞争。生成 N 个 agent，各自用不同方法尝试同一个任务。然后由提示词或模型借助评判 agent 对结果进行两两比较，直到决出胜者。
+
+### 循环直到完成（loop until done）
+
+对于工作量未知的任务，循环生成 agent 直到满足停止条件（没有新发现，或日志中不再出现错误），而不是固定跑多少轮。
+
+## 用例
+
+发挥创造力，想想何时以及如何让 Claude Code 创建动态工作流。我发现工作流在非技术性工作中有时反而更有用。
+
+### 迁移与重构
+
+[Bun](https://bun.com/) 曾借助工作流从 Zig 重写为 Rust。你可以在 [Jarred 的 X 帖子](https://x.com/jarredsumner/status/2060050578026189172)中了解更多细节，也可以看看我们如何在[百万行级的代码库上运行 AI 代码迁移](https://claude.com/blog/ai-code-migration)。
+
+关键在于把任务拆解为一系列需要处理的步骤，例如调用点、失败的测试、模块等。在 worktree 中为每处修复派生一个 subagent 来完成修改，再由另一个 agent 进行对抗性审查，然后合并。可以考虑告诉 agent 不要使用资源消耗大的命令，这样你就能最大程度并行，而不会耗尽机器资源。
+
+### 深度研究
+
+我们在 Claude Code 中发布了一个使用动态工作流的深度研究技能（`/deep-research`）。具体来说，它会扇出多个网络搜索、抓取来源、对论断进行对抗性验证，并综合出一份带引用的报告。
+
+但这类研究并不局限于网络搜索。比如，可以让 Claude 从 Slack 中的上下文汇总一份状态报告，或者通过深入探索代码库研究某个功能的工作原理。
+
+### 深度验证
+
+反过来，如果你手里有一份报告，想逐条核查并溯源它引用的每一个事实性论断，可以生成这样一个工作流：先由一个 agent 找出所有事实性论断，然后为每一条派生一个 subagent 详细核查。还可以再让一个验证 agent 检查提供来源的 subagent，确保其来源质量足够高。
+
+### 排序
+
+你可能有一列想按某种质性指标排序的项目，而你相信 Claude Code 擅长评估这种指标，例如：按 Bug 严重程度对支持工单排序。但如果试图在一条提示词里对 1000 多行排序，质量会下降，上下文也装不下。正确的做法是跑一场锦标赛——一条由两两比较 agent 组成的流水线（比较式判断比绝对打分更可靠），或者并行分桶排序再合并。每次比较都是一个独立的 agent，由确定性的循环持有对阵表，上下文中只保留当前进行中的比较。
+
+### 记忆与规则遵循
+
+如果你发现 Claude 总是遗漏或搞砸某些规则，即使写进了 `CLAUDE.mds` 也没用，那就创建一个工作流，列出必须由验证 agent 逐条检查的规则——每条规则一个验证者。再创建一个&quot;怀疑者&quot;人设的 subagent 来审查这些规则的执行情况，确保它们落到实处，这有助于避免过多误报。
+
+反过来同样可行：挖掘你最近的会话和代码审查评论，找出你反复纠正的错误，用并行 agent 聚类，对每个候选规则做对抗性验证（这条规则本可以避免哪个真实错误吗？），然后把幸存者蒸馏回 `CLAUDE.md`。
+
+### 根因调查
+
+调试的最好方式是提出多个独立假设并逐一检验，但如果只用一个上下文窗口，Claude 可能陷入自我偏好偏差。
+
+工作流可以从结构上杜绝这一点：生成多个 agent，从互不重叠的证据出发提出假设。例如，日志、文件、数据各由独立的 agent 负责。每个假设随后要面对一组验证者和反驳者组成的评审团。
+
+这不仅限于代码。工作流还可用于销售（为什么三月份销售额下滑了？）、数据工程（为什么这条流水线失败了？），或任何复盘类工作。
+
+### 大规模分诊
+
+每个团队都有支持队列、Bug 报告或其他靠人力无法完全消化完的积压工作。
+
+分诊工作流会对每个条目分类、与已跟踪的内容去重，然后采取行动：可能是尝试修复，也可能是升级转给人类处理。
+
+分诊工作流的一个实用模式是隔离（quarantine）：禁止读取不可信公开内容的 agent 执行高权限操作，这些操作交给负责根据信息采取行动的 agent 来完成。
+
+把分诊工作流与 /loop 搭配，可以让 Claude 持续自动执行。
+
+### 探索与品味
+
+在探索不同解决方案时，工作流会很有用，尤其是当评判标准基于品味时，比如设计或命名，此时制定一套评分标准会大有裨益。
+
+可以试着让 Claude 探索一批方案，并给审查 agent 一份&quot;好方案长什么样&quot;的评分标准。当审查 agent 认为已满足标准时，任务才算完成。方案也可以依据评分标准，通过锦标赛来排序或选出。
+
+### 评估（Evals）
+
+你可以运行轻量级评估：在 worktree 中派生独立的 agent 执行特定任务，再派生比较 agent，按评分标准对具体输出进行比较和打分。例如，按照特定标准评估并迭代优化你创建的 skill。
+
+### 模型与智能路由
+
+创建一个针对你的任务调优的分类器 agent，由它决定使用哪个模型。当任务会涉及大量工具调用时这很有帮助——在执行前先做点研究，就能为任务选出最合适的模型。
+
+例如，&quot;解释 auth 模块的工作原理&quot;这个任务用哪个模型最好，取决于 auth 模块有多少个文件以及代码库的形态。分类器 agent 可以先完成这项研究，再根据任务的预期复杂度路由到 Sonnet 或 Opus。
+
+## 什么时候不该用动态工作流
+
+工作流是新事物。虽然它在很多用例中能创造超乎寻常的成果，但并非每个任务都需要它，而且可能消耗多得多的 token。
+
+最好是用工作流创造性地拓展 Claude Code 的能力边界，做以前做不到的事。对于常规编码任务，不妨问问自己：它真的需要更多算力吗？比如，大多数传统编码任务并不需要 5 个评审组成评审团。
+
+同样的判断也适用于上一层——架构层面：[多 agent vs 单 agent](https://claude.com/blog/building-multi-agent-systems-when-and-how-to-use-them) 的决策遵循类似的逻辑——并行化和专业化带来的收益，必须盖过它们的协调成本。
+
+## 构建动态工作流的技巧
+
+### 提示词
+
+为动态工作流编写详细的提示词，并运用上文描述的那些具体技巧，效果最好。
+
+工作流并不只用于大型任务。你可以提示模型使用&quot;快速工作流&quot;。例如，可以对某个假设做一次快速的对抗性审查。
+
+### 与 `/goal` 和 `/loop` 组合
+
+使用可重复运行的工作流（例如分诊、研究或验证）时，搭配 `/loop` 定期执行，并用 /goal 设定硬性的完成要求。
+
+### token 用量预算
+
+你可以为动态工作流设置显式的 token 用量预算，限制任务消耗多少 token。可以在提示词中给出预算，比如&quot;使用 10k token&quot;，这会设置上限。
+
+### 保存和分享动态工作流
+
+在工作流菜单中按 &quot;s&quot; 即可保存工作流。你可以把它们提交到 `~/.claude/workflows`，或通过 skill 分发。
+
+要通过 skill 分享，可以把你的 JavaScript 工作流文件放进 skill 文件夹，并在 [SKILL.MD](http://skill.md) 中引用它们。为了更灵活，你可以提示 Claude 把 skill 中的工作流视为模板，而不是必须逐字执行的脚本。
+
+## 探索的新起点
+
+工作流是扩展 Claude Code 的一种有用的新方式。我鼓励你把它们当作一个起点，去探索用 Claude 完成任务的新方法。关于如何用好它们，还有很多值得发掘。欢迎告诉我你的发现。
+
+*关于 harness 中究竟应该包含什么的设计原则，可参阅我们构建 Claude 的三种*[*harness 设计模式*](https://claude.com/blog/harnessing-claudes-intelligence)*。*
+
+*本文作者是 Thariq Shihipar 和 Sid Bidasaria，他们是 Anthropic 负责 Claude Code 的技术团队成员。*</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Claude Code</span>
-            <span class="article-date">June 2, 2026</span>
-            
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-olive);">
+            <img class="hero-illo-img" src="/assets/illustrations/a-harness-for-every-task-dynamic-workflows-in-claude-code.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">为每个任务配备专属 harness：Claude Code 中的动态工作流</h1>
-          <a href="/posts/a-harness-for-every-task-dynamic-workflows-in-claude-code/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>上周，我们在 Claude Code 中发布了<a href="https://code.claude.com/docs/en/workflows">动态工作流</a>。Claude 现在可以针对手头的任务，即时编写出专属的 <a href="https://code.claude.com/docs/en/glossary#agentic-harness">harness</a>。</p><p>Claude Code 默认的 harness 是为编码而生的，但它对许多其他类型的任务同样适用，因为事实证明，很多任务都与编码任务相似。不过，对于某些特定类别的任务，我们不得不在 Claude Code 之上构建定制的 harness 才能达到最佳性能，例如 <a href="https://support.claude.com/en/articles/11088861-using-research-on-claude">Research</a>、<a href="https://support.claude.com/en/articles/11932705-automated-security-reviews-in-claude-code">安全分析</a>、<a href="https://code.claude.com/docs/en/agent-teams">agent teams</a> 或 <a href="https://code.claude.com/docs/en/code-review">Code Review</a>。</p><p>工作流让你能够动态创建构建在 Claude Code 之上的 harness，使 Claude 以更原生的方式解决上述所有问题。你还可以与他人分享和复用这些工作流。</p><p>在本文中，我将分享我最初使用工作流的经验和心得，帮助你充分利用这一能力。请记住，最佳实践仍在形成之中：动态工作流通常会消耗更多 token，最适合复杂、高价值的任务。</p><h2>示例提示词</h2><p>在深入技术细节之前，我想先展示几个示例提示词，让你感受一下工作流的想象空间：</p><p>"这个测试大约每 50 次运行会失败 1 次。搭建一个工作流来复现它。围绕竞态条件提出多个相互竞争的假设，直到其中一个假设经受住所有证据的考验才许停下。"</p><p>"用一个工作流检查我最近的 50 个会话，从中挖掘我反复犯的纠正性错误，并把反复出现的问题提炼成 <code>CLAUDE.md</code> 规则"</p><p>“用一个工作流梳理 Slack 中 #incidents 频道过去六个月的记录，找出那些反复出现但一直没人提工单的根本原因。”</p><p>"把我的商业计划书交给一个工作流，让不同的 agent 分别从投资人、客户和竞争对手的视角把它批个体无完肤。"</p><p>"这里有一个装着 80 份简历的文件夹，用一个工作流为后端岗位对它们排序，并复核前十名。用 AskUserQuestion 工具采访我，制定评分标准。"</p><p>"我需要给这个 CLI 工具起个名字。用一个工作流头脑风暴出一批候选，然后举办一场锦标赛选出前 3 名。"</p><p>"用一个工作流把我们的 User 模型在所有地方重命名为 Account。"</p><p>“用一个工作流通读我的博客草稿，逐条对照代码库验证其中的每个技术论断，我不想发布任何有错的内容。”</p><h2>动态工作流的工作原理</h2><p>动态工作流会执行一个 JavaScript 文件，其中包含若干用于生成和协调 <a href="https://code.claude.com/docs/en/sub-agents">subagents</a> 的特殊函数：</p><figure style="max-width:1760pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1f1684f559cc83ff4b465b_image1.png" loading="lazy"></div></figure><p>动态工作流还包含标准 JavaScript 函数，如 JSON、Math 和 Array，帮助处理数据。</p><p>尤其有用的一点是，动态工作流可以决定某个 agent 使用哪些模型，以及 subagent 是否在独立的 worktree 中运行，从而让 Claude 自行选择所需的智能水平和隔离程度。</p><p>如果工作流被中断（例如因用户操作或终端退出），恢复会话后工作流可以从中断处继续执行。</p><h2>为什么需要动态工作流</h2><p>当你让默认的 Claude Code harness 执行任务时，它需要在同一个上下文窗口中同时完成规划和执行。对于许多编码任务来说这非常高效，但在长时间运行、大规模并行、高度结构化和/或对抗性任务上可能会出问题。</p><p>这是因为 Claude 在单个上下文窗口中处理复杂任务的时间越长，就越容易受到几种特定失败模式的影响：</p><ul role="list"><li><strong>Agent 懒惰（agentic laziness）</strong>指 Claude 在完成一项特别复杂的多步骤任务之前就停下，并在部分进展后宣告任务完成，例如在安全审查中只处理了 50 项中的 35 项。</li><li><strong>自我偏好偏差（self-preferential bias）</strong>指 Claude 倾向于偏爱自己的结果或发现，尤其是当被要求按照评分标准验证或评判它们时。</li><li><strong>目标漂移（goal drift）</strong>指经过多轮对话后，尤其是压缩（compaction）之后，对最初目标的忠实度逐渐丧失。每一步摘要都是有损的，诸如边缘情况要求或"不要做 X"之类的约束细节可能会丢失。</li></ul><p>创建工作流有助于对抗这些问题：它通过编排多个拥有独立上下文窗口和聚焦、隔离目标的 Claude subagent 来完成。</p><h2>动态工作流 vs 静态工作流</h2><p>你可能此前用 Claude Agent SDK 或 <code>claude -p</code> 创建过静态工作流，把多个 Claude Code 实例协调在一起。</p><p>但由于静态工作流必须兼容所有边缘情况，它们通常更通用。而借助 <a href="https://www.anthropic.com/news/claude-opus-4-8" target="_blank">Claude Opus 4.8</a> 和动态工作流，Claude 已经足够智能，可以为你的具体用例编写量身定制的 harness。</p><figure style="max-width:1999pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1f3a0e17e2844bed86f22a_image9.png" loading="lazy"></div></figure><h2>使用动态工作流的实用模式</h2><p>你可以直接让 Claude 创建一个动态工作流来开始使用，也可以使用触发词 “<code>ultracode</code>” 来确保 Claude Code 创建工作流。</p><p>但为动态工作流建立一套心智模型，会帮助你理解何时使用它们，以及如何通过提示词引导 Claude。</p><p>以下是 Claude 在构建工作流时可能会使用并组合的几种常见模式：</p><figure style="max-width:1999pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1f16d86247e586b929a407_image10.png" loading="lazy"></div></figure><h3>分类后执行（classify-and-act）</h3><p>用一个分类器 agent 判断任务类型，再根据任务路由到不同的 agent 或行为。也可以在最后用分类器来决定输出。</p><h3>扇出后综合（fan-out-and-synthesize）</h3><p>把任务拆分成许多更小的步骤，每一步各跑一个 agent，然后综合这些结果。当存在大量小步骤，或者每一步都能从独立干净的上下文窗口中获益、互不干扰交叉污染时，这种模式特别有用。综合步骤是一道屏障——它会等所有扇出的 agent 完成，再把它们的结构化输出合并为一个结果。</p><h3>对抗性验证（adversarial verification）</h3><p>对每个生成的 agent，再单独生成一个 agent，按照评分标准或判定条件对其输出进行对抗性验证。</p><h3>生成后筛选（generate-and-filter）</h3><p>围绕一个主题生成一批想法，然后按评分标准或通过验证进行筛选，对重复项去重，只返回质量最高、经过检验的想法。</p><h3>锦标赛（tournament）</h3><p>不是分摊工作，而是让 agent 相互竞争。生成 N 个 agent，各自用不同方法尝试同一个任务。然后由提示词或模型借助评判 agent 对结果进行两两比较，直到决出胜者。</p><h3>循环直到完成（loop until done）</h3><p>对于工作量未知的任务，循环生成 agent 直到满足停止条件（没有新发现，或日志中不再出现错误），而不是固定跑多少轮。</p><h2>用例</h2><p>发挥创造力，想想何时以及如何让 Claude Code 创建动态工作流。我发现工作流在非技术性工作中有时反而更有用。</p><h3>迁移与重构</h3><p><a href="https://bun.com/" target="_blank">Bun</a> 曾借助工作流从 Zig 重写为 Rust。你可以在 <a href="https://x.com/jarredsumner/status/2060050578026189172" target="_blank">Jarred 的 X 帖子</a>中了解更多细节，也可以看看我们如何在<a href="https://claude.com/blog/ai-code-migration">百万行级的代码库上运行 AI 代码迁移</a>。</p><p>关键在于把任务拆解为一系列需要处理的步骤，例如调用点、失败的测试、模块等。在 worktree 中为每处修复派生一个 subagent 来完成修改，再由另一个 agent 进行对抗性审查，然后合并。可以考虑告诉 agent 不要使用资源消耗大的命令，这样你就能最大程度并行，而不会耗尽机器资源。</p><h3>深度研究</h3><p>我们在 Claude Code 中发布了一个使用动态工作流的深度研究技能（<code>/deep-research</code>）。具体来说，它会扇出多个网络搜索、抓取来源、对论断进行对抗性验证，并综合出一份带引用的报告。</p><p>但这类研究并不局限于网络搜索。比如，可以让 Claude 从 Slack 中的上下文汇总一份状态报告，或者通过深入探索代码库研究某个功能的工作原理。</p><h3>深度验证</h3><figure style="max-width:1999pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1f1721824a27cf13da87f4_image2.png" loading="lazy"></div></figure><p>反过来，如果你手里有一份报告，想逐条核查并溯源它引用的每一个事实性论断，可以生成这样一个工作流：先由一个 agent 找出所有事实性论断，然后为每一条派生一个 subagent 详细核查。还可以再让一个验证 agent 检查提供来源的 subagent，确保其来源质量足够高。</p><h3>排序</h3><figure style="max-width:1999pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1f173ce727a972001584cc_image3.png" loading="lazy"></div></figure><p>你可能有一列想按某种质性指标排序的项目，而你相信 Claude Code 擅长评估这种指标，例如：按 Bug 严重程度对支持工单排序。但如果试图在一条提示词里对 1000 多行排序，质量会下降，上下文也装不下。正确的做法是跑一场锦标赛——一条由两两比较 agent 组成的流水线（比较式判断比绝对打分更可靠），或者并行分桶排序再合并。每次比较都是一个独立的 agent，由确定性的循环持有对阵表，上下文中只保留当前进行中的比较。</p><h3>记忆与规则遵循</h3><figure style="max-width:1999pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1f17517076bb59050d90bb_image8.png" loading="lazy"></div></figure><p>如果你发现 Claude 总是遗漏或搞砸某些规则，即使写进了 <code>CLAUDE.mds</code> 也没用，那就创建一个工作流，列出必须由验证 agent 逐条检查的规则——每条规则一个验证者。再创建一个"怀疑者"人设的 subagent 来审查这些规则的执行情况，确保它们落到实处，这有助于避免过多误报。</p><p>反过来同样可行：挖掘你最近的会话和代码审查评论，找出你反复纠正的错误，用并行 agent 聚类，对每个候选规则做对抗性验证（这条规则本可以避免哪个真实错误吗？），然后把幸存者蒸馏回 <code>CLAUDE.md</code>。</p><h3>根因调查</h3><p>调试的最好方式是提出多个独立假设并逐一检验，但如果只用一个上下文窗口，Claude 可能陷入自我偏好偏差。</p><p>工作流可以从结构上杜绝这一点：生成多个 agent，从互不重叠的证据出发提出假设。例如，日志、文件、数据各由独立的 agent 负责。每个假设随后要面对一组验证者和反驳者组成的评审团。</p><p>这不仅限于代码。工作流还可用于销售（为什么三月份销售额下滑了？）、数据工程（为什么这条流水线失败了？），或任何复盘类工作。</p><h3>大规模分诊</h3><figure style="max-width:1999pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1f1778dc00d34cca70819d_image6.png" loading="lazy"></div></figure><p>每个团队都有支持队列、Bug 报告或其他靠人力无法完全消化完的积压工作。</p><p>分诊工作流会对每个条目分类、与已跟踪的内容去重，然后采取行动：可能是尝试修复，也可能是升级转给人类处理。</p><p>分诊工作流的一个实用模式是隔离（quarantine）：禁止读取不可信公开内容的 agent 执行高权限操作，这些操作交给负责根据信息采取行动的 agent 来完成。</p><p>把分诊工作流与 /loop 搭配，可以让 Claude 持续自动执行。</p><h3>探索与品味</h3><p>在探索不同解决方案时，工作流会很有用，尤其是当评判标准基于品味时，比如设计或命名，此时制定一套评分标准会大有裨益。</p><p>可以试着让 Claude 探索一批方案，并给审查 agent 一份"好方案长什么样"的评分标准。当审查 agent 认为已满足标准时，任务才算完成。方案也可以依据评分标准，通过锦标赛来排序或选出。</p><h3>评估（Evals）</h3><p>你可以运行轻量级评估：在 worktree 中派生独立的 agent 执行特定任务，再派生比较 agent，按评分标准对具体输出进行比较和打分。例如，按照特定标准评估并迭代优化你创建的 skill。</p><h3>模型与智能路由</h3><p>创建一个针对你的任务调优的分类器 agent，由它决定使用哪个模型。当任务会涉及大量工具调用时这很有帮助——在执行前先做点研究，就能为任务选出最合适的模型。</p><p>例如，"解释 auth 模块的工作原理"这个任务用哪个模型最好，取决于 auth 模块有多少个文件以及代码库的形态。分类器 agent 可以先完成这项研究，再根据任务的预期复杂度路由到 Sonnet 或 Opus。</p><h2>什么时候不该用动态工作流</h2><p>工作流是新事物。虽然它在很多用例中能创造超乎寻常的成果，但并非每个任务都需要它，而且可能消耗多得多的 token。</p><p>最好是用工作流创造性地拓展 Claude Code 的能力边界，做以前做不到的事。对于常规编码任务，不妨问问自己：它真的需要更多算力吗？比如，大多数传统编码任务并不需要 5 个评审组成评审团。</p><p>同样的判断也适用于上一层——架构层面：<a href="https://claude.com/blog/building-multi-agent-systems-when-and-how-to-use-them">多 agent vs 单 agent</a> 的决策遵循类似的逻辑——并行化和专业化带来的收益，必须盖过它们的协调成本。</p><h2>构建动态工作流的技巧</h2><h3>提示词</h3><p>为动态工作流编写详细的提示词，并运用上文描述的那些具体技巧，效果最好。</p><p>工作流并不只用于大型任务。你可以提示模型使用"快速工作流"。例如，可以对某个假设做一次快速的对抗性审查。</p><h3>与 <code>/goal</code> 和 <code>/loop</code> 组合</h3><p>使用可重复运行的工作流（例如分诊、研究或验证）时，搭配 <code>/loop</code> 定期执行，并用 /goal 设定硬性的完成要求。</p><h3>token 用量预算</h3><p>你可以为动态工作流设置显式的 token 用量预算，限制任务消耗多少 token。可以在提示词中给出预算，比如"使用 10k token"，这会设置上限。</p><h3>保存和分享动态工作流</h3><p>在工作流菜单中按 "s" 即可保存工作流。你可以把它们提交到 <code>~/.claude/workflows</code>，或通过 skill 分发。</p><figure class="w-richtext-align-center w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1f17b1ca20533e666c867c_image4.png" loading="lazy"></div></figure><p>要通过 skill 分享，可以把你的 JavaScript 工作流文件放进 skill 文件夹，并在 <a href="http://skill.md">SKILL.MD</a> 中引用它们。为了更灵活，你可以提示 Claude 把 skill 中的工作流视为模板，而不是必须逐字执行的脚本。</p><figure style="max-width:1999pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1f17cb835cf4f9fd5da921_image7.png" loading="lazy"></div></figure><h2>探索的新起点</h2><p>工作流是扩展 Claude Code 的一种有用的新方式。我鼓励你把它们当作一个起点，去探索用 Claude 完成任务的新方法。关于如何用好它们，还有很多值得发掘。欢迎告诉我你的发现。</p><p><em>关于 harness 中究竟应该包含什么的设计原则，可参阅我们构建 Claude 的三种</em><a href="https://claude.com/blog/harnessing-claudes-intelligence"><em>harness 设计模式</em></a><em>。</em></p><p><em>本文作者是 Thariq Shihipar 和 Sid Bidasaria，他们是 Anthropic 负责 Claude Code 的技术团队成员。</em></p></div>
+            <h1 class="article-title u-text-style-h1">为每个任务配备专属 harness：Claude Code 中的动态工作流</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>Claude Code can now write and orchestrate its own multi-agent harness on the fly. Here's how dynamic workflows work, and the patterns that get the most out of them.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">June 2, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/a-harness-for-every-task-dynamic-workflows-in-claude-code/">Copy link</button>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M15.5117 1.99707C15.9213 2.0091 16.3438 2.13396 16.6768 2.46679C17.0278 2.81814 17.1209 3.26428 17.0801 3.68261C17.0404 4.08745 16.8765 4.49344 16.6787 4.85058C16.3934 5.36546 15.9941 5.85569 15.6348 6.20898C15.7682 6.41421 15.8912 6.66414 15.9551 6.9453C16.0804 7.4977 15.9714 8.13389 15.4043 8.70116C14.8566 9.24884 13.974 9.54823 13.1943 9.71679C12.7628 9.81003 12.3303 9.86698 11.9473 9.90233C12.0596 10.2558 12.0902 10.7051 11.8779 11.2012L11.8223 11.3203C11.5396 11.8854 11.0275 12.2035 10.4785 12.3965C9.93492 12.5875 9.29028 12.6792 8.65332 12.75C7.99579 12.8231 7.34376 12.8744 6.70117 12.9775C6.14371 13.067 5.63021 13.1903 5.18652 13.3818L5.00585 13.4658C4.53515 14.2245 4.13745 14.9658 3.80957 15.6465C4.43885 15.2764 5.1935 15 5.99999 15C6.27614 15 6.49999 15.2238 6.49999 15.5C6.49999 15.7761 6.27613 16 5.99999 16C5.35538 16 4.71132 16.2477 4.15039 16.6103C3.58861 16.9736 3.14957 17.427 2.91601 17.7773C2.91191 17.7835 2.90568 17.788 2.90136 17.7939C2.88821 17.8119 2.8746 17.8289 2.85937 17.8447C2.85117 17.8533 2.84268 17.8612 2.83398 17.8691C2.81803 17.8835 2.80174 17.897 2.78417 17.9092C2.774 17.9162 2.76353 17.9225 2.75292 17.9287C2.73854 17.9372 2.72412 17.9451 2.70898 17.9521C2.69079 17.9605 2.6723 17.9675 2.65332 17.9736C2.6417 17.9774 2.63005 17.9805 2.61816 17.9834C2.60263 17.9872 2.5871 17.9899 2.57128 17.9922C2.55312 17.9948 2.53511 17.9974 2.5166 17.998C2.50387 17.9985 2.49127 17.9976 2.47851 17.9971C2.45899 17.9962 2.43952 17.9954 2.41992 17.9922C2.40511 17.9898 2.39062 17.9862 2.37597 17.9824C2.36477 17.9795 2.35294 17.9783 2.34179 17.9746C2.33697 17.973 2.33286 17.9695 2.32812 17.9678C2.31042 17.9612 2.29351 17.953 2.27636 17.9443C2.26332 17.9378 2.25053 17.9314 2.23828 17.9238C2.23339 17.9208 2.22747 17.9192 2.22265 17.916C2.21414 17.9103 2.20726 17.9026 2.19921 17.8965C2.18396 17.8849 2.16896 17.8735 2.15527 17.8603C2.14518 17.8507 2.13609 17.8404 2.12695 17.8301C2.11463 17.8161 2.10244 17.8023 2.09179 17.7871C2.08368 17.7756 2.07736 17.7631 2.07031 17.751C2.06168 17.7362 2.05297 17.7216 2.04589 17.706C2.03868 17.6901 2.03283 17.6738 2.02734 17.6572C2.0228 17.6436 2.01801 17.6302 2.01464 17.6162C2.01117 17.6017 2.009 17.587 2.00683 17.5722C2.00411 17.5538 2.00161 17.5354 2.00097 17.5166C2.00054 17.5039 2.00141 17.4912 2.00195 17.4785C2.00279 17.459 2.00364 17.4395 2.00683 17.4199C2.00902 17.4064 2.01327 17.3933 2.0166 17.3799C2.01973 17.3673 2.02123 17.3543 2.02539 17.3418C2.41772 16.1648 3.18163 14.466 4.30468 12.7012C4.31908 12.5557 4.34007 12.3582 4.36914 12.1201C4.43379 11.5907 4.53836 10.8564 4.69921 10.0381C5.0174 8.41955 5.56814 6.39783 6.50585 4.9912L6.73242 4.66894C7.27701 3.93277 7.93079 3.30953 8.61035 2.85156C9.3797 2.33311 10.2221 2 11.001 2C11.7951 2.00025 12.3531 2.35795 12.7012 2.70605C12.7723 2.77723 12.8348 2.84998 12.8896 2.91796C13.2829 2.66884 13.7917 2.39502 14.3174 2.21191C14.6946 2.08056 15.1094 1.98537 15.5117 1.99707ZM17.04 15.5537C17.1486 15.3 17.4425 15.1818 17.6963 15.29C17.95 15.3986 18.0683 15.6925 17.96 15.9463C17.4827 17.0612 16.692 18 15.5 18C14.6309 17.9999 13.9764 17.5003 13.5 16.7978C13.0236 17.5003 12.3691 18 11.5 18C10.6309 17.9999 9.97639 17.5003 9.49999 16.7978C9.02359 17.5003 8.36911 18 7.49999 18C7.22391 17.9999 7 17.7761 6.99999 17.5C6.99999 17.2239 7.22391 17 7.49999 17C8.07039 17 8.6095 16.5593 9.04003 15.5537L9.07421 15.4873C9.16428 15.3412 9.32494 15.25 9.49999 15.25C9.70008 15.25 9.88121 15.3698 9.95996 15.5537L10.042 15.7353C10.4581 16.6125 10.9652 16.9999 11.5 17C12.0704 17 12.6095 16.5593 13.04 15.5537L13.0742 15.4873C13.1643 15.3412 13.3249 15.25 13.5 15.25C13.7001 15.25 13.8812 15.3698 13.96 15.5537L14.042 15.7353C14.4581 16.6125 14.9652 16.9999 15.5 17C16.0704 17 16.6095 16.5593 17.04 15.5537ZM15.4824 2.99707C15.247 2.99022 14.9608 3.04682 14.6465 3.15624C14.0173 3.37541 13.389 3.76516 13.0498 4.01953C12.9277 4.11112 12.7697 4.14131 12.6221 4.10253C12.4745 4.06357 12.3522 3.9591 12.291 3.81933V3.81835C12.2892 3.81468 12.2861 3.80833 12.2822 3.80078C12.272 3.78092 12.2541 3.7485 12.2295 3.70898C12.1794 3.62874 12.1011 3.52019 11.9941 3.41308C11.7831 3.2021 11.4662 3.00024 11.001 2.99999C10.4904 2.99999 9.84173 3.22729 9.16894 3.68066C8.58685 4.07297 8.01568 4.61599 7.5371 5.26269L7.33789 5.54589C6.51634 6.77827 5.99475 8.63369 5.68066 10.2314C5.63363 10.4707 5.5913 10.7025 5.55371 10.9238C7.03031 9.01824 8.94157 7.19047 11.2812 6.05077C11.5295 5.92989 11.8283 6.03301 11.9492 6.28124C12.0701 6.52949 11.967 6.82829 11.7187 6.94921C9.33153 8.11208 7.38648 10.0746 5.91406 12.1103C6.12313 12.0632 6.33385 12.0238 6.54296 11.9902C7.21709 11.8821 7.92723 11.8243 8.54296 11.7558C9.17886 11.6852 9.72123 11.6025 10.1465 11.4531C10.5662 11.3056 10.8063 11.1158 10.9277 10.873L10.9795 10.7549C11.0776 10.487 11.0316 10.2723 10.9609 10.1123C10.918 10.0155 10.8636 9.93595 10.8203 9.88183C10.7996 9.85598 10.7822 9.83638 10.7715 9.82518L10.7607 9.81542L10.7627 9.8164L10.7646 9.81835C10.6114 9.67972 10.5597 9.46044 10.6338 9.26757C10.7082 9.07475 10.8939 8.94726 11.1006 8.94726C11.5282 8.94719 12.26 8.8956 12.9834 8.73925C13.7297 8.5779 14.3654 8.32602 14.6973 7.99413C15.0087 7.68254 15.0327 7.40213 14.9795 7.16698C14.9332 6.96327 14.8204 6.77099 14.707 6.62792L14.5957 6.50195C14.4933 6.39957 14.4401 6.25769 14.4502 6.11327C14.4605 5.96888 14.5327 5.83599 14.6484 5.74902C14.9558 5.51849 15.4742 4.96086 15.8037 4.3662C15.9675 4.07048 16.0637 3.80137 16.085 3.58593C16.1047 3.38427 16.0578 3.26213 15.9697 3.17382C15.8631 3.06726 15.7102 3.00377 15.4824 2.99707Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Author(s)</div>
+                  <div class="hero-detail-value u-text-style-body-3">Thariq Shihipar</div>
+                </div>
+              </li>
+            </ul>
+          </aside>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/a-harness-for-every-task-dynamic-workflows-in-claude-code" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>上周，我们在 Claude Code 中发布了<a href="https://code.claude.com/docs/en/workflows">动态工作流</a>。Claude 现在可以针对手头的任务，即时编写出专属的 <a href="https://code.claude.com/docs/en/glossary#agentic-harness">harness</a>。</p><p>Claude Code 默认的 harness 是为编码而生的，但它对许多其他类型的任务同样适用，因为事实证明，很多任务都与编码任务相似。不过，对于某些特定类别的任务，我们不得不在 Claude Code 之上构建定制的 harness 才能达到最佳性能，例如 <a href="https://support.claude.com/en/articles/11088861-using-research-on-claude">Research</a>、<a href="https://support.claude.com/en/articles/11932705-automated-security-reviews-in-claude-code">安全分析</a>、<a href="https://code.claude.com/docs/en/agent-teams">agent teams</a> 或 <a href="https://code.claude.com/docs/en/code-review">Code Review</a>。</p><p>工作流让你能够动态创建构建在 Claude Code 之上的 harness，使 Claude 以更原生的方式解决上述所有问题。你还可以与他人分享和复用这些工作流。</p><p>在本文中，我将分享我最初使用工作流的经验和心得，帮助你充分利用这一能力。请记住，最佳实践仍在形成之中：动态工作流通常会消耗更多 token，最适合复杂、高价值的任务。</p><h2>示例提示词</h2><p>在深入技术细节之前，我想先展示几个示例提示词，让你感受一下工作流的想象空间：</p><p>"这个测试大约每 50 次运行会失败 1 次。搭建一个工作流来复现它。围绕竞态条件提出多个相互竞争的假设，直到其中一个假设经受住所有证据的考验才许停下。"</p><p>"用一个工作流检查我最近的 50 个会话，从中挖掘我反复犯的纠正性错误，并把反复出现的问题提炼成 <code>CLAUDE.md</code> 规则"</p><p>“用一个工作流梳理 Slack 中 #incidents 频道过去六个月的记录，找出那些反复出现但一直没人提工单的根本原因。”</p><p>"把我的商业计划书交给一个工作流，让不同的 agent 分别从投资人、客户和竞争对手的视角把它批个体无完肤。"</p><p>"这里有一个装着 80 份简历的文件夹，用一个工作流为后端岗位对它们排序，并复核前十名。用 AskUserQuestion 工具采访我，制定评分标准。"</p><p>"我需要给这个 CLI 工具起个名字。用一个工作流头脑风暴出一批候选，然后举办一场锦标赛选出前 3 名。"</p><p>"用一个工作流把我们的 User 模型在所有地方重命名为 Account。"</p><p>“用一个工作流通读我的博客草稿，逐条对照代码库验证其中的每个技术论断，我不想发布任何有错的内容。”</p><h2>动态工作流的工作原理</h2><p>动态工作流会执行一个 JavaScript 文件，其中包含若干用于生成和协调 <a href="https://code.claude.com/docs/en/sub-agents">subagents</a> 的特殊函数：</p><figure style="max-width:1760pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1f1684f559cc83ff4b465b_image1.png" loading="lazy"></div></figure><p>动态工作流还包含标准 JavaScript 函数，如 JSON、Math 和 Array，帮助处理数据。</p><p>尤其有用的一点是，动态工作流可以决定某个 agent 使用哪些模型，以及 subagent 是否在独立的 worktree 中运行，从而让 Claude 自行选择所需的智能水平和隔离程度。</p><p>如果工作流被中断（例如因用户操作或终端退出），恢复会话后工作流可以从中断处继续执行。</p><h2>为什么需要动态工作流</h2><p>当你让默认的 Claude Code harness 执行任务时，它需要在同一个上下文窗口中同时完成规划和执行。对于许多编码任务来说这非常高效，但在长时间运行、大规模并行、高度结构化和/或对抗性任务上可能会出问题。</p><p>这是因为 Claude 在单个上下文窗口中处理复杂任务的时间越长，就越容易受到几种特定失败模式的影响：</p><ul role="list"><li><strong>Agent 懒惰（agentic laziness）</strong>指 Claude 在完成一项特别复杂的多步骤任务之前就停下，并在部分进展后宣告任务完成，例如在安全审查中只处理了 50 项中的 35 项。</li><li><strong>自我偏好偏差（self-preferential bias）</strong>指 Claude 倾向于偏爱自己的结果或发现，尤其是当被要求按照评分标准验证或评判它们时。</li><li><strong>目标漂移（goal drift）</strong>指经过多轮对话后，尤其是压缩（compaction）之后，对最初目标的忠实度逐渐丧失。每一步摘要都是有损的，诸如边缘情况要求或"不要做 X"之类的约束细节可能会丢失。</li></ul><p>创建工作流有助于对抗这些问题：它通过编排多个拥有独立上下文窗口和聚焦、隔离目标的 Claude subagent 来完成。</p><h2>动态工作流 vs 静态工作流</h2><p>你可能此前用 Claude Agent SDK 或 <code>claude -p</code> 创建过静态工作流，把多个 Claude Code 实例协调在一起。</p><p>但由于静态工作流必须兼容所有边缘情况，它们通常更通用。而借助 <a href="https://www.anthropic.com/news/claude-opus-4-8" target="_blank">Claude Opus 4.8</a> 和动态工作流，Claude 已经足够智能，可以为你的具体用例编写量身定制的 harness。</p><figure style="max-width:1999pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1f3a0e17e2844bed86f22a_image9.png" loading="lazy"></div></figure><h2>使用动态工作流的实用模式</h2><p>你可以直接让 Claude 创建一个动态工作流来开始使用，也可以使用触发词 “<code>ultracode</code>” 来确保 Claude Code 创建工作流。</p><p>但为动态工作流建立一套心智模型，会帮助你理解何时使用它们，以及如何通过提示词引导 Claude。</p><p>以下是 Claude 在构建工作流时可能会使用并组合的几种常见模式：</p><figure style="max-width:1999pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1f16d86247e586b929a407_image10.png" loading="lazy"></div></figure><h3>分类后执行（classify-and-act）</h3><p>用一个分类器 agent 判断任务类型，再根据任务路由到不同的 agent 或行为。也可以在最后用分类器来决定输出。</p><h3>扇出后综合（fan-out-and-synthesize）</h3><p>把任务拆分成许多更小的步骤，每一步各跑一个 agent，然后综合这些结果。当存在大量小步骤，或者每一步都能从独立干净的上下文窗口中获益、互不干扰交叉污染时，这种模式特别有用。综合步骤是一道屏障——它会等所有扇出的 agent 完成，再把它们的结构化输出合并为一个结果。</p><h3>对抗性验证（adversarial verification）</h3><p>对每个生成的 agent，再单独生成一个 agent，按照评分标准或判定条件对其输出进行对抗性验证。</p><h3>生成后筛选（generate-and-filter）</h3><p>围绕一个主题生成一批想法，然后按评分标准或通过验证进行筛选，对重复项去重，只返回质量最高、经过检验的想法。</p><h3>锦标赛（tournament）</h3><p>不是分摊工作，而是让 agent 相互竞争。生成 N 个 agent，各自用不同方法尝试同一个任务。然后由提示词或模型借助评判 agent 对结果进行两两比较，直到决出胜者。</p><h3>循环直到完成（loop until done）</h3><p>对于工作量未知的任务，循环生成 agent 直到满足停止条件（没有新发现，或日志中不再出现错误），而不是固定跑多少轮。</p><h2>用例</h2><p>发挥创造力，想想何时以及如何让 Claude Code 创建动态工作流。我发现工作流在非技术性工作中有时反而更有用。</p><h3>迁移与重构</h3><p><a href="https://bun.com/" target="_blank">Bun</a> 曾借助工作流从 Zig 重写为 Rust。你可以在 <a href="https://x.com/jarredsumner/status/2060050578026189172" target="_blank">Jarred 的 X 帖子</a>中了解更多细节，也可以看看我们如何在<a href="https://claude.com/blog/ai-code-migration">百万行级的代码库上运行 AI 代码迁移</a>。</p><p>关键在于把任务拆解为一系列需要处理的步骤，例如调用点、失败的测试、模块等。在 worktree 中为每处修复派生一个 subagent 来完成修改，再由另一个 agent 进行对抗性审查，然后合并。可以考虑告诉 agent 不要使用资源消耗大的命令，这样你就能最大程度并行，而不会耗尽机器资源。</p><h3>深度研究</h3><p>我们在 Claude Code 中发布了一个使用动态工作流的深度研究技能（<code>/deep-research</code>）。具体来说，它会扇出多个网络搜索、抓取来源、对论断进行对抗性验证，并综合出一份带引用的报告。</p><p>但这类研究并不局限于网络搜索。比如，可以让 Claude 从 Slack 中的上下文汇总一份状态报告，或者通过深入探索代码库研究某个功能的工作原理。</p><h3>深度验证</h3><figure style="max-width:1999pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1f1721824a27cf13da87f4_image2.png" loading="lazy"></div></figure><p>反过来，如果你手里有一份报告，想逐条核查并溯源它引用的每一个事实性论断，可以生成这样一个工作流：先由一个 agent 找出所有事实性论断，然后为每一条派生一个 subagent 详细核查。还可以再让一个验证 agent 检查提供来源的 subagent，确保其来源质量足够高。</p><h3>排序</h3><figure style="max-width:1999pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1f173ce727a972001584cc_image3.png" loading="lazy"></div></figure><p>你可能有一列想按某种质性指标排序的项目，而你相信 Claude Code 擅长评估这种指标，例如：按 Bug 严重程度对支持工单排序。但如果试图在一条提示词里对 1000 多行排序，质量会下降，上下文也装不下。正确的做法是跑一场锦标赛——一条由两两比较 agent 组成的流水线（比较式判断比绝对打分更可靠），或者并行分桶排序再合并。每次比较都是一个独立的 agent，由确定性的循环持有对阵表，上下文中只保留当前进行中的比较。</p><h3>记忆与规则遵循</h3><figure style="max-width:1999pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1f17517076bb59050d90bb_image8.png" loading="lazy"></div></figure><p>如果你发现 Claude 总是遗漏或搞砸某些规则，即使写进了 <code>CLAUDE.mds</code> 也没用，那就创建一个工作流，列出必须由验证 agent 逐条检查的规则——每条规则一个验证者。再创建一个"怀疑者"人设的 subagent 来审查这些规则的执行情况，确保它们落到实处，这有助于避免过多误报。</p><p>反过来同样可行：挖掘你最近的会话和代码审查评论，找出你反复纠正的错误，用并行 agent 聚类，对每个候选规则做对抗性验证（这条规则本可以避免哪个真实错误吗？），然后把幸存者蒸馏回 <code>CLAUDE.md</code>。</p><h3>根因调查</h3><p>调试的最好方式是提出多个独立假设并逐一检验，但如果只用一个上下文窗口，Claude 可能陷入自我偏好偏差。</p><p>工作流可以从结构上杜绝这一点：生成多个 agent，从互不重叠的证据出发提出假设。例如，日志、文件、数据各由独立的 agent 负责。每个假设随后要面对一组验证者和反驳者组成的评审团。</p><p>这不仅限于代码。工作流还可用于销售（为什么三月份销售额下滑了？）、数据工程（为什么这条流水线失败了？），或任何复盘类工作。</p><h3>大规模分诊</h3><figure style="max-width:1999pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1f1778dc00d34cca70819d_image6.png" loading="lazy"></div></figure><p>每个团队都有支持队列、Bug 报告或其他靠人力无法完全消化完的积压工作。</p><p>分诊工作流会对每个条目分类、与已跟踪的内容去重，然后采取行动：可能是尝试修复，也可能是升级转给人类处理。</p><p>分诊工作流的一个实用模式是隔离（quarantine）：禁止读取不可信公开内容的 agent 执行高权限操作，这些操作交给负责根据信息采取行动的 agent 来完成。</p><p>把分诊工作流与 /loop 搭配，可以让 Claude 持续自动执行。</p><h3>探索与品味</h3><p>在探索不同解决方案时，工作流会很有用，尤其是当评判标准基于品味时，比如设计或命名，此时制定一套评分标准会大有裨益。</p><p>可以试着让 Claude 探索一批方案，并给审查 agent 一份"好方案长什么样"的评分标准。当审查 agent 认为已满足标准时，任务才算完成。方案也可以依据评分标准，通过锦标赛来排序或选出。</p><h3>评估（Evals）</h3><p>你可以运行轻量级评估：在 worktree 中派生独立的 agent 执行特定任务，再派生比较 agent，按评分标准对具体输出进行比较和打分。例如，按照特定标准评估并迭代优化你创建的 skill。</p><h3>模型与智能路由</h3><p>创建一个针对你的任务调优的分类器 agent，由它决定使用哪个模型。当任务会涉及大量工具调用时这很有帮助——在执行前先做点研究，就能为任务选出最合适的模型。</p><p>例如，"解释 auth 模块的工作原理"这个任务用哪个模型最好，取决于 auth 模块有多少个文件以及代码库的形态。分类器 agent 可以先完成这项研究，再根据任务的预期复杂度路由到 Sonnet 或 Opus。</p><h2>什么时候不该用动态工作流</h2><p>工作流是新事物。虽然它在很多用例中能创造超乎寻常的成果，但并非每个任务都需要它，而且可能消耗多得多的 token。</p><p>最好是用工作流创造性地拓展 Claude Code 的能力边界，做以前做不到的事。对于常规编码任务，不妨问问自己：它真的需要更多算力吗？比如，大多数传统编码任务并不需要 5 个评审组成评审团。</p><p>同样的判断也适用于上一层——架构层面：<a href="https://claude.com/blog/building-multi-agent-systems-when-and-how-to-use-them">多 agent vs 单 agent</a> 的决策遵循类似的逻辑——并行化和专业化带来的收益，必须盖过它们的协调成本。</p><h2>构建动态工作流的技巧</h2><h3>提示词</h3><p>为动态工作流编写详细的提示词，并运用上文描述的那些具体技巧，效果最好。</p><p>工作流并不只用于大型任务。你可以提示模型使用"快速工作流"。例如，可以对某个假设做一次快速的对抗性审查。</p><h3>与 <code>/goal</code> 和 <code>/loop</code> 组合</h3><p>使用可重复运行的工作流（例如分诊、研究或验证）时，搭配 <code>/loop</code> 定期执行，并用 /goal 设定硬性的完成要求。</p><h3>token 用量预算</h3><p>你可以为动态工作流设置显式的 token 用量预算，限制任务消耗多少 token。可以在提示词中给出预算，比如"使用 10k token"，这会设置上限。</p><h3>保存和分享动态工作流</h3><p>在工作流菜单中按 "s" 即可保存工作流。你可以把它们提交到 <code>~/.claude/workflows</code>，或通过 skill 分发。</p><figure class="w-richtext-align-center w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1f17b1ca20533e666c867c_image4.png" loading="lazy"></div></figure><p>要通过 skill 分享，可以把你的 JavaScript 工作流文件放进 skill 文件夹，并在 <a href="http://skill.md">SKILL.MD</a> 中引用它们。为了更灵活，你可以提示 Claude 把 skill 中的工作流视为模板，而不是必须逐字执行的脚本。</p><figure style="max-width:1999pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a1f17cb835cf4f9fd5da921_image7.png" loading="lazy"></div></figure><h2>探索的新起点</h2><p>工作流是扩展 Claude Code 的一种有用的新方式。我鼓励你把它们当作一个起点，去探索用 Claude 完成任务的新方法。关于如何用好它们，还有很多值得发掘。欢迎告诉我你的发现。</p><p><em>关于 harness 中究竟应该包含什么的设计原则，可参阅我们构建 Claude 的三种</em><a href="https://claude.com/blog/harnessing-claudes-intelligence"><em>harness 设计模式</em></a><em>。</em></p><p><em>本文作者是 Thariq Shihipar 和 Sid Bidasaria，他们是 Anthropic 负责 Claude Code 的技术团队成员。</em></p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/a-harness-for-every-task-dynamic-workflows-in-claude-code" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

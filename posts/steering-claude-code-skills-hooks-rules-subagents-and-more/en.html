@@ -4,39 +4,329 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Steering Claude Code: when to use CLAUDE.md, skills, hooks, and subagents — Claude Blog CN</title>
-  <meta name="description" content="Steering Claude Code: when to use CLAUDE.md, skills, hooks, and subagents">
+  <meta name="description" content="Seven ways to steer Claude Code—CLAUDE.md files, rules, skills, subagents, hooks, and more—and when to use each, based on context cost and authority.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="/posts/steering-claude-code-skills-hooks-rules-subagents-and-more/" class="nav-link">中文版 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>Steering Claude Code: when to use CLAUDE.md, skills, hooks, and subagents</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/steering-claude-code-skills-hooks-rules-subagents-and-more" target="_blank" rel="noopener noreferrer">Ask questions about this page</a>
+        <button type="button" class="explore-item" data-copy-markdown>Copy as markdown</button>
+        <a class="explore-item" href="/posts/steering-claude-code-skills-hooks-rules-subagents-and-more/">阅读中文翻译 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># Steering Claude Code: when to use CLAUDE.md, skills, hooks, and subagents
+
+Seven ways to steer Claude Code—CLAUDE.md files, rules, skills, subagents, hooks, and more—and when to use each, based on context cost and authority.
+
+Claude is built to work the way you work, and in Claude Code you can customize it. 
+
+There are seven methods for instructing Claude's behavior: CLAUDE.md files, rules, [**skills**](https://code.claude.com/docs/en/skills), [**subagents**](https://code.claude.com/docs/en/sub-agents), [**hooks**](https://code.claude.com/docs/en/hooks-guide), output styles, and appending the system prompt.
+
+Each method controls:
+
+- When an instruction loads into context; 
+- Whether it persists through long sessions (compaction behavior); and 
+- How much authority it carries.
+
+The table below provides a quick summary of key differences across each method while the post provides additional detail and decision framework for determining where each of your Claude instructions belongs.
+
+  
+    
+      
+        
+          Method
+          When it's loaded
+          Compaction behavior
+          Context cost
+          When to use
+        
+      
+      
+        
+          CLAUDE.md (root)
+          Session start; stays in context for the entire session
+          Memoized. Read once and cached for the session; cache cleared and re-read after compaction
+          High. Every line costs tokens whether relevant or not
+          Build commands, directory layout, monorepo structure, coding conventions, team norms
+        
+        
+          CLAUDE.md (subdirectory)
+          On-demand, when Claude reads a file under that subdirectory
+          Lost until that subdirectory is touched again
+          Low. Only consumes context when the relevant subdirectory is being worked on
+          Conventions specific to a subdirectory
+        
+        
+          Rules
+          Session start (user-level rules) or only when matching files are touched (path-scoped)
+          Re-injected on compaction
+          Medium. Always-on unless path-scoped
+          Specific constraints or conventions (e.g., all API handlers must validate input with Zod)
+        
+        
+          Skills
+          Name and description at session start; full body loads when the skill is invoked
+          Invoked skills re-injected up to a shared budget; oldest dropped first
+          Low. Full body loads only when invoked; subject to a shared token budget across invoked skills
+          Procedural workflows (deploy or release checklists)
+        
+        
+          Subagents
+          Name, description, and tool list at session start; body loads only when called via the Agent tool
+          Only the final message (summary plus metadata) returns to the main session
+          Low. Zero cost in main context until called; runs in its own isolated context window
+          Running work in parallel or side tasks that should run in isolation and return only a summary (deep search, log analysis, dependency audit)
+        
+        
+          Hooks
+          Fire on lifecycle events
+          Bypass compaction entirely
+          Low. Configuration lives outside main context; some output may return (e.g., blocking errors)
+          Deterministic automation: run linters, post to Slack on completion, block commands, back up chat history on PreCompact
+        
+        
+          Output styles
+          Session start; injected into the system prompt
+          Never compacted
+          High. Occupies context window, but overwrites default system prompt
+          Significant role changes (code assistant to general assistant)
+        
+        
+          Appending the system prompt
+          Session start; passed as a CLI flag
+          Never compacted; applies only to that invocation
+          Moderate. Cached after first request in a session
+          Tone, response length, formatting preferences
+        
+      
+    
+  
+
+## The seven methods for delivering instructions
+
+There are seven ways to customize Claude Code's behavior: CLAUDE.md files for always-on project context, rules for hard constraints, skills for reusable procedures, subagents for delegated work, hooks for deterministic automation, and output styles or system-prompt appends for global changes. 
+
+Each method trades context cost against authority. These methods influence Claude's behavior while two separate dials, [which model and effort level you choose](https://claude.com/blog/claude-model-and-effort-level-in-claude-code), control how capable it is and how hard it works.
+
+### CLAUDE.md files
+
+CLAUDE.md is a markdown file at the root of your project. It loads into context at session start and stays there for the entire session. 
+
+Build commands, directory layout, monorepo structure, coding conventions, and team norms all fit naturally here.
+
+There are two types, and they load differently: 
+
+- **Always loaded**: The first type is a root CLAUDE.md file, either in a shared repository and/or saved locally for your personal preferences specific to a project. All these files load at session start, and won’t get lost or degraded across long sessions. When Claude Code compacts the conversation, it re-reads these files.
+- **On-demand: **CLAUDE.md files in subdirectories below the folder where you initialized the session. For example, `app/api/CLAUDE.md` loads when Claude reads a file under` app/api`, not at session start. It shares the compaction behavior of path-scoped rules: gone until that subdirectory is touched again. 
+
+All subdirectory CLAUDE.md files below the cwd load when Claude reads a file within that directory.In a shared repository, CLAUDE.md grows the way any unowned config file does: every team appends its own instructions and nothing gets deleted. The cost compounds at scale. 
+
+Every line loads into every session for every engineer working in the repo, whether it's relevant to their task or not. This consumes tokens and dilutes adherence to the instructions that actually matter. As the file grows, push team-specific conventions into path-scoped rules and procedures into skills, where they load only when relevant.
+
+**Tip:** Keep CLAUDE.md under 200 lines, give it an owner, and review changes to it like code. The content itself should follow the same rules as any prompt: [writing effective prompts](https://claude.com/blog/best-practices-for-prompt-engineering) means being explicit, explaining the why behind constraints, and showing examples.
+
+Think of this file as giving Claude an overview of your codebase, or as an index pointing to other files where Claude can find more information as needed.
+
+In monorepos, give each team's directory its own subdirectory CLAUDE.md so teams only load their own conventions, and developers can use the claudeMdExcludes setting to skip files from teams whose code they never touch. 
+
+For standards that must apply to every repository in the organization — security policies, compliance requirements — a centrally managed CLAUDE.md can be deployed to developer machines via MDM or config management, and it can't be excluded by individual settings.
+
+More on setting up CLAUDE.md in our blog post, [CLAUDE.md files: Customizing Claude Code for your codebase](https://claude.com/blog/using-claude-md-files).
+
+### Rules
+
+[**Rules**](https://code.claude.com/docs/en/memory#organize-rules-with-claude/rules/) are markdown files in `.claude/rules/ `that give Claude specific constraints or conventions. 
+
+Unscoped rules behave like CLAUDE.md in that they are always loaded at session start and get re-injected on compaction. This can waste tokens by loading context even when it's not relevant for the task at hand.
+
+Path-scoped rules allow you to load rule instructions only when they are relevant by adding a `paths` field that controls when they load. 
+
+For example: a rule scoped to `src/api/**` stays out of context during a docs-only session. It would only be loaded whenever Claude reads files within that `src/api/ `directory.
+
+Here’s what that looks like:
+
+`---
+paths:
+  - &quot;src/api/**&quot;
+  - &quot;**/*.handler.ts&quot;
+---
+All API handlers must validate input with Zod before processing.`**Tip**: A file-specific constraint, like &quot;migrations are append-only,&quot; fits best as a **rule** placed in your paths: frontmatter. Reach for a path scoped rule over a nested CLAUDE.md file when the instruction regards a cross-cutting concern or file that appears in multiple (but not all) corners of the codebase.
+
+### Skills
+
+[**Skills**](https://code.claude.com/docs/en/skills) live in `.claude/skills/` as folders of instructions, scripts, and resources that Claude loads dynamically. Each skill has a `SKILL.md` file with a name, description, and body. 
+
+Only the name and description load at session start; the full body loads when Claude invokes the skill, either through a slash command (/code-review) or by auto-matching the task.
+
+Skills are triggered via your system prompt.For example, `/code-review` is a built-in skill that reviews your current diff and reports its findings without editing files. The skill defines the playbook so Claude follows the same structured approach every time you invoke it.
+
+On compaction, Claude Code re-injects invoked skills up to a total budget across all invoked skills. If you’ve invoked many skills during a session, the oldest ones drop first. 
+
+**Tip:** Instructions that are procedural, like deploy workflows, release checklists, or review processes, belong in a skill rather than in CLAUDE.md.
+
+Claude Code ships with skills, but you can also write your own custom skills. Our [complete guide to building skills for Claude](https://claude.com/blog/complete-guide-to-building-skills-for-claude) shows you how.
+
+### Subagents
+
+[**Subagents**](https://code.claude.com/docs/en/sub-agents) are markdown files in `.claude/agents/ `that define isolated assistants for specific side tasks. Each file uses YAML frontmatter (name, description, plus optional fields for model and tool access) followed by a body that becomes that subagent's system prompt.
+
+Subagents are similar to skills in that the name, description, and tool list load at session start, but the larger context within the body of the agent doesn’t auto-invoke. Claude calls them via the Agent tool, passing in a prompt string. 
+
+Claude Code’s context window holds everything Claude knows about your session. The [interactive timeline here](https://code.claude.com/docs/en/context-window) walks through what loads and when. Not only does the larger instructional context within the body of the subagent not auto-invoke, it never enters the parent conversation at all.
+
+The subagent then runs in its own fresh context window, and the only thing that returns to your main session is the subagent’s final message (often the aggregated result of many subtasks) plus metadata. 
+
+This pattern scales: subagents can nest up to five levels deep, and [dynamic workflows](https://claude.com/blog/a-harness-for-every-task-dynamic-workflows-in-claude-code) orchestrate tens to hundreds of background agents without requiring you to specify each detail of the subagent architecture. The orchestration plan and intermediate results live in script variables rather than in Claude’s context window, which enables scale without losing instructional fidelity.
+
+**Tip: **That isolation is one of the main reasons to reach for a subagent instead of a skill. Use a subagent when a side task like deep search, a log analysis pass, or a dependency audit would clutter your main conversation with intermediate results you won't reference again. Use a skill when you want the procedure to play out inside the main thread so you can see and steer each step.
+
+### Hooks
+
+[**Hooks**](https://code.claude.com/docs/en/hooks-guide) are user-defined commands, HTTP endpoints, or LLM prompts that provide more deterministic control over Claude’s behavior by firing on [specific events in Claude’s lifecycle](https://code.claude.com/docs/en/hooks#hook-lifecycle) like file edits, tool calls, or session start. 
+
+A map of events in a Claude Code session when a hook can fire.You register hooks in `settings.json`, managed policy settings, or skill/agent frontmatter. 
+
+There are several types of hooks: command, HTTP, mcp_tool, prompt, and agent. All hooks are deterministically triggered. The first three execute deterministically while the latter two, prompt and agent, use Claude’s judgment rather than a set of rules to determine the output.
+
+Hooks have low context costs because the configuration or instruction lives outside the main context window. The harness runs the handler (command, http, mcp_tool) or makes model calls with separate windows (prompt, agent) depending on the hook type. 
+
+Some hooks may have the output saved to the main context window. For example, a blocking hook's standard error is saved within context so Claude knows why the call was denied. 
+
+But most hooks won’t have the output saved to the main window unless the configuration explicitly returns it. If you backed up your chat history into another file for later reference before compaction using the `PreCompact` event, Claude wouldn’t know which file had the chat history saved. 
+
+This makes these hook types fundamentally different from CLAUDE.md, rules, and skills. You can learn more in our post** **[**how to configure hooks**](https://claude.com/blog/how-to-configure-hooks).
+
+**Tip:** Use hooks for anything that should happen deterministically: running linters after edits, posting to Slack on completion, or blocking specific commands before they execute. A `PreToolUse` hook can inspect any tool call and exit code 2 to deny it.
+
+They have low context cost because they are code that the harness runs rather than instructions to Claude that get loaded into context. Skills and hooks are also the building blocks of [designing agent loops](https://claude.com/blog/getting-started-with-loops)—repeating workflows that run until a stop condition is met.
+
+### Output styles
+
+[**Output styles**](https://code.claude.com/docs/en/output-styles) are files in `.claude/output-styles/` that inject instructions into the system prompt. They never get compacted, load at the start of every session, and are cached after the first request within a session, meaning they have a moderate context cost.
+
+Because they sit in the system prompt, output styles carry the highest instruction-following weight of any method that we've covered so far and should be used judiciously.
+
+**Changes to the output style will replace the default output style** (unless you set keep-coding-instructions: true in the style's frontmatter). 
+
+In Claude Code, this would remove instructions that tell Claude it is helping users with software engineering tasks and contains other critical default instructions such as:
+
+- How to scope changes; 
+- When to add or omit code comments;
+- What to do about security concerns; and 
+- Verification habits like running tests before declaring work complete. 
+
+By default, a custom output style drops all of this and Claude Code becomes more of a general assistant than a software engineer assistant. 
+
+**Tip**: Before writing a custom output style, check the built-in styles. **Proactive**, **Explanatory**, and **Learning** cover the most common needs (autonomy, teaching mode, collaborative coding) without you having to maintain a style file.
+
+### Appending the system prompt
+
+An alternative to modifying output styles is the `append-system-prompt` flag. Whereas modifying output style files can have large, unintended changes to Claude’s behavior, the append flag is only additive to the original system prompt. It doesn’t modify Claude’s role; it just adds instructions to its default role. 
+
+It is also passed at invocation time, and only applies to that invocation, rather than persisted as a file across sessions. 
+
+Appending the system prompt can have a higher context cost compared to other methods of passing instructions. It increases input tokens, though prompt caching reduces this cost after the first request in a session. Instructing Claude to use a more verbose or longer style also increases output tokens. 
+
+**Tip:** Appending the system prompt is best for adding specific coding standards, output formatting, or domain-specific knowledge. Keep in mind that appending the system prompt has diminishing returns for adherence. Generally, the more instructions you provide using this method, the less strictly Claude will follow them, particularly if any contradict.
+
+## When to use each method
+
+If you find yourself doing one of the following, you may want to consider an alternative location for your instructions:
+
+**&quot;Every time X, always do Y&quot; in CLAUDE.md.** If the behavior should happen reliably, like running prettier after every edit or posting to Slack on completion, use a hook in `settings.json` instead. The model choosing to run a formatter is different from the formatter running automatically.
+
+**“Never do this” in CLAUDE.md**. When there's something that absolutely must not happen, an instruction is the wrong tool. Claude will follow the instruction most of the time, but when under pressure, in a long session or an ambiguous situation, or due to a prompt injection in a file accessed as part of the task, the model can fail to follow a prompted rule. A real guardrail needs to be deterministic, and the enforcement methods are [hooks](https://code.claude.com/docs/en/hooks) and [permissions](https://code.claude.com/docs/en/permissions). A `PreToolUse` hook can inspect a call and exit with code 2 to block it. [**Managed settings**](https://code.claude.com/docs/en/settings#managed-settings)** **go further: they are admin-deployed, cannot be overridden by a user's local config, and are the only way to enforce a deterministic, organization-wide guardrail.
+
+**A 30-line procedure in CLAUDE.md.** Procedures belong in skills. CLAUDE.md is for facts Claude should hold all the time: build commands, monorepo layout, team conventions. A deployment runbook or a security review checklist should live in `.claude/skills/`, where the body loads only when invoked.
+
+**An API-specific rule without paths.** If a rule only applies to `src/api/**`, scoping it with `paths:` keeps it out of context during unrelated work. An unscoped rule is mechanically identical to putting the content in CLAUDE.md: always loaded, always costing tokens.
+
+**Writing personal preferences to a project-level CLAUDE.md file. **All file-based methods have a user-level counterpart loaded for every Claude Code session regardless of which repo you’re in. Use local files for personal preferences (always use semantic commit messages). Keep project-level files for preferences that are team-wide but specific to a given codebase.
+
+## Getting started with Claude Code customization
+
+You can find more tips and patterns for getting the most out of Claude Code, from configuring your environment to scaling across parallel sessions, in our [best practices for Claude Code](https://code.claude.com/docs/en/best-practices#write-an-effective-claude-md) documentation.
+
+Once you have a few of these working, you can bundle many of them (skills, subagents, hooks, output styles) as a [plugin](https://code.claude.com/docs/en/plugins) to share a coherent setup across teammates or projects.
+
+*This article was written by Michael Segner member of Anthropic staff.*</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Claude Code</span>
-            <span class="article-date">June 18, 2026</span>
-            <span class="lang-badge-large">EN</span>
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-sky);">
+            <img class="hero-illo-img" src="/assets/illustrations/steering-claude-code-skills-hooks-rules-subagents-and-more.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">Steering Claude Code: when to use CLAUDE.md, skills, hooks, and subagents</h1>
-          <a href="/posts/steering-claude-code-skills-hooks-rules-subagents-and-more/" class="lang-toggle">阅读中文翻译 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><div class="w-embed"><style>
+            <h1 class="article-title u-text-style-h1">Steering Claude Code: when to use CLAUDE.md, skills, hooks, and subagents</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>Seven ways to steer Claude Code—CLAUDE.md files, rules, skills, subagents, hooks, and more—and when to use each, based on context cost and authority.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/product/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">June 18, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/steering-claude-code-skills-hooks-rules-subagents-and-more/en.html">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><div class="w-embed"><style>
   /* Fluid breakout for blog embeds + code blocks */
   .u-rich-text-blog .w-embed,
   .u-rich-text-blog pre.w-code-block {
@@ -231,14 +521,21 @@
       </tbody>
     </table>
   </div>
-</figure></div><h2>The seven methods for delivering instructions</h2><p>There are seven ways to customize Claude Code's behavior: CLAUDE.md files for always-on project context, rules for hard constraints, skills for reusable procedures, subagents for delegated work, hooks for deterministic automation, and output styles or system-prompt appends for global changes. </p><p>Each method trades context cost against authority. These methods influence Claude's behavior while two separate dials, <a href="https://claude.com/blog/claude-model-and-effort-level-in-claude-code">which model and effort level you choose</a>, control how capable it is and how hard it works.</p><h3>CLAUDE.md files</h3><p>CLAUDE.md is a markdown file at the root of your project. It loads into context at session start and stays there for the entire session. </p><p>Build commands, directory layout, monorepo structure, coding conventions, and team norms all fit naturally here.</p><p>There are two types, and they load differently:&nbsp;</p><ul role="list"><li><strong>Always loaded</strong>: The first type is a root CLAUDE.md file, either in a shared repository and/or saved locally for your personal preferences specific to a project. All these files load at session start, and won’t get lost or degraded across long sessions. When Claude Code compacts the conversation, it re-reads these files.</li><li><strong>On-demand: </strong>CLAUDE.md files in subdirectories below the folder where you initialized the session. For example, <code>app/api/CLAUDE.md</code> loads when Claude reads a file under<code> app/api</code>, not at session start. It shares the compaction behavior of path-scoped rules: gone until that subdirectory is touched again.&nbsp;</li></ul><figure style="max-width:1206pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a340f852d1f938ab8675599_65a737a9.png" loading="lazy"></div><figcaption>All subdirectory CLAUDE.md files below the cwd load when Claude reads a file within that directory.</figcaption></figure><p>In a shared repository, CLAUDE.md grows the way any unowned config file does: every team appends its own instructions and nothing gets deleted. The cost compounds at scale. </p><p>Every line loads into every session for every engineer working in the repo, whether it's relevant to their task or not. This consumes tokens and dilutes adherence to the instructions that actually matter. As the file grows, push team-specific conventions into path-scoped rules and procedures into skills, where they load only when relevant.</p><p><strong>Tip:</strong> Keep CLAUDE.md under 200 lines, give it an owner, and review changes to it like code. The content itself should follow the same rules as any prompt: <a href="https://claude.com/blog/best-practices-for-prompt-engineering">writing effective prompts</a> means being explicit, explaining the why behind constraints, and showing examples.</p><p>Think of this file as giving Claude an overview of your codebase, or as an index pointing to other files where Claude can find more information as needed.</p><p>In monorepos, give each team's directory its own subdirectory CLAUDE.md so teams only load their own conventions, and developers can use the claudeMdExcludes setting to skip files from teams whose code they never touch. </p><p>For standards that must apply to every repository in the organization — security policies, compliance requirements — a centrally managed CLAUDE.md can be deployed to developer machines via MDM or config management, and it can't be excluded by individual settings.</p><p>More on setting up CLAUDE.md in our blog post, <a href="https://claude.com/blog/using-claude-md-files">CLAUDE.md files: Customizing Claude Code for your codebase</a>.</p></div>
+</figure></div><h2>The seven methods for delivering instructions</h2><p>There are seven ways to customize Claude Code's behavior: CLAUDE.md files for always-on project context, rules for hard constraints, skills for reusable procedures, subagents for delegated work, hooks for deterministic automation, and output styles or system-prompt appends for global changes. </p><p>Each method trades context cost against authority. These methods influence Claude's behavior while two separate dials, <a href="https://claude.com/blog/claude-model-and-effort-level-in-claude-code">which model and effort level you choose</a>, control how capable it is and how hard it works.</p><h3>CLAUDE.md files</h3><p>CLAUDE.md is a markdown file at the root of your project. It loads into context at session start and stays there for the entire session. </p><p>Build commands, directory layout, monorepo structure, coding conventions, and team norms all fit naturally here.</p><p>There are two types, and they load differently:&nbsp;</p><ul role="list"><li><strong>Always loaded</strong>: The first type is a root CLAUDE.md file, either in a shared repository and/or saved locally for your personal preferences specific to a project. All these files load at session start, and won’t get lost or degraded across long sessions. When Claude Code compacts the conversation, it re-reads these files.</li><li><strong>On-demand: </strong>CLAUDE.md files in subdirectories below the folder where you initialized the session. For example, <code>app/api/CLAUDE.md</code> loads when Claude reads a file under<code> app/api</code>, not at session start. It shares the compaction behavior of path-scoped rules: gone until that subdirectory is touched again.&nbsp;</li></ul><figure style="max-width:1206pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a340f852d1f938ab8675599_65a737a9.png" loading="lazy"></div><figcaption>All subdirectory CLAUDE.md files below the cwd load when Claude reads a file within that directory.</figcaption></figure><p>In a shared repository, CLAUDE.md grows the way any unowned config file does: every team appends its own instructions and nothing gets deleted. The cost compounds at scale. </p><p>Every line loads into every session for every engineer working in the repo, whether it's relevant to their task or not. This consumes tokens and dilutes adherence to the instructions that actually matter. As the file grows, push team-specific conventions into path-scoped rules and procedures into skills, where they load only when relevant.</p><p><strong>Tip:</strong> Keep CLAUDE.md under 200 lines, give it an owner, and review changes to it like code. The content itself should follow the same rules as any prompt: <a href="https://claude.com/blog/best-practices-for-prompt-engineering">writing effective prompts</a> means being explicit, explaining the why behind constraints, and showing examples.</p><p>Think of this file as giving Claude an overview of your codebase, or as an index pointing to other files where Claude can find more information as needed.</p><p>In monorepos, give each team's directory its own subdirectory CLAUDE.md so teams only load their own conventions, and developers can use the claudeMdExcludes setting to skip files from teams whose code they never touch. </p><p>For standards that must apply to every repository in the organization — security policies, compliance requirements — a centrally managed CLAUDE.md can be deployed to developer machines via MDM or config management, and it can't be excluded by individual settings.</p><p>More on setting up CLAUDE.md in our blog post, <a href="https://claude.com/blog/using-claude-md-files">CLAUDE.md files: Customizing Claude Code for your codebase</a>.</p><h3>Rules</h3><p><a href="https://code.claude.com/docs/en/memory#organize-rules-with-claude/rules/"><strong>Rules</strong></a> are markdown files in <code>.claude/rules/ </code>that give Claude specific constraints or conventions. </p><p>Unscoped rules behave like CLAUDE.md in that they are always loaded at session start and get re-injected on compaction. This can waste tokens by loading context even when it's not relevant for the task at hand.</p><p>Path-scoped rules allow you to load rule instructions only when they are relevant by adding a <code>paths</code> field that controls when they load. </p><p>For example: a rule scoped to <code>src/api/**</code> stays out of context during a docs-only session. It would only be loaded whenever Claude reads files within that <code>src/api/ </code>directory.</p><p>Here’s what that looks like:</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-yaml" style="white-space:pre-wrap"><span><span style="color:#f5ab35">---</span><span>
+</span></span><span><span></span><span class="hljs-attr">paths:</span><span>
+</span></span><span><span>  </span><span style="color:#abe338">-</span><span> </span><span style="color:#abe338">"src/api/**"</span><span>
+</span></span><span><span>  </span><span style="color:#abe338">-</span><span> </span><span style="color:#abe338">"**/*.handler.ts"</span><span>
+</span></span><span><span></span><span style="color:#f5ab35">---</span><span>
+</span></span><span><span></span><span style="color:#abe338">All</span><span> </span><span style="color:#abe338">API</span><span> </span><span style="color:#abe338">handlers</span><span> </span><span style="color:#abe338">must</span><span> </span><span style="color:#abe338">validate</span><span> </span><span style="color:#abe338">input</span><span> </span><span style="color:#abe338">with</span><span> </span><span style="color:#abe338">Zod</span><span> </span><span style="color:#abe338">before</span><span> </span><span style="color:#abe338">processing.</span></span></code></pre><p><strong>Tip</strong>: A file-specific constraint, like "migrations are append-only," fits best as a <strong>rule</strong> placed in your paths: frontmatter. Reach for a path scoped rule over a nested CLAUDE.md file when the instruction regards a cross-cutting concern or file that appears in multiple (but not all) corners of the codebase.</p><h3>Skills</h3><p><a href="https://code.claude.com/docs/en/skills"><strong>Skills</strong></a> live in <code>.claude/skills/</code> as folders of instructions, scripts, and resources that Claude loads dynamically. Each skill has a <code>SKILL.md</code> file with a name, description, and body. </p><p>Only the name and description load at session start; the full body loads when Claude invokes the skill, either through a slash command (/code-review) or by auto-matching the task.</p><figure style="max-width:1650pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a340f852d1f938ab867559f_2199ed03.png" loading="lazy"></div><figcaption>Skills are triggered via your system prompt.</figcaption></figure><p>For example, <code>/code-review</code> is a built-in skill that reviews your current diff and reports its findings without editing files. The skill defines the playbook so Claude follows the same structured approach every time you invoke it.</p><p>On compaction, Claude Code re-injects invoked skills up to a total budget across all invoked skills. If you’ve invoked many skills during a session, the oldest ones drop first.&nbsp;</p><p><strong>Tip:</strong> Instructions that are procedural, like deploy workflows, release checklists, or review processes, belong in a skill rather than in CLAUDE.md.</p><p>Claude Code ships with skills, but you can also write your own custom skills. Our <a href="https://claude.com/blog/complete-guide-to-building-skills-for-claude">complete guide to building skills for Claude</a> shows you how.</p><h3>Subagents</h3><p><a href="https://code.claude.com/docs/en/sub-agents"><strong>Subagents</strong></a> are markdown files in <code>.claude/agents/ </code>that define isolated assistants for specific side tasks. Each file uses YAML frontmatter (name, description, plus optional fields for model and tool access) followed by a body that becomes that subagent's system prompt.</p><p>Subagents are similar to skills in that the name, description, and tool list load at session start, but the larger context within the body of the agent doesn’t auto-invoke. Claude calls them via the Agent tool, passing in a prompt string.&nbsp;</p><figure style="max-width:744pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a340f852d1f938ab86755a2_914c1942.png" loading="lazy"></div><figcaption>Claude Code’s context window holds everything Claude knows about your session. The <a href="https://code.claude.com/docs/en/context-window">interactive timeline here</a> walks through what loads and when.&nbsp;</figcaption></figure><p>Not only does the larger instructional context within the body of the subagent not auto-invoke, it never enters the parent conversation at all.</p><p>The subagent then runs in its own fresh context window, and the only thing that returns to your main session is the subagent’s final message (often the aggregated result of many subtasks) plus metadata.&nbsp;</p><p>This pattern scales: subagents can nest up to five levels deep, and <a href="https://claude.com/blog/a-harness-for-every-task-dynamic-workflows-in-claude-code">dynamic workflows</a> orchestrate tens to hundreds of background agents without requiring you to specify each detail of the subagent architecture. The orchestration plan and intermediate results live in script variables rather than in Claude’s context window, which enables scale without losing instructional fidelity.</p><p><strong>Tip: </strong>That isolation is one of the main reasons to reach for a subagent instead of a skill. Use a subagent when a side task like deep search, a log analysis pass, or a dependency audit would clutter your main conversation with intermediate results you won't reference again. Use a skill when you want the procedure to play out inside the main thread so you can see and steer each step.</p><h3>Hooks</h3><p><a href="https://code.claude.com/docs/en/hooks-guide"><strong>Hooks</strong></a> are user-defined commands, HTTP endpoints, or LLM prompts that provide more deterministic control over Claude’s behavior by firing on <a href="https://code.claude.com/docs/en/hooks#hook-lifecycle">specific events in Claude’s lifecycle</a> like file edits, tool calls, or session start.&nbsp;</p><figure class="w-richtext-align-center w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a340f852d1f938ab867559c_e782277c.png" loading="lazy"></div><figcaption>A map of events in a Claude Code session when a hook can fire.</figcaption></figure><p>You register hooks in <code>settings.json</code>, managed policy settings, or skill/agent frontmatter.&nbsp;</p><p>There are several types of hooks: command, HTTP, mcp_tool, prompt, and agent. All hooks are deterministically triggered. The first three execute deterministically while the latter two, prompt and agent, use Claude’s judgment rather than a set of rules to determine the output.</p><p>Hooks have low context costs because the configuration or instruction lives outside the main context window. The harness runs the handler (command, http, mcp_tool) or makes model calls with separate windows (prompt, agent) depending on the hook type.&nbsp;</p><p>Some hooks may have the output saved to the main context window. For example, a blocking hook's standard error is saved within context so Claude knows why the call was denied.&nbsp;</p><p>But most hooks won’t have the output saved to the main window unless the configuration explicitly returns it. If you backed up your chat history into another file for later reference before compaction using the <code>PreCompact</code> event, Claude wouldn’t know which file had the chat history saved.&nbsp;</p><p>This makes these hook types fundamentally different from CLAUDE.md, rules, and skills. You can learn more in our post<strong> </strong><a href="https://claude.com/blog/how-to-configure-hooks"><strong>how to configure hooks</strong></a>.</p><p><strong>Tip:</strong> Use hooks for anything that should happen deterministically: running linters after edits, posting to Slack on completion, or blocking specific commands before they execute. A <code>PreToolUse</code> hook can inspect any tool call and exit code 2 to deny it.</p><p>They have low context cost because they are code that the harness runs rather than instructions to Claude that get loaded into context. Skills and hooks are also the building blocks of <a href="https://claude.com/blog/getting-started-with-loops">designing agent loops</a>—repeating workflows that run until a stop condition is met.</p><h3>Output styles</h3><p><a href="https://code.claude.com/docs/en/output-styles"><strong>Output styles</strong></a> are files in <code>.claude/output-styles/</code> that inject instructions into the system prompt. They never get compacted, load at the start of every session, and are cached after the first request within a session, meaning they have a moderate context cost.</p><p>Because they sit in the system prompt, output styles carry the highest instruction-following weight of any method that we've covered so far and should be used judiciously.</p><p><strong>Changes to the output style will replace the default output style</strong> (unless you set keep-coding-instructions: true in the style's frontmatter). </p><p>In Claude Code, this would remove instructions that tell Claude it is helping users with software engineering tasks and contains other critical default instructions such as:</p><ul role="list"><li>How to scope changes;&nbsp;</li><li>When to add or omit code comments;</li><li>What to do about security concerns; and&nbsp;</li><li>Verification habits like running tests before declaring work complete.&nbsp;</li></ul><p>By default, a custom output style drops all of this and Claude Code becomes more of a general assistant than a software engineer assistant.&nbsp;</p><p><strong>Tip</strong>: Before writing a custom output style, check the built-in styles. <strong>Proactive</strong>, <strong>Explanatory</strong>, and <strong>Learning</strong> cover the most common needs (autonomy, teaching mode, collaborative coding) without you having to maintain a style file.</p><h3>Appending the system prompt</h3><p>An alternative to modifying output styles is the <code>append-system-prompt</code> flag. Whereas modifying output style files can have large, unintended changes to Claude’s behavior, the append flag is only additive to the original system prompt. It doesn’t modify Claude’s role; it just adds instructions to its default role.&nbsp;</p><p>It is also passed at invocation time, and only applies to that invocation, rather than persisted as a file across sessions.&nbsp;</p><p>Appending the system prompt can have a higher context cost compared to other methods of passing instructions. It increases input tokens, though prompt caching reduces this cost after the first request in a session. Instructing Claude to use a more verbose or longer style also increases output tokens.&nbsp;</p><p><strong>Tip:</strong> Appending the system prompt is best for adding specific coding standards, output formatting, or domain-specific knowledge. Keep in mind that appending the system prompt has diminishing returns for adherence. Generally, the more instructions you provide using this method, the less strictly Claude will follow them, particularly if any contradict.</p><h2>When to use each method</h2><p>If you find yourself doing one of the following, you may want to consider an alternative location for your instructions:</p><p><strong>"Every time X, always do Y" in CLAUDE.md.</strong> If the behavior should happen reliably, like running prettier after every edit or posting to Slack on completion, use a hook in <code>settings.json</code> instead. The model choosing to run a formatter is different from the formatter running automatically.</p><p><strong>“Never do this” in CLAUDE.md</strong>. When there's something that absolutely must not happen, an instruction is the wrong tool. Claude will follow the instruction most of the time, but when under pressure, in a long session or an ambiguous situation, or due to a prompt injection in a file accessed as part of the task, the model can fail to follow a prompted rule. A real guardrail needs to be deterministic, and the enforcement methods are <a href="https://code.claude.com/docs/en/hooks">hooks</a> and <a href="https://code.claude.com/docs/en/permissions">permissions</a>. A <code>PreToolUse</code> hook can inspect a call and exit with code 2 to block it. <a href="https://code.claude.com/docs/en/settings#managed-settings"><strong>Managed settings</strong></a><strong> </strong>go further: they are admin-deployed, cannot be overridden by a user's local config, and are the only way to enforce a deterministic, organization-wide guardrail.</p><p><strong>A 30-line procedure in CLAUDE.md.</strong> Procedures belong in skills. CLAUDE.md is for facts Claude should hold all the time: build commands, monorepo layout, team conventions. A deployment runbook or a security review checklist should live in <code>.claude/skills/</code>, where the body loads only when invoked.</p><p><strong>An API-specific rule without paths.</strong> If a rule only applies to <code>src/api/**</code>, scoping it with <code>paths:</code> keeps it out of context during unrelated work. An unscoped rule is mechanically identical to putting the content in CLAUDE.md: always loaded, always costing tokens.</p><p><strong>Writing personal preferences to a project-level CLAUDE.md file. </strong>All file-based methods have a user-level counterpart loaded for every Claude Code session regardless of which repo you’re in. Use local files for personal preferences (always use semantic commit messages). Keep project-level files for preferences that are team-wide but specific to a given codebase.</p><h2>Getting started with Claude Code customization</h2><p>You can find more tips and patterns for getting the most out of Claude Code, from configuring your environment to scaling across parallel sessions, in our <a href="https://code.claude.com/docs/en/best-practices#write-an-effective-claude-md">best practices for Claude Code</a> documentation.</p><p>Once you have a few of these working, you can bundle many of them (skills, subagents, hooks, output styles) as a <a href="https://code.claude.com/docs/en/plugins">plugin</a> to share a coherent setup across teammates or projects.</p><p><em>This article was written by Michael Segner member of Anthropic staff.</em></p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/steering-claude-code-skills-hooks-rules-subagents-and-more" target="_blank">View original</a></p>
+              <p><a href="/">← Back to home</a></p>
+            </footer>
+          </article>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/steering-claude-code-skills-hooks-rules-subagents-and-more" target="_blank">View original</a></p>
-          <p><a href="/">← Back to home</a></p>
-        </footer>
-      </article>
+      </div>
     </div>
   </main>
 <footer class="footer">
@@ -246,6 +543,53 @@
       <p>Content from <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · Translation by AI</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

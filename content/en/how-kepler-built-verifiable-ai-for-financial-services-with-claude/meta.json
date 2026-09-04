@@ -13,5 +13,21 @@
   "translatedTitle": "Kepler 如何用 Claude 为金融服务构建可验证的 AI",
   "translated": true,
   "translatedAt": "2026-09-02T04:25:11.859Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Platform"
+    ],
+    "usecase": [
+      "Financial services"
+    ]
+  },
+  "subtitle": "Inside a platform that indexes 26M+ SEC filings, earnings call transcripts, IR presentations, consensus estimates, and private data across 14,000+ companies and 27 global markets, and how the team behind it built AI that validates every number to the exact filing, page, and line item.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/platform/api"
 }

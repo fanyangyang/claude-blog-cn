@@ -13,5 +13,19 @@
   "translatedTitle": "奋战前沿：Cursor 如何确认 Claude Fable 5 能应对最难的 1% 问题",
   "translated": true,
   "translatedAt": "2026-09-02T04:14:34.101Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Platform"
+    ],
+    "usecase": []
+  },
+  "subtitle": "Nate Schmidt's job at Cursor is to evaluate frontier models against their ability to tackle long-running, real-world engineering problems. Here’s why–and how–Claude Fable 5 changed the calculus on what coding agents are capable of.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/platform/api"
 }

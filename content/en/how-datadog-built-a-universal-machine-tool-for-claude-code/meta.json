@@ -13,5 +13,24 @@
   "translatedTitle": "Datadog 如何为 Claude Code 打造一把“万能机床”",
   "translated": true,
   "translatedAt": "2026-09-02T04:14:34.101Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Claude Code",
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": [
+      "Coding"
+    ]
+  },
+  "subtitle": "Datadog has an agent write specifications for a deterministic kernel to write application code.",
+  "authors": [
+    "Michael Segner"
+  ],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/claude-code",
+  "productUrl": "https://claude.com/product/claude-code"
 }

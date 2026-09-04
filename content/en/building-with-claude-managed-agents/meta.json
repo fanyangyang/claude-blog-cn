@@ -13,5 +13,21 @@
   "translatedTitle": "智能体界面的演进：使用 Claude Managed Agents 构建生产级智能体",
   "translated": true,
   "translatedAt": "2026-09-02T04:24:57Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Agents"
+    ],
+    "product": [
+      "Claude Platform"
+    ],
+    "usecase": [
+      "Agents"
+    ]
+  },
+  "subtitle": "As model intelligence and agentic harnesses evolve, Anthropic's Claude Managed Agents allows teams to build and deploy agents in production environments reliably at scale. Here’s why and how teams are using it.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/agents",
+  "productUrl": "https://claude.com/platform/api"
 }

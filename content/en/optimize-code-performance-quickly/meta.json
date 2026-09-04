@@ -13,5 +13,22 @@
   "translated": true,
   "translatedTitle": "快速优化代码性能",
   "translatedAt": "2026-09-02T12:12:00.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Claude Code"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": [
+      "Coding",
+      "Productivity"
+    ]
+  },
+  "subtitle": "Go from reactive profiling to proactive optimization. Find and fix bottlenecks in your codebase before they slow down production.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/claude-code",
+  "productUrl": "https://claude.com/product/claude-code"
 }

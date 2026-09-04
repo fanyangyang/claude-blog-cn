@@ -13,5 +13,22 @@
   "translatedTitle": "发现可与 Claude 协同工作的工具",
   "translated": true,
   "translatedAt": "2026-09-02T04:44:54.905Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude apps"
+    ],
+    "usecase": [
+      "Content Creation",
+      "Work"
+    ]
+  },
+  "subtitle": "Browse and connect Claude to your favorite apps and tools with one-click.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": ""
 }

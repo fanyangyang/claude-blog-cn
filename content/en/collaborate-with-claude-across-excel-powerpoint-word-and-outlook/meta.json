@@ -13,5 +13,22 @@
   "translatedTitle": "在 Excel、PowerPoint、Word 和 Outlook 中与 Claude 协作",
   "translated": true,
   "translatedAt": "2026-09-02T04:19:19.723Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Enterprise"
+    ],
+    "usecase": [
+      "Agents",
+      "Productivity"
+    ]
+  },
+  "subtitle": "One conversation that carries context across all four apps",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/solutions/enterprise"
 }

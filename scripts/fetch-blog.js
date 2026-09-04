@@ -269,33 +269,288 @@ function extractCategoryFromArticlePage(html) {
   return '';
 }
 
-function extractArticleContent(html) {
-  const $ = cheerio.load(html);
+// Absolute URL for a hero detail link. Relative paths become claude.com URLs;
+// empty / "#" hrefs are ignored.
+function absoluteClaudeUrl(href) {
+  const raw = (href || '').trim();
+  if (!raw || raw === '#') return '';
+  try {
+    return new URL(raw, 'https://claude.com').href;
+  } catch {
+    return '';
+  }
+}
 
-  const contentDiv = $('div[data-readtime="content"].w-richtext').first();
-  if (contentDiv.length && contentDiv.text().trim().length > 0) {
-    return $.html(contentDiv);
+// Hero details sidebar fields from section.hero_blog_post_wrap:
+// subtitle, authors[], readingMinutes, categoryUrl, productUrl.
+// Falls back to meta description for subtitle and word-count estimate for
+// reading time when the official page omits those nodes.
+function extractHeroMetaFromArticlePage(html) {
+  const $ = cheerio.load(html);
+  const $hero = $('section.hero_blog_post_wrap').first();
+
+  let subtitle = '';
+  if ($hero.length) {
+    subtitle = $hero.find('.hero_blog_description_wrap p').first().text().trim();
+  }
+  if (!subtitle) {
+    subtitle = $('meta[name="description"]').attr('content') || '';
+    subtitle = subtitle.trim();
   }
 
-  const blogSection = $('section.blog_post_section_wrap').first();
-  if (blogSection.length) {
-    const richtext = blogSection.find('.w-richtext.u-rich-text-blog').first();
-    if (richtext.length && richtext.text().trim().length > 100) {
-      return $.html(richtext);
+  const authors = [];
+  $hero.find('.blog_author_text').each((i, el) => {
+    const name = $(el).text().trim();
+    if (name && !authors.includes(name)) authors.push(name);
+  });
+
+  let readingMinutes = 0;
+  const minutesText = $hero.find('[data-readtime="minutes"]').first().text().trim();
+  if (minutesText) {
+    const n = parseInt(minutesText, 10);
+    if (!isNaN(n) && n > 0) readingMinutes = n;
+  }
+  if (!readingMinutes) {
+    const contentText = $('div[data-readtime="content"]').first().text().trim()
+      || $('section.blog_post_section_wrap .w-richtext').first().text().trim();
+    if (contentText) {
+      const words = contentText.split(/\s+/).filter(Boolean).length;
+      readingMinutes = Math.max(1, Math.round(words / 200));
     }
   }
 
-  let found = null;
-  $('.w-richtext').each((i, el) => {
-    if (found) return;
-    const $el = $(el);
-    const text = $el.text().trim();
-    if (text.length > 500 && !$el.closest('header').length && !$el.closest('footer').length) {
-      found = $.html($el);
+  let categoryUrl = '';
+  let productUrl = '';
+  $hero.find('li.hero_blog_post_details_item').each((i, li) => {
+    const $li = $(li);
+    const caption = $li.find('.u-text-style-caption').first().text().trim().toLowerCase();
+    if (caption === 'category' && !categoryUrl) {
+      categoryUrl = absoluteClaudeUrl($li.find('a').first().attr('href'));
+    }
+    if (caption === 'product' && !productUrl) {
+      productUrl = absoluteClaudeUrl($li.find('a').first().attr('href'));
     }
   });
 
-  return found;
+  return { subtitle, authors, readingMinutes, categoryUrl, productUrl };
+}
+
+// Facets (category/product/usecase) for one article. The listing cards expose
+// only category; product/usecase live in a hidden metadata block
+// (u-display-none) on the article's own page, each tagged with
+// fs-list-field="product" / fs-list-field="usecase". Category and Product also
+// come from the hero details list. Returns { category: [], product: [], usecase: [] }
+// — always all three keys so callers can spread the result unconditionally.
+function extractFacetsFromArticlePage(html) {
+  const $ = cheerio.load(html);
+  const facets = { category: [], product: [], usecase: [] };
+  const pushUnique = (field, value) => {
+    if (value && !facets[field].includes(value)) facets[field].push(value);
+  };
+  // Category / Product: each link under the matching hero details caption.
+  $('section.hero_blog_post_wrap li.hero_blog_post_details_item').each((i, li) => {
+    const $li = $(li);
+    const caption = $li.find('.u-text-style-caption').first().text().trim().toLowerCase();
+    if (caption === 'category') {
+      $li.find('a').each((j, a) => pushUnique('category', $(a).text().trim()));
+    }
+    if (caption === 'product') {
+      $li.find('a').each((j, a) => pushUnique('product', $(a).text().trim()));
+    }
+  });
+  // Product / usecase: the hidden metadata block, all values.
+  $('.u-display-none [fs-list-field="product"]').each((i, el) => pushUnique('product', $(el).text().trim()));
+  $('.u-display-none [fs-list-field="usecase"]').each((i, el) => pushUnique('usecase', $(el).text().trim()));
+  return facets;
+}
+
+function htmlEscape(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+// Site chrome that sits in the article template but is not article body:
+// empty FAQ shells, "Get Claude Code Desktop" install strips, leftover CTAs.
+function isChromeBlock($el) {
+  const text = $el.text().replace(/\s+/g, ' ').trim();
+  if (!text) return true;
+  if (/FAQ\s+No items found/i.test(text) && text.length < 600) return true;
+  if (/Get Claude Code Desktop/i.test(text) && text.length < 600) return true;
+  if (/^(Try now\s*)+$/i.test(text)) return true;
+  if (/Learn more\.?(\s+Learn more\.?)+$/i.test(text) && text.length < 220) return true;
+  return false;
+}
+
+function logoLabel(src) {
+  const name = path.basename(src || '').replace(/\.(svg|png|webp|jpe?g)$/i, '');
+  return name
+    .replace(/[-_](light|dark|color|black|white|logo|logo\.svg)+/ig, ' ')
+    .replace(/[_-]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function extractTestimonialCards($, $root) {
+  const cards = [];
+  const seen = new Set();
+  $root.find('.card_testimonial_col_layout').each((i, el) => {
+    const $el = $(el);
+    const text = $el.find('.card_testimonial_col_text').first().text().replace(/\s+/g, ' ').trim();
+    if (text.length < 40 || seen.has(text)) return;
+    seen.add(text);
+    const caption = $el.find('.card_testimonial_col_caption').first().text().replace(/\s+/g, ' ').trim();
+    const $logo = $el.find('img.logo_light, img.illustration_light').first();
+    cards.push({
+      text,
+      caption,
+      logo: $logo.attr('src') || '',
+      alt: logoLabel($logo.attr('src') || '') || ($logo.attr('alt') || '').trim(),
+    });
+  });
+  return cards;
+}
+
+function renderTestimonials(cards) {
+  if (!cards.length) return '';
+  const items = cards.map((card) => {
+    const logo = card.logo
+      ? `<img class="article-testimonial-logo" src="${htmlEscape(card.logo)}" alt="${htmlEscape(card.alt)}" loading="lazy">`
+      : '';
+    const caption = card.caption
+      ? `<figcaption class="article-testimonial-caption">${htmlEscape(card.caption)}</figcaption>`
+      : '';
+    return `<figure class="article-testimonial" role="listitem">${logo}<blockquote><p>${htmlEscape(card.text)}</p></blockquote>${caption}</figure>`;
+  });
+  return `<div class="article-testimonials" role="list">${items.join('')}</div>`;
+}
+
+function extractFaqItems($, $root) {
+  const items = [];
+  const seen = new Set();
+  $root.find('.accordion_item').each((i, el) => {
+    const $el = $(el);
+    const question = $el.find('.accordion_toggle_text').first().text().replace(/\s+/g, ' ').trim();
+    const $answer = $el.find('.accordion_content_text').first();
+    if (!question || seen.has(question) || !$answer.length) return;
+    seen.add(question);
+    items.push({ question, html: $answer.html() || '' });
+  });
+  return items;
+}
+
+function renderFaq(items) {
+  if (!items.length) return '';
+  const body = items.map((item) => `<h3>${htmlEscape(item.question)}</h3>${item.html}`).join('');
+  return `<h2>FAQ</h2><div class="article-faq">${body}</div>`;
+}
+
+function normalizedBodyText(html) {
+  if (!html) return '';
+  const $ = cheerio.load(html);
+  $('script, style').remove();
+  return $.text().replace(/\s+/g, ' ').trim();
+}
+
+// Write content/en/<slug>/content.html from a cached official page.
+// Skips the write when normalized text is unchanged so a listing-only fetch
+// does not dirty every article or flip translationStale.
+function writeExtractedContent(articleDir, articleHtml) {
+  const extracted = extractArticleContent(articleHtml);
+  if (!extracted) {
+    return { written: false, prevChars: 0, nextChars: 0 };
+  }
+  const dest = path.join(articleDir, 'content.html');
+  const prev = fs.existsSync(dest) ? fs.readFileSync(dest, 'utf-8') : '';
+  const prevText = normalizedBodyText(prev);
+  const nextText = normalizedBodyText(extracted);
+  if (prevText === nextText) {
+    return { written: false, prevChars: prevText.length, nextChars: nextText.length };
+  }
+  fs.writeFileSync(dest, extracted, 'utf-8');
+  return { written: true, prevChars: prevText.length, nextChars: nextText.length };
+}
+
+// Official posts are not a single richtext node. The template concatenates:
+//   1) one or more [data-readtime="content"] body blocks
+//   2) an optional CMS testimonial slider (.is_testimonials)
+// in document order. Taking only .first() drops Getting started, FAQ answers,
+// and every quote card — which is why some local pages look truncated.
+function extractArticleContent(html) {
+  const $ = cheerio.load(html);
+  const pieces = [];
+
+  const pushRichtext = ($el) => {
+    if (!$el || !$el.length || isChromeBlock($el)) return;
+    const inner = $el.html();
+    if (inner && $el.text().replace(/\s+/g, ' ').trim().length > 40) {
+      pieces.push(inner);
+    }
+  };
+
+  const walk = (node) => {
+    if (!node) return;
+    const $el = $(node);
+    if ($el.is('div[data-readtime="content"]')) {
+      pushRichtext($el);
+      return;
+    }
+    if (
+      $el.hasClass('is_testimonials')
+      || $el.hasClass('slider_component')
+      || ($el.hasClass('blog_post_layout') && $el.find('.card_testimonial_col_layout').length)
+    ) {
+      const html = renderTestimonials(extractTestimonialCards($, $el));
+      if (html) pieces.push(html);
+      return;
+    }
+    if ($el.hasClass('faq_section_wrap')) {
+      const faqHtml = renderFaq(extractFaqItems($, $el));
+      if (faqHtml) pieces.push(faqHtml);
+      return;
+    }
+    if (
+      $el.hasClass('card_full_layout')
+      || $el.hasClass('blog_related_section_wrap')
+      || $el.hasClass('hero_blog_post_wrap')
+    ) {
+      return;
+    }
+    $el.children().each((i, child) => walk(child));
+  };
+
+  const $scope = $('.blog_post_component').first();
+  if ($scope.length) {
+    walk($scope.get(0));
+  }
+
+  if (!pieces.length) {
+    const contentDiv = $('div[data-readtime="content"].w-richtext').first();
+    if (contentDiv.length && contentDiv.text().trim().length > 0) {
+      return $.html(contentDiv);
+    }
+    const blogSection = $('section.blog_post_section_wrap').first();
+    if (blogSection.length) {
+      const richtext = blogSection.find('.w-richtext.u-rich-text-blog').first();
+      if (richtext.length && richtext.text().trim().length > 100) {
+        return $.html(richtext);
+      }
+    }
+    let found = null;
+    $('.w-richtext').each((i, el) => {
+      if (found) return;
+      const $el = $(el);
+      const text = $el.text().trim();
+      if (text.length > 500 && !$el.closest('header').length && !$el.closest('footer').length) {
+        found = $.html($el);
+      }
+    });
+    return found;
+  }
+
+  return `<div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext">${pieces.join('')}</div>`;
 }
 
 function illustrationExtension(url) {
@@ -445,6 +700,9 @@ async function main() {
 
   let newCount = 0;
   let updatedCount = 0;
+  let contentRefreshed = 0;
+  let contentUnchanged = 0;
+  const staleSlugs = new Set();
 
   for (const article of articles.values()) {
     const existing = indexBySlug.get(article.slug);
@@ -454,13 +712,37 @@ async function main() {
 
     if (isNew) console.log(`NEW: ${article.slug} — ${article.title || '(untitled)'}`);
 
-    // Article bodies: this run refreshes listing metadata only. Previously
-    // fetched pages are kept as-is; articles without a stored page get
-    // metadata only (translated=false) and their body is fetched in a later
-    // run — the site build already skips article pages that do not exist.
+    // Article bodies: previously fetched pages are kept as-is. Articles
+    // without a stored page are fetched once here (metadata-only run) so
+    // their facets are available; the site build already skips article pages
+    // that do not exist.
     let articleHtml = null;
     if (fs.existsSync(htmlFile)) {
       articleHtml = fs.readFileSync(htmlFile, 'utf-8');
+    } else {
+      try {
+        articleHtml = await fetch(`https://claude.com/blog/${article.slug}`);
+        fs.mkdirSync(articleDir, { recursive: true });
+        fs.writeFileSync(htmlFile, articleHtml, 'utf-8');
+      } catch (err) {
+        console.warn(`  ⚠ Could not fetch ${article.slug}: ${err.message}`);
+      }
+    }
+
+    // Refresh the English body from the cached official page so extra CMS
+    // blocks (testimonials, a second Getting started richtext, real FAQs)
+    // are not lost. Only rewrite when the extracted text actually changed.
+    if (articleHtml) {
+      const extracted = writeExtractedContent(articleDir, articleHtml);
+      if (extracted.written) {
+        contentRefreshed++;
+        const zhFile = path.join(__dirname, '..', 'content', 'zh', article.slug, 'content.html');
+        if (fs.existsSync(zhFile) && extracted.nextChars > extracted.prevChars + 80) {
+          staleSlugs.add(article.slug);
+        }
+      } else {
+        contentUnchanged++;
+      }
     }
 
     // Category: the listing page is the single source of truth. Only hero-only
@@ -472,6 +754,26 @@ async function main() {
     if (!category) {
       category = (existing && existing.category) || 'General';
     }
+
+    // Facets: the listing page only exposes category; product/usecase live on
+    // the article's own page. Extract all three when the page is available,
+    // otherwise keep the stored facets unchanged.
+    const facets = articleHtml
+      ? extractFacetsFromArticlePage(articleHtml)
+      : (existing && existing.facets) || null;
+
+    // Hero sidebar meta (subtitle, authors, reading time, detail URLs).
+    // Prefer a fresh parse; keep previously stored values when the page is
+    // missing so a transient fetch failure does not wipe fields.
+    const heroMeta = articleHtml
+      ? extractHeroMetaFromArticlePage(articleHtml)
+      : {
+          subtitle: (existing && existing.subtitle) || '',
+          authors: (existing && existing.authors) || [],
+          readingMinutes: (existing && existing.readingMinutes) || 0,
+          categoryUrl: (existing && existing.categoryUrl) || '',
+          productUrl: (existing && existing.productUrl) || '',
+        };
 
     // Illustration path: fresh download wins, otherwise keep the known path.
     const illustrationPath = illustrationPaths.get(article.slug)
@@ -490,6 +792,12 @@ async function main() {
       inGrid: Boolean(article.inGrid),
       illustration: illustrationPath,
       illustrationBg: article.illustrationBg || '',
+      facets,
+      subtitle: heroMeta.subtitle || '',
+      authors: Array.isArray(heroMeta.authors) ? heroMeta.authors : [],
+      readingMinutes: heroMeta.readingMinutes || 0,
+      categoryUrl: heroMeta.categoryUrl || '',
+      productUrl: heroMeta.productUrl || '',
     };
 
     // Merge into the index entry, preserving translation fields and fetchedAt.
@@ -498,6 +806,9 @@ async function main() {
       ...listingRecord,
       fetchedAt: (existing && existing.fetchedAt) || new Date().toISOString(),
     };
+    if (staleSlugs.has(article.slug)) {
+      merged.translationStale = true;
+    }
     if (existing) {
       const idx = index.articles.findIndex((a) => a.slug === article.slug);
       index.articles[idx] = merged;
@@ -510,8 +821,8 @@ async function main() {
     }
 
     // Per-article meta.json: merge, never replace — only for articles whose
-    // content directory already exists (new metadata-only articles get no
-    // directory until their body is fetched).
+    // content directory already exists (new articles get their body fetched
+    // above, so the directory is created for them too).
     const metaFile = path.join(articleDir, 'meta.json');
     if (fs.existsSync(articleDir)) {
       let articleMeta = {};
@@ -546,9 +857,21 @@ async function main() {
   console.log(`\nDone! ${newCount} new, ${updatedCount} updated, ${index.articles.length} total`);
   console.log(`  inHero: ${inHeroCount}, inGrid: ${inGridCount}, translated: ${translatedCount}`);
   console.log(`  illustrations: ${illoStats.downloaded} downloaded, ${illoStats.skipped} kept, ${illoStats.failed} failed`);
+  console.log(`  content.html: ${contentRefreshed} refreshed, ${contentUnchanged} unchanged, ${staleSlugs.size} translations marked stale`);
 }
 
-main().catch((err) => {
-  console.error(`\nFATAL: ${err.message}`);
-  process.exit(1);
-});
+if (require.main === module) {
+  main().catch((err) => {
+    console.error(`\nFATAL: ${err.message}`);
+    process.exit(1);
+  });
+}
+
+module.exports = {
+  extractArticleContent,
+  extractTestimonialCards,
+  extractFaqItems,
+  isChromeBlock,
+  normalizedBodyText,
+  writeExtractedContent,
+};

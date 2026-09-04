@@ -13,5 +13,22 @@
   "translatedTitle": "转向智能体编程进行软件开发的关键收益是什么？",
   "translated": true,
   "translatedAt": "2026-09-02T04:54:25.809Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Claude Code"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": [
+      "Agents",
+      "Coding"
+    ]
+  },
+  "subtitle": "Agentic coding transforms how developers work—instead of suggesting code snippets, AI agents like Claude Code execute entire tasks autonomously. Discover the key benefits driving this shift and how to get started using Claude Code.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/claude-code",
+  "productUrl": "https://claude.com/product/claude-code"
 }

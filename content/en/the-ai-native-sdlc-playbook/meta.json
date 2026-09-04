@@ -13,5 +13,26 @@
   "heroIndex": -1,
   "inGrid": true,
   "illustration": "assets/illustrations/the-ai-native-sdlc-playbook.svg",
-  "illustrationBg": "Plum"
+  "illustrationBg": "Plum",
+  "facets": {
+    "category": [
+      "Enterprise AI",
+      "Claude Code"
+    ],
+    "product": [
+      "Claude Enterprise",
+      "Claude Code",
+      "Claude Tag"
+    ],
+    "usecase": [
+      "Coding"
+    ]
+  },
+  "subtitle": "How to transform your software development lifecycle with AI—stage by stage.",
+  "authors": [
+    "Louis Claxton"
+  ],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/solutions/enterprise"
 }

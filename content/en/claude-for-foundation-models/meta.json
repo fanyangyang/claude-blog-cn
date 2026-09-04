@@ -13,5 +13,20 @@
   "illustrationBg": "Clay",
   "translatedTitle": "在 Foundation Models 框架中使用 Claude，为 Apple 平台构建智能应用",
   "translatedAt": "2026-09-02T05:14:34.865Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Platform",
+      "Claude apps"
+    ],
+    "usecase": []
+  },
+  "subtitle": "A new Swift package connects Apple's Foundation Models framework to Claude. Hand off complex reasoning from on-device models with typed Swift outputs.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/platform/api"
 }

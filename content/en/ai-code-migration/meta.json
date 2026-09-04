@@ -13,5 +13,22 @@
   "translatedTitle": "Anthropic 如何用 Claude Code 执行大规模代码迁移",
   "translated": true,
   "translatedAt": "2026-09-02T04:14:34.101Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Claude Code",
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": [
+      "Coding"
+    ]
+  },
+  "subtitle": "A step-by-step guide to running large code migrations with AI agents — including Bun's million-line Zig-to-Rust port.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/claude-code",
+  "productUrl": "https://claude.com/product/claude-code"
 }

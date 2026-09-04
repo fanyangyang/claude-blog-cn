@@ -4,54 +4,218 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>用 Claude Opus 4.6 推进金融行业 — Claude Blog 中文翻译</title>
-  <meta name="description" content="用 Claude Opus 4.6 推进金融行业">
+  <meta name="description" content="With Claude Opus 4.6, finance teams get better reasoning on complex analyses, cleaner first-pass deliverables, and new tools built for where analysts actually spend their time.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/opus-4-6-finance" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>用 Claude Opus 4.6 推进金融行业</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/opus-4-6-finance" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/opus-4-6-finance/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># 用 Claude Opus 4.6 推进金融行业
+
+With Claude Opus 4.6, finance teams get better reasoning on complex analyses, cleaner first-pass deliverables, and new tools built for where analysts actually spend their time.
+
+[Claude Opus 4.6](https://www.anthropic.com/news/claude-opus-4-6) 标志着金融 AI 向前迈出一步。它可以协助专业人士基于准确的信息和清晰的分析做出决策，并产出打磨精良的交付物。在金融推理、多任务处理以及长时间多步骤任务中保持专注方面，该模型明显优于市场上的其他模型。 
+
+伴随 Claude Opus 4.6，我们更新了一些现有产品，并推出一款新产品，把这些能力带到分析师花费大部分时间的地方。[Cowork](https://claude.com/product/cowork) 现在能在第一轮就产出更精良的成果物，比如财务模型和演示文稿。[Claude in Excel](https://claude.com/claude-in-excel) 在处理长时间运行任务方面变得更强，即使财务模型越来越复杂，Claude Opus 4.6 也能保持专注和准确。此外，我们还发布了 [Claude in PowerPoint](https://claude.com/claude-in-powerpoint) 研究预览版（beta），可以原生地构建和迭代幻灯片与演示文稿。
+
+我们内部的 Real-World Finance 评测衡量了 Claude 在约 50 个投资与金融分析用例上的表现，覆盖电子表格、幻灯片以及 Word 文档的生成与审阅。这些是投行、私募股权、公开市场投资和企业财务领域的分析师日常执行的任务。Claude Opus 4.6 相比仅仅几个月前还是我们最先进模型的 Claude Sonnet 4.5 提升超过 23 个百分点。
+
+*该评测结合了代码执行与工具使用的智能体测试框架（agentic harness），评分依据兼顾量规打分与偏好对比，考察金融领域知识、任务完整性与准确性，以及成果展示质量。*这些更新共同让 Claude 成为金融服务和企业财务领域人士更强大的合作伙伴。
+
+## 研究、分析、创作
+
+金融从业者用 AI 跨多个数据源高效开展研究、支撑财务分析，并创作团队和客户可以据此行动的交付成果。Claude Opus 4.6 在这三个维度上都是同类最佳。
+
+在研究方面，Claude Opus 4.6 在 BrowseComp 和 DeepSearchQA 两项基准上均有提升，这两项基准测试模型从庞大的非结构化数据源中提取特定信息的能力。落到实践中，这意味着用户可以把一大摞密集的文档交给 Claude，得到一个具体、聚焦的答案，而不只是一份泛泛的摘要。
+
+在分析方面，Claude Opus 4.6 在 [Finance Agent](https://www.vals.ai/benchmarks/finance_agent)（Vals AI 推出的外部基准，考察模型对上市公司 SEC 文件的研究能力）上以 60.7% 的成绩达到业界最优（相较 Opus 4.5 提升 5.47%）。Opus 4.6 在 Vals AI 的 [TaxEval](https://www.vals.ai/benchmarks/tax_eval_v2) 上同样以 76.0% 达到业界最优。 
+
+在创作方面，除 Real-World Finance 评测外，我们还使用 GDPval-AA 衡量 Claude 在复杂知识工作上的表现。有了 Claude Opus 4.6，电子表格和演示文稿等结构化成果在第一轮就做对的情况更多了。下面的并排对比展示了从 Claude Opus 4.5 到 Opus 4.6 的输出质量提升。这些是 Claude 在一项商业尽职调查任务（评估一次潜在收购）中第一轮输出的示例——这类工作通常需要一位高级分析师两到三周才能完成。
+
+“有了 Claude Opus 4.6，制作过去要花数小时的财务 PPT 现在只需几分钟。我们在细节把控、空间布局和内容结构上都看到了切实的提升。” - **Aabhas Sharma，Hebbia CTO**“Claude Opus 4.6 的性能跃升几乎让人难以置信。对 Opus [4.5] 来说还很有挑战性的真实任务突然变简单了。对 Shortcut 上的电子表格智能体而言，这感觉像是一个分水岭时刻。” - **Nico Christie，Shortcut AI 联合创始人兼 CTO**
+## 更好的多任务处理与初稿
+
+借助 Cowork——我们桌面应用中的一种[使用 Claude 的全新方式](https://claude.com/blog/cowork-research-preview)——你可以轻松用上 Claude Opus 4.6 的金融能力。 
+
+在 Cowork 中，你授权 Claude 访问一个自选的桌面文件夹。Claude 能够直接在该文件夹中读取、编辑和创建新文件。对财务团队而言，这意味着你可以同时启动多项分析，并在 Claude 创建每份交付成果的过程中引导它的思路，使其达到你的标准。
+
+Cowork 还可以[通过插件](https://claude.com/blog/cowork-plugins)进行定制——插件是技能（指定如何完成某项任务）与外部平台数据连接器的组合。例如，启用[我们的企业财务插件](https://claude.com/plugins/finance)后，Claude 立刻就知道如何完成日记账分录、差异分析和对账等常见工作流。你也可以[构建自己的插件](https://support.claude.com/en/articles/13345190-getting-started-with-cowork)，让它贴合你的工作习惯。 
+
+Cowork 作为仅限桌面端的研究预览版（beta）在所有 Claude 付费计划上[提供](https://support.claude.com/en/articles/13345190-getting-started-with-cowork)1。
+
+## 不离开电子表格，就能深入分析
+
+Claude in Excel 将 Claude Opus 4.6 直接带进你的电子表格。 我们让它更擅长规划任务并与用户澄清假设，尤其是在任务变得更复杂的时候。它现在还支持编辑数据透视表、修改图表、条件格式、排序和筛选、数据验证，以及财务级格式排版。 
+
+最后，我们还加入了一系列易用性改进，包括长对话自动压缩和多文件拖拽支持。这意味着你再也不用在各个标签页之间大量复制粘贴。从财务模型到可直接交付客户的工作簿，你都可以在一个地方与 Claude 一起完成。
+
+“由 Claude Opus 4.6 驱动的 Claude in Excel 代表着一次重大飞跃。从尽职调查到财务建模，它正在证明是我们团队异常强大的工具——只需极少的提示，就能摄取非结构化数据并进行智能处理，实质性地自动化复杂分析。这是 AI 以切实、省时的方式增强投资专业人士能力的绝佳范例。” - **Lloyd Hilton，Hg Catalyst 负责人**“作为加拿大最大的机构投资者之一，我们不断创新，并把 AI 视为塑造未来的最前沿。Claude Opus 4.6 更快的速度、更高的精度，以及处理复杂任务（比如 Claude in Excel 中的多标签页分析）的能力，为我们工作的可能性打开了令人兴奋的空间。” - **Ben Letalik，BCI 数字化转型与创新高级总监**
+## 直接用 Claude 打磨你的演示文稿
+
+我们还发布了 Claude in PowerPoint 研究预览版（beta）。与 Claude in Excel 一样，它把 Claude 带进你的 PowerPoint 侧边栏，让它在创作新内容之前先读取你现有的布局、字体和母版。Claude 可以基于客户模板构建幻灯片、对现有幻灯片做针对性编辑，也可以从零生成一份出色的初稿演示文稿。 
+
+Claude in PowerPoint 现已作为研究预览版面向所有 Max、Team 或 Enterprise 计划用户开放。 
+
+## 开始使用
+
+Claude Opus 4.6 和我们最新的产品更新让一大批新任务成为可能。但金融 AI 仍是一片活跃的前沿。用户应继续审阅 Claude 的输出，确保其符合自己的要求；尤其是在高风险工作中，人类判断依然不可或缺。随着我们持续提升 Claude 的能力，我们的目标是为金融行业从业者提供日益强大的研究与分析工具，帮助他们专注于最重要的工作。
+
+Claude Opus 4.6、Cowork 和 Claude in Excel 已在所有 Claude 付费计划上提供。想进一步了解 Claude in Excel，请查阅我们的[指南](https://support.claude.com/en/articles/12650343-claude-in-excel)和[视频教程](https://claude.com/resources/tutorials/getting-started-with-claude-in-excel)，并[在此开始使用](https://claude.com/claude-in-excel)。Claude in PowerPoint 以研究预览版面向所有 Max、Team 和 Enterprise 用户开放，你可以[在此开始使用](https://claude.com/claude-in-powerpoint)。 
+
+想看看各组织如何实际使用这些新功能，请[注册我们的网络研讨会](https://anthropic.com/webinars/claude-in-excel-and-powerpoint)。 
+
+‍
+
+*Cowork 作为仅限桌面端的研究预览版在所有 Claude 付费计划上*[*提供*](https://support.claude.com/en/articles/13345190-getting-started-with-cowork)*，率先支持 Mac（Windows 即将推出）。*‍
+
+‍
+
+‍</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Enterprise AI</span>
-            <span class="article-date">February 5, 2026</span>
-            
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-sky);">
+            <img class="hero-illo-img" src="/assets/illustrations/opus-4-6-finance.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">用 Claude Opus 4.6 推进金融行业</h1>
-          <a href="/posts/opus-4-6-finance/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p><a href="https://www.anthropic.com/news/claude-opus-4-6" target="_blank">Claude Opus 4.6</a> 标志着金融 AI 向前迈出一步。它可以协助专业人士基于准确的信息和清晰的分析做出决策，并产出打磨精良的交付物。在金融推理、多任务处理以及长时间多步骤任务中保持专注方面，该模型明显优于市场上的其他模型。&nbsp;</p><p>伴随 Claude Opus 4.6，我们更新了一些现有产品，并推出一款新产品，把这些能力带到分析师花费大部分时间的地方。<a href="https://claude.com/product/cowork">Cowork</a> 现在能在第一轮就产出更精良的成果物，比如财务模型和演示文稿。<a href="https://claude.com/claude-in-excel" target="_blank">Claude in Excel</a> 在处理长时间运行任务方面变得更强，即使财务模型越来越复杂，Claude Opus 4.6 也能保持专注和准确。此外，我们还发布了 <a href="https://claude.com/claude-in-powerpoint" target="_blank">Claude in PowerPoint</a> 研究预览版（beta），可以原生地构建和迭代幻灯片与演示文稿。</p><p>我们内部的 Real-World Finance 评测衡量了 Claude 在约 50 个投资与金融分析用例上的表现，覆盖电子表格、幻灯片以及 Word 文档的生成与审阅。这些是投行、私募股权、公开市场投资和企业财务领域的分析师日常执行的任务。Claude Opus 4.6 相比仅仅几个月前还是我们最先进模型的 Claude Sonnet 4.5 提升超过 23 个百分点。</p><figure style="max-width:3840pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6984b66b95b2a1a24ab26f64_Opus-4-6-Chart-Real-world-finance-no-subtext%402x%20(1).png" loading="lazy"></div><figcaption><em>该评测结合了代码执行与工具使用的智能体测试框架（agentic harness），评分依据兼顾量规打分与偏好对比，考察金融领域知识、任务完整性与准确性，以及成果展示质量。</em></figcaption></figure><p>这些更新共同让 Claude 成为金融服务和企业财务领域人士更强大的合作伙伴。</p><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/KCSBAAQJp5Y" title="Claude Opus 4.6 for finance" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><h2>研究、分析、创作</h2><p>金融从业者用 AI 跨多个数据源高效开展研究、支撑财务分析，并创作团队和客户可以据此行动的交付成果。Claude Opus 4.6 在这三个维度上都是同类最佳。</p><figure style="max-width:1300pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6984ad0f7e9fc5edd808036e_Opus_4-6_Finance-Tasks-Benchmark.png" loading="lazy"></div></figure><p>在研究方面，Claude Opus 4.6 在 BrowseComp 和 DeepSearchQA 两项基准上均有提升，这两项基准测试模型从庞大的非结构化数据源中提取特定信息的能力。落到实践中，这意味着用户可以把一大摞密集的文档交给 Claude，得到一个具体、聚焦的答案，而不只是一份泛泛的摘要。</p><p>在分析方面，Claude Opus 4.6 在 <a href="https://www.vals.ai/benchmarks/finance_agent" target="_blank">Finance Agent</a>（Vals AI 推出的外部基准，考察模型对上市公司 SEC 文件的研究能力）上以 60.7% 的成绩达到业界最优（相较 Opus 4.5 提升 5.47%）。Opus 4.6 在 Vals AI 的 <a href="https://www.vals.ai/benchmarks/tax_eval_v2" target="_blank">TaxEval</a> 上同样以 76.0% 达到业界最优。&nbsp;</p><p>在创作方面，除 Real-World Finance 评测外，我们还使用 GDPval-AA 衡量 Claude 在复杂知识工作上的表现。有了 Claude Opus 4.6，电子表格和演示文稿等结构化成果在第一轮就做对的情况更多了。下面的并排对比展示了从 Claude Opus 4.5 到 Opus 4.6 的输出质量提升。这些是 Claude 在一项商业尽职调查任务（评估一次潜在收购）中第一轮输出的示例——这类工作通常需要一位高级分析师两到三周才能完成。</p><figure style="max-width:1920pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69860def3cf544958f0a7c43_Opus-46-Blog-Comparison-Excel%20(1).png" loading="lazy"></div></figure><figure style="max-width:1920pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69860e00c073500bc2eb26f4_Opus-46-Blog-Comparison-PowerPoint%20(1).png" loading="lazy"></div></figure><blockquote>“有了 Claude Opus 4.6，制作过去要花数小时的财务 PPT 现在只需几分钟。我们在细节把控、空间布局和内容结构上都看到了切实的提升。” - <strong>Aabhas Sharma，Hebbia CTO</strong></blockquote><blockquote>“Claude Opus 4.6 的性能跃升几乎让人难以置信。对 Opus [4.5] 来说还很有挑战性的真实任务突然变简单了。对 Shortcut 上的电子表格智能体而言，这感觉像是一个分水岭时刻。” - <strong>Nico Christie，Shortcut AI 联合创始人兼 CTO</strong></blockquote><h2>更好的多任务处理与初稿</h2><p>借助 Cowork——我们桌面应用中的一种<a href="https://claude.com/blog/cowork-research-preview" target="_blank">使用 Claude 的全新方式</a>——你可以轻松用上 Claude Opus 4.6 的金融能力。&nbsp;</p><p>在 Cowork 中，你授权 Claude 访问一个自选的桌面文件夹。Claude 能够直接在该文件夹中读取、编辑和创建新文件。对财务团队而言，这意味着你可以同时启动多项分析，并在 Claude 创建每份交付成果的过程中引导它的思路，使其达到你的标准。</p><p>Cowork 还可以<a href="https://claude.com/blog/cowork-plugins" target="_blank">通过插件</a>进行定制——插件是技能（指定如何完成某项任务）与外部平台数据连接器的组合。例如，启用<a href="https://claude.com/plugins/finance" target="_blank">我们的企业财务插件</a>后，Claude 立刻就知道如何完成日记账分录、差异分析和对账等常见工作流。你也可以<a href="https://support.claude.com/en/articles/13345190-getting-started-with-cowork" target="_blank">构建自己的插件</a>，让它贴合你的工作习惯。&nbsp;</p><p>Cowork 作为仅限桌面端的研究预览版（beta）在所有 Claude 付费计划上<a href="https://support.claude.com/en/articles/13345190-getting-started-with-cowork" target="_blank">提供</a><sup>1</sup>。</p><h2>不离开电子表格，就能深入分析</h2><p>Claude in Excel 将 Claude Opus 4.6 直接带进你的电子表格。&nbsp;我们让它更擅长规划任务并与用户澄清假设，尤其是在任务变得更复杂的时候。它现在还支持编辑数据透视表、修改图表、条件格式、排序和筛选、数据验证，以及财务级格式排版。&nbsp;</p><p>最后，我们还加入了一系列易用性改进，包括长对话自动压缩和多文件拖拽支持。这意味着你再也不用在各个标签页之间大量复制粘贴。从财务模型到可直接交付客户的工作簿，你都可以在一个地方与 Claude 一起完成。</p><figure style="max-width:1280pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6984ae18765ce9ada0768cfc_ClaudeExcel-Blog-Hero-Desktop.png" loading="lazy"></div></figure><blockquote>“由 Claude Opus 4.6 驱动的 Claude in Excel 代表着一次重大飞跃。从尽职调查到财务建模，它正在证明是我们团队异常强大的工具——只需极少的提示，就能摄取非结构化数据并进行智能处理，实质性地自动化复杂分析。这是 AI 以切实、省时的方式增强投资专业人士能力的绝佳范例。” - <strong>Lloyd Hilton，Hg Catalyst 负责人</strong></blockquote><blockquote>“作为加拿大最大的机构投资者之一，我们不断创新，并把 AI 视为塑造未来的最前沿。Claude Opus 4.6 更快的速度、更高的精度，以及处理复杂任务（比如 Claude in Excel 中的多标签页分析）的能力，为我们工作的可能性打开了令人兴奋的空间。” - <strong>Ben Letalik，BCI 数字化转型与创新高级总监</strong></blockquote><h2>直接用 Claude 打磨你的演示文稿</h2><p>我们还发布了 Claude in PowerPoint 研究预览版（beta）。与 Claude in Excel 一样，它把 Claude 带进你的 PowerPoint 侧边栏，让它在创作新内容之前先读取你现有的布局、字体和母版。Claude 可以基于客户模板构建幻灯片、对现有幻灯片做针对性编辑，也可以从零生成一份出色的初稿演示文稿。&nbsp;</p><figure style="max-width:1280pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6984ae4566ef8dcf3a381733_ClaudePPT-Blog-Hero-Desktop.png" loading="lazy"></div></figure><p>Claude in PowerPoint 现已作为研究预览版面向所有 Max、Team 或 Enterprise 计划用户开放。&nbsp;</p><h2>开始使用</h2><p>Claude Opus 4.6 和我们最新的产品更新让一大批新任务成为可能。但金融 AI 仍是一片活跃的前沿。用户应继续审阅 Claude 的输出，确保其符合自己的要求；尤其是在高风险工作中，人类判断依然不可或缺。随着我们持续提升 Claude 的能力，我们的目标是为金融行业从业者提供日益强大的研究与分析工具，帮助他们专注于最重要的工作。</p><p>Claude Opus 4.6、Cowork 和 Claude in Excel 已在所有 Claude 付费计划上提供。想进一步了解 Claude in Excel，请查阅我们的<a href="https://support.claude.com/en/articles/12650343-claude-in-excel" target="_blank">指南</a>和<a href="https://claude.com/resources/tutorials/getting-started-with-claude-in-excel" target="_blank">视频教程</a>，并<a href="https://claude.com/claude-in-excel" target="_blank">在此开始使用</a>。Claude in PowerPoint 以研究预览版面向所有 Max、Team 和 Enterprise 用户开放，你可以<a href="https://claude.com/claude-in-powerpoint" target="_blank">在此开始使用</a>。&nbsp;</p><p>想看看各组织如何实际使用这些新功能，请<a href="https://anthropic.com/webinars/claude-in-excel-and-powerpoint" target="_blank">注册我们的网络研讨会</a>。&nbsp;</p><p>‍</p><h6><em><sub>Cowork 作为仅限桌面端的研究预览版在所有 Claude 付费计划上</sub></em><a href="https://support.claude.com/en/articles/13345190-getting-started-with-cowork"><em><sub>提供</sub></em></a><em><sub>，率先支持 Mac（Windows 即将推出）。</sub></em></h6><p>‍</p><p>‍</p><p>‍</p></div>
+            <h1 class="article-title u-text-style-h1">用 Claude Opus 4.6 推进金融行业</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>With Claude Opus 4.6, finance teams get better reasoning on complex analyses, cleaner first-pass deliverables, and new tools built for where analysts actually spend their time.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/enterprise-ai" target="_blank" rel="noopener noreferrer">Enterprise AI</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <div class="hero-detail-value u-text-style-body-3">Claude apps</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">February 5, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/opus-4-6-finance/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/opus-4-6-finance" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p><a href="https://www.anthropic.com/news/claude-opus-4-6" target="_blank">Claude Opus 4.6</a> 标志着金融 AI 向前迈出一步。它可以协助专业人士基于准确的信息和清晰的分析做出决策，并产出打磨精良的交付物。在金融推理、多任务处理以及长时间多步骤任务中保持专注方面，该模型明显优于市场上的其他模型。&nbsp;</p><p>伴随 Claude Opus 4.6，我们更新了一些现有产品，并推出一款新产品，把这些能力带到分析师花费大部分时间的地方。<a href="https://claude.com/product/cowork">Cowork</a> 现在能在第一轮就产出更精良的成果物，比如财务模型和演示文稿。<a href="https://claude.com/claude-in-excel" target="_blank">Claude in Excel</a> 在处理长时间运行任务方面变得更强，即使财务模型越来越复杂，Claude Opus 4.6 也能保持专注和准确。此外，我们还发布了 <a href="https://claude.com/claude-in-powerpoint" target="_blank">Claude in PowerPoint</a> 研究预览版（beta），可以原生地构建和迭代幻灯片与演示文稿。</p><p>我们内部的 Real-World Finance 评测衡量了 Claude 在约 50 个投资与金融分析用例上的表现，覆盖电子表格、幻灯片以及 Word 文档的生成与审阅。这些是投行、私募股权、公开市场投资和企业财务领域的分析师日常执行的任务。Claude Opus 4.6 相比仅仅几个月前还是我们最先进模型的 Claude Sonnet 4.5 提升超过 23 个百分点。</p><figure style="max-width:3840pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6984b66b95b2a1a24ab26f64_Opus-4-6-Chart-Real-world-finance-no-subtext%402x%20(1).png" loading="lazy"></div><figcaption><em>该评测结合了代码执行与工具使用的智能体测试框架（agentic harness），评分依据兼顾量规打分与偏好对比，考察金融领域知识、任务完整性与准确性，以及成果展示质量。</em></figcaption></figure><p>这些更新共同让 Claude 成为金融服务和企业财务领域人士更强大的合作伙伴。</p><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/KCSBAAQJp5Y" title="Claude Opus 4.6 for finance" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><h2>研究、分析、创作</h2><p>金融从业者用 AI 跨多个数据源高效开展研究、支撑财务分析，并创作团队和客户可以据此行动的交付成果。Claude Opus 4.6 在这三个维度上都是同类最佳。</p><figure style="max-width:1300pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6984ad0f7e9fc5edd808036e_Opus_4-6_Finance-Tasks-Benchmark.png" loading="lazy"></div></figure><p>在研究方面，Claude Opus 4.6 在 BrowseComp 和 DeepSearchQA 两项基准上均有提升，这两项基准测试模型从庞大的非结构化数据源中提取特定信息的能力。落到实践中，这意味着用户可以把一大摞密集的文档交给 Claude，得到一个具体、聚焦的答案，而不只是一份泛泛的摘要。</p><p>在分析方面，Claude Opus 4.6 在 <a href="https://www.vals.ai/benchmarks/finance_agent" target="_blank">Finance Agent</a>（Vals AI 推出的外部基准，考察模型对上市公司 SEC 文件的研究能力）上以 60.7% 的成绩达到业界最优（相较 Opus 4.5 提升 5.47%）。Opus 4.6 在 Vals AI 的 <a href="https://www.vals.ai/benchmarks/tax_eval_v2" target="_blank">TaxEval</a> 上同样以 76.0% 达到业界最优。&nbsp;</p><p>在创作方面，除 Real-World Finance 评测外，我们还使用 GDPval-AA 衡量 Claude 在复杂知识工作上的表现。有了 Claude Opus 4.6，电子表格和演示文稿等结构化成果在第一轮就做对的情况更多了。下面的并排对比展示了从 Claude Opus 4.5 到 Opus 4.6 的输出质量提升。这些是 Claude 在一项商业尽职调查任务（评估一次潜在收购）中第一轮输出的示例——这类工作通常需要一位高级分析师两到三周才能完成。</p><figure style="max-width:1920pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69860def3cf544958f0a7c43_Opus-46-Blog-Comparison-Excel%20(1).png" loading="lazy"></div></figure><figure style="max-width:1920pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69860e00c073500bc2eb26f4_Opus-46-Blog-Comparison-PowerPoint%20(1).png" loading="lazy"></div></figure><blockquote>“有了 Claude Opus 4.6，制作过去要花数小时的财务 PPT 现在只需几分钟。我们在细节把控、空间布局和内容结构上都看到了切实的提升。” - <strong>Aabhas Sharma，Hebbia CTO</strong></blockquote><blockquote>“Claude Opus 4.6 的性能跃升几乎让人难以置信。对 Opus [4.5] 来说还很有挑战性的真实任务突然变简单了。对 Shortcut 上的电子表格智能体而言，这感觉像是一个分水岭时刻。” - <strong>Nico Christie，Shortcut AI 联合创始人兼 CTO</strong></blockquote><h2>更好的多任务处理与初稿</h2><p>借助 Cowork——我们桌面应用中的一种<a href="https://claude.com/blog/cowork-research-preview" target="_blank">使用 Claude 的全新方式</a>——你可以轻松用上 Claude Opus 4.6 的金融能力。&nbsp;</p><p>在 Cowork 中，你授权 Claude 访问一个自选的桌面文件夹。Claude 能够直接在该文件夹中读取、编辑和创建新文件。对财务团队而言，这意味着你可以同时启动多项分析，并在 Claude 创建每份交付成果的过程中引导它的思路，使其达到你的标准。</p><p>Cowork 还可以<a href="https://claude.com/blog/cowork-plugins" target="_blank">通过插件</a>进行定制——插件是技能（指定如何完成某项任务）与外部平台数据连接器的组合。例如，启用<a href="https://claude.com/plugins/finance" target="_blank">我们的企业财务插件</a>后，Claude 立刻就知道如何完成日记账分录、差异分析和对账等常见工作流。你也可以<a href="https://support.claude.com/en/articles/13345190-getting-started-with-cowork" target="_blank">构建自己的插件</a>，让它贴合你的工作习惯。&nbsp;</p><p>Cowork 作为仅限桌面端的研究预览版（beta）在所有 Claude 付费计划上<a href="https://support.claude.com/en/articles/13345190-getting-started-with-cowork" target="_blank">提供</a><sup>1</sup>。</p><h2>不离开电子表格，就能深入分析</h2><p>Claude in Excel 将 Claude Opus 4.6 直接带进你的电子表格。&nbsp;我们让它更擅长规划任务并与用户澄清假设，尤其是在任务变得更复杂的时候。它现在还支持编辑数据透视表、修改图表、条件格式、排序和筛选、数据验证，以及财务级格式排版。&nbsp;</p><p>最后，我们还加入了一系列易用性改进，包括长对话自动压缩和多文件拖拽支持。这意味着你再也不用在各个标签页之间大量复制粘贴。从财务模型到可直接交付客户的工作簿，你都可以在一个地方与 Claude 一起完成。</p><figure style="max-width:1280pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6984ae18765ce9ada0768cfc_ClaudeExcel-Blog-Hero-Desktop.png" loading="lazy"></div></figure><blockquote>“由 Claude Opus 4.6 驱动的 Claude in Excel 代表着一次重大飞跃。从尽职调查到财务建模，它正在证明是我们团队异常强大的工具——只需极少的提示，就能摄取非结构化数据并进行智能处理，实质性地自动化复杂分析。这是 AI 以切实、省时的方式增强投资专业人士能力的绝佳范例。” - <strong>Lloyd Hilton，Hg Catalyst 负责人</strong></blockquote><blockquote>“作为加拿大最大的机构投资者之一，我们不断创新，并把 AI 视为塑造未来的最前沿。Claude Opus 4.6 更快的速度、更高的精度，以及处理复杂任务（比如 Claude in Excel 中的多标签页分析）的能力，为我们工作的可能性打开了令人兴奋的空间。” - <strong>Ben Letalik，BCI 数字化转型与创新高级总监</strong></blockquote><h2>直接用 Claude 打磨你的演示文稿</h2><p>我们还发布了 Claude in PowerPoint 研究预览版（beta）。与 Claude in Excel 一样，它把 Claude 带进你的 PowerPoint 侧边栏，让它在创作新内容之前先读取你现有的布局、字体和母版。Claude 可以基于客户模板构建幻灯片、对现有幻灯片做针对性编辑，也可以从零生成一份出色的初稿演示文稿。&nbsp;</p><figure style="max-width:1280pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6984ae4566ef8dcf3a381733_ClaudePPT-Blog-Hero-Desktop.png" loading="lazy"></div></figure><p>Claude in PowerPoint 现已作为研究预览版面向所有 Max、Team 或 Enterprise 计划用户开放。&nbsp;</p><h2>开始使用</h2><p>Claude Opus 4.6 和我们最新的产品更新让一大批新任务成为可能。但金融 AI 仍是一片活跃的前沿。用户应继续审阅 Claude 的输出，确保其符合自己的要求；尤其是在高风险工作中，人类判断依然不可或缺。随着我们持续提升 Claude 的能力，我们的目标是为金融行业从业者提供日益强大的研究与分析工具，帮助他们专注于最重要的工作。</p><p>Claude Opus 4.6、Cowork 和 Claude in Excel 已在所有 Claude 付费计划上提供。想进一步了解 Claude in Excel，请查阅我们的<a href="https://support.claude.com/en/articles/12650343-claude-in-excel" target="_blank">指南</a>和<a href="https://claude.com/resources/tutorials/getting-started-with-claude-in-excel" target="_blank">视频教程</a>，并<a href="https://claude.com/claude-in-excel" target="_blank">在此开始使用</a>。Claude in PowerPoint 以研究预览版面向所有 Max、Team 和 Enterprise 用户开放，你可以<a href="https://claude.com/claude-in-powerpoint" target="_blank">在此开始使用</a>。&nbsp;</p><p>想看看各组织如何实际使用这些新功能，请<a href="https://anthropic.com/webinars/claude-in-excel-and-powerpoint" target="_blank">注册我们的网络研讨会</a>。&nbsp;</p><p>‍</p><h6><em><sub>Cowork 作为仅限桌面端的研究预览版在所有 Claude 付费计划上</sub></em><a href="https://support.claude.com/en/articles/13345190-getting-started-with-cowork"><em><sub>提供</sub></em></a><em><sub>，率先支持 Mac（Windows 即将推出）。</sub></em></h6><p>‍</p><p>‍</p><p>‍</p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/opus-4-6-finance" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

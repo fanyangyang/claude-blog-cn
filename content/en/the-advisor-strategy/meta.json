@@ -13,5 +13,23 @@
   "translatedTitle": "顾问策略：为 agent 提供一次智能升级",
   "translated": true,
   "translatedAt": "2026-09-02T04:46:32Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Platform"
+    ],
+    "usecase": [
+      "Agents",
+      "Coding",
+      "Productivity"
+    ]
+  },
+  "subtitle": "Pair Opus as an advisor with Sonnet or Haiku as an executor, and get near Opus-level intelligence in your agents at a fraction of the cost.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/platform/api"
 }

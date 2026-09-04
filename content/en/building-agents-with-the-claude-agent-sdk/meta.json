@@ -13,5 +13,24 @@
   "translated": true,
   "translatedTitle": "用 Claude Agent SDK 构建智能体",
   "translatedAt": "2026-09-02T12:20:00.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Claude Code",
+      "Agents"
+    ],
+    "product": [
+      "Claude Code",
+      "Claude Platform"
+    ],
+    "usecase": [
+      "Agents",
+      "Coding"
+    ]
+  },
+  "subtitle": "The Claude Agent SDK is a collection of tools that helps developers build powerful agents on top of Claude Code. In this article, we walk through how to get started and share our best practices.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/claude-code",
+  "productUrl": "https://claude.com/product/claude-code"
 }

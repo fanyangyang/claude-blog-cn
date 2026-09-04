@@ -13,5 +13,21 @@
   "translatedTitle": "ABC Legal 如何借助 Claude Managed Agents 让每位员工都成为构建者",
   "translated": true,
   "translatedAt": "2026-09-02T04:30:13.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Enterprise"
+    ],
+    "usecase": [
+      "Legal"
+    ]
+  },
+  "subtitle": "ABC Legal transformed their organization’s AI adoption from scattered experiments to a governed fleet of specialized agents with Claude.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/solutions/enterprise"
 }

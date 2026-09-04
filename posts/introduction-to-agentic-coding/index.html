@@ -4,54 +4,310 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>智能体式编码入门 — Claude Blog 中文翻译</title>
-  <meta name="description" content="智能体式编码入门">
+  <meta name="description" content="Move from fragmented AI code snippets to deploying integrated features with agentic coding that understands your entire codebase.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/introduction-to-agentic-coding" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>智能体式编码入门</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/introduction-to-agentic-coding" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/introduction-to-agentic-coding/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># 智能体式编码入门
+
+Move from fragmented AI code snippets to deploying integrated features with agentic coding that understands your entire codebase.
+
+过去几年，AI 辅助编码演进很快。曾经只建议下一行的工具，现在会分析你代码里的模式，预测整段函数。
+
+最近这一步走得更远：这些系统不再预测你接下来会打什么字，而是自主执行多步开发任务，读遍代码库里的文件、跑测试，迭代到目标完成为止。
+
+## 什么是智能体式编码？
+
+智能体式编码把 AI 从 autocomplete 变成自主任务执行器。传统编程助手等你一行行敲，再建议下一句。智能体系统接过一个高层目标，拆成离散步骤，独立执行这些步骤，再根据环境反馈调整做法。
+
+关键差别在自主性和范围。传统 AI 工具分析编辑器里看得见的代码，建议下一块碎片。智能体式编码工具读完整份代码库，理解目录之间的文件关系，执行命令验证改动能用，并迭代到测试通过、需求满足。这种自主性贯穿开发周期，每一步都不需要你手工编排工作流。
+
+## AI 编程工具是怎么演进的
+
+### 代码预测与补全
+
+像 IDE autocomplete 扩展这类工具，会分析编辑器里看得见的代码，预测你接下来可能打什么。它们擅长重复模式，比如生成 REST endpoint 样板、按既有约定搭测试结构，以及实现常见算法。
+
+预测模型看的是眼前上下文。你写下函数签名，工具就根据函数名、参数类型和周围代码建议实现。你开始打一条 import，它就根据已经导入的内容和常见用法推荐包。
+
+局限在范围。Autocomplete 工具的上下文窗口有限，通常只分析当前文件或附近少数几个文件。它们无法顺着应用架构追踪数据流，也不理解一个服务里的改动会怎样影响依赖它的服务。
+
+### 对话式 AI 聊天界面
+
+像 Claude.ai 这样基于浏览器的编程助手，给 AI 编程工具加上了对话能力。它们不再在你打字时建议代码，而是通过你粘贴的片段、bug 描述和优化问题，围绕代码问题展开对话。
+
+这些界面对分析和指导很拿手。粘一条慢的数据库查询，得到优化建议。描述一个架构决策，得到取舍分析。丢一条错误信息，探索排查思路。
+
+对话形式支持迭代打磨。你先问一个笼统问题，得到初步回复，再据此澄清需求，逐步收窄到具体方案。问题还没完全定义，或你需要先探索不同做法再承诺实现时，这种来回很管用。
+
+涉及多个文件的任务，这就不实际了。重构一个被另外三十个文件导入的模块，意味着把每个文件粘进聊天，手工跟踪哪些文件要更新，把建议的改动再复制回每个文件，并保证所有修改一致。聊天界面给指导，编排实现仍要手工做。智能体式编码系统要填的，就是这个缺口。
+
+## 智能体式编码如何工作
+
+### 收集上下文与规划
+
+智能体式编码系统在项目层运作，而不是文件层。你给出目标后，系统会分析完成它所需的相关上下文：读配置文件理解项目设置，看测试文件了解现有覆盖模式，追踪 import 画出模块之间的依赖。
+
+系统随后为完成目标制定计划。这不是一份静态清单，而是随着系统收集更多信息而演化的适应性做法。如果目标是&quot;给 API 加上鉴权&quot;，计划可能先从分析现有路由定义开始，识别哪些 endpoint 需要保护，检查鉴权中间件是否已经存在，并确定用户会话管理该实现在哪里。
+
+### 实现与协调
+
+实现阶段会在代码库里读写多个文件。Autocomplete 工具只在单个文件里建议改动；智能体系统会改多个相关文件以保持一致。加上鉴权可能需要更新路由处理、创建中间件函数、改数据库 schema、调整 API 客户端代码、更新文档，并给这些改动都补上测试覆盖。
+
+这种自主工作流把开发从&quot;写代码、跑测试、读错误、修代码、再来一遍&quot;变成&quot;定义目标、评审拟议改动、批准实现&quot;。你通过评审计划和批准文件改动保持控制权，系统负责迭代调试循环、研究现有代码模式，以及跨多个文件协调改动。
+
+## 用 Claude Code 做智能体式编码
+
+[**Claude Code**](https://claude.com/product/claude-code) 把智能体能力带到你的终端环境。基于浏览器的工具要不断复制代码，IDE 扩展只分析看得见的文件；Claude Code 直接在项目目录里运行，拥有整份代码库的完整权限。
+
+### 安装与启动
+
+在终端安装 Claude Code：
+
+`npm install -g @anthropic-ai/claude-code`然后在项目目录里启动，开始编码：
+
+`claude`
+### Claude Code 如何工作
+
+Claude Code 会按请求读取整个项目上下文。你问起架构或要求改动时，它会分析文件结构，理解 package.json 或 requirements.txt 里声明的依赖，追踪模块如何交互，并识别代码库里已经立下的模式。
+
+多文件操作变得直接。提出&quot;把这段基于 callback 的代码重构成 async/await&quot;，Claude Code 会找出所有使用 callback 模式的文件，把每一处改成 async/await 语法，把错误处理改成 try/catch，更新相关测试以适配异步模式，并验证整套测试仍然通过。
+
+### 文件系统访问与权限
+
+文件系统访问打开了网页工具做不到的工作流。Claude Code 按合适的命名约定创建新文件，把代码组织进合理的目录结构，加依赖时更新配置文件，并与你现有的项目组织模式保持一致。
+
+权限模型保证控制权在你手里。默认情况下，Claude Code 改文件前会请求批准，并准确展示它打算做的改动。你评审拟议修改，批准同意的部分，对不符合要求的改动提出修订。
+
+### 与开发工作流集成
+
+与现有开发工作流集成，意味着 Claude Code 会和你已经在用的工具打交道。它跑 npm 命令装依赖，执行 Jest 或 pytest 这类测试运行器，用 Git 做提交和分支，并启动开发服务器，在运行中的应用里验证改动。
+
+你还可以接上 Model Context Protocol (MCP) 服务器，进一步扩展这些能力。MCP 会从开发环境里的其他工具和系统，给 Claude Code 提供更完整的上下文。
+
+## 真实世界中的应用
+
+### Rakuten 长达七小时的自主实现
+
+[Rakuten](https://www.claude.com/customers/rakuten) 工程团队用一项具体的 activation vector 提取方法挑战 Claude Code 的智能体能力，目标是在 vLLM 里实现它。vLLM 是一个开源库，Python、C++ 和 CUDA 合计 1250 万行。Claude Code 用七小时持续自主工作，完成了整套实现。
+
+&quot;那七个小时里我一行代码都没写，只偶尔给一点指导&quot;  - Kenta Naruse, Machine Learning Engineer at Rakuten
+
+最终实现相对参考方法达到 99.9% 的数值精度，说明这套系统能理解复杂的多语言代码库，为精巧算法规划实现路径，并交出生产级结果。
+
+**Rakuten 的转变指标：**
+
+- 功能交付**快 79%**（24 天 → 5 天）
+- **7 小时**自主实现，人工介入很少
+- 复杂算法重构达到 **99.9%** 精度
+- 工程团队并行任务执行能力提升 **5 倍**
+
+Rakuten AI for Business 总经理 Yusuke Kaji 解释说：&quot;你可以让五个任务并行跑，把四个交给 Claude Code，自己专注剩下那一个。&quot;
+
+## 开始使用 Claude Code
+
+用 npm 装好 [Claude Code](https://claude.com/product/claude-code) 之后，进入一个项目目录，开始会话：
+
+`claude`试几类不同任务，看看 Claude Code 如何理解你的代码库。
+
+### 理解项目架构
+
+`Explain the structure of this codebase and how the main components interact`Claude Code 会读你的文件并给出架构概览，帮你或新同事理解项目组织方式。
+
+### 分析代码质量
+
+`Review the authentication module for potential security issues`Claude Code 会检查相关代码，找出像凭证暴露或校验不足这类问题，并给出具体改进建议。
+
+### 调试并修复错误
+
+`Find all N+1 query problems in our GraphQL resolvers and implement DataLoader batching`Claude Code 会分析整份代码库，找出导致 N+1 问题的具体 ORM 模式，并实现修复。
+
+## 先慢后扩
+
+和 Claude Code 共事一段时间后，你会逐渐形成直觉：哪些任务最适合自主执行，哪些更适合传统开发工具。能较快见到成效的直接用法包括：
+
+- 给未覆盖的代码路径做**测试自动化**
+- 给遗留系统做**文档生成**
+- 对技术债做**常规重构**
+- 对已经想清楚的需求做**功能实现**
+
+每一次交互都是一次机会，看看 Claude Code 在你这份具体代码库里如何处理问题。用 [Claude Code](https://claude.com/product/claude-code) 开始，或访问我们的 [docs](https://docs.claude.com/en/docs/claude-code/overview) 了解更多。
+
+## FAQ
+
+### 智能体式编码和传统 AI 编程助手有什么区别？
+
+传统 AI 编程工具根据眼前上下文建议单个函数或代码片段。集成、测试，以及确保代码符合项目约定，都要你自己做。
+
+智能体式编码工具理解整个项目，规划实现路径，并自主执行完整工作流。它们交付经过测试、已集成、并遵循既有模式的功能。
+
+‍
+
+### 智能体式编码工具能自主工作多久？
+
+像 Claude Code 这样的智能体式编码工具可以长时间工作，保持上下文，并建立在先前工作之上。Rakuten 长达七小时的自主重构会话，说明它可以在没有人介入的情况下持续做技术工作。时长取决于任务复杂度和项目要求。
+
+### 用智能体式编码需要改我的开发工作流吗？
+
+[Claude Code](https://claude.com/product/claude-code) 通过终端集成接入你现有的开发工作流。你可以逐步纳入当前做法，先从测试或文档这类具体任务开始，再扩展到完整的功能开发。
+
+### 哪类项目最适合智能体式编码？
+
+智能体式编码适用于各类项目和语言。对已有既定模式和约定、集成要求复杂，或会吃掉大量时间的常规开发任务，尤其有价值。
+
+你的 TypeScript/JavaScript、Python、Go 和 Rust 项目能立刻看到收益，而 [Claude Code](https://claude.com/product/claude-code) 支持所有主流语言和框架。
+
+‍
+
+### 智能体式编码如何处理项目特有的要求？
+
+Claude Code 使用 **CLAUDE.md** 配置文件记录你的编码标准、架构决策和项目特有要求。这些文件在会话之间保留，确保实现稳定遵循你已经立下的做法。</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Claude Code</span>
-            <span class="article-date">October 30, 2025</span>
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
             
+            <h1 class="article-title u-text-style-h1">智能体式编码入门</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>Move from fragmented AI code snippets to deploying integrated features with agentic coding that understands your entire codebase.</p></div>
           </div>
-          <h1 class="article-title">智能体式编码入门</h1>
-          <a href="/posts/introduction-to-agentic-coding/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>过去几年，AI 辅助编码发展迅速。曾经只能提示下一行代码的工具，如今已经可以通过分析你代码中的模式来预测整个函数。</p><p>最新的演进更进一步：这些系统不再只是预测你接下来会输入什么，而是自主执行多步骤开发任务——读取代码库中的文件、运行测试、不断迭代，直到完成你的目标。</p><h2>什么是智能体式编码（agentic coding）？</h2><p>智能体式编码让 AI 从自动补全升级为自主任务执行者。传统的编码助手等待你逐行输入，然后提示接下来可能出现的内容。而智能体式系统会接收一个高层目标，将其拆解为离散的步骤，独立执行这些步骤，并根据来自环境的反馈调整自己的方案。</p><p>关键区别在于自主性和作用范围。传统 AI 工具分析编辑器中可见的代码并建议下一段代码片段。智能体式编码工具则能读取整个代码库、理解跨目录的文件关系、执行命令来验证改动是否有效，并持续迭代直到测试通过、需求满足。这种自主性贯穿整个开发周期，每一步都无需你手动编排工作流。</p><h2>AI 编码工具的演进</h2><h3>代码预测与补全</h3><p>IDE 自动补全插件这类工具会分析编辑器中可见的代码，预测你接下来可能输入的内容。这类系统擅长处理重复性模式，比如生成 REST 端点样板代码、按照既有惯例创建测试结构，以及实现常见算法。</p><p>预测模型只考虑你的即时上下文。当你写下一个函数签名时，工具会基于函数名、参数类型和周围代码来建议实现；当你开始输入 import 语句时，它会根据已导入的包和常见用法模式来推荐包名。</p><p>局限在于作用范围。自动补全工具只能在有限的上下文窗口内工作，通常只分析当前文件或附近的少量文件。它们无法追踪数据在整个应用架构中的流转，也无法理解一个服务中的变更会如何影响依赖它的其他服务。</p><h3>对话式 AI 聊天界面</h3><p>Claude.ai 这类基于浏览器的编码助手为 AI 编码工具带来了对话能力。这些工具不再在你输入时建议代码，而是通过分析你粘贴的代码片段、Bug 描述和优化问题，与你就代码问题展开对话。</p><p>这类界面擅长分析和指导。粘贴一条慢查询，就能获得优化建议；描述一个架构决策，就能得到权衡分析；分享一条报错信息，就能探讨排查思路。</p><p>对话形式支持迭代式细化。你提出一个宽泛的问题，收到初步回答，基于该回答澄清需求，再逐步收敛到具体方案。当问题尚未完全定义清楚，或者你需要在动手实现之前探索不同方案时，这种来回对话非常有效。</p><p>但涉及多个文件的任务就不实用了。重构一个被其他三十个文件引用的模块，意味着要把每个文件粘贴到聊天中、手动跟踪哪些文件需要更新、把建议的改动复制回每个文件，还要确保所有修改保持一致。聊天界面能提供指导，但编排实施仍靠手动。这正是智能体式编码系统要填补的空白。</p><h2>智能体式编码如何工作</h2><h3>上下文收集与规划</h3><p>智能体式编码系统在项目层面而非文件层面运作。当你给出一个目标，系统会分析完成它所需的相关上下文：读取配置文件以了解项目配置，检查测试文件以查看现有的覆盖模式，追踪 import 以梳理模块之间的依赖关系。</p><p>然后系统会制定完成目标的计划。这不是一份静态清单，而是一种随信息积累不断演进的自适应方法。如果你的目标是「给这个 API 加上认证」，计划可能从分析现有的路由定义开始，识别哪些端点需要保护，检查是否已存在认证中间件，并确定用户会话管理应该在哪里实现。</p><h3>实施与协调</h3><p>实施阶段涉及在代码库中读取和写入多个文件。与只在单个文件内建议改动的自动补全工具不同，智能体式系统会修改多个相关文件以保持一致性。添加认证可能需要更新路由处理器、创建中间件函数、修改数据库 schema、调整 API 客户端代码、更新文档，并为所有这些改动补充测试覆盖。</p><p>这种自主工作流将开发从「写代码、跑测试、看报错、改代码、再来一遍」转变为「定义目标、审阅建议的改动、批准实施」。你通过审阅计划和批准文件改动来保持掌控，而系统则负责迭代式的调试循环、研究现有代码模式，以及协调跨多个文件的变更。</p><h2>使用 Claude Code 进行智能体式编码</h2><p><a href="https://claude.com/product/claude-code"><strong>Claude Code</strong></a> 将智能体能力带入了你的终端环境。与需要不断复制代码的浏览器工具或只能分析可见文件的 IDE 插件不同，Claude Code 直接在你的项目目录中运行，可以完整访问你的代码库。</p><figure style="max-width:3390pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e957237e0e3c2bd4694735_CLI.png"></div></figure><h3>安装与启动</h3><p>在终端中安装 Claude Code：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>npm install -g @anthropic-ai/claude-code</span></span></code></pre><p>然后在你的项目目录中启动它，开始编码：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>claude</span></span></code></pre><h3>Claude Code 的工作方式</h3><p>Claude Code 会按需读取你的整个项目上下文。当你询问架构或请求改动时，它会分析文件结构、理解 package.json 或 requirements.txt 中声明的依赖、追踪模块之间的调用关系，并识别代码库中已确立的既有模式。</p><p>多文件操作变得轻而易举。请求「把这段基于回调的代码重构为 async/await」，Claude Code 会找出所有使用回调模式的文件，逐一更新为 async/await 语法，将错误处理改为 try/catch 块，更新相关测试以适配异步模式，并验证整个测试套件仍然通过。</p><h3>文件系统访问与权限</h3><p>文件系统访问带来了一些 Web 工具无法胜任的工作流。Claude Code 可以按照恰当的命名规范创建新文件、将代码组织到合理的目录结构中、在添加依赖时更新配置文件，并与你的项目既有组织模式保持一致。</p><p>权限模型确保你始终掌控全局。默认情况下，Claude Code 在修改文件前会请求批准，并明确展示它计划做的改动。你审阅建议的修改，批准你认可的部分，对不符合要求的部分提出修改意见。</p><h3>与开发工作流集成</h3><p>与开发工作流的集成意味着 Claude Code 能与你已在使用的工具交互。它会运行 npm 命令安装依赖，执行 Jest 或 pytest 等测试运行器，使用 Git 提交和分支，并启动开发服务器以验证改动在运行中的应用里是否生效。</p><p>你还可以通过连接 Model Context Protocol (MCP) 服务器进一步扩展这些能力，让 Claude Code 从开发环境中的其他工具和系统获取全面的上下文。</p><h2>真实应用</h2><h3>Rakuten 的七小时自主实现</h3><p><a href="https://www.claude.com/customers/rakuten">Rakuten</a> 的工程团队给 Claude Code 出了一道难题：在 vLLM（一个包含 1250 万行 Python、C++ 和 CUDA 代码的开源库）中实现一种特定的激活向量提取方法。Claude Code 在持续七小时的自主工作中完成了整个实现。</p><blockquote>「那七个小时里我没有写一行代码，只是偶尔给点指导。」</blockquote><p>- Kenta Naruse，Rakuten 机器学习工程师</p><p>最终实现相比参考方法达到了 99.9% 的数值精度，展示了该系统理解复杂多语言代码库、为复杂算法规划实现方案并交付生产级质量成果的能力。</p><p><strong>Rakuten 的转型指标：</strong></p><ul role="list"><li>功能交付<strong>提速 79%</strong>（24 天 → 5 天）</li><li><strong>7 小时</strong>自主实现，仅需极少人工干预</li><li>复杂算法重构达到 <strong>99.9%</strong> 精度</li><li>工程团队获得<strong>5 倍</strong>的并行任务执行能力</li></ul><p>正如 Rakuten 的 AI for Business 总经理 Yusuke Kaji 所说：「你可以把四个任务委派给 Claude Code，自己专注于剩下的一个，五个任务并行推进。」</p><h2>Claude Code 入门</h2><p>用 npm 安装 <a href="https://claude.com/product/claude-code">Claude Code</a> 后，进入项目目录并启动会话：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>claude</span></span></code></pre><p>尝试几个不同的任务，看看 Claude Code 如何理解你的代码库。</p><h3>理解项目架构</h3><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>Explain the structure of this codebase and how the main components interact</span></span></code></pre><p>Claude Code 会读取你的文件并给出架构概览，帮助你或新加入的团队成员理解项目组织方式。</p><h3>分析代码质量</h3><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>Review the authentication module </span><span style="color:#7928a1">for</span><span> potential security issues</span></span></code></pre><p>Claude Code 会检查相关代码，识别出诸如凭据暴露或校验不足等问题，并给出具体的改进建议。</p><h3>调试并修复错误</h3><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>Find all N+1 query problems </span><span style="color:#7928a1">in</span><span> our GraphQL resolvers and implement DataLoader batching</span></span></code></pre><p>Claude Code 会分析整个代码库，找出导致 N+1 问题的具体 ORM 模式，并实现修复。</p><figure style="max-width:3840pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e987d14948904419dfaa21_8.png"></div></figure><h2>循序渐进，再逐步扩展</h2><p>随着与 Claude Code 的协作，你会逐渐建立起直觉，判断哪些任务最适合交给自主执行、哪些更适合用传统开发工具处理。一些能快速见效的即时应用包括：</p><ul role="list"><li>为尚未覆盖的代码路径<strong>自动化测试</strong></li><li>为遗留系统<strong>生成文档</strong></li><li>对技术债进行<strong>常规重构</strong></li><li>实现需求明确清晰的<strong>功能</strong></li></ul><p>每次交互都是了解 Claude Code 如何在你的代码库中解决问题机会。立即开始使用 <a href="https://claude.com/product/claude-code">Claude Code</a>，或访问我们的<a href="https://docs.claude.com/en/docs/claude-code/overview">文档</a>了解更多。</p></div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/product/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">October 30, 2025</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/introduction-to-agentic-coding/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/introduction-to-agentic-coding" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>过去几年，AI 辅助编码演进很快。曾经只建议下一行的工具，现在会分析你代码里的模式，预测整段函数。</p><p>最近这一步走得更远：这些系统不再预测你接下来会打什么字，而是自主执行多步开发任务，读遍代码库里的文件、跑测试，迭代到目标完成为止。</p><h2>什么是智能体式编码？</h2><p>智能体式编码把 AI 从 autocomplete 变成自主任务执行器。传统编程助手等你一行行敲，再建议下一句。智能体系统接过一个高层目标，拆成离散步骤，独立执行这些步骤，再根据环境反馈调整做法。</p><p>关键差别在自主性和范围。传统 AI 工具分析编辑器里看得见的代码，建议下一块碎片。智能体式编码工具读完整份代码库，理解目录之间的文件关系，执行命令验证改动能用，并迭代到测试通过、需求满足。这种自主性贯穿开发周期，每一步都不需要你手工编排工作流。</p><h2>AI 编程工具是怎么演进的</h2><h3>代码预测与补全</h3><p>像 IDE autocomplete 扩展这类工具，会分析编辑器里看得见的代码，预测你接下来可能打什么。它们擅长重复模式，比如生成 REST endpoint 样板、按既有约定搭测试结构，以及实现常见算法。</p><p>预测模型看的是眼前上下文。你写下函数签名，工具就根据函数名、参数类型和周围代码建议实现。你开始打一条 import，它就根据已经导入的内容和常见用法推荐包。</p><p>局限在范围。Autocomplete 工具的上下文窗口有限，通常只分析当前文件或附近少数几个文件。它们无法顺着应用架构追踪数据流，也不理解一个服务里的改动会怎样影响依赖它的服务。</p><h3>对话式 AI 聊天界面</h3><p>像 Claude.ai 这样基于浏览器的编程助手，给 AI 编程工具加上了对话能力。它们不再在你打字时建议代码，而是通过你粘贴的片段、bug 描述和优化问题，围绕代码问题展开对话。</p><p>这些界面对分析和指导很拿手。粘一条慢的数据库查询，得到优化建议。描述一个架构决策，得到取舍分析。丢一条错误信息，探索排查思路。</p><p>对话形式支持迭代打磨。你先问一个笼统问题，得到初步回复，再据此澄清需求，逐步收窄到具体方案。问题还没完全定义，或你需要先探索不同做法再承诺实现时，这种来回很管用。</p><p>涉及多个文件的任务，这就不实际了。重构一个被另外三十个文件导入的模块，意味着把每个文件粘进聊天，手工跟踪哪些文件要更新，把建议的改动再复制回每个文件，并保证所有修改一致。聊天界面给指导，编排实现仍要手工做。智能体式编码系统要填的，就是这个缺口。</p><h2>智能体式编码如何工作</h2><h3>收集上下文与规划</h3><p>智能体式编码系统在项目层运作，而不是文件层。你给出目标后，系统会分析完成它所需的相关上下文：读配置文件理解项目设置，看测试文件了解现有覆盖模式，追踪 import 画出模块之间的依赖。</p><p>系统随后为完成目标制定计划。这不是一份静态清单，而是随着系统收集更多信息而演化的适应性做法。如果目标是"给 API 加上鉴权"，计划可能先从分析现有路由定义开始，识别哪些 endpoint 需要保护，检查鉴权中间件是否已经存在，并确定用户会话管理该实现在哪里。</p><h3>实现与协调</h3><p>实现阶段会在代码库里读写多个文件。Autocomplete 工具只在单个文件里建议改动；智能体系统会改多个相关文件以保持一致。加上鉴权可能需要更新路由处理、创建中间件函数、改数据库 schema、调整 API 客户端代码、更新文档，并给这些改动都补上测试覆盖。</p><p>这种自主工作流把开发从"写代码、跑测试、读错误、修代码、再来一遍"变成"定义目标、评审拟议改动、批准实现"。你通过评审计划和批准文件改动保持控制权，系统负责迭代调试循环、研究现有代码模式，以及跨多个文件协调改动。</p><h2>用 Claude Code 做智能体式编码</h2><p><a href="https://claude.com/product/claude-code"><strong>Claude Code</strong></a> 把智能体能力带到你的终端环境。基于浏览器的工具要不断复制代码，IDE 扩展只分析看得见的文件；Claude Code 直接在项目目录里运行，拥有整份代码库的完整权限。</p><figure style="max-width:3390pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e957237e0e3c2bd4694735_CLI.png"></div></figure><h3>安装与启动</h3><p>在终端安装 Claude Code：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>npm install -g @anthropic-ai/claude-code</span></span></code></pre><p>然后在项目目录里启动，开始编码：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>claude</span></span></code></pre><h3>Claude Code 如何工作</h3><p>Claude Code 会按请求读取整个项目上下文。你问起架构或要求改动时，它会分析文件结构，理解 package.json 或 requirements.txt 里声明的依赖，追踪模块如何交互，并识别代码库里已经立下的模式。</p><p>多文件操作变得直接。提出"把这段基于 callback 的代码重构成 async/await"，Claude Code 会找出所有使用 callback 模式的文件，把每一处改成 async/await 语法，把错误处理改成 try/catch，更新相关测试以适配异步模式，并验证整套测试仍然通过。</p><h3>文件系统访问与权限</h3><p>文件系统访问打开了网页工具做不到的工作流。Claude Code 按合适的命名约定创建新文件，把代码组织进合理的目录结构，加依赖时更新配置文件，并与你现有的项目组织模式保持一致。</p><p>权限模型保证控制权在你手里。默认情况下，Claude Code 改文件前会请求批准，并准确展示它打算做的改动。你评审拟议修改，批准同意的部分，对不符合要求的改动提出修订。</p><h3>与开发工作流集成</h3><p>与现有开发工作流集成，意味着 Claude Code 会和你已经在用的工具打交道。它跑 npm 命令装依赖，执行 Jest 或 pytest 这类测试运行器，用 Git 做提交和分支，并启动开发服务器，在运行中的应用里验证改动。</p><p>你还可以接上 Model Context Protocol (MCP) 服务器，进一步扩展这些能力。MCP 会从开发环境里的其他工具和系统，给 Claude Code 提供更完整的上下文。</p><h2>真实世界中的应用</h2><h3>Rakuten 长达七小时的自主实现</h3><p><a href="https://www.claude.com/customers/rakuten">Rakuten</a> 工程团队用一项具体的 activation vector 提取方法挑战 Claude Code 的智能体能力，目标是在 vLLM 里实现它。vLLM 是一个开源库，Python、C++ 和 CUDA 合计 1250 万行。Claude Code 用七小时持续自主工作，完成了整套实现。</p><blockquote>"那七个小时里我一行代码都没写，只偶尔给一点指导" &nbsp;</blockquote><p>- Kenta Naruse, Machine Learning Engineer at Rakuten</p><p>最终实现相对参考方法达到 99.9% 的数值精度，说明这套系统能理解复杂的多语言代码库，为精巧算法规划实现路径，并交出生产级结果。</p><p><strong>Rakuten 的转变指标：</strong></p><ul role="list"><li>功能交付<strong>快 79%</strong>（24 天 → 5 天）</li><li><strong>7 小时</strong>自主实现，人工介入很少</li><li>复杂算法重构达到 <strong>99.9%</strong> 精度</li><li>工程团队并行任务执行能力提升 <strong>5 倍</strong></li></ul><p>Rakuten AI for Business 总经理 Yusuke Kaji 解释说："你可以让五个任务并行跑，把四个交给 Claude Code，自己专注剩下那一个。"</p><h2>开始使用 Claude Code</h2><p>用 npm 装好 <a href="https://claude.com/product/claude-code">Claude Code</a> 之后，进入一个项目目录，开始会话：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>claude</span></span></code></pre><p>试几类不同任务，看看 Claude Code 如何理解你的代码库。</p><h3>理解项目架构</h3><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>Explain the structure of this codebase and how the main components interact</span></span></code></pre><p>Claude Code 会读你的文件并给出架构概览，帮你或新同事理解项目组织方式。</p><h3>分析代码质量</h3><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>Review the authentication module </span><span style="color:#7928a1">for</span><span> potential security issues</span></span></code></pre><p>Claude Code 会检查相关代码，找出像凭证暴露或校验不足这类问题，并给出具体改进建议。</p><h3>调试并修复错误</h3><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>Find all N+1 query problems </span><span style="color:#7928a1">in</span><span> our GraphQL resolvers and implement DataLoader batching</span></span></code></pre><p>Claude Code 会分析整份代码库，找出导致 N+1 问题的具体 ORM 模式，并实现修复。</p><figure style="max-width:3840pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e987d14948904419dfaa21_8.png"></div></figure><h2>先慢后扩</h2><p>和 Claude Code 共事一段时间后，你会逐渐形成直觉：哪些任务最适合自主执行，哪些更适合传统开发工具。能较快见到成效的直接用法包括：</p><ul role="list"><li>给未覆盖的代码路径做<strong>测试自动化</strong></li><li>给遗留系统做<strong>文档生成</strong></li><li>对技术债做<strong>常规重构</strong></li><li>对已经想清楚的需求做<strong>功能实现</strong></li></ul><p>每一次交互都是一次机会，看看 Claude Code 在你这份具体代码库里如何处理问题。用 <a href="https://claude.com/product/claude-code">Claude Code</a> 开始，或访问我们的 <a href="https://docs.claude.com/en/docs/claude-code/overview">docs</a> 了解更多。</p><h2>FAQ</h2><div class="article-faq"><h3>智能体式编码和传统 AI 编程助手有什么区别？</h3><p>传统 AI 编程工具根据眼前上下文建议单个函数或代码片段。集成、测试，以及确保代码符合项目约定，都要你自己做。</p><p>智能体式编码工具理解整个项目，规划实现路径，并自主执行完整工作流。它们交付经过测试、已集成、并遵循既有模式的功能。</p><p>‍</p><h3>智能体式编码工具能自主工作多久？</h3><p>像 Claude Code 这样的智能体式编码工具可以长时间工作，保持上下文，并建立在先前工作之上。Rakuten 长达七小时的自主重构会话，说明它可以在没有人介入的情况下持续做技术工作。时长取决于任务复杂度和项目要求。</p><h3>用智能体式编码需要改我的开发工作流吗？</h3><p><a href="https://claude.com/product/claude-code">Claude Code</a> 通过终端集成接入你现有的开发工作流。你可以逐步纳入当前做法，先从测试或文档这类具体任务开始，再扩展到完整的功能开发。</p><h3>哪类项目最适合智能体式编码？</h3><p>智能体式编码适用于各类项目和语言。对已有既定模式和约定、集成要求复杂，或会吃掉大量时间的常规开发任务，尤其有价值。</p><p>你的 TypeScript/JavaScript、Python、Go 和 Rust 项目能立刻看到收益，而 <a href="https://claude.com/product/claude-code">Claude Code</a> 支持所有主流语言和框架。</p><p>‍</p><h3>智能体式编码如何处理项目特有的要求？</h3><p>Claude Code 使用 <strong>CLAUDE.md</strong> 配置文件记录你的编码标准、架构决策和项目特有要求。这些文件在会话之间保留，确保实现稳定遵循你已经立下的做法。</p></div></div>
+
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/introduction-to-agentic-coding" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

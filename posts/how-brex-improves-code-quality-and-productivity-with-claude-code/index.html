@@ -4,54 +4,236 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Brex 如何用 Claude Code 提升代码质量与生产力 — Claude Blog 中文翻译</title>
-  <meta name="description" content="Brex 如何用 Claude Code 提升代码质量与生产力">
+  <meta name="description" content="Learn how Claude Code breaks down barriers between technical and non-technical teams by making programming easier and more accessible.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/how-brex-improves-code-quality-and-productivity-with-claude-code" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>Brex 如何用 Claude Code 提升代码质量与生产力</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/how-brex-improves-code-quality-and-productivity-with-claude-code" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/how-brex-improves-code-quality-and-productivity-with-claude-code/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># Brex 如何用 Claude Code 提升代码质量与生产力
+
+Learn how Claude Code breaks down barriers between technical and non-technical teams by making programming easier and more accessible.
+
+两年前，Andy Reed 加入 [Brex](https://www.brex.com/) 担任内容设计师时，他从未想过自己有一天会写代码、开发 Figma 插件。 
+
+Reed 说：“如果没有 [Claude Code](https://claude.com/product/claude-code)，过去一个月我连一半的工作都完不成。” 
+
+但当他真正用上了 [Claude Code](https://claude.com/product/claude-code)（Anthropic 的智能体编码解决方案）之后，这一切确实发生了——而他的故事只是这家智能金融平台重塑公司运作方式的一个缩影。 
+
+为了了解更多，我们与 Brex 的三位团队成员聊了聊他们使用 Claude Code 的方式： 
+
+- Hércules Gimenes，Product AI 团队的软件工程负责人
+- Sumeet Marwaha，数据与分析（Data &amp; Analytics）负责人
+- Andy Reed，高级内容设计师
+
+这些对话带给我们的不只是生产力提升的故事——尽管团队报告在特定任务上获得了 3 到 4 倍的改进。它更关乎从根本上重新想象公司如何协同工作：简化工作流、激发创造性的问题解决方式，并大规模推动协作。
+
+## 用智能体编码完成思维方式的转变
+
+对 Hércules Gimenes 和 Product AI 团队来说，Claude Code 代表的意义远不止一个新工具。
+
+“Claude Code 带来的是一种思维方式的转变，”他解释道，“你不再是坐在驾驶座上的人，而是 Claude 所做变更的审查者。你负责把握愿景和方向。”
+
+这种转变重新定义了 Brex 的“写代码”意味着什么——这正是该公司 AI 优先原则的体现。工程师不再把时间花在实现细节上，而是专注于架构和问题本身。结果？代码变得更好，而不仅仅是更快。
+
+“我不觉得自己用 Claude Code 省了多少时间，”Gimenes 说，“我把更多精力放在打磨问题本身上。你可以在同样的时间里针对同一个问题尝试三种方案，试完第三种之后，你会对问题有清晰得多的理解，界面也会干净得多。”
+
+## 打破技术与非技术岗位之间的壁垒
+
+当 Product AI 团队在探索提升代码质量的新方法时，Reed 也经历了自己的顿悟时刻。 
+
+作为一名内容设计师，他在 Claude Code 中发现了意想不到的东西：独立性。
+
+以前，改一个简单的字符串都需要提交工单、等待工程师处理。现在，Reed 可以直接提交 PR。但真正的转变发生在他 tackling 一个被无限期搁置的项目时：将完整的内容规范集成到 Brex 设计系统的每一个组件中。
+
+“如果手动做，可能要花几周甚至几个月，”Reed 解释说。借助 Claude Code，他在几天内就完成了这个项目，系统地加入了从内部风格指南、无障碍标准和外部最佳实践中提炼的内容规范。
+
+这一影响在各个团队间扩散开来。工程师和设计师的工具中如今直接内嵌了内容规范，无需再频繁来回对照，也把错误消灭在发生之前。这是智能金融发挥作用的一个小而有力的例证：系统在后台运行，让人得以专注于更高价值的创造性工作。
+
+## 让全组织的数据访问民主化
+
+与此同时，Sumeet Marwaha 领导的数据与分析团队正在解决另一个同样重要的挑战：让 Brex 的每个人都能用上数据，而不只是 SQL 专家。
+
+该团队构建了 Brex Explorer，一个由 Claude Code 和 MCP 服务器驱动的 text-to-SQL 界面。现在，销售经理可以用自然语言提问：“在佛罗里达州杰克逊维尔，有多少客户在 Brex 账户中拥有超过 1000 万美元，且是在过去一年内完成开户的？”系统会翻译这条查询、执行它，并对结果进行总结。
+
+真正的乘数效应来自他们的 AI 数据工程 agent。以前需要专业知识才能完成的任务——比如新增数据表并完成所有必要的文件修改和测试配置——现在任何工程师都能胜任。
+
+“这大概相当于速度提升 4 倍，同时贡献者的数量增加了约 2 倍，”Marwaha 指出。Claude Code 在整个组织中的渗透率已达 50%，Marwaha 希望到月底能达到 100%。
+
+## “万能工具”带来的意外收获
+
+随着 Brex 各团队陆续用上 Claude Code，一些令人惊喜的用例浮出水面。在一次公司黑客马拉松中，Gimenes 用 Claude Code 的 headless 模式，只用了几个小时就构建出一个功能完善的提交 agent，而这类开发通常需要好几天。
+
+Reed 则发现自己现在能构建以前从未想过要做的工具，比如一个自动根据 Brex 标准审查设计的 Figma 插件。“感觉就像身边有一个全世界最好的实习生，”他说。
+
+但最显著的意外收获，或许是 Claude Code 扮演起了组织知识库的角色。Brex 的 monorepo 采用 Kotlin 和 Bazel 构建、结构复杂，理解不同系统之间如何关联一直是个难题。现在，Claude Code 就像一个“神谕”，能即时回答关于代码库功能的问题。
+
+“以前开设计会议时，大家会讨论某个东西应该怎么运作，但没人真正了解它内部到底是怎么实现的，”Reed 解释说，“现在，我的另一台显示器上就坐着这位神谕。”
+
+## 在全公司推广 Claude Code 最佳实践
+
+随着 Claude Code 在 Brex 的普及，各团队沉淀出的最佳实践已成为标准：
+
+- **结构化的上下文管理**：monorepo 中的每个主要目录都有自己的 CLAUDE.md 文件，包含领域相关的上下文。新工程师无需依赖“口口相传”的经验，就能了解 Mastercard 集成的细节或银行监管要求。
+- **自动化文档**：Product AI 团队实现了 CI/CD 检查，当代码变更可能导致文档过时时会发出提醒并推动更新。“拥有可以信赖的最新文档，这本身就很强大，”Gimenes 强调。
+- **上下文感知的命令**：团队创建了自动加载相关上下文的自定义命令。例如 /submit-pr 命令会在执行前获取 git 状态、最近变更和相关 PR 信息。
+- **从探索开始**：“你要找的东西不再只存在于某位资深工程师的脑子里了，”Marwaha 说，“它就在代码库里，人人都能访问。”
+
+## Claude Code 在 Brex 的未来
+
+Brex 的团队已经在规划下一代应用：
+
+- 数据团队准备着手以前碰都不敢碰的项目，比如分析数万亿条信用卡交易明细数据点——在 Claude Code 让它变得可行之前，这类工作太枯燥、不值得投入。他们还在开发面向特定角色的 agent，包括一个服务于 RevOps 任务的 agent。
+- Product AI 团队设想了更精妙的上下文管理：文档自动更新，上下文既保持去中心化又触手可及。
+
+从构建技术工具的内容设计师，到推动数据访问民主化的数据分析师，Claude Code 已经成为 Gimenes 口中的“万能工具”——非常适合把 Brex 的领域知识与外部最佳实践结合起来。 
+
+它也凸显了一种有力的双重性：Brex 交付给客户的智能金融——帮助他们更聪明地花钱、更快地行动——同样塑造着 Brex 团队内部的工作方式，让每一位员工无论技术背景如何，都能快速而自信地进行创造。</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Enterprise AI</span>
-            <span class="article-date">October 30, 2025</span>
-            
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-heather);">
+            <img class="hero-illo-img" src="/assets/illustrations/how-brex-improves-code-quality-and-productivity-with-claude-code.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">Brex 如何用 Claude Code 提升代码质量与生产力</h1>
-          <a href="/posts/how-brex-improves-code-quality-and-productivity-with-claude-code/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p id="">两年前，Andy Reed 加入 <a id="" href="https://www.brex.com/">Brex</a> 担任内容设计师时，他从未想过自己有一天会写代码、开发 Figma 插件。&nbsp;</p><p id="">Reed 说：“如果没有 <a id="" href="https://claude.com/product/claude-code">Claude Code</a>，过去一个月我连一半的工作都完不成。”&nbsp;</p><p id="">但当他真正用上了 <a id="" href="https://claude.com/product/claude-code">Claude Code</a>（Anthropic 的智能体编码解决方案）之后，这一切确实发生了——而他的故事只是这家智能金融平台重塑公司运作方式的一个缩影。&nbsp;</p><p id="">为了了解更多，我们与 Brex 的三位团队成员聊了聊他们使用 Claude Code 的方式：&nbsp;</p><ul id=""><li id="">Hércules Gimenes，Product AI 团队的软件工程负责人</li><li id="">Sumeet Marwaha，数据与分析（Data &amp; Analytics）负责人</li><li id="">Andy Reed，高级内容设计师</li></ul><p id="">这些对话带给我们的不只是生产力提升的故事——尽管团队报告在特定任务上获得了 3 到 4 倍的改进。它更关乎从根本上重新想象公司如何协同工作：简化工作流、激发创造性的问题解决方式，并大规模推动协作。</p><h2 id="">用智能体编码完成思维方式的转变</h2><p id="">对 Hércules Gimenes 和 Product AI 团队来说，Claude Code 代表的意义远不止一个新工具。</p><p id="">“Claude Code 带来的是一种思维方式的转变，”他解释道，“你不再是坐在驾驶座上的人，而是 Claude 所做变更的审查者。你负责把握愿景和方向。”</p><p id="">这种转变重新定义了 Brex 的“写代码”意味着什么——这正是该公司 AI 优先原则的体现。工程师不再把时间花在实现细节上，而是专注于架构和问题本身。结果？代码变得更好，而不仅仅是更快。</p><p id="">“我不觉得自己用 Claude Code 省了多少时间，”Gimenes 说，“我把更多精力放在打磨问题本身上。你可以在同样的时间里针对同一个问题尝试三种方案，试完第三种之后，你会对问题有清晰得多的理解，界面也会干净得多。”</p><h2 id="">打破技术与非技术岗位之间的壁垒</h2><p id="">当 Product AI 团队在探索提升代码质量的新方法时，Reed 也经历了自己的顿悟时刻。&nbsp;</p><p id="">作为一名内容设计师，他在 Claude Code 中发现了意想不到的东西：独立性。</p><p id="">以前，改一个简单的字符串都需要提交工单、等待工程师处理。现在，Reed 可以直接提交 PR。但真正的转变发生在他 tackling 一个被无限期搁置的项目时：将完整的内容规范集成到 Brex 设计系统的每一个组件中。</p><p id="">“如果手动做，可能要花几周甚至几个月，”Reed 解释说。借助 Claude Code，他在几天内就完成了这个项目，系统地加入了从内部风格指南、无障碍标准和外部最佳实践中提炼的内容规范。</p><p id="">这一影响在各个团队间扩散开来。工程师和设计师的工具中如今直接内嵌了内容规范，无需再频繁来回对照，也把错误消灭在发生之前。这是智能金融发挥作用的一个小而有力的例证：系统在后台运行，让人得以专注于更高价值的创造性工作。</p><h2 id="">让全组织的数据访问民主化</h2><p id="">与此同时，Sumeet Marwaha 领导的数据与分析团队正在解决另一个同样重要的挑战：让 Brex 的每个人都能用上数据，而不只是 SQL 专家。</p><p id="">该团队构建了 Brex Explorer，一个由 Claude Code 和 MCP 服务器驱动的 text-to-SQL 界面。现在，销售经理可以用自然语言提问：“在佛罗里达州杰克逊维尔，有多少客户在 Brex 账户中拥有超过 1000 万美元，且是在过去一年内完成开户的？”系统会翻译这条查询、执行它，并对结果进行总结。</p><p id="">真正的乘数效应来自他们的 AI 数据工程 agent。以前需要专业知识才能完成的任务——比如新增数据表并完成所有必要的文件修改和测试配置——现在任何工程师都能胜任。</p><p id="">“这大概相当于速度提升 4 倍，同时贡献者的数量增加了约 2 倍，”Marwaha 指出。Claude Code 在整个组织中的渗透率已达 50%，Marwaha 希望到月底能达到 100%。</p><h2 id="">“万能工具”带来的意外收获</h2><p id="">随着 Brex 各团队陆续用上 Claude Code，一些令人惊喜的用例浮出水面。在一次公司黑客马拉松中，Gimenes 用 Claude Code 的 headless 模式，只用了几个小时就构建出一个功能完善的提交 agent，而这类开发通常需要好几天。</p><p id="">Reed 则发现自己现在能构建以前从未想过要做的工具，比如一个自动根据 Brex 标准审查设计的 Figma 插件。“感觉就像身边有一个全世界最好的实习生，”他说。</p><p id="">但最显著的意外收获，或许是 Claude Code 扮演起了组织知识库的角色。Brex 的 monorepo 采用 Kotlin 和 Bazel 构建、结构复杂，理解不同系统之间如何关联一直是个难题。现在，Claude Code 就像一个“神谕”，能即时回答关于代码库功能的问题。</p><p id="">“以前开设计会议时，大家会讨论某个东西应该怎么运作，但没人真正了解它内部到底是怎么实现的，”Reed 解释说，“现在，我的另一台显示器上就坐着这位神谕。”</p><h2 id="">在全公司推广 Claude Code 最佳实践</h2><p id="">随着 Claude Code 在 Brex 的普及，各团队沉淀出的最佳实践已成为标准：</p><ul id=""><li id=""><strong id="">结构化的上下文管理</strong>：monorepo 中的每个主要目录都有自己的 CLAUDE.md 文件，包含领域相关的上下文。新工程师无需依赖“口口相传”的经验，就能了解 Mastercard 集成的细节或银行监管要求。</li><li id=""><strong id="">自动化文档</strong>：Product AI 团队实现了 CI/CD 检查，当代码变更可能导致文档过时时会发出提醒并推动更新。“拥有可以信赖的最新文档，这本身就很强大，”Gimenes 强调。</li><li id=""><strong id="">上下文感知的命令</strong>：团队创建了自动加载相关上下文的自定义命令。例如 /submit-pr 命令会在执行前获取 git 状态、最近变更和相关 PR 信息。</li><li id=""><strong id="">从探索开始</strong>：“你要找的东西不再只存在于某位资深工程师的脑子里了，”Marwaha 说，“它就在代码库里，人人都能访问。”</li></ul><h2 id="">Claude Code 在 Brex 的未来</h2><p id="">Brex 的团队已经在规划下一代应用：</p><ul id=""><li id="">数据团队准备着手以前碰都不敢碰的项目，比如分析数万亿条信用卡交易明细数据点——在 Claude Code 让它变得可行之前，这类工作太枯燥、不值得投入。他们还在开发面向特定角色的 agent，包括一个服务于 RevOps 任务的 agent。</li><li id="">Product AI 团队设想了更精妙的上下文管理：文档自动更新，上下文既保持去中心化又触手可及。</li></ul><p id="">从构建技术工具的内容设计师，到推动数据访问民主化的数据分析师，Claude Code 已经成为 Gimenes 口中的“万能工具”——非常适合把 Brex 的领域知识与外部最佳实践结合起来。&nbsp;</p><p id="">它也凸显了一种有力的双重性：Brex 交付给客户的智能金融——帮助他们更聪明地花钱、更快地行动——同样塑造着 Brex 团队内部的工作方式，让每一位员工无论技术背景如何，都能快速而自信地进行创造。</p></div>
+            <h1 class="article-title u-text-style-h1">Brex 如何用 Claude Code 提升代码质量与生产力</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>Learn how Claude Code breaks down barriers between technical and non-technical teams by making programming easier and more accessible.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/enterprise-ai" target="_blank" rel="noopener noreferrer">Enterprise AI</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/product/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">October 30, 2025</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/how-brex-improves-code-quality-and-productivity-with-claude-code/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/how-brex-improves-code-quality-and-productivity-with-claude-code" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p id="">两年前，Andy Reed 加入 <a id="" href="https://www.brex.com/">Brex</a> 担任内容设计师时，他从未想过自己有一天会写代码、开发 Figma 插件。&nbsp;</p><p id="">Reed 说：“如果没有 <a id="" href="https://claude.com/product/claude-code">Claude Code</a>，过去一个月我连一半的工作都完不成。”&nbsp;</p><p id="">但当他真正用上了 <a id="" href="https://claude.com/product/claude-code">Claude Code</a>（Anthropic 的智能体编码解决方案）之后，这一切确实发生了——而他的故事只是这家智能金融平台重塑公司运作方式的一个缩影。&nbsp;</p><p id="">为了了解更多，我们与 Brex 的三位团队成员聊了聊他们使用 Claude Code 的方式：&nbsp;</p><ul id=""><li id="">Hércules Gimenes，Product AI 团队的软件工程负责人</li><li id="">Sumeet Marwaha，数据与分析（Data &amp; Analytics）负责人</li><li id="">Andy Reed，高级内容设计师</li></ul><p id="">这些对话带给我们的不只是生产力提升的故事——尽管团队报告在特定任务上获得了 3 到 4 倍的改进。它更关乎从根本上重新想象公司如何协同工作：简化工作流、激发创造性的问题解决方式，并大规模推动协作。</p><h2 id="">用智能体编码完成思维方式的转变</h2><p id="">对 Hércules Gimenes 和 Product AI 团队来说，Claude Code 代表的意义远不止一个新工具。</p><p id="">“Claude Code 带来的是一种思维方式的转变，”他解释道，“你不再是坐在驾驶座上的人，而是 Claude 所做变更的审查者。你负责把握愿景和方向。”</p><p id="">这种转变重新定义了 Brex 的“写代码”意味着什么——这正是该公司 AI 优先原则的体现。工程师不再把时间花在实现细节上，而是专注于架构和问题本身。结果？代码变得更好，而不仅仅是更快。</p><p id="">“我不觉得自己用 Claude Code 省了多少时间，”Gimenes 说，“我把更多精力放在打磨问题本身上。你可以在同样的时间里针对同一个问题尝试三种方案，试完第三种之后，你会对问题有清晰得多的理解，界面也会干净得多。”</p><h2 id="">打破技术与非技术岗位之间的壁垒</h2><p id="">当 Product AI 团队在探索提升代码质量的新方法时，Reed 也经历了自己的顿悟时刻。&nbsp;</p><p id="">作为一名内容设计师，他在 Claude Code 中发现了意想不到的东西：独立性。</p><p id="">以前，改一个简单的字符串都需要提交工单、等待工程师处理。现在，Reed 可以直接提交 PR。但真正的转变发生在他 tackling 一个被无限期搁置的项目时：将完整的内容规范集成到 Brex 设计系统的每一个组件中。</p><p id="">“如果手动做，可能要花几周甚至几个月，”Reed 解释说。借助 Claude Code，他在几天内就完成了这个项目，系统地加入了从内部风格指南、无障碍标准和外部最佳实践中提炼的内容规范。</p><p id="">这一影响在各个团队间扩散开来。工程师和设计师的工具中如今直接内嵌了内容规范，无需再频繁来回对照，也把错误消灭在发生之前。这是智能金融发挥作用的一个小而有力的例证：系统在后台运行，让人得以专注于更高价值的创造性工作。</p><h2 id="">让全组织的数据访问民主化</h2><p id="">与此同时，Sumeet Marwaha 领导的数据与分析团队正在解决另一个同样重要的挑战：让 Brex 的每个人都能用上数据，而不只是 SQL 专家。</p><p id="">该团队构建了 Brex Explorer，一个由 Claude Code 和 MCP 服务器驱动的 text-to-SQL 界面。现在，销售经理可以用自然语言提问：“在佛罗里达州杰克逊维尔，有多少客户在 Brex 账户中拥有超过 1000 万美元，且是在过去一年内完成开户的？”系统会翻译这条查询、执行它，并对结果进行总结。</p><p id="">真正的乘数效应来自他们的 AI 数据工程 agent。以前需要专业知识才能完成的任务——比如新增数据表并完成所有必要的文件修改和测试配置——现在任何工程师都能胜任。</p><p id="">“这大概相当于速度提升 4 倍，同时贡献者的数量增加了约 2 倍，”Marwaha 指出。Claude Code 在整个组织中的渗透率已达 50%，Marwaha 希望到月底能达到 100%。</p><h2 id="">“万能工具”带来的意外收获</h2><p id="">随着 Brex 各团队陆续用上 Claude Code，一些令人惊喜的用例浮出水面。在一次公司黑客马拉松中，Gimenes 用 Claude Code 的 headless 模式，只用了几个小时就构建出一个功能完善的提交 agent，而这类开发通常需要好几天。</p><p id="">Reed 则发现自己现在能构建以前从未想过要做的工具，比如一个自动根据 Brex 标准审查设计的 Figma 插件。“感觉就像身边有一个全世界最好的实习生，”他说。</p><p id="">但最显著的意外收获，或许是 Claude Code 扮演起了组织知识库的角色。Brex 的 monorepo 采用 Kotlin 和 Bazel 构建、结构复杂，理解不同系统之间如何关联一直是个难题。现在，Claude Code 就像一个“神谕”，能即时回答关于代码库功能的问题。</p><p id="">“以前开设计会议时，大家会讨论某个东西应该怎么运作，但没人真正了解它内部到底是怎么实现的，”Reed 解释说，“现在，我的另一台显示器上就坐着这位神谕。”</p><h2 id="">在全公司推广 Claude Code 最佳实践</h2><p id="">随着 Claude Code 在 Brex 的普及，各团队沉淀出的最佳实践已成为标准：</p><ul id=""><li id=""><strong id="">结构化的上下文管理</strong>：monorepo 中的每个主要目录都有自己的 CLAUDE.md 文件，包含领域相关的上下文。新工程师无需依赖“口口相传”的经验，就能了解 Mastercard 集成的细节或银行监管要求。</li><li id=""><strong id="">自动化文档</strong>：Product AI 团队实现了 CI/CD 检查，当代码变更可能导致文档过时时会发出提醒并推动更新。“拥有可以信赖的最新文档，这本身就很强大，”Gimenes 强调。</li><li id=""><strong id="">上下文感知的命令</strong>：团队创建了自动加载相关上下文的自定义命令。例如 /submit-pr 命令会在执行前获取 git 状态、最近变更和相关 PR 信息。</li><li id=""><strong id="">从探索开始</strong>：“你要找的东西不再只存在于某位资深工程师的脑子里了，”Marwaha 说，“它就在代码库里，人人都能访问。”</li></ul><h2 id="">Claude Code 在 Brex 的未来</h2><p id="">Brex 的团队已经在规划下一代应用：</p><ul id=""><li id="">数据团队准备着手以前碰都不敢碰的项目，比如分析数万亿条信用卡交易明细数据点——在 Claude Code 让它变得可行之前，这类工作太枯燥、不值得投入。他们还在开发面向特定角色的 agent，包括一个服务于 RevOps 任务的 agent。</li><li id="">Product AI 团队设想了更精妙的上下文管理：文档自动更新，上下文既保持去中心化又触手可及。</li></ul><p id="">从构建技术工具的内容设计师，到推动数据访问民主化的数据分析师，Claude Code 已经成为 Gimenes 口中的“万能工具”——非常适合把 Brex 的领域知识与外部最佳实践结合起来。&nbsp;</p><p id="">它也凸显了一种有力的双重性：Brex 交付给客户的智能金融——帮助他们更聪明地花钱、更快地行动——同样塑造着 Brex 团队内部的工作方式，让每一位员工无论技术背景如何，都能快速而自信地进行创造。</p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/how-brex-improves-code-quality-and-productivity-with-claude-code" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

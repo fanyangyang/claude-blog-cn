@@ -13,5 +13,24 @@
   "illustrationBg": "Peach",
   "translatedTitle": "Anthropic 现场营销人员如何使用 Claude Code 为每位销售代表发送每周个性化更新",
   "translatedAt": "2026-09-01T11:19:19.936Z",
-  "translateLang": "zh"
+  "translateLang": "zh",
+  "facets": {
+    "category": [
+      "Claude Code"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": [
+      "Sales",
+      "Productivity"
+    ]
+  },
+  "subtitle": "Adam Ward, on Anthropic’s marketing team, shares how he uses Claude to turn one weekly sales report into a personalized Monday briefing for every account executive he supports.",
+  "authors": [
+    "Adam Ward"
+  ],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/claude-code",
+  "productUrl": "https://claude.com/product/claude-code"
 }

@@ -13,5 +13,23 @@
   "translatedTitle": "Claude in Chrome 侧边栏现已升级为 Claude Cowork",
   "translated": true,
   "translatedAt": "2026-09-02T04:30:13.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Cowork",
+      "Claude apps"
+    ],
+    "usecase": [
+      "Work",
+      "Productivity"
+    ]
+  },
+  "subtitle": "Give Claude a task in your browser, work across tabs, and continue the conversation in the desktop, mobile, and web apps.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/product/cowork"
 }

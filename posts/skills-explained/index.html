@@ -4,39 +4,464 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>深入理解 Skills：它与提示词、Projects、MCP 和 subagents 的对比 — Claude Blog 中文翻译</title>
-  <meta name="description" content="深入理解 Skills：它与提示词、Projects、MCP 和 subagents 的对比">
+  <meta name="description" content="Skills are an increasingly powerful tool for creating custom AI workflows and agents, but where do they fit in the Claude stack? We explain what tool to use when - and how they all work together.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/skills-explained" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>深入理解 Skills：它与提示词、Projects、MCP 和 subagents 的对比</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/skills-explained" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/skills-explained/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># 深入理解 Skills：它与提示词、Projects、MCP 和 subagents 的对比
+
+Skills are an increasingly powerful tool for creating custom AI workflows and agents, but where do they fit in the Claude stack? We explain what tool to use when - and how they all work together.
+
+自推出 [Skills](https://www.anthropic.com/news/skills) 以来，很多人希望了解 Claude 的 agentic 生态中各个组件是如何协同工作的。
+
+无论你是在 [Claude Code](https://www.claude.com/product/claude-code) 中构建复杂工作流、用 API 打造企业级解决方案，还是在 [Claude.ai](http://claude.ai) 上提升个人生产力，弄清楚什么时候该用哪个工具，都能彻底改变你与 Claude 协作的方式。
+
+本指南将逐一拆解每个构建模块，解释各自的使用时机，并展示如何组合它们来打造强大的 agentic 工作流。
+
+## **认识你的 agentic 构建模块**
+
+### **什么是 Skills？**
+
+Skills 是包含指令、脚本和资源的文件夹，Claude 会在与任务相关时动态发现并加载它们。可以把它们理解为专业培训手册，赋予 Claude 特定领域的专长——从操作 Excel 表格到遵循你组织的品牌规范。
+
+**Skills 的工作方式：**当 Claude 遇到一个任务时，它会扫描可用的 Skills，寻找相关的匹配项。Skills 采用渐进式披露（progressive disclosure）：元数据先加载（约 100 token），刚好让 Claude 知道某个 Skill 何时相关。完整指令在需要时加载（**何时使用 Skills：**当你需要 Claude 稳定高效地执行专门任务时，请选择 Skills。它们非常适合：
+
+- **组织级工作流：**品牌规范、合规流程、文档模板
+- **领域专长：**Excel 公式、PDF 处理、数据分析
+- **个人偏好：**笔记体系、编码模式、研究方法
+
+**示例：**创建一个包含公司配色、字体规则和排版规范的[品牌规范 Skill](https://github.com/anthropics/skills/tree/main/skills/brand-guidelines)。当 Claude 制作演示文稿或文档时，会自动应用这些标准，你不必每次都重新说明。
+
+[进一步了解](https://support.claude.com/en/articles/12512176-what-are-skills) Skills，并浏览我们不断扩充的 [Skills 库](https://github.com/anthropics/skills)。
+
+### **什么是提示词（prompts）？**
+
+[提示词](https://docs.claude.com/en/prompt-library/library)是你在对话中用自然语言向 Claude 下达的指令。它们是临时性的、对话式的、反应式的——你在当下提供上下文和方向。
+
+**何时使用提示词：**以下场景请使用提示词：
+
+- 一次性请求：&quot;总结这篇文章&quot;
+- 对话式调整：&quot;把语气改得更专业一些&quot;
+- 即时上下文：&quot;分析这份数据并找出趋势&quot;
+- 临时指令：&quot;把这些整理成项目符号列表&quot;
+
+**示例：**
+
+*请对这段代码进行一次全面的安全审查。我希望看到：*
+
+*1. 常见漏洞，包括：*
+
+- *注入缺陷（SQL、命令、XSS 等）*
+- *身份验证与授权问题*
+- *敏感数据暴露*
+- *安全配置错误*
+- *访问控制失效*
+- *加密相关缺陷*
+- *输入校验问题*
+- *错误处理与日志问题*
+
+*2. 针对发现的每个问题，请提供：*
+
+- *严重程度（Critical/High/Medium/Low）*
+- *代码中的位置（行号或函数名）*
+- *为什么它是安全风险、可能如何被利用的解释*
+- *具体的修复建议，尽可能附上代码示例*
+- *预防类似问题的最佳实践指引*
+
+*3. 代码背景：[描述代码的功能、语言/框架以及运行环境，例如：&quot;这是一个 Node.js REST API，负责用户身份验证并处理支付数据&quot;]*
+
+*4. 其他考虑事项：*
+
+- *是否存在 OWASP Top 10 漏洞？*
+- *代码是否遵循 [特定框架/语言] 的安全最佳实践？*
+- *是否有已知存在漏洞的依赖项？*
+
+*请按严重程度和潜在影响对发现进行排序。*
+
+**小技巧：**提示词是你与 Claude 交互的主要方式，但它们不会跨对话保留。对于重复性的工作流或专门知识，可以考虑把提示词沉淀为 Skills 或项目指令。
+
+**何时改用 Skill：**如果你发现自己在多次对话中反复输入同一个提示词，就该创建一个 Skill 了。把诸如&quot;按照 OWASP 标准审查这段代码的安全漏洞&quot;或&quot;把这份分析整理成执行摘要、关键发现和建议&quot;这类经常出现的指令转化为 Skill，可以免去每次重新解释流程的麻烦，并保证执行的一致性。
+
+可以查看我们的[提示词库](https://docs.claude.com/en/prompt-library/library)、[提示词最佳实践](http://claude.com/blog/prompt-engineering-best-practices)，或[智能提示词生成器](https://claude.ai/public/artifacts/3796db7e-4ef1-4cab-b70c-d045778f23ec)来上手。
+
+### **什么是 Projects？**
+
+[Projects](https://support.claude.com/en/articles/9517075-what-are-projects) 在所有付费 Claude 计划中可用，它们是自带聊天历史和知识库的独立工作区。每个项目拥有一个 200K 的上下文窗口，你可以在其中上传文档、提供背景信息，并设置对该项目内所有对话生效的自定义指令。
+
+**Projects 的工作方式：**你上传到项目知识库的所有内容，都会对项目内的所有聊天可用。Claude 会自动利用这些上下文，给出更充分、更切题的回答。当项目知识接近上下文上限时，Claude 会无缝启用检索增强生成（RAG）模式，将容量最多扩展 10 倍。
+
+**何时使用 Projects：**在以下需求时选择 Projects：
+
+- **持久上下文：**应当为每一次对话提供背景的知识
+- **工作区组织：**为不同事项划分独立的上下文
+- **团队协作：**共享知识与对话历史（Team 和 Enterprise 计划）
+- **自定义指令：**项目特定的语气、视角或方法
+
+**示例：**创建一个&quot;Q4 产品发布&quot;项目，放入市场调研、竞品分析和产品规格。该项目内的每次聊天都能使用这些知识，你不必重新上传或重新解释背景。
+
+**何时改用 Skill：**Projects 为某项具体工作（你们的代码库、一项研究计划、一个持续的客户项目）提供持久上下文；Skills 教会 Claude 如何做事。一个 Project 可能装着产品发布的全部背景资料，而一个 skill 可以教会 Claude 你们团队的写作规范或代码审查流程。如果你发现自己在多个 Projects 之间复制同样的指令，那就是该创建 skill 的信号。
+
+[进一步了解](https://support.claude.com/en/articles/9517075-what-are-projects) Projects。
+
+### **什么是 subagents？**
+
+[Subagents](https://docs.claude.com/en/docs/claude-code/sub-agents) 是专门的 AI 助手，拥有自己的上下文窗口、自定义系统提示词和特定的工具权限。它们在 Claude Code 和 Claude Agent SDK 中可用，独立处理具体任务并将结果返回给主 agent。
+
+**Subagents 的工作方式：**每个 subagent 都按自己的配置运行——你定义它做什么、如何解决问题、可以访问哪些工具。Claude 会根据它们的描述自动把任务委派给合适的 subagent，你也可以显式指定某个 subagent。
+
+**何时使用 subagents：**以下场景请使用 subagents：
+
+- **任务专门化：**代码审查、测试生成、安全审计
+- **上下文管理：**让主对话保持聚焦，把专门工作分流出去
+- **并行处理：**多个 subagent 可以同时处理不同侧面
+- **工具限制：**把特定 subagent 限制在安全操作内（例如只读访问）
+
+**示例：**
+
+`Create a code-reviewer subagent with access to Read, Grep, and Glob tools but not Write or Edit. When you modify code, Claude automatically delegates to this subagent for quality and security review without risking unintended code changes.`**何时改用 Skill：**如果多个 agent 或对话需要同样的专长——比如安全审查流程或数据分析方法——请创建 Skill，而不要把这些知识内置到一个个 subagent 里。Skills 可移植、可复用，而 subagents 是为特定工作流量身定制的。要教给任何 agent 都能用的专长，用 Skills；需要独立执行任务并配合特定工具权限和上下文隔离时，用 subagents。
+
+[进一步了解](https://code.claude.com/docs/en/sub-agents) subagents。
+
+### **什么是 MCP？**
+
+MCP 在 AI 应用与你现有的工具、数据源之间建立一个通用连接层。Model Context Protocol（MCP）是一个开放标准，用于把 AI 助手连接到数据所在的外部系统——内容仓库、业务工具、数据库和开发环境。
+
+**MCP 的工作方式：**MCP 提供了一种标准化的方式，把 Claude 连接到你的工具和数据源。你不需要为每个数据源单独构建定制集成，只需面向单一协议开发。MCP server 暴露数据和能力；MCP 客户端（比如 Claude）连接这些 server。
+
+**何时使用 MCP：**当你需要 Claude 做以下事情时，选择 MCP：
+
+- 访问外部数据：Google Drive、Slack、GitHub、数据库
+- 使用业务工具：CRM 系统、项目管理平台
+- 连接开发环境：本地文件、IDE、版本控制
+- 集成自定义系统：你的专有工具和数据源
+
+**示例：**通过 MCP 把 Claude 连接到公司的 Google Drive。Claude 就可以搜索文档、读取文件、引用内部知识，无需手动上传——连接持久存在并自动更新。
+
+**何时改用 Skill：**MCP 把 Claude 连接到数据；Skills 教会 Claude 拿这些数据做什么。如果你是在解释*如何*使用某个工具或遵循某套流程——比如&quot;查询我们的数据库时，总是先按日期范围过滤&quot;或&quot;用这些特定公式格式化 Excel 报表&quot;——那是 Skill。如果你需要 Claude 首先*访问*数据库或 Excel 文件，那是 MCP。把两者搭配使用：MCP 负责连接，Skills 负责流程知识。
+
+[进一步了解](https://www.anthropic.com/news/model-context-protocol) MCP，并查阅如何构建 MCP server 的[文档](https://modelcontextprotocol.io/docs/develop/build-server)。
+
+## **它们如何协同工作**
+
+当你把这些构建模块组合起来，真正的威力才会显现。每个模块各司其职，合在一起就能构建出复杂的 agentic 工作流。
+
+### **对比：选择合适的工具**
+
+  
+    
+      
+        
+          特性
+          Skills
+          提示词
+          Projects
+          Subagents
+          MCP
+        
+      
+      
+        
+          **提供什么**
+          流程知识
+          即时指令
+          背景知识
+          任务委派
+          工具连接
+        
+        
+          **持久性**
+          跨对话
+          单次对话
+          项目内
+          跨会话
+          持续连接
+        
+        
+          **包含内容**
+          指令 + 代码 + 资源
+          自然语言
+          文档 + 上下文
+          完整 agent 逻辑
+          工具定义
+        
+        
+          **加载时机**
+          按需动态加载
+          每一轮
+          项目中始终存在
+          被调用时
+          始终可用
+        
+        
+          **能否包含代码**
+          能
+          不能
+          不能
+          能
+          能
+        
+        
+          **最适合**
+          专门技能
+          快速请求
+          集中式上下文
+          专门任务
+          数据访问
+        
+      
+    
+  
+
+### **Agentic 工作流示例：研究 agent**
+
+让我们构建一个组合了多个构建模块的完整研究 agent。这个例子展示如何组装并激活一个用于竞争分析的 agent。
+
+**第 1 步：搭建你的 Project**
+
+创建一个&quot;竞争情报&quot;项目并上传：
+
+- 行业报告和市场分析
+- 竞品产品文档
+- 来自 CRM 的客户反馈
+- 以往的研究总结
+
+添加项目指令：
+
+*从我们产品战略的视角分析竞争对手。重点关注差异化机会和新兴市场趋势。呈现结论时附上具体证据和可执行的建议。*
+
+**第 2 步：通过 MCP 连接数据源**
+
+为以下服务启用 MCP server：
+
+- Google Drive（访问共享研究文档）
+- GitHub（审查竞争对手的开源仓库）
+- 网络搜索（获取实时市场信息）
+
+**第 3 步：创建专门的 Skills**
+
+创建一个&quot;competitive-analysis&quot;skill：
+
+`# My Company GDrive Navigation Skill
+
+## Overview
+Optimized search and retrieval strategy for Meridian Tech's Google Drive structure. Use this skill to efficiently locate internal documents, research, and strategic materials.
+
+## Drive Organization
+
+**Top-level structure:**
+- `/Strategy &amp; Planning/` - OKRs, quarterly plans, board decks
+- `/Product/` - PRDs, roadmaps, technical specs
+- `/Research/` - Market research, competitive intel, user studies
+- `/Sales &amp; Marketing/` - Case studies, pitch decks, campaign materials
+- `/Customer Success/` - Implementation guides, success metrics
+- `/Company Ops/` - Policies, org charts, team directories
+
+**Naming conventions:**
+- Format: `YYYY-MM-DD_DocumentName_vX`
+- Final versions marked with `_FINAL`
+- Drafts include `_DRAFT` or `_WIP`
+
+## Search Best Practices
+
+1. **Start broad, then filter** - Use folder context + keywords
+2. **Target document owners** - Sales materials from Sales/, not root
+3. **Check recency** - Prioritize documents from last 6 months for current strategy
+4. **Look for &quot;source of truth&quot;** - Files with `_FINAL`, `_APPROVED`, or in `/Archives/Official/`
+
+## Research Agent Workflow
+
+1. Identify topic category (product, market, customer)
+2. Search relevant folder with targeted keywords
+3. Retrieve 3-5 most recent/relevant documents
+4. Cross-reference with `/Strategy &amp; Planning/` for context
+5. Cite sources with file names and dates`**第 4 步：配置 subagents（仅限 Claude Code/SDK）**
+
+创建专门的 subagents：
+
+`market-researcher` subagent：
+
+`name: market-researcher
+description: Research market trends, industry reports, and competitive landscape data. Use proactively for competitive analysis.
+tools: Read, Grep, Web-search
+---
+You are a market research analyst specializing in competitive intelligence.
+
+When researching:
+1. Identify authoritative sources (Gartner, Forrester, industry reports)
+2. Gather quantitative data (market share, growth rates, funding)
+3. Analyze qualitative insights (analyst opinions, customer reviews)
+4. Synthesize trends and patterns
+
+Present findings with citations and confidence levels.``technical-analyst `subagent：
+
+`name: technical-analyst
+description: Analyze technical architecture, implementation approaches, and engineering decisions. Use for technical competitive analysis.
+tools: Read, Bash, Grep
+---
+You are a technical architect analyzing competitor technology choices.
+
+When analyzing:
+1. Review public repositories and technical documentation
+2. Assess architecture patterns and technology stack
+3. Evaluate scalability and performance approaches
+4. Identify technical strengths and limitations
+
+Focus on actionable technical insights that inform our product decisions.`**第 5 步：激活你的研究 agent**
+
+现在，当你对 Claude 说：&quot;分析我们排名前三的竞争对手如何定位他们的新 AI 功能，并找出我们可以利用的差距&quot;
+
+接下来会发生这些事：
+
+- **项目上下文加载**：Claude 访问你上传的研究文档，并遵循项目指令
+- **MCP 连接激活**：Claude 搜索你的 Google Drive 获取最新竞品简报，并拉取 GitHub 数据
+- **Skills 生效**：competitive-analysis Skill 提供分析框架
+- **Subagents 执行**（在 Claude Code 中）：market-researcher 收集行业数据，technical-analyst 审查技术实现
+- **提示词微调**：你以对话方式给出指引：&quot;特别关注医疗行业的企业客户&quot;
+
+**最终结果：**一份全面的竞争分析——它调用多个数据源，遵循你的分析框架，借助专门的技能，并在整个研究项目中保持上下文连贯。
+
+## **常见问题**
+
+#### **Skills 是如何工作的？**
+
+Skills 使用[渐进式披露](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills)来保持 Claude 的高效。在处理任务时，Claude 先扫描 Skill 的元数据（描述和摘要）以识别相关匹配项。如果某个 Skill 匹配，Claude 再加载完整指令。最后，如果该 Skill 包含可执行代码或参考文件，这些只在需要时才加载。
+
+这一架构意味着你可以准备大量 Skills，而不会撑爆 Claude 的上下文窗口。Claude 会在需要的时候，精确地取用需要的内容。
+
+#### **Skills 与 subagents：该用哪个**
+
+**使用 Skills 的场景：**你希望任何 Claude 实例都能加载并使用的能力。Skills 就像培训材料——它们让 Claude 在所有对话中都更擅长特定任务。
+
+**使用 subagents 的场景：**你需要为特定目的设计、能独立处理工作流的完整自足 agent。Subagents 就像拥有自己上下文和工具权限的专职员工。
+
+**组合使用的场景：**你希望 subagent 拥有专门技能。例如，一个代码审查 subagent 可以使用针对语言最佳实践的 Skills，把 subagent 的独立性与 Skills 的可移植专长结合起来。
+
+#### **Skills 与提示词：该用哪个**
+
+**使用提示词的场景：**你下达一次性指令、提供即时上下文，或进行来回对话。提示词是反应式的、临时的。
+
+**使用 Skills 的场景：**你有会反复用到的流程或专长。Skills 是主动式的——Claude 知道何时应用它们——并且跨对话持久存在。
+
+**组合使用：**提示词与 Skills 天然互补。用 Skills 提供基础专长，再用提示词为每个任务提供具体上下文和细化要求。
+
+#### **Skills 与 Projects：该用哪个**
+
+**使用 Projects 的场景：**你需要为某个特定事项的所有对话提供背景知识和上下文。Projects 提供始终加载的静态参考资料。
+
+**使用 Skills 的场景：**你需要只在相关时才激活的流程知识和可执行代码。Skills 提供按需加载的动态技能，节省你的上下文窗口。
+
+**组合使用：**你既想要持久上下文，又想要专门能力。例如，一个包含产品规格和用户调研的&quot;产品开发&quot;项目，搭配用于撰写技术文档和分析用户反馈数据的 Skills。
+
+**关键区别：**Projects 说的是&quot;你需要知道这些&quot;。Skills 说的是&quot;这些事要这么做&quot;。Projects 提供你工作所依托的知识库；Skills 提供到处可用的能力——任何对话、任何项目。
+
+#### **Subagents 能使用 Skills 吗？**
+
+能。在 Claude Code 和 Agent SDK 中，subagent 可以像主 agent 一样访问和使用 Skills。这能形成强大的组合：专门的 subagent 借助可移植的专长。
+
+例如，你的 python-developer subagent 可以使用 pandas-analysis Skill，按照你们团队的约定执行数据转换；而你的 documentation-writer subagent 使用 technical-writing skill，以一致的格式撰写 API 文档。
+
+## **开始使用**
+
+准备好用 Skills 构建了吗？按以下步骤开始：
+
+[**Claude.ai**](https://Claude.ai)** 用户：**
+
+- 在 Settings → Features 中启用 Skills
+- 在 claude.ai/projects 创建你的第一个项目
+- 在下一次分析任务中，尝试把项目知识与 Skills 结合起来
+
+**API 开发者：**
+
+- 在[文档](https://docs.anthropic.com)中探索 Skills 端点
+- 查看我们的 [skills cookbook](https://platform.claude.com/cookbook/skills-notebooks-01-skills-introduction)
+
+**Claude Code 用户：**
+
+- 通过[插件市场](https://code.claude.com/docs/en/plugin-marketplaces)安装 Skills
+- 查看我们的 [skills cookbook](https://platform.claude.com/cookbook/skills-notebooks-01-skills-introduction)</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Agents</span>
-            <span class="article-date">March 5, 2026</span>
-            
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-olive);">
+            <img class="hero-illo-img" src="/assets/illustrations/skills-explained.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">深入理解 Skills：它与提示词、Projects、MCP 和 subagents 的对比</h1>
-          <a href="/posts/skills-explained/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>自推出 <a href="https://www.anthropic.com/news/skills" target="_blank">Skills</a> 以来，很多人希望了解 Claude 的 agentic 生态中各个组件是如何协同工作的。</p><p>无论你是在 <a href="https://www.claude.com/product/claude-code" target="_blank">Claude Code</a> 中构建复杂工作流、用 API 打造企业级解决方案，还是在 <a href="http://claude.ai" target="_blank">Claude.ai</a> 上提升个人生产力，弄清楚什么时候该用哪个工具，都能彻底改变你与 Claude 协作的方式。</p><p>本指南将逐一拆解每个构建模块，解释各自的使用时机，并展示如何组合它们来打造强大的 agentic 工作流。</p><h2><strong>认识你的 agentic 构建模块</strong></h2><h3><strong>什么是 Skills？</strong></h3><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/IoqpBKrNaZI" title="Agent Skills: Specialized capabilities you can customize" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><p>Skills 是包含指令、脚本和资源的文件夹，Claude 会在与任务相关时动态发现并加载它们。可以把它们理解为专业培训手册，赋予 Claude 特定领域的专长——从操作 Excel 表格到遵循你组织的品牌规范。</p><p><strong>Skills 的工作方式：</strong>当 Claude 遇到一个任务时，它会扫描可用的 Skills，寻找相关的匹配项。Skills 采用渐进式披露（progressive disclosure）：元数据先加载（约 100 token），刚好让 Claude 知道某个 Skill 何时相关。完整指令在需要时加载（<5k token），捆绑的文件或脚本则仅在必要时加载。</p><p><strong>何时使用 Skills：</strong>当你需要 Claude 稳定高效地执行专门任务时，请选择 Skills。它们非常适合：</p><ul role="list"><li><strong>组织级工作流：</strong>品牌规范、合规流程、文档模板</li><li><strong>领域专长：</strong>Excel 公式、PDF 处理、数据分析</li><li><strong>个人偏好：</strong>笔记体系、编码模式、研究方法</li></ul><p><strong>示例：</strong>创建一个包含公司配色、字体规则和排版规范的<a href="https://github.com/anthropics/skills/tree/main/skills/brand-guidelines" target="_blank">品牌规范 Skill</a>。当 Claude 制作演示文稿或文档时，会自动应用这些标准，你不必每次都重新说明。</p><p><a href="https://support.claude.com/en/articles/12512176-what-are-skills" target="_blank">进一步了解</a> Skills，并浏览我们不断扩充的 <a href="https://github.com/anthropics/skills" target="_blank">Skills 库</a>。</p><h3><strong>什么是提示词（prompts）？</strong></h3><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/ysPbXH0LpIE" title="" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><p><a href="https://docs.claude.com/en/prompt-library/library" target="_blank">提示词</a>是你在对话中用自然语言向 Claude 下达的指令。它们是临时性的、对话式的、反应式的——你在当下提供上下文和方向。</p><p><strong>何时使用提示词：</strong>以下场景请使用提示词：</p><ul role="list"><li>一次性请求："总结这篇文章"</li><li>对话式调整："把语气改得更专业一些"</li><li>即时上下文："分析这份数据并找出趋势"</li><li>临时指令："把这些整理成项目符号列表"</li></ul><p><strong>示例：</strong></p><p><em>请对这段代码进行一次全面的安全审查。我希望看到：</em></p><p><em>1. 常见漏洞，包括：</em></p><ul role="list"><li><em>注入缺陷（SQL、命令、XSS 等）</em></li><li><em>身份验证与授权问题</em></li><li><em>敏感数据暴露</em></li><li><em>安全配置错误</em></li><li><em>访问控制失效</em></li><li><em>加密相关缺陷</em></li><li><em>输入校验问题</em></li><li><em>错误处理与日志问题</em></li></ul><p><em>2. 针对发现的每个问题，请提供：</em></p><ul role="list"><li><em>严重程度（Critical/High/Medium/Low）</em></li><li><em>代码中的位置（行号或函数名）</em></li><li><em>为什么它是安全风险、可能如何被利用的解释</em></li><li><em>具体的修复建议，尽可能附上代码示例</em></li><li><em>预防类似问题的最佳实践指引</em></li></ul><p><em>3. 代码背景：[描述代码的功能、语言/框架以及运行环境，例如："这是一个 Node.js REST API，负责用户身份验证并处理支付数据"]</em></p><p><em>4. 其他考虑事项：</em></p><ul role="list"><li><em>是否存在 OWASP Top 10 漏洞？</em></li><li><em>代码是否遵循 [特定框架/语言] 的安全最佳实践？</em></li><li><em>是否有已知存在漏洞的依赖项？</em></li></ul><p><em>请按严重程度和潜在影响对发现进行排序。</em></p><p><strong>小技巧：</strong>提示词是你与 Claude 交互的主要方式，但它们不会跨对话保留。对于重复性的工作流或专门知识，可以考虑把提示词沉淀为 Skills 或项目指令。</p><p><strong>何时改用 Skill：</strong>如果你发现自己在多次对话中反复输入同一个提示词，就该创建一个 Skill 了。把诸如"按照 OWASP 标准审查这段代码的安全漏洞"或"把这份分析整理成执行摘要、关键发现和建议"这类经常出现的指令转化为 Skill，可以免去每次重新解释流程的麻烦，并保证执行的一致性。</p><p>可以查看我们的<a href="https://docs.claude.com/en/prompt-library/library" target="_blank">提示词库</a>、<a href="http://claude.com/blog/prompt-engineering-best-practices" target="_blank">提示词最佳实践</a>，或<a href="https://claude.ai/public/artifacts/3796db7e-4ef1-4cab-b70c-d045778f23ec" target="_blank">智能提示词生成器</a>来上手。</p><h3><strong>什么是 Projects？</strong></h3><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/nbG2DO6Xsek" title="Shareable Projects in Claude" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><p><a href="https://support.claude.com/en/articles/9517075-what-are-projects" target="_blank">Projects</a> 在所有付费 Claude 计划中可用，它们是自带聊天历史和知识库的独立工作区。每个项目拥有一个 200K 的上下文窗口，你可以在其中上传文档、提供背景信息，并设置对该项目内所有对话生效的自定义指令。</p><p><strong>Projects 的工作方式：</strong>你上传到项目知识库的所有内容，都会对项目内的所有聊天可用。Claude 会自动利用这些上下文，给出更充分、更切题的回答。当项目知识接近上下文上限时，Claude 会无缝启用检索增强生成（RAG）模式，将容量最多扩展 10 倍。</p><p><strong>何时使用 Projects：</strong>在以下需求时选择 Projects：</p><ul role="list"><li><strong>持久上下文：</strong>应当为每一次对话提供背景的知识</li><li><strong>工作区组织：</strong>为不同事项划分独立的上下文</li><li><strong>团队协作：</strong>共享知识与对话历史（Team 和 Enterprise 计划）</li><li><strong>自定义指令：</strong>项目特定的语气、视角或方法</li></ul><p><strong>示例：</strong>创建一个"Q4 产品发布"项目，放入市场调研、竞品分析和产品规格。该项目内的每次聊天都能使用这些知识，你不必重新上传或重新解释背景。</p><p><strong>何时改用 Skill：</strong>Projects 为某项具体工作（你们的代码库、一项研究计划、一个持续的客户项目）提供持久上下文；Skills 教会 Claude 如何做事。一个 Project 可能装着产品发布的全部背景资料，而一个 skill 可以教会 Claude 你们团队的写作规范或代码审查流程。如果你发现自己在多个 Projects 之间复制同样的指令，那就是该创建 skill 的信号。</p><p><a href="https://support.claude.com/en/articles/9517075-what-are-projects" target="_blank">进一步了解</a> Projects。</p><h3><strong>什么是 subagents？</strong></h3><p><a href="https://docs.claude.com/en/docs/claude-code/sub-agents" target="_blank">Subagents</a> 是专门的 AI 助手，拥有自己的上下文窗口、自定义系统提示词和特定的工具权限。它们在 Claude Code 和 Claude Agent SDK 中可用，独立处理具体任务并将结果返回给主 agent。</p><p><strong>Subagents 的工作方式：</strong>每个 subagent 都按自己的配置运行——你定义它做什么、如何解决问题、可以访问哪些工具。Claude 会根据它们的描述自动把任务委派给合适的 subagent，你也可以显式指定某个 subagent。</p><p><strong>何时使用 subagents：</strong>以下场景请使用 subagents：</p><ul role="list"><li><strong>任务专门化：</strong>代码审查、测试生成、安全审计</li><li><strong>上下文管理：</strong>让主对话保持聚焦，把专门工作分流出去</li><li><strong>并行处理：</strong>多个 subagent 可以同时处理不同侧面</li><li><strong>工具限制：</strong>把特定 subagent 限制在安全操作内（例如只读访问）</li></ul><p><strong>示例：</strong></p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-plaintext" style="white-space:pre-wrap"><span><span>Create a code-reviewer subagent with access to Read, Grep, and Glob tools but not Write or Edit. When you modify code, Claude automatically delegates to this subagent for quality and security review without risking unintended code changes.</span></span></code></pre><p><strong>何时改用 Skill：</strong>如果多个 agent 或对话需要同样的专长——比如安全审查流程或数据分析方法——请创建 Skill，而不要把这些知识内置到一个个 subagent 里。Skills 可移植、可复用，而 subagents 是为特定工作流量身定制的。要教给任何 agent 都能用的专长，用 Skills；需要独立执行任务并配合特定工具权限和上下文隔离时，用 subagents。</p><p><a href="https://code.claude.com/docs/en/sub-agents" target="_blank">进一步了解</a> subagents。</p><h3><strong>什么是 MCP？</strong></h3><figure style="max-width:1600pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69141f0993d68ff4c536f316_619a5262.png" loading="lazy"></div><figcaption>MCP 在 AI 应用与你现有的工具、数据源之间建立一个通用连接层。</figcaption></figure><p>Model Context Protocol（MCP）是一个开放标准，用于把 AI 助手连接到数据所在的外部系统——内容仓库、业务工具、数据库和开发环境。</p><p><strong>MCP 的工作方式：</strong>MCP 提供了一种标准化的方式，把 Claude 连接到你的工具和数据源。你不需要为每个数据源单独构建定制集成，只需面向单一协议开发。MCP server 暴露数据和能力；MCP 客户端（比如 Claude）连接这些 server。</p><p><strong>何时使用 MCP：</strong>当你需要 Claude 做以下事情时，选择 MCP：</p><ul role="list"><li>访问外部数据：Google Drive、Slack、GitHub、数据库</li><li>使用业务工具：CRM 系统、项目管理平台</li><li>连接开发环境：本地文件、IDE、版本控制</li><li>集成自定义系统：你的专有工具和数据源</li></ul><p><strong>示例：</strong>通过 MCP 把 Claude 连接到公司的 Google Drive。Claude 就可以搜索文档、读取文件、引用内部知识，无需手动上传——连接持久存在并自动更新。</p><p><strong>何时改用 Skill：</strong>MCP 把 Claude 连接到数据；Skills 教会 Claude 拿这些数据做什么。如果你是在解释<em>如何</em>使用某个工具或遵循某套流程——比如"查询我们的数据库时，总是先按日期范围过滤"或"用这些特定公式格式化 Excel 报表"——那是 Skill。如果你需要 Claude 首先<em>访问</em>数据库或 Excel 文件，那是 MCP。把两者搭配使用：MCP 负责连接，Skills 负责流程知识。</p><p><a href="https://www.anthropic.com/news/model-context-protocol" target="_blank">进一步了解</a> MCP，并查阅如何构建 MCP server 的<a href="https://modelcontextprotocol.io/docs/develop/build-server" target="_blank">文档</a>。</p><h2><strong>它们如何协同工作</strong></h2><p>当你把这些构建模块组合起来，真正的威力才会显现。每个模块各司其职，合在一起就能构建出复杂的 agentic 工作流。</p><h3><strong>对比：选择合适的工具</strong></h3><div class="w-embed"><figure>
+            <h1 class="article-title u-text-style-h1">深入理解 Skills：它与提示词、Projects、MCP 和 subagents 的对比</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>Skills are an increasingly powerful tool for creating custom AI workflows and agents, but where do they fit in the Claude stack? We explain what tool to use when - and how they all work together.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/agents" target="_blank" rel="noopener noreferrer">Agents</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <div class="hero-detail-value-stack"><a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/platform/api" target="_blank" rel="noopener noreferrer">Claude Platform</a><div class="hero-detail-value u-text-style-body-3">Claude apps</div></div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">March 5, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/skills-explained/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>自推出 <a href="https://www.anthropic.com/news/skills" target="_blank">Skills</a> 以来，很多人希望了解 Claude 的 agentic 生态中各个组件是如何协同工作的。</p><p>无论你是在 <a href="https://www.claude.com/product/claude-code" target="_blank">Claude Code</a> 中构建复杂工作流、用 API 打造企业级解决方案，还是在 <a href="http://claude.ai" target="_blank">Claude.ai</a> 上提升个人生产力，弄清楚什么时候该用哪个工具，都能彻底改变你与 Claude 协作的方式。</p><p>本指南将逐一拆解每个构建模块，解释各自的使用时机，并展示如何组合它们来打造强大的 agentic 工作流。</p><h2><strong>认识你的 agentic 构建模块</strong></h2><h3><strong>什么是 Skills？</strong></h3><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/IoqpBKrNaZI" title="Agent Skills: Specialized capabilities you can customize" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><p>Skills 是包含指令、脚本和资源的文件夹，Claude 会在与任务相关时动态发现并加载它们。可以把它们理解为专业培训手册，赋予 Claude 特定领域的专长——从操作 Excel 表格到遵循你组织的品牌规范。</p><p><strong>Skills 的工作方式：</strong>当 Claude 遇到一个任务时，它会扫描可用的 Skills，寻找相关的匹配项。Skills 采用渐进式披露（progressive disclosure）：元数据先加载（约 100 token），刚好让 Claude 知道某个 Skill 何时相关。完整指令在需要时加载（<5k token），捆绑的文件或脚本则仅在必要时加载。</p><p><strong>何时使用 Skills：</strong>当你需要 Claude 稳定高效地执行专门任务时，请选择 Skills。它们非常适合：</p><ul role="list"><li><strong>组织级工作流：</strong>品牌规范、合规流程、文档模板</li><li><strong>领域专长：</strong>Excel 公式、PDF 处理、数据分析</li><li><strong>个人偏好：</strong>笔记体系、编码模式、研究方法</li></ul><p><strong>示例：</strong>创建一个包含公司配色、字体规则和排版规范的<a href="https://github.com/anthropics/skills/tree/main/skills/brand-guidelines" target="_blank">品牌规范 Skill</a>。当 Claude 制作演示文稿或文档时，会自动应用这些标准，你不必每次都重新说明。</p><p><a href="https://support.claude.com/en/articles/12512176-what-are-skills" target="_blank">进一步了解</a> Skills，并浏览我们不断扩充的 <a href="https://github.com/anthropics/skills" target="_blank">Skills 库</a>。</p><h3><strong>什么是提示词（prompts）？</strong></h3><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/ysPbXH0LpIE" title="" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><p><a href="https://docs.claude.com/en/prompt-library/library" target="_blank">提示词</a>是你在对话中用自然语言向 Claude 下达的指令。它们是临时性的、对话式的、反应式的——你在当下提供上下文和方向。</p><p><strong>何时使用提示词：</strong>以下场景请使用提示词：</p><ul role="list"><li>一次性请求："总结这篇文章"</li><li>对话式调整："把语气改得更专业一些"</li><li>即时上下文："分析这份数据并找出趋势"</li><li>临时指令："把这些整理成项目符号列表"</li></ul><p><strong>示例：</strong></p><p><em>请对这段代码进行一次全面的安全审查。我希望看到：</em></p><p><em>1. 常见漏洞，包括：</em></p><ul role="list"><li><em>注入缺陷（SQL、命令、XSS 等）</em></li><li><em>身份验证与授权问题</em></li><li><em>敏感数据暴露</em></li><li><em>安全配置错误</em></li><li><em>访问控制失效</em></li><li><em>加密相关缺陷</em></li><li><em>输入校验问题</em></li><li><em>错误处理与日志问题</em></li></ul><p><em>2. 针对发现的每个问题，请提供：</em></p><ul role="list"><li><em>严重程度（Critical/High/Medium/Low）</em></li><li><em>代码中的位置（行号或函数名）</em></li><li><em>为什么它是安全风险、可能如何被利用的解释</em></li><li><em>具体的修复建议，尽可能附上代码示例</em></li><li><em>预防类似问题的最佳实践指引</em></li></ul><p><em>3. 代码背景：[描述代码的功能、语言/框架以及运行环境，例如："这是一个 Node.js REST API，负责用户身份验证并处理支付数据"]</em></p><p><em>4. 其他考虑事项：</em></p><ul role="list"><li><em>是否存在 OWASP Top 10 漏洞？</em></li><li><em>代码是否遵循 [特定框架/语言] 的安全最佳实践？</em></li><li><em>是否有已知存在漏洞的依赖项？</em></li></ul><p><em>请按严重程度和潜在影响对发现进行排序。</em></p><p><strong>小技巧：</strong>提示词是你与 Claude 交互的主要方式，但它们不会跨对话保留。对于重复性的工作流或专门知识，可以考虑把提示词沉淀为 Skills 或项目指令。</p><p><strong>何时改用 Skill：</strong>如果你发现自己在多次对话中反复输入同一个提示词，就该创建一个 Skill 了。把诸如"按照 OWASP 标准审查这段代码的安全漏洞"或"把这份分析整理成执行摘要、关键发现和建议"这类经常出现的指令转化为 Skill，可以免去每次重新解释流程的麻烦，并保证执行的一致性。</p><p>可以查看我们的<a href="https://docs.claude.com/en/prompt-library/library" target="_blank">提示词库</a>、<a href="http://claude.com/blog/prompt-engineering-best-practices" target="_blank">提示词最佳实践</a>，或<a href="https://claude.ai/public/artifacts/3796db7e-4ef1-4cab-b70c-d045778f23ec" target="_blank">智能提示词生成器</a>来上手。</p><h3><strong>什么是 Projects？</strong></h3><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/nbG2DO6Xsek" title="Shareable Projects in Claude" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><p><a href="https://support.claude.com/en/articles/9517075-what-are-projects" target="_blank">Projects</a> 在所有付费 Claude 计划中可用，它们是自带聊天历史和知识库的独立工作区。每个项目拥有一个 200K 的上下文窗口，你可以在其中上传文档、提供背景信息，并设置对该项目内所有对话生效的自定义指令。</p><p><strong>Projects 的工作方式：</strong>你上传到项目知识库的所有内容，都会对项目内的所有聊天可用。Claude 会自动利用这些上下文，给出更充分、更切题的回答。当项目知识接近上下文上限时，Claude 会无缝启用检索增强生成（RAG）模式，将容量最多扩展 10 倍。</p><p><strong>何时使用 Projects：</strong>在以下需求时选择 Projects：</p><ul role="list"><li><strong>持久上下文：</strong>应当为每一次对话提供背景的知识</li><li><strong>工作区组织：</strong>为不同事项划分独立的上下文</li><li><strong>团队协作：</strong>共享知识与对话历史（Team 和 Enterprise 计划）</li><li><strong>自定义指令：</strong>项目特定的语气、视角或方法</li></ul><p><strong>示例：</strong>创建一个"Q4 产品发布"项目，放入市场调研、竞品分析和产品规格。该项目内的每次聊天都能使用这些知识，你不必重新上传或重新解释背景。</p><p><strong>何时改用 Skill：</strong>Projects 为某项具体工作（你们的代码库、一项研究计划、一个持续的客户项目）提供持久上下文；Skills 教会 Claude 如何做事。一个 Project 可能装着产品发布的全部背景资料，而一个 skill 可以教会 Claude 你们团队的写作规范或代码审查流程。如果你发现自己在多个 Projects 之间复制同样的指令，那就是该创建 skill 的信号。</p><p><a href="https://support.claude.com/en/articles/9517075-what-are-projects" target="_blank">进一步了解</a> Projects。</p><h3><strong>什么是 subagents？</strong></h3><p><a href="https://docs.claude.com/en/docs/claude-code/sub-agents" target="_blank">Subagents</a> 是专门的 AI 助手，拥有自己的上下文窗口、自定义系统提示词和特定的工具权限。它们在 Claude Code 和 Claude Agent SDK 中可用，独立处理具体任务并将结果返回给主 agent。</p><p><strong>Subagents 的工作方式：</strong>每个 subagent 都按自己的配置运行——你定义它做什么、如何解决问题、可以访问哪些工具。Claude 会根据它们的描述自动把任务委派给合适的 subagent，你也可以显式指定某个 subagent。</p><p><strong>何时使用 subagents：</strong>以下场景请使用 subagents：</p><ul role="list"><li><strong>任务专门化：</strong>代码审查、测试生成、安全审计</li><li><strong>上下文管理：</strong>让主对话保持聚焦，把专门工作分流出去</li><li><strong>并行处理：</strong>多个 subagent 可以同时处理不同侧面</li><li><strong>工具限制：</strong>把特定 subagent 限制在安全操作内（例如只读访问）</li></ul><p><strong>示例：</strong></p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-plaintext" style="white-space:pre-wrap"><span><span>Create a code-reviewer subagent with access to Read, Grep, and Glob tools but not Write or Edit. When you modify code, Claude automatically delegates to this subagent for quality and security review without risking unintended code changes.</span></span></code></pre><p><strong>何时改用 Skill：</strong>如果多个 agent 或对话需要同样的专长——比如安全审查流程或数据分析方法——请创建 Skill，而不要把这些知识内置到一个个 subagent 里。Skills 可移植、可复用，而 subagents 是为特定工作流量身定制的。要教给任何 agent 都能用的专长，用 Skills；需要独立执行任务并配合特定工具权限和上下文隔离时，用 subagents。</p><p><a href="https://code.claude.com/docs/en/sub-agents" target="_blank">进一步了解</a> subagents。</p><h3><strong>什么是 MCP？</strong></h3><figure style="max-width:1600pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69141f0993d68ff4c536f316_619a5262.png" loading="lazy"></div><figcaption>MCP 在 AI 应用与你现有的工具、数据源之间建立一个通用连接层。</figcaption></figure><p>Model Context Protocol（MCP）是一个开放标准，用于把 AI 助手连接到数据所在的外部系统——内容仓库、业务工具、数据库和开发环境。</p><p><strong>MCP 的工作方式：</strong>MCP 提供了一种标准化的方式，把 Claude 连接到你的工具和数据源。你不需要为每个数据源单独构建定制集成，只需面向单一协议开发。MCP server 暴露数据和能力；MCP 客户端（比如 Claude）连接这些 server。</p><p><strong>何时使用 MCP：</strong>当你需要 Claude 做以下事情时，选择 MCP：</p><ul role="list"><li>访问外部数据：Google Drive、Slack、GitHub、数据库</li><li>使用业务工具：CRM 系统、项目管理平台</li><li>连接开发环境：本地文件、IDE、版本控制</li><li>集成自定义系统：你的专有工具和数据源</li></ul><p><strong>示例：</strong>通过 MCP 把 Claude 连接到公司的 Google Drive。Claude 就可以搜索文档、读取文件、引用内部知识，无需手动上传——连接持久存在并自动更新。</p><p><strong>何时改用 Skill：</strong>MCP 把 Claude 连接到数据；Skills 教会 Claude 拿这些数据做什么。如果你是在解释<em>如何</em>使用某个工具或遵循某套流程——比如"查询我们的数据库时，总是先按日期范围过滤"或"用这些特定公式格式化 Excel 报表"——那是 Skill。如果你需要 Claude 首先<em>访问</em>数据库或 Excel 文件，那是 MCP。把两者搭配使用：MCP 负责连接，Skills 负责流程知识。</p><p><a href="https://www.anthropic.com/news/model-context-protocol" target="_blank">进一步了解</a> MCP，并查阅如何构建 MCP server 的<a href="https://modelcontextprotocol.io/docs/develop/build-server" target="_blank">文档</a>。</p><h2><strong>它们如何协同工作</strong></h2><p>当你把这些构建模块组合起来，真正的威力才会显现。每个模块各司其职，合在一起就能构建出复杂的 agentic 工作流。</p><h3><strong>对比：选择合适的工具</strong></h3><div class="w-embed"><figure>
   <div role="region" tabindex="0">
     <table>
       <thead>
@@ -159,21 +584,70 @@
 </span><span>4. Identify technical strengths and limitations
 </span><span>
 </span><span>Focus on actionable technical insights that inform our product decisions.</span></code></pre><p><strong>第 5 步：激活你的研究 agent</strong></p><p>现在，当你对 Claude 说："分析我们排名前三的竞争对手如何定位他们的新 AI 功能，并找出我们可以利用的差距"</p><p>接下来会发生这些事：</p><ol role="list"><li><strong>项目上下文加载</strong>：Claude 访问你上传的研究文档，并遵循项目指令</li><li><strong>MCP 连接激活</strong>：Claude 搜索你的 Google Drive 获取最新竞品简报，并拉取 GitHub 数据</li><li><strong>Skills 生效</strong>：competitive-analysis Skill 提供分析框架</li><li><strong>Subagents 执行</strong>（在 Claude Code 中）：market-researcher 收集行业数据，technical-analyst 审查技术实现</li><li><strong>提示词微调</strong>：你以对话方式给出指引："特别关注医疗行业的企业客户"</li></ol><p><strong>最终结果：</strong>一份全面的竞争分析——它调用多个数据源，遵循你的分析框架，借助专门的技能，并在整个研究项目中保持上下文连贯。</p><h2><strong>常见问题</strong></h2><h4><strong>Skills 是如何工作的？</strong></h4><p>Skills 使用<a href="https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills" target="_blank">渐进式披露</a>来保持 Claude 的高效。在处理任务时，Claude 先扫描 Skill 的元数据（描述和摘要）以识别相关匹配项。如果某个 Skill 匹配，Claude 再加载完整指令。最后，如果该 Skill 包含可执行代码或参考文件，这些只在需要时才加载。</p><p>这一架构意味着你可以准备大量 Skills，而不会撑爆 Claude 的上下文窗口。Claude 会在需要的时候，精确地取用需要的内容。</p><h4><strong>Skills 与 subagents：该用哪个</strong></h4><p><strong>使用 Skills 的场景：</strong>你希望任何 Claude 实例都能加载并使用的能力。Skills 就像培训材料——它们让 Claude 在所有对话中都更擅长特定任务。</p><p><strong>使用 subagents 的场景：</strong>你需要为特定目的设计、能独立处理工作流的完整自足 agent。Subagents 就像拥有自己上下文和工具权限的专职员工。</p><p><strong>组合使用的场景：</strong>你希望 subagent 拥有专门技能。例如，一个代码审查 subagent 可以使用针对语言最佳实践的 Skills，把 subagent 的独立性与 Skills 的可移植专长结合起来。</p><h4><strong>Skills 与提示词：该用哪个</strong></h4><p><strong>使用提示词的场景：</strong>你下达一次性指令、提供即时上下文，或进行来回对话。提示词是反应式的、临时的。</p><p><strong>使用 Skills 的场景：</strong>你有会反复用到的流程或专长。Skills 是主动式的——Claude 知道何时应用它们——并且跨对话持久存在。</p><p><strong>组合使用：</strong>提示词与 Skills 天然互补。用 Skills 提供基础专长，再用提示词为每个任务提供具体上下文和细化要求。</p><h4><strong>Skills 与 Projects：该用哪个</strong></h4><p><strong>使用 Projects 的场景：</strong>你需要为某个特定事项的所有对话提供背景知识和上下文。Projects 提供始终加载的静态参考资料。</p><p><strong>使用 Skills 的场景：</strong>你需要只在相关时才激活的流程知识和可执行代码。Skills 提供按需加载的动态技能，节省你的上下文窗口。</p><p><strong>组合使用：</strong>你既想要持久上下文，又想要专门能力。例如，一个包含产品规格和用户调研的"产品开发"项目，搭配用于撰写技术文档和分析用户反馈数据的 Skills。</p><p><strong>关键区别：</strong>Projects 说的是"你需要知道这些"。Skills 说的是"这些事要这么做"。Projects 提供你工作所依托的知识库；Skills 提供到处可用的能力——任何对话、任何项目。</p><h4><strong>Subagents 能使用 Skills 吗？</strong></h4><p>能。在 Claude Code 和 Agent SDK 中，subagent 可以像主 agent 一样访问和使用 Skills。这能形成强大的组合：专门的 subagent 借助可移植的专长。</p><p>例如，你的 python-developer subagent 可以使用 pandas-analysis Skill，按照你们团队的约定执行数据转换；而你的 documentation-writer subagent 使用 technical-writing skill，以一致的格式撰写 API 文档。</p><h2><strong>开始使用</strong></h2><p>准备好用 Skills 构建了吗？按以下步骤开始：</p><p><a href="https://Claude.ai" target="_blank"><strong>Claude.ai</strong></a><strong> 用户：</strong></p><ul role="list"><li>在 Settings → Features 中启用 Skills</li><li>在 claude.ai/projects 创建你的第一个项目</li><li>在下一次分析任务中，尝试把项目知识与 Skills 结合起来</li></ul><p><strong>API 开发者：</strong></p><ul role="list"><li>在<a href="https://docs.anthropic.com" target="_blank">文档</a>中探索 Skills 端点</li><li>查看我们的 <a href="https://platform.claude.com/cookbook/skills-notebooks-01-skills-introduction" target="_blank">skills cookbook</a></li></ul><p><strong>Claude Code 用户：</strong></p><ul role="list"><li>通过<a href="https://code.claude.com/docs/en/plugin-marketplaces" target="_blank">插件市场</a>安装 Skills</li><li>查看我们的 <a href="https://platform.claude.com/cookbook/skills-notebooks-01-skills-introduction" target="_blank">skills cookbook</a><br></li></ul></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/skills-explained" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/skills-explained" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

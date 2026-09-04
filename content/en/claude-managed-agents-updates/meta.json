@@ -13,5 +13,21 @@
   "illustrationBg": "Clay",
   "translatedTitle": "Claude Managed Agents 新功能：自托管沙箱与 MCP tunnels",
   "translatedAt": "2026-09-02T05:14:34.865Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Platform"
+    ],
+    "usecase": [
+      "Agents"
+    ]
+  },
+  "subtitle": "Claude Managed Agents can now operate in a sandbox you control and connect to your private Model Context Protocol (MCP) servers",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/platform/api"
 }

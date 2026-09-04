@@ -13,5 +13,19 @@
   "translatedTitle": "面向连接器开发者的可观测性",
   "translated": true,
   "translatedAt": "2026-09-02T00:00:00.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude apps"
+    ],
+    "usecase": []
+  },
+  "subtitle": "Developers can now monitor their connectors' performance across Claude products and submit connectors to the directory in-app.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": ""
 }

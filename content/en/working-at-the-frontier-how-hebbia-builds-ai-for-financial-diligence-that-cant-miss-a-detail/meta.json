@@ -13,5 +13,19 @@
   "translatedTitle": "在前沿工作：Hebbia 如何打造不容错过任何细节的金融尽调 AI",
   "translated": true,
   "translatedAt": "2026-09-02T04:05:00.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [],
+    "usecase": [
+      "Financial services"
+    ]
+  },
+  "subtitle": "Hebbia builds research and diligence software for financial professionals, and tests every new model against finance evals tied to expert outcomes. In testing, Claude Fable 5 posted the biggest accuracy gain its research team has recorded, and tracked complex queries that prior models kept dropping.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": ""
 }

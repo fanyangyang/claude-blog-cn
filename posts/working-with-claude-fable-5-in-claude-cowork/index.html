@@ -4,54 +4,253 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>在 Claude Cowork 中使用 Claude Fable 5 — Claude Blog 中文翻译</title>
-  <meta name="description" content="在 Claude Cowork 中使用 Claude Fable 5">
+  <meta name="description" content="Claude Fable 5 can carry long, complex work on its own. Here’s how to get the most out of it in Claude Cowork, starting with as little as an idea and getting to finished work.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/working-with-claude-fable-5-in-claude-cowork" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>在 Claude Cowork 中使用 Claude Fable 5</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/working-with-claude-fable-5-in-claude-cowork" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/working-with-claude-fable-5-in-claude-cowork/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># 在 Claude Cowork 中使用 Claude Fable 5
+
+Claude Fable 5 can carry long, complex work on its own. Here’s how to get the most out of it in Claude Cowork, starting with as little as an idea and getting to finished work.
+
+Claude Fable 5 是 Anthropic 目前[能力最强的通用可用模型](https://www.anthropic.com/news/claude-fable-5-mythos-5)，专为长时间运行、复杂且异步的工作而打造。Claude Fable 5 尤其擅长独立长时间地执行多步骤工作流（例如开展深度研究并将其融入一份备忘录初稿、在生成董事会演示文稿之前完成尽职调查，或通读整个文件夹为多份合同做红线标注，等等），并在此过程中不断测试和评估自己的成果。 
+
+要充分发挥这个模型的能力，你需要改变与它协作的方式。随着模型的不断进步，我们也在持续打磨充分发挥 Claude 能力的最佳实践建议，包括[提示词最佳实践](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices)、提供上下文，以及[构建 Skills](https://claude.com/resources/tutorials/teach-claude-your-way-of-working-using-skills)，把周度团队汇报、销售电话准备、客户反馈分析这类可重复的流程沉淀下来。这些实践在 Claude Fable 5 上依然重要——事实上，有了它们，模型的表现还会更上一层楼。 
+
+Claude Fable 5 能把你的上下文、偏好和 [Skills](https://claude.com/blog/skills-explained) 贯穿到整个任务中，哪怕是耗时数天的任务；而此前的模型在漫长的任务中可能会“走神”，需要不时提醒。与它协作更像与一位能力出色的同事共事：你把情况讲清楚，就什么样的结果算好成果达成一致，然后放手让同事去做。你花在逐步检查上的时间少了，就能把更多时间用来决定该做什么工作。 
+
+我们的 [Claude Fable 5 提示指南](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5) 详细列出了能力提升点，以及推荐的行为与提示方式调整。本文将介绍其中一部分如何在 Claude Cowork——Anthropic 面向知识工作的智能体 AI 系统——中落地。
+
+## Claude Fable 5 与 Claude Cowork 如何相得益彰
+
+Claude Cowork 为产出成品工作而设计。给它一个目标，剩下的它自己打理，哪怕任务又大又复杂。大型任务会被拆分成多个并行执行的子任务，每个子任务各配一个 subagent——一个独立运行的 Claude 实例，负责完成自己那部分工作并汇报结果。Claude 就是这样快速消化海量信息的。面对大型任务，Claude 还会在开始时制定计划，并在执行过程中随时对照计划自查结果。
+
+在漫长而复杂的任务上，Claude Fable 5 [相较我们的其他模型优势明显](https://www.anthropic.com/news/claude-fable-5-mythos-5)，而 Claude Cowork 里的任务恰恰经常是这种类型：几十个步骤，环环相扣。以“基于今年的实际数据制定明年预算”这类项目为例：Claude 获取并读取电子表格，提取运行率（run rate），逐项预测，将预测与目标对账，最后撰写摘要。如果它一开始就误读了一个运行率，这个错误会传导到之后的每一项预测中。Claude Fable 5 会先规划工作流再动手，并在过程中持续核查结果，因此能在任务执行中及时发现误读的数字并加以纠正。
+
+## 判断何时该用 Claude Fable 5
+
+Claude Fable 5 并不是 Claude Cowork 的默认模型，需要你手动选择。截至本文发布时，默认模型是 Claude Sonnet 5，对于你自己顺手就能快速处理的日常任务，它是合适的选择。Claude Opus 适合形态明确、你知道最终成品长什么样的深度工作。Claude Fable 5 则留给那些最复杂、最模糊，甚至以往模型难以胜任的项目。它思考的时间更长，消耗的用量额度也更多，但对于耗时漫长或出错代价高昂的工作来说，这很可能是值得的。我们建议把 Claude Fable 5 留给你最重要的工作，尤其是那些需要使用多种工具、需要连续做出多个判断的任务。 
+
+你还可以借助 Claude 的努力程度（effort）设置进一步调整选择。努力程度越高，Claude Fable 5 在启动任务前会做更多规划，执行过程中也会更频繁地自查。对于你希望 Claude 从头到尾独立完成的复杂或多步骤项目，建议保持较高的努力程度。努力程度较低时，响应会更快，同时依然享受 Claude Fable 5 的智能。这类设置适合那些仍需要前沿判断力、但无需深度探索的任务，比如由许多简单步骤组成的智能体任务，或者结果易于 Claude 自行验证的工作。在我们的测试中，低努力程度的 Claude Fable 5 往往能达到甚至超过早期模型在最高努力程度下的表现。想深入了解其中机制，可以阅读我们对[Claude Code 中模型选择与努力程度如何相互影响](https://claude.com/blog/claude-model-and-effort-level-in-claude-code)的讲解。
+
+另有一点值得注意：Claude Fable 5 配备了一套新的分类器——独立的 AI 系统，用于检测网络安全或生物化学相关请求中的潜在滥用行为。一旦触发，响应会自动改由 [Claude Opus 4.8](https://support.claude.com/en/articles/15363606-why-claude-switched-models-in-your-conversation-with-fable-5) 处理，且每当发生这种情况都会告知用户。Opus 4.8 本身也是能力很强的模型，此后对话会一直停留在 Opus 上；开启新对话即可回到 Claude Fable 5。我们出于稳妥考虑，对这些防护机制做了保守调校，以便安全而迅速地向大众开放一款 [Mythos 级模型](https://www.anthropic.com/news/claude-fable-5-mythos-5)，因此它们偶尔会误伤无害请求，包括 Claude Cowork 中仅仅提及相关话题的只言片语。我们正在随着防护机制的完善不断减少这类误判。 
+
+## 哪怕只有一个想法，也可以开始
+
+启动任务时，你未必总能说清自己想达成什么。而这恰恰是 Claude Fable 5 能成为强大思考伙伴的阶段——在 Claude Cowork 里，它可以调用你的 Skills、工具和知识来展开工作。 
+
+比如，你看到一条与你所在行业或公司相关的新闻，可以这样问 Claude：“这是那则公告，结合你对我组织的全部了解，告诉我这对我们意味着什么变化。”你阅读输出、着手制定策略的过程中，Claude 会同步制定计划去产出你所需的交付物——而且就发生在刚才头脑风暴的同一个 Claude Cowork 对话里。
+
+在 Claude Cowork 里头脑风暴，等于给模型提供了你的真实素材来思考：它可以在你们交谈时读取你分享的文件、使用你接入的工具，从而给出切中要害的建议。它能在想法还易于修改时就发现其中的漏洞，也能向你展示你没有考虑到的方向。而当任务在同一对话中启动时，Claude Fable 5 已经带着你们敲定的目标、你点明的约束，以及一路走来做出的种种决定。 
+
+举个例子：Anthropic 的一位数据科学家带着一个新分析仪表盘的想法来到 Claude Cowork，当时团队还在摸索这个仪表盘该展示什么。由于 Claude Fable 5 能在对话中读取团队的使用数据，它知道哪些问题要几周才会被人注意到，并据此对能更早暴露这些问题的指标做了排序。对话结束时，这位数据科学家手里已经有了一份值得新增的指标清单，以及一个可以点击操作的原型。
+
+下面这两个提示词，可以帮你把想法逐步推进成成果：
+
+- **让 Claude 采访你：**“在开始之前，把把这件事做好需要了解的一切都问我。” 
+- **要求给出方向：**“我想要的大致是这样。给我三种可行的做法，每种附上一个快速示例。”
+
+## 把约束连同上下文一起给到
+
+上下文是 Claude 开展工作的依据。在 Claude Cowork 里，它包括你的提示词、你分享的所有文件和文件夹，以及你接入的任何工具，比如 Asana、Hubspot、Jira、Slack 或[其他工具](http://claude.com/connectors)。
+
+在 Claude Cowork 中给 Claude Fable 5 布置任务时，不妨想想你会怎样向同事交待一份报告。你不会甩给对方一堆规则，但多半会说明这份报告是给谁看的、什么时候要、必须达成什么，然后相信对方能据此做出正确的判断。Claude Fable 5 也是同样的工作方式。
+
+约束依然有用：“控制在两页以内，用平实的语言”就是一条好指令。但约束只能告诉 Claude 什么不能做。上下文则告诉它这项工作是为了什么，这样它才能在约束没预料到的情形下做出正确的选择。
+
+Claude Fable 5 之所以能把漫长、多步骤的任务处理得很好，一部分原因正在于这种上下文：工作中遇到问题或决策点时，它会回到你分享的上下文中寻找答案。它还会用这些上下文随时自查，所以要给它一些可供对照的具体依据——比如一份报告的初稿和终稿，Claude 会从两者的差异中推断出你的标准。
+
+上下文也让 Claude 理解你的处境，从而推断或找出你在提示词里从未写明的细节。共享更多上下文，等于让 Claude 能在一个远超提示词容量的知识库里检索。
+
+关于上下文很多的对话有一点要注意：为了跟上进度，你每发一条新消息，Claude 都会把整个对话重读一遍，因此长对话可能消耗更多用量。新任务最好开一个全新对话。定时任务同样计入额度，记得偶尔检查，关掉不再需要的那些。
+
+## 把更大、更复杂的任务委托给 Claude Fable 5
+
+你可能习惯了把任务拆成小块，逐段提示 Claude。Claude Fable 5 需要的这类中间提示少得多，你可以在 Claude Cowork 中直接委托完整的工作。
+
+如果流程本身对你很重要——比如某个指标每次都必须用完全相同的方式计算——那仍应亲手写出步骤。但如果重要的是结果，就描述目标，剩下交给 Claude。逐步提示还可能把它局限在你想到的那些步骤里；一个目标则给它留出找到更优路径的空间。
+
+在 Claude Cowork 中委托，意味着把你通常会亲自做的决定交给 Claude。这里有三种做法：
+
+- **委托方法：**把素材交给 Claude，描述你要的结果，比如：“这是上个季度的客户反馈。查清楚退订为什么上升，我们应该改什么。”那批文件可能有多种合理的走法，哪种合适取决于反馈的具体内容。这正是 Claude Fable 5 擅长的判断：它通读全部内容，选定一种方法，并在把结论带给你之前先对照反馈自查。你只需评判答案本身，无需事无巨细地规定它怎么做。
+
+- **委托流程：**Skill 相当于教会 Claude 你们团队的一套流程——报告怎么写、幻灯片怎么排版、分析怎么做。你不必指定用哪些 Skill、按什么顺序用。只要说“按我们一贯的方式准备季度回顾”，Claude Fable 5 就会在恰当的时机挑选用得上的 Skill。
+
+- **委托时机：*** *对于需要重复进行的工作，描述结果，Claude 会安排日程并设为周期任务：“我想每周一开工时就了解销售管线有什么变化、哪些事需要拍板。”
+
+把比以往更难的工作交给 Claude Fable 5，哪怕是那些你以为 AI 做不了的工作。哪怕工作本身杂乱不清，可能要花几小时甚至几天才能完成。把它描述出来，看看模型能不能胜任。挑一件由你负责结果的事，说明你会如何评判，然后让 Claude 来提议实现步骤。这类工作中，有些可能演变成自动定时运行的任务：Claude 可以把流程保存为 Skill 并设好日程，通过你已接入的工具自动运转。
+
+## 审视 Claude 的思考过程
+
+Claude Fable 5 能胜任长任务，部分原因在于它深谙制定计划并按计划执行之道。在 Claude Cowork 中，Claude 工作时你可以看到这份计划：对话旁边的面板会列出它打算做什么，以及它正在读写的文件和正在使用的工具与 Skills。
+
+这个面板让你有机会尽早发现问题、及时纠偏。原本要等到成品出来才会发现的错误，现在会以计划中某个出错步骤的形式提前暴露。你一句话就能修正计划，Claude 会就地调整，无需从头再来。
+
+工作完成后，请像审阅同事的成果那样审阅它：打开 Claude 产出的文件，通读一遍。如果哪里看着不对，完整的执行记录仍留在对话里。回滚查看 Claude 工作时列出的各个步骤，包括它读过的文件、用过的工具，展开它的思考过程查看某个决策背后的理由。或者直接问：“这个数字是从哪来的？”Claude 会给你指出处。
+
+从你懂得如何验证的工作入手，比如下季度团队计划初稿。如果你对优先级了如指掌，很快就能判断 Claude 这版靠不靠谱。随着结果被证明可靠，再逐步委托更大的任务。
+
+## 投入打磨你的 Claude Cowork 环境
+
+模型更强，你建立的每一项连接的价值也随之提升——无论是共享的文件夹，还是团队日常使用的工具。以下是我们为让 Claude Fable 5 获得充分上下文、发挥最佳水平给出的建议：
+
+- **接入你的工具：*** *优先把 Claude 连接到[你每天使用的工具](https://support.claude.com/en/articles/11176164-use-connectors-to-extend-claude-s-capabilities)，比如邮件、日历、文档或团队聊天。每多一个连接，Claude 无需你手动搬移内容就能完成的事就多一分。Claude Fable 5 很擅长判断一个工具值不值得用：工具接入后，它发现答案就在你的日历或某段聊天记录里时，会主动去取，而不是等你指路。
+- **让行文贴合你的语气：**每个新模型都有自己的默认行文风格：语气、篇幅，以及输出时习惯使用的措辞。你可能会注意到 Claude Fable 5 有某些默认倾向，[比如在长会话中行文更简省、不易跟上](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5)。 语气、口吻和风格都很容易定制：你可以通过提示词调整，或把它们写进项目指令。比如可以加上一句“使用平实、直白的语言”。如果你开启了记忆功能，记得偶尔查看 Claude 保存了哪些关于你写作偏好的内容。对于需要特定笔风的文档，可以用连接器或现有文件让 Claude 通读你过往的文章，并把发现保存为 Skill，下次做类似工作时直接调用。我们发现 Claude Fable 5 比早期模型更严格地遵循长期指令，也更善于在需要时调用已保存的素材。
+- **重新检视为早期模型做的配置：*** *为早期模型写的固定指令（如 Skills 和记忆文件）里，往往带着那个模型时代需要的种种修正。原样沿用，旧修正反而会束缚新模型。让 Claude Fable 5 做一次审计：“过一遍我的 Skills 和已保存的记忆。哪些仍然适用，哪些是给旧模型写的？”
+
+## 接下来会怎样
+
+随着前沿智能持续演进，Claude Cowork 的能力会越来越强，支持更长时运行的工作，解锁更多知识工作场景。学会如何提示、管理上下文、检查 Claude 的工作并合理委托，将帮助你充分利用 Claude Fable 5 以及未来模型的全部能力。    
+
+*本文作者为 Anthropic 教育团队的 Josefina Albert。*
+
+立即开始使用 [Claude Cowork](https://support.claude.com/en/articles/13345190-get-started-with-claude-cowork)。</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Enterprise AI</span>
-            <span class="article-date">July 16, 2026</span>
-            
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-heather);">
+            <img class="hero-illo-img" src="/assets/illustrations/working-with-claude-fable-5-in-claude-cowork.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">在 Claude Cowork 中使用 Claude Fable 5</h1>
-          <a href="/posts/working-with-claude-fable-5-in-claude-cowork/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>Claude Fable 5 是 Anthropic 目前<a href="https://www.anthropic.com/news/claude-fable-5-mythos-5" target="_blank">能力最强的通用可用模型</a>，专为长时间运行、复杂且异步的工作而打造。Claude Fable 5 尤其擅长独立长时间地执行多步骤工作流（例如开展深度研究并将其融入一份备忘录初稿、在生成董事会演示文稿之前完成尽职调查，或通读整个文件夹为多份合同做红线标注，等等），并在此过程中不断测试和评估自己的成果。&nbsp;</p><p>要充分发挥这个模型的能力，你需要改变与它协作的方式。随着模型的不断进步，我们也在持续打磨充分发挥 Claude 能力的最佳实践建议，包括<a href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices" target="_blank">提示词最佳实践</a>、提供上下文，以及<a href="https://claude.com/resources/tutorials/teach-claude-your-way-of-working-using-skills" target="_blank">构建 Skills</a>，把周度团队汇报、销售电话准备、客户反馈分析这类可重复的流程沉淀下来。这些实践在 Claude Fable 5 上依然重要——事实上，有了它们，模型的表现还会更上一层楼。&nbsp;</p><p>Claude Fable 5 能把你的上下文、偏好和 <a href="https://claude.com/blog/skills-explained" target="_blank">Skills</a> 贯穿到整个任务中，哪怕是耗时数天的任务；而此前的模型在漫长的任务中可能会“走神”，需要不时提醒。与它协作更像与一位能力出色的同事共事：你把情况讲清楚，就什么样的结果算好成果达成一致，然后放手让同事去做。你花在逐步检查上的时间少了，就能把更多时间用来决定该做什么工作。&nbsp;</p><p>我们的 <a href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5" target="_blank">Claude Fable 5 提示指南</a> 详细列出了能力提升点，以及推荐的行为与提示方式调整。本文将介绍其中一部分如何在 Claude Cowork——Anthropic 面向知识工作的智能体 AI 系统——中落地。</p><h2>Claude Fable 5 与 Claude Cowork 如何相得益彰</h2><p>Claude Cowork 为产出成品工作而设计。给它一个目标，剩下的它自己打理，哪怕任务又大又复杂。大型任务会被拆分成多个并行执行的子任务，每个子任务各配一个 subagent——一个独立运行的 Claude 实例，负责完成自己那部分工作并汇报结果。Claude 就是这样快速消化海量信息的。面对大型任务，Claude 还会在开始时制定计划，并在执行过程中随时对照计划自查结果。</p><p>在漫长而复杂的任务上，Claude Fable 5 <a href="https://www.anthropic.com/news/claude-fable-5-mythos-5" target="_blank">相较我们的其他模型优势明显</a>，而 Claude Cowork 里的任务恰恰经常是这种类型：几十个步骤，环环相扣。以“基于今年的实际数据制定明年预算”这类项目为例：Claude 获取并读取电子表格，提取运行率（run rate），逐项预测，将预测与目标对账，最后撰写摘要。如果它一开始就误读了一个运行率，这个错误会传导到之后的每一项预测中。Claude Fable 5 会先规划工作流再动手，并在过程中持续核查结果，因此能在任务执行中及时发现误读的数字并加以纠正。</p><h2>判断何时该用 Claude Fable 5</h2><p>Claude Fable 5 并不是 Claude Cowork 的默认模型，需要你手动选择。截至本文发布时，默认模型是 Claude Sonnet 5，对于你自己顺手就能快速处理的日常任务，它是合适的选择。Claude Opus 适合形态明确、你知道最终成品长什么样的深度工作。Claude Fable 5 则留给那些最复杂、最模糊，甚至以往模型难以胜任的项目。它思考的时间更长，消耗的用量额度也更多，但对于耗时漫长或出错代价高昂的工作来说，这很可能是值得的。我们建议把 Claude Fable 5 留给你最重要的工作，尤其是那些需要使用多种工具、需要连续做出多个判断的任务。&nbsp;</p><p>你还可以借助 Claude 的努力程度（effort）设置进一步调整选择。努力程度越高，Claude Fable 5 在启动任务前会做更多规划，执行过程中也会更频繁地自查。对于你希望 Claude 从头到尾独立完成的复杂或多步骤项目，建议保持较高的努力程度。努力程度较低时，响应会更快，同时依然享受 Claude Fable 5 的智能。这类设置适合那些仍需要前沿判断力、但无需深度探索的任务，比如由许多简单步骤组成的智能体任务，或者结果易于 Claude 自行验证的工作。在我们的测试中，低努力程度的 Claude Fable 5 往往能达到甚至超过早期模型在最高努力程度下的表现。想深入了解其中机制，可以阅读我们对<a href="https://claude.com/blog/claude-model-and-effort-level-in-claude-code" target="_blank">Claude Code 中模型选择与努力程度如何相互影响</a>的讲解。</p><p>另有一点值得注意：Claude Fable 5 配备了一套新的分类器——独立的 AI 系统，用于检测网络安全或生物化学相关请求中的潜在滥用行为。一旦触发，响应会自动改由 <a href="https://support.claude.com/en/articles/15363606-why-claude-switched-models-in-your-conversation-with-fable-5" target="_blank">Claude Opus 4.8</a> 处理，且每当发生这种情况都会告知用户。Opus 4.8 本身也是能力很强的模型，此后对话会一直停留在 Opus 上；开启新对话即可回到 Claude Fable 5。我们出于稳妥考虑，对这些防护机制做了保守调校，以便安全而迅速地向大众开放一款 <a href="https://www.anthropic.com/news/claude-fable-5-mythos-5" target="_blank">Mythos 级模型</a>，因此它们偶尔会误伤无害请求，包括 Claude Cowork 中仅仅提及相关话题的只言片语。我们正在随着防护机制的完善不断减少这类误判。&nbsp;</p><h2>哪怕只有一个想法，也可以开始</h2><p>启动任务时，你未必总能说清自己想达成什么。而这恰恰是 Claude Fable 5 能成为强大思考伙伴的阶段——在 Claude Cowork 里，它可以调用你的 Skills、工具和知识来展开工作。&nbsp;</p><p>比如，你看到一条与你所在行业或公司相关的新闻，可以这样问 Claude：“这是那则公告，结合你对我组织的全部了解，告诉我这对我们意味着什么变化。”你阅读输出、着手制定策略的过程中，Claude 会同步制定计划去产出你所需的交付物——而且就发生在刚才头脑风暴的同一个 Claude Cowork 对话里。</p><p>在 Claude Cowork 里头脑风暴，等于给模型提供了你的真实素材来思考：它可以在你们交谈时读取你分享的文件、使用你接入的工具，从而给出切中要害的建议。它能在想法还易于修改时就发现其中的漏洞，也能向你展示你没有考虑到的方向。而当任务在同一对话中启动时，Claude Fable 5 已经带着你们敲定的目标、你点明的约束，以及一路走来做出的种种决定。&nbsp;</p><p>举个例子：Anthropic 的一位数据科学家带着一个新分析仪表盘的想法来到 Claude Cowork，当时团队还在摸索这个仪表盘该展示什么。由于 Claude Fable 5 能在对话中读取团队的使用数据，它知道哪些问题要几周才会被人注意到，并据此对能更早暴露这些问题的指标做了排序。对话结束时，这位数据科学家手里已经有了一份值得新增的指标清单，以及一个可以点击操作的原型。</p><p>下面这两个提示词，可以帮你把想法逐步推进成成果：</p><ul role="list"><li><strong>让 Claude 采访你：</strong>“在开始之前，把把这件事做好需要了解的一切都问我。”&nbsp;</li><li><strong>要求给出方向：</strong>“我想要的大致是这样。给我三种可行的做法，每种附上一个快速示例。”<br></li></ul><h2>把约束连同上下文一起给到</h2><p>上下文是 Claude 开展工作的依据。在 Claude Cowork 里，它包括你的提示词、你分享的所有文件和文件夹，以及你接入的任何工具，比如 Asana、Hubspot、Jira、Slack 或<a href="http://claude.com/connectors" target="_blank">其他工具</a>。</p><p>在 Claude Cowork 中给 Claude Fable 5 布置任务时，不妨想想你会怎样向同事交待一份报告。你不会甩给对方一堆规则，但多半会说明这份报告是给谁看的、什么时候要、必须达成什么，然后相信对方能据此做出正确的判断。Claude Fable 5 也是同样的工作方式。</p><p>约束依然有用：“控制在两页以内，用平实的语言”就是一条好指令。但约束只能告诉 Claude 什么不能做。上下文则告诉它这项工作是为了什么，这样它才能在约束没预料到的情形下做出正确的选择。</p><p>Claude Fable 5 之所以能把漫长、多步骤的任务处理得很好，一部分原因正在于这种上下文：工作中遇到问题或决策点时，它会回到你分享的上下文中寻找答案。它还会用这些上下文随时自查，所以要给它一些可供对照的具体依据——比如一份报告的初稿和终稿，Claude 会从两者的差异中推断出你的标准。</p><p>上下文也让 Claude 理解你的处境，从而推断或找出你在提示词里从未写明的细节。共享更多上下文，等于让 Claude 能在一个远超提示词容量的知识库里检索。</p><p>关于上下文很多的对话有一点要注意：为了跟上进度，你每发一条新消息，Claude 都会把整个对话重读一遍，因此长对话可能消耗更多用量。新任务最好开一个全新对话。定时任务同样计入额度，记得偶尔检查，关掉不再需要的那些。</p><h2>把更大、更复杂的任务委托给 Claude Fable 5</h2><p>你可能习惯了把任务拆成小块，逐段提示 Claude。Claude Fable 5 需要的这类中间提示少得多，你可以在 Claude Cowork 中直接委托完整的工作。</p><p>如果流程本身对你很重要——比如某个指标每次都必须用完全相同的方式计算——那仍应亲手写出步骤。但如果重要的是结果，就描述目标，剩下交给 Claude。逐步提示还可能把它局限在你想到的那些步骤里；一个目标则给它留出找到更优路径的空间。</p><p>在 Claude Cowork 中委托，意味着把你通常会亲自做的决定交给 Claude。这里有三种做法：</p><ul role="list"><li><strong>委托方法：</strong>把素材交给 Claude，描述你要的结果，比如：“这是上个季度的客户反馈。查清楚退订为什么上升，我们应该改什么。”那批文件可能有多种合理的走法，哪种合适取决于反馈的具体内容。这正是 Claude Fable 5 擅长的判断：它通读全部内容，选定一种方法，并在把结论带给你之前先对照反馈自查。你只需评判答案本身，无需事无巨细地规定它怎么做。<br></li><li><strong>委托流程：</strong>Skill 相当于教会 Claude 你们团队的一套流程——报告怎么写、幻灯片怎么排版、分析怎么做。你不必指定用哪些 Skill、按什么顺序用。只要说“按我们一贯的方式准备季度回顾”，Claude Fable 5 就会在恰当的时机挑选用得上的 Skill。<br></li><li><strong>委托时机：</strong><em> </em>对于需要重复进行的工作，描述结果，Claude 会安排日程并设为周期任务：“我想每周一开工时就了解销售管线有什么变化、哪些事需要拍板。”</li></ul><p>把比以往更难的工作交给 Claude Fable 5，哪怕是那些你以为 AI 做不了的工作。哪怕工作本身杂乱不清，可能要花几小时甚至几天才能完成。把它描述出来，看看模型能不能胜任。挑一件由你负责结果的事，说明你会如何评判，然后让 Claude 来提议实现步骤。这类工作中，有些可能演变成自动定时运行的任务：Claude 可以把流程保存为 Skill 并设好日程，通过你已接入的工具自动运转。</p><h2>审视 Claude 的思考过程</h2><p>Claude Fable 5 能胜任长任务，部分原因在于它深谙制定计划并按计划执行之道。在 Claude Cowork 中，Claude 工作时你可以看到这份计划：对话旁边的面板会列出它打算做什么，以及它正在读写的文件和正在使用的工具与 Skills。</p><p>这个面板让你有机会尽早发现问题、及时纠偏。原本要等到成品出来才会发现的错误，现在会以计划中某个出错步骤的形式提前暴露。你一句话就能修正计划，Claude 会就地调整，无需从头再来。</p><figure style="max-width:2048pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a58075a5d48d1679df9d37f_d82b001b.png" loading="lazy"></div></figure><p>工作完成后，请像审阅同事的成果那样审阅它：打开 Claude 产出的文件，通读一遍。如果哪里看着不对，完整的执行记录仍留在对话里。回滚查看 Claude 工作时列出的各个步骤，包括它读过的文件、用过的工具，展开它的思考过程查看某个决策背后的理由。或者直接问：“这个数字是从哪来的？”Claude 会给你指出处。</p><p>从你懂得如何验证的工作入手，比如下季度团队计划初稿。如果你对优先级了如指掌，很快就能判断 Claude 这版靠不靠谱。随着结果被证明可靠，再逐步委托更大的任务。</p><h2>投入打磨你的 Claude Cowork 环境</h2><p>模型更强，你建立的每一项连接的价值也随之提升——无论是共享的文件夹，还是团队日常使用的工具。以下是我们为让 Claude Fable 5 获得充分上下文、发挥最佳水平给出的建议：</p><ul role="list"><li><strong>接入你的工具：</strong><em> </em>优先把 Claude 连接到<a href="https://support.claude.com/en/articles/11176164-use-connectors-to-extend-claude-s-capabilities" target="_blank">你每天使用的工具</a>，比如邮件、日历、文档或团队聊天。每多一个连接，Claude 无需你手动搬移内容就能完成的事就多一分。Claude Fable 5 很擅长判断一个工具值不值得用：工具接入后，它发现答案就在你的日历或某段聊天记录里时，会主动去取，而不是等你指路。</li><li><strong>让行文贴合你的语气：</strong>每个新模型都有自己的默认行文风格：语气、篇幅，以及输出时习惯使用的措辞。你可能会注意到 Claude Fable 5 有某些默认倾向，<a href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5" target="_blank">比如在长会话中行文更简省、不易跟上</a>。&nbsp;语气、口吻和风格都很容易定制：你可以通过提示词调整，或把它们写进项目指令。比如可以加上一句“使用平实、直白的语言”。如果你开启了记忆功能，记得偶尔查看 Claude 保存了哪些关于你写作偏好的内容。对于需要特定笔风的文档，可以用连接器或现有文件让 Claude 通读你过往的文章，并把发现保存为 Skill，下次做类似工作时直接调用。我们发现 Claude Fable 5 比早期模型更严格地遵循长期指令，也更善于在需要时调用已保存的素材。</li><li><strong>重新检视为早期模型做的配置：</strong><em> </em>为早期模型写的固定指令（如 Skills 和记忆文件）里，往往带着那个模型时代需要的种种修正。原样沿用，旧修正反而会束缚新模型。让 Claude Fable 5 做一次审计：“过一遍我的 Skills 和已保存的记忆。哪些仍然适用，哪些是给旧模型写的？”</li></ul><h2>接下来会怎样</h2><p>随着前沿智能持续演进，Claude Cowork 的能力会越来越强，支持更长时运行的工作，解锁更多知识工作场景。学会如何提示、管理上下文、检查 Claude 的工作并合理委托，将帮助你充分利用 Claude Fable 5 以及未来模型的全部能力。&nbsp;&nbsp;&nbsp;&nbsp;</p><p><em>本文作者为 Anthropic 教育团队的 Josefina Albert。</em></p><p>立即开始使用 <a href="https://support.claude.com/en/articles/13345190-get-started-with-claude-cowork" target="_blank">Claude Cowork</a>。</p></div>
+            <h1 class="article-title u-text-style-h1">在 Claude Cowork 中使用 Claude Fable 5</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>Claude Fable 5 can carry long, complex work on its own. Here’s how to get the most out of it in Claude Cowork, starting with as little as an idea and getting to finished work.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/enterprise-ai" target="_blank" rel="noopener noreferrer">Enterprise AI</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/product/cowork" target="_blank" rel="noopener noreferrer">Claude Cowork</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">July 16, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/working-with-claude-fable-5-in-claude-cowork/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/working-with-claude-fable-5-in-claude-cowork" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>Claude Fable 5 是 Anthropic 目前<a href="https://www.anthropic.com/news/claude-fable-5-mythos-5" target="_blank">能力最强的通用可用模型</a>，专为长时间运行、复杂且异步的工作而打造。Claude Fable 5 尤其擅长独立长时间地执行多步骤工作流（例如开展深度研究并将其融入一份备忘录初稿、在生成董事会演示文稿之前完成尽职调查，或通读整个文件夹为多份合同做红线标注，等等），并在此过程中不断测试和评估自己的成果。&nbsp;</p><p>要充分发挥这个模型的能力，你需要改变与它协作的方式。随着模型的不断进步，我们也在持续打磨充分发挥 Claude 能力的最佳实践建议，包括<a href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices" target="_blank">提示词最佳实践</a>、提供上下文，以及<a href="https://claude.com/resources/tutorials/teach-claude-your-way-of-working-using-skills" target="_blank">构建 Skills</a>，把周度团队汇报、销售电话准备、客户反馈分析这类可重复的流程沉淀下来。这些实践在 Claude Fable 5 上依然重要——事实上，有了它们，模型的表现还会更上一层楼。&nbsp;</p><p>Claude Fable 5 能把你的上下文、偏好和 <a href="https://claude.com/blog/skills-explained" target="_blank">Skills</a> 贯穿到整个任务中，哪怕是耗时数天的任务；而此前的模型在漫长的任务中可能会“走神”，需要不时提醒。与它协作更像与一位能力出色的同事共事：你把情况讲清楚，就什么样的结果算好成果达成一致，然后放手让同事去做。你花在逐步检查上的时间少了，就能把更多时间用来决定该做什么工作。&nbsp;</p><p>我们的 <a href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5" target="_blank">Claude Fable 5 提示指南</a> 详细列出了能力提升点，以及推荐的行为与提示方式调整。本文将介绍其中一部分如何在 Claude Cowork——Anthropic 面向知识工作的智能体 AI 系统——中落地。</p><h2>Claude Fable 5 与 Claude Cowork 如何相得益彰</h2><p>Claude Cowork 为产出成品工作而设计。给它一个目标，剩下的它自己打理，哪怕任务又大又复杂。大型任务会被拆分成多个并行执行的子任务，每个子任务各配一个 subagent——一个独立运行的 Claude 实例，负责完成自己那部分工作并汇报结果。Claude 就是这样快速消化海量信息的。面对大型任务，Claude 还会在开始时制定计划，并在执行过程中随时对照计划自查结果。</p><p>在漫长而复杂的任务上，Claude Fable 5 <a href="https://www.anthropic.com/news/claude-fable-5-mythos-5" target="_blank">相较我们的其他模型优势明显</a>，而 Claude Cowork 里的任务恰恰经常是这种类型：几十个步骤，环环相扣。以“基于今年的实际数据制定明年预算”这类项目为例：Claude 获取并读取电子表格，提取运行率（run rate），逐项预测，将预测与目标对账，最后撰写摘要。如果它一开始就误读了一个运行率，这个错误会传导到之后的每一项预测中。Claude Fable 5 会先规划工作流再动手，并在过程中持续核查结果，因此能在任务执行中及时发现误读的数字并加以纠正。</p><h2>判断何时该用 Claude Fable 5</h2><p>Claude Fable 5 并不是 Claude Cowork 的默认模型，需要你手动选择。截至本文发布时，默认模型是 Claude Sonnet 5，对于你自己顺手就能快速处理的日常任务，它是合适的选择。Claude Opus 适合形态明确、你知道最终成品长什么样的深度工作。Claude Fable 5 则留给那些最复杂、最模糊，甚至以往模型难以胜任的项目。它思考的时间更长，消耗的用量额度也更多，但对于耗时漫长或出错代价高昂的工作来说，这很可能是值得的。我们建议把 Claude Fable 5 留给你最重要的工作，尤其是那些需要使用多种工具、需要连续做出多个判断的任务。&nbsp;</p><p>你还可以借助 Claude 的努力程度（effort）设置进一步调整选择。努力程度越高，Claude Fable 5 在启动任务前会做更多规划，执行过程中也会更频繁地自查。对于你希望 Claude 从头到尾独立完成的复杂或多步骤项目，建议保持较高的努力程度。努力程度较低时，响应会更快，同时依然享受 Claude Fable 5 的智能。这类设置适合那些仍需要前沿判断力、但无需深度探索的任务，比如由许多简单步骤组成的智能体任务，或者结果易于 Claude 自行验证的工作。在我们的测试中，低努力程度的 Claude Fable 5 往往能达到甚至超过早期模型在最高努力程度下的表现。想深入了解其中机制，可以阅读我们对<a href="https://claude.com/blog/claude-model-and-effort-level-in-claude-code" target="_blank">Claude Code 中模型选择与努力程度如何相互影响</a>的讲解。</p><p>另有一点值得注意：Claude Fable 5 配备了一套新的分类器——独立的 AI 系统，用于检测网络安全或生物化学相关请求中的潜在滥用行为。一旦触发，响应会自动改由 <a href="https://support.claude.com/en/articles/15363606-why-claude-switched-models-in-your-conversation-with-fable-5" target="_blank">Claude Opus 4.8</a> 处理，且每当发生这种情况都会告知用户。Opus 4.8 本身也是能力很强的模型，此后对话会一直停留在 Opus 上；开启新对话即可回到 Claude Fable 5。我们出于稳妥考虑，对这些防护机制做了保守调校，以便安全而迅速地向大众开放一款 <a href="https://www.anthropic.com/news/claude-fable-5-mythos-5" target="_blank">Mythos 级模型</a>，因此它们偶尔会误伤无害请求，包括 Claude Cowork 中仅仅提及相关话题的只言片语。我们正在随着防护机制的完善不断减少这类误判。&nbsp;</p><h2>哪怕只有一个想法，也可以开始</h2><p>启动任务时，你未必总能说清自己想达成什么。而这恰恰是 Claude Fable 5 能成为强大思考伙伴的阶段——在 Claude Cowork 里，它可以调用你的 Skills、工具和知识来展开工作。&nbsp;</p><p>比如，你看到一条与你所在行业或公司相关的新闻，可以这样问 Claude：“这是那则公告，结合你对我组织的全部了解，告诉我这对我们意味着什么变化。”你阅读输出、着手制定策略的过程中，Claude 会同步制定计划去产出你所需的交付物——而且就发生在刚才头脑风暴的同一个 Claude Cowork 对话里。</p><p>在 Claude Cowork 里头脑风暴，等于给模型提供了你的真实素材来思考：它可以在你们交谈时读取你分享的文件、使用你接入的工具，从而给出切中要害的建议。它能在想法还易于修改时就发现其中的漏洞，也能向你展示你没有考虑到的方向。而当任务在同一对话中启动时，Claude Fable 5 已经带着你们敲定的目标、你点明的约束，以及一路走来做出的种种决定。&nbsp;</p><p>举个例子：Anthropic 的一位数据科学家带着一个新分析仪表盘的想法来到 Claude Cowork，当时团队还在摸索这个仪表盘该展示什么。由于 Claude Fable 5 能在对话中读取团队的使用数据，它知道哪些问题要几周才会被人注意到，并据此对能更早暴露这些问题的指标做了排序。对话结束时，这位数据科学家手里已经有了一份值得新增的指标清单，以及一个可以点击操作的原型。</p><p>下面这两个提示词，可以帮你把想法逐步推进成成果：</p><ul role="list"><li><strong>让 Claude 采访你：</strong>“在开始之前，把把这件事做好需要了解的一切都问我。”&nbsp;</li><li><strong>要求给出方向：</strong>“我想要的大致是这样。给我三种可行的做法，每种附上一个快速示例。”<br></li></ul><h2>把约束连同上下文一起给到</h2><p>上下文是 Claude 开展工作的依据。在 Claude Cowork 里，它包括你的提示词、你分享的所有文件和文件夹，以及你接入的任何工具，比如 Asana、Hubspot、Jira、Slack 或<a href="http://claude.com/connectors" target="_blank">其他工具</a>。</p><p>在 Claude Cowork 中给 Claude Fable 5 布置任务时，不妨想想你会怎样向同事交待一份报告。你不会甩给对方一堆规则，但多半会说明这份报告是给谁看的、什么时候要、必须达成什么，然后相信对方能据此做出正确的判断。Claude Fable 5 也是同样的工作方式。</p><p>约束依然有用：“控制在两页以内，用平实的语言”就是一条好指令。但约束只能告诉 Claude 什么不能做。上下文则告诉它这项工作是为了什么，这样它才能在约束没预料到的情形下做出正确的选择。</p><p>Claude Fable 5 之所以能把漫长、多步骤的任务处理得很好，一部分原因正在于这种上下文：工作中遇到问题或决策点时，它会回到你分享的上下文中寻找答案。它还会用这些上下文随时自查，所以要给它一些可供对照的具体依据——比如一份报告的初稿和终稿，Claude 会从两者的差异中推断出你的标准。</p><p>上下文也让 Claude 理解你的处境，从而推断或找出你在提示词里从未写明的细节。共享更多上下文，等于让 Claude 能在一个远超提示词容量的知识库里检索。</p><p>关于上下文很多的对话有一点要注意：为了跟上进度，你每发一条新消息，Claude 都会把整个对话重读一遍，因此长对话可能消耗更多用量。新任务最好开一个全新对话。定时任务同样计入额度，记得偶尔检查，关掉不再需要的那些。</p><h2>把更大、更复杂的任务委托给 Claude Fable 5</h2><p>你可能习惯了把任务拆成小块，逐段提示 Claude。Claude Fable 5 需要的这类中间提示少得多，你可以在 Claude Cowork 中直接委托完整的工作。</p><p>如果流程本身对你很重要——比如某个指标每次都必须用完全相同的方式计算——那仍应亲手写出步骤。但如果重要的是结果，就描述目标，剩下交给 Claude。逐步提示还可能把它局限在你想到的那些步骤里；一个目标则给它留出找到更优路径的空间。</p><p>在 Claude Cowork 中委托，意味着把你通常会亲自做的决定交给 Claude。这里有三种做法：</p><ul role="list"><li><strong>委托方法：</strong>把素材交给 Claude，描述你要的结果，比如：“这是上个季度的客户反馈。查清楚退订为什么上升，我们应该改什么。”那批文件可能有多种合理的走法，哪种合适取决于反馈的具体内容。这正是 Claude Fable 5 擅长的判断：它通读全部内容，选定一种方法，并在把结论带给你之前先对照反馈自查。你只需评判答案本身，无需事无巨细地规定它怎么做。<br></li><li><strong>委托流程：</strong>Skill 相当于教会 Claude 你们团队的一套流程——报告怎么写、幻灯片怎么排版、分析怎么做。你不必指定用哪些 Skill、按什么顺序用。只要说“按我们一贯的方式准备季度回顾”，Claude Fable 5 就会在恰当的时机挑选用得上的 Skill。<br></li><li><strong>委托时机：</strong><em> </em>对于需要重复进行的工作，描述结果，Claude 会安排日程并设为周期任务：“我想每周一开工时就了解销售管线有什么变化、哪些事需要拍板。”</li></ul><p>把比以往更难的工作交给 Claude Fable 5，哪怕是那些你以为 AI 做不了的工作。哪怕工作本身杂乱不清，可能要花几小时甚至几天才能完成。把它描述出来，看看模型能不能胜任。挑一件由你负责结果的事，说明你会如何评判，然后让 Claude 来提议实现步骤。这类工作中，有些可能演变成自动定时运行的任务：Claude 可以把流程保存为 Skill 并设好日程，通过你已接入的工具自动运转。</p><h2>审视 Claude 的思考过程</h2><p>Claude Fable 5 能胜任长任务，部分原因在于它深谙制定计划并按计划执行之道。在 Claude Cowork 中，Claude 工作时你可以看到这份计划：对话旁边的面板会列出它打算做什么，以及它正在读写的文件和正在使用的工具与 Skills。</p><p>这个面板让你有机会尽早发现问题、及时纠偏。原本要等到成品出来才会发现的错误，现在会以计划中某个出错步骤的形式提前暴露。你一句话就能修正计划，Claude 会就地调整，无需从头再来。</p><figure style="max-width:2048pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a58075a5d48d1679df9d37f_d82b001b.png" loading="lazy"></div></figure><p>工作完成后，请像审阅同事的成果那样审阅它：打开 Claude 产出的文件，通读一遍。如果哪里看着不对，完整的执行记录仍留在对话里。回滚查看 Claude 工作时列出的各个步骤，包括它读过的文件、用过的工具，展开它的思考过程查看某个决策背后的理由。或者直接问：“这个数字是从哪来的？”Claude 会给你指出处。</p><p>从你懂得如何验证的工作入手，比如下季度团队计划初稿。如果你对优先级了如指掌，很快就能判断 Claude 这版靠不靠谱。随着结果被证明可靠，再逐步委托更大的任务。</p><h2>投入打磨你的 Claude Cowork 环境</h2><p>模型更强，你建立的每一项连接的价值也随之提升——无论是共享的文件夹，还是团队日常使用的工具。以下是我们为让 Claude Fable 5 获得充分上下文、发挥最佳水平给出的建议：</p><ul role="list"><li><strong>接入你的工具：</strong><em> </em>优先把 Claude 连接到<a href="https://support.claude.com/en/articles/11176164-use-connectors-to-extend-claude-s-capabilities" target="_blank">你每天使用的工具</a>，比如邮件、日历、文档或团队聊天。每多一个连接，Claude 无需你手动搬移内容就能完成的事就多一分。Claude Fable 5 很擅长判断一个工具值不值得用：工具接入后，它发现答案就在你的日历或某段聊天记录里时，会主动去取，而不是等你指路。</li><li><strong>让行文贴合你的语气：</strong>每个新模型都有自己的默认行文风格：语气、篇幅，以及输出时习惯使用的措辞。你可能会注意到 Claude Fable 5 有某些默认倾向，<a href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5" target="_blank">比如在长会话中行文更简省、不易跟上</a>。&nbsp;语气、口吻和风格都很容易定制：你可以通过提示词调整，或把它们写进项目指令。比如可以加上一句“使用平实、直白的语言”。如果你开启了记忆功能，记得偶尔查看 Claude 保存了哪些关于你写作偏好的内容。对于需要特定笔风的文档，可以用连接器或现有文件让 Claude 通读你过往的文章，并把发现保存为 Skill，下次做类似工作时直接调用。我们发现 Claude Fable 5 比早期模型更严格地遵循长期指令，也更善于在需要时调用已保存的素材。</li><li><strong>重新检视为早期模型做的配置：</strong><em> </em>为早期模型写的固定指令（如 Skills 和记忆文件）里，往往带着那个模型时代需要的种种修正。原样沿用，旧修正反而会束缚新模型。让 Claude Fable 5 做一次审计：“过一遍我的 Skills 和已保存的记忆。哪些仍然适用，哪些是给旧模型写的？”</li></ul><h2>接下来会怎样</h2><p>随着前沿智能持续演进，Claude Cowork 的能力会越来越强，支持更长时运行的工作，解锁更多知识工作场景。学会如何提示、管理上下文、检查 Claude 的工作并合理委托，将帮助你充分利用 Claude Fable 5 以及未来模型的全部能力。&nbsp;&nbsp;&nbsp;&nbsp;</p><p><em>本文作者为 Anthropic 教育团队的 Josefina Albert。</em></p><p>立即开始使用 <a href="https://support.claude.com/en/articles/13345190-get-started-with-claude-cowork" target="_blank">Claude Cowork</a>。</p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/working-with-claude-fable-5-in-claude-cowork" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

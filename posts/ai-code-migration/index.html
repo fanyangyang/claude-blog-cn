@@ -4,54 +4,410 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Anthropic 如何用 Claude Code 执行大规模代码迁移 — Claude Blog 中文翻译</title>
-  <meta name="description" content="Anthropic 如何用 Claude Code 执行大规模代码迁移">
+  <meta name="description" content="用 AI 智能体跑大规模代码迁移的分步指南，包括 Bun 百万行 Zig 到 Rust 的移植。">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/ai-code-migration" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>Anthropic 如何用 Claude Code 执行大规模代码迁移</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/ai-code-migration" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/ai-code-migration/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># Anthropic 如何用 Claude Code 执行大规模代码迁移
+
+用 AI 智能体跑大规模代码迁移的分步指南，包括 Bun 百万行 Zig 到 Rust 的移植。
+
+代码迁移——把生产代码库移植到一门新语言的项目——直到不久前还是以年计的工程。
+
+就在上个月，Anthropic 的几位开发者用 Claude Fable 5、Claude Opus 4.8 和[dynamic workflows](https://claude.com/blog/introducing-dynamic-workflows-in-claude-code)，完成了 10 个代码包的迁移，每个包从几万行到几十万行代码不等。本文将介绍其中两个案例，以及从这些项目中总结出的最佳实践。
+
+Bun 联合创始人、Anthropic 技术团队成员 Jarred Sumner 使用 Claude Code 把 [Bun 从 Zig 迁移到了 Rust](https://bun.com/blog/bun-in-rust)。不到两周产出了上百万行代码，合并前 Bun 现有测试套件在 CI 中 100% 通过。合并后暴露出 19 个回归，均已修复。Rust 版本已于六月随 Claude Code 发布。 
+
+Anthropic Labs 联合负责人 Mike Krieger 在一个周末把一个 Python 代码库迁移成了 16.5 万行 TypeScript。整个过程动用了数百个智能体、八个阶段关卡、三轮对抗性审查，以及最后一轮一致性检查——把每条命令的输出与 Python 原版逐一比对。 
+
+Claude Code 的新能力改变了这些被长期搁置项目的账本。以下是我们如今使用的六步流程，提炼自这些迁移项目的经验。
+
+核心洞见是：你不去修代码，**你去修产出这套代码的流程（循环）**。
+
+## 什么是 AI 代码迁移？
+
+AI 代码迁移是指用 AI 智能体把生产代码库移植到新语言或新框架。工程师不再逐文件手工翻译，而是编写迁移规则和验证循环；智能体随后不断翻译、编译、测试，直到新代码的行为与原版一致——把以年计的项目压缩到以周计。
+
+## **为什么迁移语言、何时迁移**
+
+在讲*怎么做*之前，值得先聊聊*何时做*和*为什么做*，因为围绕这类项目的假设已经变了。 
+
+团队发起迁移，是因为从最初构建到今天，技术格局变了：要么某个已知的权衡开始掣肘，要么出现了更好的路线，要么原有生态在萎缩。 
+
+比如，Jarred 当年选择 Zig，是因为它在 C 级性能之外还极为简洁，对于&quot;前 LLM 时代、在奥克兰狭小公寓里打算一年写完 Bun 的独立创始人&quot;来说非常理想。这种简洁附带着已知的取舍，[他在这里写到了](https://bun.com/blog/bun-in-rust#just-be-really-smart-and-don-t-make-mistakes)。 
+
+时间快进到 2026 年。Bun 的 CLI 月下载量已超过 1000 万，并被 Claude Code 大量使用。 
+
+就在上个季度，这些取舍还不足以让人下决心冻结路线图、为一个多季度的项目投入资源。语言迁移固然能带来更小、更快、更安全的系统，但没人愿意买单。
+
+软件工程师还得面对这类昔日巨石工程固有的职业风险：你可能要维护两套并行代码库几个季度甚至几年，而如果最终结果只做到 90% 的一致性，你手上的烂摊子比开工时还大。
+
+而现在，最坏的情况不过是删掉分支、重来一次。
+
+当然，仍然需要有说得通的业务理由。百万行级的迁移虽然不再像过去那样在四年项目周期里烧掉 300 万到 400 万美元的工程资源，但仍要花上几万到几十万美元甚至更多。例如，Bun 的迁移消耗了 59 亿未缓存输入 token 和 6.9 亿输出 token——按 API 价格约合 16.5 万美元。Mike 迁移的主体部分消耗了 2700 万 token。
+
+*Jarred 的百万行 PR。***不过，迁移的理由不再非得是生死攸关。**更新日志里一年的内存 bug 补丁，或者一个长期存在的瓶颈，现在就足以立项。
+
+编译步骤正是 Mike 项目的动因。他团队维护的内部工具以单一二进制文件的形式交付给用户。用 Python 工具链产出这个二进制，每个平台大约要 8 分钟，每次发布在构建矩阵上的总等待时间达 30 分钟。迁移之后，同样的编译只需约 2 秒，二进制启动速度快了 6 倍，团队还得以砍掉一条独立的部署管道。
+
+## **为什么 AI 改变了代码迁移的账本**
+
+Claude Fable 5 是我们最强的一般可用（GA）模型。Fable 和 Opus 4.8 尤其擅长用子智能体（subagent）去委派、指挥和验证并行工作流，并能为既定目标寻找多条路径。 
+
+大型代码迁移是这些先进模型格外有效的用武之地，原因如下：
+
+- **工作是可并行的。**任务可以拆到数千个独立单元（如文件和 crate）上执行，智能体可以同时开工，而不是一个等一个。
+- **上下文清晰而完备。**旧代码就是给模型的绝佳规格说明。它同时也是构建翻译智能体行动指南的核心参照。
+- **自带裁判。**很多大型代码库都带有测试套件，智能体可以用它来验证自己的工作。当验证标准客观时，智能体的表现最好，因为模型可以对着一个 ground truth 连续打磨几天，无需人来仲裁质量。
+- **待办队列自动生成。**编译器或测试一旦失败，失败项就成了智能体下一个要修的任务。
+- **要求一致性与边界情况处理。**整个流程的设计让漂移无处藏身：审查者引用规则来支撑每一条发现，于是违规不再是悄悄的偏离，而是队列里的一个任务项。而当智能体真的撞上一个边界情况，修复方案就会变成之后所有智能体都要遵守的规则。
+
+正如下文将看到的，Mike 和 Jarred 都在迁移过程的关键步骤用到了 Fable，尤其是**顾问模式**（advisory pattern）——用多个模型级别组合来优化 token 消耗。 
+
+## **大规模代码迁移的六步**
+
+*下面的流程已经泛化，以便适用于多种语言和场景。更多细节可以读 *[*Jarred 的博客*](https://bun.com/blog/bun-in-rust)*。你也可以拿到*[* Migration starter kit。*](https://github.com/anthropics/code-migration-kit-with-claude-code)* 说明：starter kit 是对上述流程的泛化模板，并不是这两次具体移植当时跑的那套。*
+
+### **先决条件**
+
+开始迁移项目之前，先决条件是手头有一个够强的裁判，否则你既没有退出条件，也没有成功度量。 
+
+这个裁判必须能在同等条件下评估原代码和目标代码。用原语言写的测试套件，常常依赖目标代码里不会存在的内部函数。 
+
+要建这个裁判：
+
+- **给现有测试分类**。用 Claude 识别哪些测试可以表达成外部调用，哪些依赖不会被移植的内部实现。 
+- **改写成可移植断言。**把面向外部的测试转成能同时对着原版和移植版跑的断言。用对抗性智能体核验改写后的测试没有把断言变弱。
+- **校验裁判**。先对着原代码跑，确认它通过。再对着故意弄坏的代码跑，确认它失败——抓不住破坏的裁判，就不是裁判。
+
+Jarred 有一套用第三种语言（TypeScript）写的大型测试套件，但大多数项目不会有这种条件。在 Python 到 TypeScript 的移植里，Mike 做了一个由七个真实场景组成的一致性 harness，并把任何行为变化都当成必须修的 bug。 
+
+进入各阶段之前，这张图可能帮你跟上节奏。它大体沿用 Jarred 的方法，每个阶段都有审查和关卡。Mike 用了类似的整体结构和类似的循环工作流，但他把整次迁移从头跑到尾，再根据结果改规则和工作流，然后重跑——每次都丢掉产出，直到第三次。
+
+### **第 1 步：编写规则手册、依赖图和缺口清单**
+
+这一阶段我们在打迁移的地基：一份需要重构而不是只做翻译的位置清单、一本如何翻译代码的规则手册，以及一张用来给迁移实现工作流排序的依赖图。 
+
+顺序很重要：规则手册必须先于缺口清单。缺口清单由规则手册的默认值覆盖不到的地方定义，两者会在一次联合审计里一起被检验。
+
+#### **规则手册**
+
+[规则手册](https://github.com/anthropics/code-migration-kit-with-claude-code/blob/main/templates/RULEBOOK.md)的具体形态，取决于你一开始必须做的关键架构决策。其中最重要的是：新代码是沿用同样的结构，还是彻底重新设计。 
+
+如果是前者（Jarred），规则手册主要会是查找表，在语言之间翻译类型和惯用法，并把更难翻译的部分指向缺口清单。如果是后者（Mike），它会是一份设计文档。 
+
+Jarred 通过和 Claude 对话来写规则手册，为每个含糊地带形成一条政策。他还用了八个子智能体，专门按他自己的直觉审查八类常见失败模式。
+
+#### **依赖图**
+
+你需要理解文件依赖，才能有效拆出并行迁移的工作流，知道哪些文件先迁、哪些文件放进同一批次。有些语言和代码库有显式清单，这会很容易；但对遗留代码库，以及 C/C++ 和 Python 这类流行语言，这些依赖需要被发现并画出来。
+
+Claude Code 可以派出智能体去创建并运行一个确定性脚本，产出这张图。[migration kit 里的提示词](https://github.com/anthropics/code-migration-kit-with-claude-code/blob/main/prompts/01-dependency-map.md)用一个工作流来创建审查-修复循环。 *说明：starter kit 是对本文流程的泛化模板，并不是这两次具体移植当时跑的那套。*
+
+#### **缺口清单与怀疑派审查者**
+
+新语言有旧语言必须被满足的不同要求。Zig 到 Rust 的差别是手动内存管理（C 和 C++ 也是同样的工作方式）。例如：
+
+Zig
+
+`fn readConfig(allocator: std.mem.Allocator) ![]u8 {
+    const buf = try allocator.alloc(u8, 1024);
+    // ...fill buf...
+    return buf; // caller must free this — but only the comment says so
+}
+
+// A caller that forgets 'defer allocator.free(buf)' still compiles — the leak only surfaces at runtime.`Rust
+
+`fn read_config() -&gt; Vec&lt;u8&gt; { 
+let buf = vec![0u8; 1024]; 
+// ...fill buf... 
+buf // ownership moves to the caller; memory is freed automatically 
+} 
+// Use it after it's moved? Free it twice? Neither compiles. 
+// Forget to free it? There's no free call to forget — drop is automatic.`Python 到 TypeScript 的缺口是接口和契约。Python 不要求声明它接受什么形状的对象、返回什么，TypeScript 要求。例如：
+
+Python
+
+`def register(handler):
+    handler.setup()
+    return handler.run({&quot;retries&quot;: 3})
+
+# Any object with .setup() and .run() works here. Which objects actually get passed in? Read the whole codebase to find out.
+`TypeScript
+
+`interface RunResult { ok: boolean } 
+
+interface Handler 
+{ setup(): void; 
+run(opts: { retries: number }): Promise&lt;RunResult&gt;; 
+} 
+
+function register(handler: Handler): Promise&lt;RunResult&gt; { 
+handler.setup(); 
+return handler.run({ retries: 3 }); } 
+
+// The contract must be written down before this compiles`Jarred 和 Mike 都做了缺口清单文件，把这类隐含知识记下来。Jarred 事先盘点这些缺口，也就是我们这里的做法；Mike 选择先翻译，再通过事后审计做缺口清单。你可能两边都得做。 
+
+可以看这份用来[创建缺口清单文件的 Claude Code 提示词示例](https://github.com/anthropics/code-migration-kit-with-claude-code/blob/main/prompts/02-gap-inventory.md)。
+
+### **第 2 步：把规则压测一遍 **
+
+这一步是一次迷你迁移，相当于更大迁移的「试航」。 
+
+在这一步，Jarred 用一个智能体按规则手册翻译三个文件，用一个智能体「像资深 Rust 工程师那样」翻译三个文件，再用一个智能体根据 diff 写出新的翻译规则。这个阶段他抓住了两个关键问题，如果扩散到全部 1,448 个文件，会造成大量麻烦。
+
+提示词可以类似[这样](https://github.com/anthropics/code-migration-kit-with-claude-code/blob/main/prompts/03-stress-test.md)。
+
+这类压测**只对保持结构的迁移有效**，因为同一文件的两次翻译可以逐行比较。  如果你的规则手册是重新设计——像 Mike 那样——对等的测试是用对抗性审查者直接攻击设计文档，再用一次可丢弃的端到端运行来验证它。
+
+无论如何，翻译出来的文件都扔掉。目标是打磨规则，不是做增量进度。
+
+### **第 3 步：翻译全部 **
+
+接下来的步骤，你跑的是同一套多智能体循环架构：实现、审查、修复。 
+
+你可以把实现工作卸给更小的模型，把审查留给更大的模型。例如，Mike 在主迁移里铺开 12 个子智能体时用了 Claude Sonnet。 
+
+工作队列应当是机械的。一段批处理脚本通过检查翻译后的文件是否已在磁盘上，来决定什么算做完，再把待处理文件切成批次交给实现智能体。因为队列每次都从磁盘重建，迁移从构造上就是可恢复的。
+
+这个阶段，智能体对自己做多少工作可能过于谨慎。修法可以是一条直白、加重语气的提示指令，并说明编译器会在下一步抓住错误。 
+
+翻译者没法有把握执行的任何东西，都用 // TODO(port): &lt;reason&gt; 标出来，留到第 4 步处理。从这里开始，待办清单会自己写出来：编译器枚举错误，冒烟测试找出崩溃，套件报告失败。
+
+两个对抗性审查者在彼此隔离的上下文里评估实现者的工作，审查者之间的分歧交给第三个智能体。当审查者在多个文件里反复抓住同一类错误时，修的不是单个文件。你往规则手册里加一句话，并重新生成受影响的批次。规则手册在这一步会持续变长；代码从不被手工打补丁去迁就它。
+
+这一步要注意的一个重要设计决策是编译器放在哪里。Mike 在每个循环里都跑 TypeScript 编译器，因为它几秒就能检查一个单元。Jarred 完全禁止循环里出现编译器，把它推迟到下一步，因为 cargo 要花几分钟。
+
+到这一步，重活已经做完大半，[提示词也开始变短。](https://github.com/anthropics/code-migration-kit-with-claude-code/blob/main/prompts/04-translation-kickoff.md)
+
+### **第 4、5、6 步：编译、运行，并对齐行为**
+
+这三步共用同一套循环架构，需要的人工判断也越来越少，所以我们放在一起讲。
+
+例如，**第 4 步**常常会溶进第 3 步，这取决于语言和迁移规模。 
+
+取决于编译步骤的规模和难度，智能体可能根本不跑这一步。Jarred 用一个编排脚本在整个工作区调用一次编译器。然后「修复智能体」并行扫错误列表，并做对抗性审查。构建再跑一遍，如此循环。 
+
+审一眼错误列表，有助于抓住可能需要调整的系统性问题。例如，Jarred 在修掉 Zig 惰性编译能容忍的循环导入之后，撞上了数千个 Rust 模块错误。他通过编码一段逻辑来分类哪些依赖该删、该挪、该重构边界，从而修好了这个循环。 
+
+**第 5 步**也有类似编译器错误列表的机械事实来源：冒烟测试里的崩溃。同样，循环的修法是把问题归成类，这里按根因分组，再交给对抗性子智能体审查。 
+
+**第 6 步**也是这个故事的结尾：比较两套代码库上的程序行为。
+
+文件现在已经翻译、编译、冒烟测试过了。接下来把它们分片，并对着它们跑（先决条件阶段准备好的）测试套件。用「修复智能体」对照两套代码库审查失败的测试。对抗性审查者检查它们的修复。
+
+这个循环的下一阶段是 [build daemon](https://github.com/anthropics/code-migration-kit-with-claude-code/blob/main/scripts/build_daemon.sh)，它是唯一被允许重建二进制的进程。修复者写补丁；daemon 把它们打成批，重建一次，重跑受影响的测试，再把结果喂回去。这把最贵的操作串行化了，而不是让多个智能体各自触发。
+
+当同一失败在许多测试里重复出现时，修复往上游走：你修改产出这个 bug 的那条规则，并只重新生成这条规则碰过的文件。
+
+Mike 的做法在这里很重要，因为很多开发者不会有一套已经建好或已经移植的测试套件。Mike 让 Claude 写了一个小脚本，对着新移植版和原来的 Python 代码库跑 7 个真实场景，并 diff 结果。每个失败场景都有自己的修复智能体，循环一直跑到七个都通过。
+
+然后他又往前走了一步。Claude 设计了自己的端到端测试套件，并连续四个晚上自主跑、修坏掉的部分、再跑。结果，它抓住了任何场景清单都预料不到的那些纸割伤。
+
+教训是：缺少测试套件并不会挡住这一步。如果你继承不到裁判，就让 Claude 建一个。无论哪种，你的原代码库都是 ground truth。
+
+## **代码迁移最佳实践**
+
+每一次运行都会教给我们上一次没有的东西。可以相当有把握地说，你下一次迁移也会教给你这份指南写不到的东西。但有几条实践在每个项目里都站得住：
+
+- **别盲目照着这份指南走。**每一次迁移都不同。把它当作起点，在投入之前先和 Claude 一起规划你这次具体的迁移。
+- **别盯着单个失败。**单个失败是循环的工作。修复智能体把它们烧掉。你的注意力应该放在模式上。 
+- **让审查对抗化，让验证机械化。**对抗性审查让任务能跑得更久，也常常值得那份 token 消耗。让脚本——编译器、diff、测试套件——当裁判。 
+- **别处处都用最大的模型。**token 花费集中在循环里，所以要刻意设计它们。较小的模型很适合高通量的实现铺开；把最大的模型留给审查者，以及任何会写出其他智能体要遵守的规则的环节。
+- **把人工时间压到前面。**规则手册和压测最耗时间。之后大多是队列在往下烧。 
+- **让工作队列机械且可恢复。**做完应当意味着「输出文件已经在磁盘上」。 
+
+## **审循环结果，而不是审代码**
+
+Jarred 的 Bun 迁移现在已经在生产里跑，尽管每次迁移都有取舍。例如，大约 4% 的 Rust 代码坐在 “unsafe” 块里，大多是 C/C++ 边界上的单行指针操作。
+
+但新代码库可以量得出地更好。团队工具能检测到的每一个内存泄漏都已修好：一个重复构建 2,000 次的基准，内存从 6,745 MB 降到 609。Linux 和 Windows 上的二进制小了 19%。跨语言优化还让 HTTP 服务以及 next build、tsc 这类真实工作负载快了 2–5%。 
+
+想想是不是时候重新算一遍你那份被长期搁置的迁移账。挑出你一直在容忍的那个代码库，问问 Claude 对它来说迁移流程会是什么样。
+
+***相关***
+
+- [*Migration starter kit*](https://github.com/anthropics/code-migration-kit-with-claude-code)* 说明：starter kit 是对上述流程的泛化模板，并不是这两次具体移植当时跑的那套。*
+- [*Code-modernization plugin*](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/code-modernization)* — 面向遗留现代化和框架升级，而不是语言移植*
+- [*Claude Code 中的 dynamic workflows*](https://claude.com/blog/introducing-dynamic-workflows-in-claude-code)
+
+‍</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Claude Code</span>
-            <span class="article-date">July 16, 2026</span>
-            
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-sky);">
+            <img class="hero-illo-img" src="/assets/illustrations/ai-code-migration.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">Anthropic 如何用 Claude Code 执行大规模代码迁移</h1>
-          <a href="/posts/ai-code-migration/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>代码迁移——把生产代码库移植到一门新语言的项目——直到不久前还是以年计的工程。</p><p>就在上个月，Anthropic 的几位开发者用 Claude Fable 5、Claude Opus 4.8 和<a href="https://claude.com/blog/introducing-dynamic-workflows-in-claude-code">dynamic workflows</a>，完成了 10 个代码包的迁移，每个包从几万行到几十万行代码不等。本文将介绍其中两个案例，以及从这些项目中总结出的最佳实践。</p><p>Bun 联合创始人、Anthropic 技术团队成员 Jarred Sumner 使用 Claude Code 把 <a href="https://bun.com/blog/bun-in-rust">Bun 从 Zig 迁移到了 Rust</a>。不到两周产出了上百万行代码，合并前 Bun 现有测试套件在 CI 中 100% 通过。合并后暴露出 19 个回归，均已修复。Rust 版本已于六月随 Claude Code 发布。&nbsp;</p><p>Anthropic Labs 联合负责人 Mike Krieger 在一个周末把一个 Python 代码库迁移成了 16.5 万行 TypeScript。整个过程动用了数百个智能体、八个阶段关卡、三轮对抗性审查，以及最后一轮一致性检查——把每条命令的输出与 Python 原版逐一比对。&nbsp;</p><p>Claude Code 的新能力改变了这些被长期搁置项目的账本。以下是我们如今使用的六步流程，提炼自这些迁移项目的经验。</p><p>核心洞见是：你不去修代码，<strong>你去修产出这套代码的流程（循环）</strong>。</p><h2>什么是 AI 代码迁移？</h2><p>AI 代码迁移是指用 AI 智能体把生产代码库移植到新语言或新框架。工程师不再逐文件手工翻译，而是编写迁移规则和验证循环；智能体随后不断翻译、编译、测试，直到新代码的行为与原版一致——把以年计的项目压缩到以周计。</p><h2><strong>为什么迁移语言、何时迁移</strong></h2><p>在讲<em>怎么做</em>之前，值得先聊聊<em>何时做</em>和<em>为什么做</em>，因为围绕这类项目的假设已经变了。&nbsp;</p><p>团队发起迁移，是因为从最初构建到今天，技术格局变了：要么某个已知的权衡开始掣肘，要么出现了更好的路线，要么原有生态在萎缩。&nbsp;</p><p>比如，Jarred 当年选择 Zig，是因为它在 C 级性能之外还极为简洁，对于"前 LLM 时代、在奥克兰狭小公寓里打算一年写完 Bun 的独立创始人"来说非常理想。这种简洁附带着已知的取舍，<a href="https://bun.com/blog/bun-in-rust#just-be-really-smart-and-don-t-make-mistakes">他在这里写到了</a>。&nbsp;</p><p>时间快进到 2026 年。Bun 的 CLI 月下载量已超过 1000 万，并被 Claude Code 大量使用。&nbsp;</p><p>就在上个季度，这些取舍还不足以让人下决心冻结路线图、为一个多季度的项目投入资源。语言迁移固然能带来更小、更快、更安全的系统，但没人愿意买单。</p><p>软件工程师还得面对这类昔日巨石工程固有的职业风险：你可能要维护两套并行代码库几个季度甚至几年，而如果最终结果只做到 90% 的一致性，你手上的烂摊子比开工时还大。</p><p>而现在，最坏的情况不过是删掉分支、重来一次。</p><p>当然，仍然需要有说得通的业务理由。百万行级的迁移虽然不再像过去那样在四年项目周期里烧掉 300 万到 400 万美元的工程资源，但仍要花上几万到几十万美元甚至更多。例如，Bun 的迁移消耗了 59 亿未缓存输入 token 和 6.9 亿输出 token——按 API 价格约合 16.5 万美元。Mike 迁移的主体部分消耗了 2700 万 token。</p><figure style="max-width:875pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a58f8844b99cec5d277a9ee_27e78c5a.png" loading="lazy"></div><figcaption><em>Jarred 的百万行 PR。</em></figcaption></figure><p><strong>不过，迁移的理由不再非得是生死攸关。</strong>更新日志里一年的内存 bug 补丁，或者一个长期存在的瓶颈，现在就足以立项。</p><p>编译步骤正是 Mike 项目的动因。他团队维护的内部工具以单一二进制文件的形式交付给用户。用 Python 工具链产出这个二进制，每个平台大约要 8 分钟，每次发布在构建矩阵上的总等待时间达 30 分钟。迁移之后，同样的编译只需约 2 秒，二进制启动速度快了 6 倍，团队还得以砍掉一条独立的部署管道。</p><h2><strong>为什么 AI 改变了代码迁移的账本</strong></h2><p>Claude Fable 5 是我们最强的一般可用（GA）模型。Fable 和 Opus 4.8 尤其擅长用子智能体（subagent）去委派、指挥和验证并行工作流，并能为既定目标寻找多条路径。&nbsp;</p><p>大型代码迁移是这些先进模型格外有效的用武之地，原因如下：</p><ul role="list"><li><strong>工作是可并行的。</strong>任务可以拆到数千个独立单元（如文件和 crate）上执行，智能体可以同时开工，而不是一个等一个。</li><li><strong>上下文清晰而完备。</strong>旧代码就是给模型的绝佳规格说明。它同时也是构建翻译智能体行动指南的核心参照。</li><li><strong>自带裁判。</strong>很多大型代码库都带有测试套件，智能体可以用它来验证自己的工作。当验证标准客观时，智能体的表现最好，因为模型可以对着一个 ground truth 连续打磨几天，无需人来仲裁质量。</li><li><strong>待办队列自动生成。</strong>编译器或测试一旦失败，失败项就成了智能体下一个要修的任务。</li><li><strong>要求一致性与边界情况处理。</strong>整个流程的设计让漂移无处藏身：审查者引用规则来支撑每一条发现，于是违规不再是悄悄的偏离，而是队列里的一个任务项。而当智能体真的撞上一个边界情况，修复方案就会变成之后所有智能体都要遵守的规则。</li></ul><p>正如下文将看到的，Mike 和 Jarred 都在迁移过程的关键步骤用到了 Fable，尤其是<strong>顾问模式</strong>（advisory pattern）——用多个模型级别组合来优化 token 消耗。</p></div>
+            <h1 class="article-title u-text-style-h1">Anthropic 如何用 Claude Code 执行大规模代码迁移</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>用 AI 智能体跑大规模代码迁移的分步指南，包括 Bun 百万行 Zig 到 Rust 的移植。</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <div class="hero-detail-value-stack"><a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a><div class="hero-detail-value u-text-style-body-3">Enterprise AI</div></div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/product/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">July 16, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/ai-code-migration/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/ai-code-migration" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>代码迁移——把生产代码库移植到一门新语言的项目——直到不久前还是以年计的工程。</p><p>就在上个月，Anthropic 的几位开发者用 Claude Fable 5、Claude Opus 4.8 和<a href="https://claude.com/blog/introducing-dynamic-workflows-in-claude-code">dynamic workflows</a>，完成了 10 个代码包的迁移，每个包从几万行到几十万行代码不等。本文将介绍其中两个案例，以及从这些项目中总结出的最佳实践。</p><p>Bun 联合创始人、Anthropic 技术团队成员 Jarred Sumner 使用 Claude Code 把 <a href="https://bun.com/blog/bun-in-rust">Bun 从 Zig 迁移到了 Rust</a>。不到两周产出了上百万行代码，合并前 Bun 现有测试套件在 CI 中 100% 通过。合并后暴露出 19 个回归，均已修复。Rust 版本已于六月随 Claude Code 发布。&nbsp;</p><p>Anthropic Labs 联合负责人 Mike Krieger 在一个周末把一个 Python 代码库迁移成了 16.5 万行 TypeScript。整个过程动用了数百个智能体、八个阶段关卡、三轮对抗性审查，以及最后一轮一致性检查——把每条命令的输出与 Python 原版逐一比对。&nbsp;</p><p>Claude Code 的新能力改变了这些被长期搁置项目的账本。以下是我们如今使用的六步流程，提炼自这些迁移项目的经验。</p><p>核心洞见是：你不去修代码，<strong>你去修产出这套代码的流程（循环）</strong>。</p><h2>什么是 AI 代码迁移？</h2><p>AI 代码迁移是指用 AI 智能体把生产代码库移植到新语言或新框架。工程师不再逐文件手工翻译，而是编写迁移规则和验证循环；智能体随后不断翻译、编译、测试，直到新代码的行为与原版一致——把以年计的项目压缩到以周计。</p><h2><strong>为什么迁移语言、何时迁移</strong></h2><p>在讲<em>怎么做</em>之前，值得先聊聊<em>何时做</em>和<em>为什么做</em>，因为围绕这类项目的假设已经变了。&nbsp;</p><p>团队发起迁移，是因为从最初构建到今天，技术格局变了：要么某个已知的权衡开始掣肘，要么出现了更好的路线，要么原有生态在萎缩。&nbsp;</p><p>比如，Jarred 当年选择 Zig，是因为它在 C 级性能之外还极为简洁，对于"前 LLM 时代、在奥克兰狭小公寓里打算一年写完 Bun 的独立创始人"来说非常理想。这种简洁附带着已知的取舍，<a href="https://bun.com/blog/bun-in-rust#just-be-really-smart-and-don-t-make-mistakes">他在这里写到了</a>。&nbsp;</p><p>时间快进到 2026 年。Bun 的 CLI 月下载量已超过 1000 万，并被 Claude Code 大量使用。&nbsp;</p><p>就在上个季度，这些取舍还不足以让人下决心冻结路线图、为一个多季度的项目投入资源。语言迁移固然能带来更小、更快、更安全的系统，但没人愿意买单。</p><p>软件工程师还得面对这类昔日巨石工程固有的职业风险：你可能要维护两套并行代码库几个季度甚至几年，而如果最终结果只做到 90% 的一致性，你手上的烂摊子比开工时还大。</p><p>而现在，最坏的情况不过是删掉分支、重来一次。</p><p>当然，仍然需要有说得通的业务理由。百万行级的迁移虽然不再像过去那样在四年项目周期里烧掉 300 万到 400 万美元的工程资源，但仍要花上几万到几十万美元甚至更多。例如，Bun 的迁移消耗了 59 亿未缓存输入 token 和 6.9 亿输出 token——按 API 价格约合 16.5 万美元。Mike 迁移的主体部分消耗了 2700 万 token。</p><figure style="max-width:875pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a58f8844b99cec5d277a9ee_27e78c5a.png" loading="lazy"></div><figcaption><em>Jarred 的百万行 PR。</em></figcaption></figure><p><strong>不过，迁移的理由不再非得是生死攸关。</strong>更新日志里一年的内存 bug 补丁，或者一个长期存在的瓶颈，现在就足以立项。</p><p>编译步骤正是 Mike 项目的动因。他团队维护的内部工具以单一二进制文件的形式交付给用户。用 Python 工具链产出这个二进制，每个平台大约要 8 分钟，每次发布在构建矩阵上的总等待时间达 30 分钟。迁移之后，同样的编译只需约 2 秒，二进制启动速度快了 6 倍，团队还得以砍掉一条独立的部署管道。</p><h2><strong>为什么 AI 改变了代码迁移的账本</strong></h2><p>Claude Fable 5 是我们最强的一般可用（GA）模型。Fable 和 Opus 4.8 尤其擅长用子智能体（subagent）去委派、指挥和验证并行工作流，并能为既定目标寻找多条路径。&nbsp;</p><p>大型代码迁移是这些先进模型格外有效的用武之地，原因如下：</p><ul role="list"><li><strong>工作是可并行的。</strong>任务可以拆到数千个独立单元（如文件和 crate）上执行，智能体可以同时开工，而不是一个等一个。</li><li><strong>上下文清晰而完备。</strong>旧代码就是给模型的绝佳规格说明。它同时也是构建翻译智能体行动指南的核心参照。</li><li><strong>自带裁判。</strong>很多大型代码库都带有测试套件，智能体可以用它来验证自己的工作。当验证标准客观时，智能体的表现最好，因为模型可以对着一个 ground truth 连续打磨几天，无需人来仲裁质量。</li><li><strong>待办队列自动生成。</strong>编译器或测试一旦失败，失败项就成了智能体下一个要修的任务。</li><li><strong>要求一致性与边界情况处理。</strong>整个流程的设计让漂移无处藏身：审查者引用规则来支撑每一条发现，于是违规不再是悄悄的偏离，而是队列里的一个任务项。而当智能体真的撞上一个边界情况，修复方案就会变成之后所有智能体都要遵守的规则。</li></ul><p>正如下文将看到的，Mike 和 Jarred 都在迁移过程的关键步骤用到了 Fable，尤其是<strong>顾问模式</strong>（advisory pattern）——用多个模型级别组合来优化 token 消耗。 </p><h2><strong>大规模代码迁移的六步</strong></h2><p><em>下面的流程已经泛化，以便适用于多种语言和场景。更多细节可以读 </em><a href="https://bun.com/blog/bun-in-rust"><em>Jarred 的博客</em></a><em>。你也可以拿到</em><a href="https://github.com/anthropics/code-migration-kit-with-claude-code"><em> Migration starter kit。</em></a><em> 说明：starter kit 是对上述流程的泛化模板，并不是这两次具体移植当时跑的那套。</em></p><h3><strong>先决条件</strong></h3><p>开始迁移项目之前，先决条件是手头有一个够强的裁判，否则你既没有退出条件，也没有成功度量。&nbsp;</p><p>这个裁判必须能在同等条件下评估原代码和目标代码。用原语言写的测试套件，常常依赖目标代码里不会存在的内部函数。&nbsp;</p><p>要建这个裁判：</p><ul role="list"><li><strong>给现有测试分类</strong>。用 Claude 识别哪些测试可以表达成外部调用，哪些依赖不会被移植的内部实现。&nbsp;</li><li><strong>改写成可移植断言。</strong>把面向外部的测试转成能同时对着原版和移植版跑的断言。用对抗性智能体核验改写后的测试没有把断言变弱。</li><li><strong>校验裁判</strong>。先对着原代码跑，确认它通过。再对着故意弄坏的代码跑，确认它失败——抓不住破坏的裁判，就不是裁判。</li></ul><p>Jarred 有一套用第三种语言（TypeScript）写的大型测试套件，但大多数项目不会有这种条件。在 Python 到 TypeScript 的移植里，Mike 做了一个由七个真实场景组成的一致性 harness，并把任何行为变化都当成必须修的 bug。&nbsp;</p><p>进入各阶段之前，这张图可能帮你跟上节奏。它大体沿用 Jarred 的方法，每个阶段都有审查和关卡。Mike 用了类似的整体结构和类似的循环工作流，但他把整次迁移从头跑到尾，再根据结果改规则和工作流，然后重跑——每次都丢掉产出，直到第三次。</p><figure style="max-width:1109pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a58f8854b99cec5d277aa48_e7dd47de.png" loading="lazy"></div></figure><h3><strong>第 1 步：编写规则手册、依赖图和缺口清单</strong></h3><figure style="max-width:733pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a58fa78da7794274460319e_Code-migration-step1.jpeg" loading="lazy"></div></figure><p>这一阶段我们在打迁移的地基：一份需要重构而不是只做翻译的位置清单、一本如何翻译代码的规则手册，以及一张用来给迁移实现工作流排序的依赖图。&nbsp;</p><p>顺序很重要：规则手册必须先于缺口清单。缺口清单由规则手册的默认值覆盖不到的地方定义，两者会在一次联合审计里一起被检验。</p><h4><strong>规则手册</strong></h4><p><a href="https://github.com/anthropics/code-migration-kit-with-claude-code/blob/main/templates/RULEBOOK.md">规则手册</a>的具体形态，取决于你一开始必须做的关键架构决策。其中最重要的是：新代码是沿用同样的结构，还是彻底重新设计。&nbsp;</p><p>如果是前者（Jarred），规则手册主要会是查找表，在语言之间翻译类型和惯用法，并把更难翻译的部分指向缺口清单。如果是后者（Mike），它会是一份设计文档。&nbsp;</p><p>Jarred 通过和 Claude 对话来写规则手册，为每个含糊地带形成一条政策。他还用了八个子智能体，专门按他自己的直觉审查八类常见失败模式。</p><h4><strong>依赖图</strong></h4><p>你需要理解文件依赖，才能有效拆出并行迁移的工作流，知道哪些文件先迁、哪些文件放进同一批次。有些语言和代码库有显式清单，这会很容易；但对遗留代码库，以及 C/C++ 和 Python 这类流行语言，这些依赖需要被发现并画出来。</p><p>Claude Code 可以派出智能体去创建并运行一个确定性脚本，产出这张图。<a href="https://github.com/anthropics/code-migration-kit-with-claude-code/blob/main/prompts/01-dependency-map.md">migration kit 里的提示词</a>用一个工作流来创建审查-修复循环。&nbsp;<em>说明：starter kit 是对本文流程的泛化模板，并不是这两次具体移植当时跑的那套。</em></p><h4><strong>缺口清单与怀疑派审查者</strong></h4><p>新语言有旧语言必须被满足的不同要求。Zig 到 Rust 的差别是手动内存管理（C 和 C++ 也是同样的工作方式）。例如：</p><p>Zig</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-plaintext" style="white-space:pre-wrap"><span><span>fn readConfig(allocator: std.mem.Allocator) ![]u8 {
+</span></span><span>    const buf = try allocator.alloc(u8, 1024);
+</span><span>    // ...fill buf...
+</span><span>    return buf; // caller must free this — but only the comment says so
+</span><span>}
+</span><span>
+</span><span>// A caller that forgets 'defer allocator.free(buf)' still compiles — the leak only surfaces at runtime.</span></code></pre><p>Rust</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-rust" style="white-space:pre-wrap"><span><span class="hljs-function" style="color:#dcc6e0">fn</span><span class="hljs-function"> </span><span class="hljs-function" style="color:#00e0e0">read_config</span><span>() -&gt; </span><span style="color:#f5ab35">Vec</span><span>&lt;</span><span style="color:#f5ab35">u8</span><span>&gt; { 
+</span></span><span><span></span><span style="color:#dcc6e0">let</span><span> buf = </span><span style="color:#f5ab35">vec!</span><span>[</span><span style="color:#f5ab35">0u8</span><span>; </span><span style="color:#f5ab35">1024</span><span>]; 
+</span></span><span><span></span><span style="color:#d4d0ab">// ...fill buf... </span><span>
+</span></span><span><span>buf </span><span style="color:#d4d0ab">// ownership moves to the caller; memory is freed automatically </span><span>
+</span></span><span>} 
+</span><span><span></span><span style="color:#d4d0ab">// Use it after it's moved? Free it twice? Neither compiles. </span><span>
+</span></span><span><span></span><span style="color:#d4d0ab">// Forget to free it? There's no free call to forget — drop is automatic.</span></span></code></pre><p>Python 到 TypeScript 的缺口是接口和契约。Python 不要求声明它接受什么形状的对象、返回什么，TypeScript 要求。例如：</p><p>Python</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-python" style="white-space:pre-wrap"><span><span class="hljs-function" style="color:#dcc6e0">def</span><span class="hljs-function"> </span><span class="hljs-function" style="color:#00e0e0">register</span><span class="hljs-function">(</span><span class="hljs-function" style="color:#f5ab35">handler</span><span class="hljs-function">):</span><span>
+</span></span><span>    handler.setup()
+</span><span><span>    </span><span style="color:#dcc6e0">return</span><span> handler.run({</span><span style="color:#abe338">"retries"</span><span>: </span><span style="color:#f5ab35">3</span><span>})
+</span></span><span>
+</span><span><span></span><span style="color:#d4d0ab"># Any object with .setup() and .run() works here. Which objects actually get passed in? Read the whole codebase to find out.</span><span>
+</span></span><span></span></code></pre><p>TypeScript</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-typescript" style="white-space:pre-wrap"><span><span style="color:#dcc6e0">interface</span><span> RunResult { ok: </span><span style="color:#f5ab35">boolean</span><span> } 
+</span></span><span>
+</span><span><span></span><span style="color:#dcc6e0">interface</span><span> Handler 
+</span></span><span><span>{ setup(): </span><span style="color:#f5ab35">void</span><span>; 
+</span></span><span><span>run(opts: { </span><span class="hljs-attr">retries</span><span>: </span><span style="color:#f5ab35">number</span><span> }): </span><span style="color:#f5ab35">Promise</span><span>&lt;RunResult&gt;; 
+</span></span><span>} 
+</span><span>
+</span><span><span></span><span class="hljs-function" style="color:#dcc6e0">function</span><span class="hljs-function"> </span><span class="hljs-function" style="color:#00e0e0">register</span><span class="hljs-function">(</span><span class="hljs-function" style="color:#f5ab35">handler: Handler</span><span class="hljs-function">): </span><span class="hljs-function" style="color:#00e0e0">Promise</span><span class="hljs-function">&lt;</span><span class="hljs-function" style="color:#00e0e0">RunResult</span><span class="hljs-function">&gt; </span><span>{ 
+</span></span><span>handler.setup(); 
+</span><span><span></span><span style="color:#dcc6e0">return</span><span> handler.run({ </span><span class="hljs-attr">retries</span><span>: </span><span style="color:#f5ab35">3</span><span> }); } 
+</span></span><span>
+</span><span><span></span><span style="color:#d4d0ab">// The contract must be written down before this compiles</span></span></code></pre><p>Jarred 和 Mike 都做了缺口清单文件，把这类隐含知识记下来。Jarred 事先盘点这些缺口，也就是我们这里的做法；Mike 选择先翻译，再通过事后审计做缺口清单。你可能两边都得做。&nbsp;</p><p>可以看这份用来<a href="https://github.com/anthropics/code-migration-kit-with-claude-code/blob/main/prompts/02-gap-inventory.md">创建缺口清单文件的 Claude Code 提示词示例</a>。</p><h3><strong>第 2 步：把规则压测一遍&nbsp;</strong></h3><figure style="max-width:744pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a58fbe31db98b8b59d39ba8_MIgration-step2.jpeg" loading="lazy"></div></figure><p>这一步是一次迷你迁移，相当于更大迁移的「试航」。&nbsp;</p><p>在这一步，Jarred 用一个智能体按规则手册翻译三个文件，用一个智能体「像资深 Rust 工程师那样」翻译三个文件，再用一个智能体根据 diff 写出新的翻译规则。这个阶段他抓住了两个关键问题，如果扩散到全部 1,448 个文件，会造成大量麻烦。</p><p>提示词可以类似<a href="https://github.com/anthropics/code-migration-kit-with-claude-code/blob/main/prompts/03-stress-test.md">这样</a>。</p><p>这类压测<strong>只对保持结构的迁移有效</strong>，因为同一文件的两次翻译可以逐行比较。&nbsp; 如果你的规则手册是重新设计——像 Mike 那样——对等的测试是用对抗性审查者直接攻击设计文档，再用一次可丢弃的端到端运行来验证它。</p><p>无论如何，翻译出来的文件都扔掉。目标是打磨规则，不是做增量进度。</p><h3><strong>第 3 步：翻译全部&nbsp;</strong></h3><figure style="max-width:751pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a58fd9c8899de91189a89e0_ai-migation-step4-5-6.jpeg" loading="lazy"></div></figure><p>接下来的步骤，你跑的是同一套多智能体循环架构：实现、审查、修复。&nbsp;</p><p>你可以把实现工作卸给更小的模型，把审查留给更大的模型。例如，Mike 在主迁移里铺开 12 个子智能体时用了 Claude Sonnet。&nbsp;</p><p>工作队列应当是机械的。一段批处理脚本通过检查翻译后的文件是否已在磁盘上，来决定什么算做完，再把待处理文件切成批次交给实现智能体。因为队列每次都从磁盘重建，迁移从构造上就是可恢复的。</p><p>这个阶段，智能体对自己做多少工作可能过于谨慎。修法可以是一条直白、加重语气的提示指令，并说明编译器会在下一步抓住错误。 </p><p>翻译者没法有把握执行的任何东西，都用 // TODO(port): &lt;reason&gt; 标出来，留到第 4 步处理。从这里开始，待办清单会自己写出来：编译器枚举错误，冒烟测试找出崩溃，套件报告失败。</p><p>两个对抗性审查者在彼此隔离的上下文里评估实现者的工作，审查者之间的分歧交给第三个智能体。当审查者在多个文件里反复抓住同一类错误时，修的不是单个文件。你往规则手册里加一句话，并重新生成受影响的批次。规则手册在这一步会持续变长；代码从不被手工打补丁去迁就它。</p><p>这一步要注意的一个重要设计决策是编译器放在哪里。Mike 在每个循环里都跑 TypeScript 编译器，因为它几秒就能检查一个单元。Jarred 完全禁止循环里出现编译器，把它推迟到下一步，因为 cargo 要花几分钟。</p><p>到这一步，重活已经做完大半，<a href="https://github.com/anthropics/code-migration-kit-with-claude-code/blob/main/prompts/04-translation-kickoff.md">提示词也开始变短。</a></p><h3><strong>第 4、5、6 步：编译、运行，并对齐行为</strong></h3><figure style="max-width:746pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a58fd76153c143199b57e1b_ai-migration-step3.jpeg" loading="lazy"></div></figure><p>这三步共用同一套循环架构，需要的人工判断也越来越少，所以我们放在一起讲。</p><p>例如，<strong>第 4 步</strong>常常会溶进第 3 步，这取决于语言和迁移规模。&nbsp;</p><p>取决于编译步骤的规模和难度，智能体可能根本不跑这一步。Jarred 用一个编排脚本在整个工作区调用一次编译器。然后「修复智能体」并行扫错误列表，并做对抗性审查。构建再跑一遍，如此循环。&nbsp;</p><p>审一眼错误列表，有助于抓住可能需要调整的系统性问题。例如，Jarred 在修掉 Zig 惰性编译能容忍的循环导入之后，撞上了数千个 Rust 模块错误。他通过编码一段逻辑来分类哪些依赖该删、该挪、该重构边界，从而修好了这个循环。&nbsp;</p><p><strong>第 5 步</strong>也有类似编译器错误列表的机械事实来源：冒烟测试里的崩溃。同样，循环的修法是把问题归成类，这里按根因分组，再交给对抗性子智能体审查。&nbsp;</p><p><strong>第 6 步</strong>也是这个故事的结尾：比较两套代码库上的程序行为。</p><p>文件现在已经翻译、编译、冒烟测试过了。接下来把它们分片，并对着它们跑（先决条件阶段准备好的）测试套件。用「修复智能体」对照两套代码库审查失败的测试。对抗性审查者检查它们的修复。</p><p>这个循环的下一阶段是 <a href="https://github.com/anthropics/code-migration-kit-with-claude-code/blob/main/scripts/build_daemon.sh">build daemon</a>，它是唯一被允许重建二进制的进程。修复者写补丁；daemon 把它们打成批，重建一次，重跑受影响的测试，再把结果喂回去。这把最贵的操作串行化了，而不是让多个智能体各自触发。</p><p>当同一失败在许多测试里重复出现时，修复往上游走：你修改产出这个 bug 的那条规则，并只重新生成这条规则碰过的文件。</p><p>Mike 的做法在这里很重要，因为很多开发者不会有一套已经建好或已经移植的测试套件。Mike 让 Claude 写了一个小脚本，对着新移植版和原来的 Python 代码库跑 7 个真实场景，并 diff 结果。每个失败场景都有自己的修复智能体，循环一直跑到七个都通过。</p><p>然后他又往前走了一步。Claude 设计了自己的端到端测试套件，并连续四个晚上自主跑、修坏掉的部分、再跑。结果，它抓住了任何场景清单都预料不到的那些纸割伤。</p><p>教训是：缺少测试套件并不会挡住这一步。如果你继承不到裁判，就让 Claude 建一个。无论哪种，你的原代码库都是 ground truth。</p><h2><strong>代码迁移最佳实践</strong></h2><p>每一次运行都会教给我们上一次没有的东西。可以相当有把握地说，你下一次迁移也会教给你这份指南写不到的东西。但有几条实践在每个项目里都站得住：</p><ul role="list"><li><strong>别盲目照着这份指南走。</strong>每一次迁移都不同。把它当作起点，在投入之前先和 Claude 一起规划你这次具体的迁移。</li><li><strong>别盯着单个失败。</strong>单个失败是循环的工作。修复智能体把它们烧掉。你的注意力应该放在模式上。&nbsp;</li><li><strong>让审查对抗化，让验证机械化。</strong>对抗性审查让任务能跑得更久，也常常值得那份 token 消耗。让脚本——编译器、diff、测试套件——当裁判。&nbsp;</li><li><strong>别处处都用最大的模型。</strong>token 花费集中在循环里，所以要刻意设计它们。较小的模型很适合高通量的实现铺开；把最大的模型留给审查者，以及任何会写出其他智能体要遵守的规则的环节。</li><li><strong>把人工时间压到前面。</strong>规则手册和压测最耗时间。之后大多是队列在往下烧。&nbsp;</li><li><strong>让工作队列机械且可恢复。</strong>做完应当意味着「输出文件已经在磁盘上」。&nbsp;</li></ul><h2><strong>审循环结果，而不是审代码</strong></h2><p>Jarred 的 Bun 迁移现在已经在生产里跑，尽管每次迁移都有取舍。例如，大约 4% 的 Rust 代码坐在 “unsafe” 块里，大多是 C/C++ 边界上的单行指针操作。</p><p>但新代码库可以量得出地更好。团队工具能检测到的每一个内存泄漏都已修好：一个重复构建 2,000 次的基准，内存从 6,745 MB 降到 609。Linux 和 Windows 上的二进制小了 19%。跨语言优化还让 HTTP 服务以及 next build、tsc 这类真实工作负载快了 2–5%。&nbsp;</p><p>想想是不是时候重新算一遍你那份被长期搁置的迁移账。挑出你一直在容忍的那个代码库，问问 Claude 对它来说迁移流程会是什么样。</p><p><strong><em>相关</em></strong></p><ul role="list"><li><a href="https://github.com/anthropics/code-migration-kit-with-claude-code"><em>Migration starter kit</em></a><em> 说明：starter kit 是对上述流程的泛化模板，并不是这两次具体移植当时跑的那套。</em></li><li><a href="https://github.com/anthropics/claude-plugins-official/tree/main/plugins/code-modernization"><em>Code-modernization plugin</em></a><em> — 面向遗留现代化和框架升级，而不是语言移植</em></li><li><a href="https://claude.com/blog/introducing-dynamic-workflows-in-claude-code"><em>Claude Code 中的 dynamic workflows</em></a></li></ul><p>‍</p></div>
+
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/ai-code-migration" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

@@ -13,5 +13,22 @@
   "translated": true,
   "translatedTitle": "为 Claude 带来记忆",
   "translatedAt": "2026-09-02T12:26:00.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Enterprise",
+      "Claude apps"
+    ],
+    "usecase": [
+      "Agents"
+    ]
+  },
+  "subtitle": "Today, we’re introducing memory to the Claude app, where Claude remembers you and your team’s projects and preferences, eliminating the need to re-explain context and keeping complex work moving forward.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/solutions/enterprise"
 }

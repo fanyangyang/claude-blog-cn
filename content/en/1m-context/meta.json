@@ -13,5 +13,21 @@
   "translated": true,
   "translatedTitle": "Claude Sonnet 4 现已支持 100 万 token 上下文",
   "translatedAt": "2026-09-02T12:38:00.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude apps"
+    ],
+    "usecase": [
+      "Agents"
+    ]
+  },
+  "subtitle": "Claude Sonnet 4 now supports up to 1 million tokens of context—a 5x increase that lets you process entire codebases, synthesize extensive document sets, and build agents that maintain coherence across hundreds of tool calls.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": ""
 }

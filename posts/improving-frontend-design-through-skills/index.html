@@ -4,39 +4,257 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>通过 Skills 改进前端设计 — Claude Blog 中文翻译</title>
-  <meta name="description" content="通过 Skills 改进前端设计">
+  <meta name="description" content="Best practices for building richer, more customized frontend design with Claude and Skills.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/improving-frontend-design-through-skills" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>通过 Skills 改进前端设计</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/improving-frontend-design-through-skills" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/improving-frontend-design-through-skills/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># 通过 Skills 改进前端设计
+
+Best practices for building richer, more customized frontend design with Claude and Skills.
+
+你可能已经注意到：如果不加引导，让一个 LLM 去做落地页，它几乎总是 Inter 字体、白底紫色渐变、寥寥几个动画。
+
+问题出在哪？[分布收敛（distributional convergence）](https://en.wikipedia.org/wiki/Convergence_of_random_variables)。在采样时，模型基于训练数据中的统计模式预测 token。安全的设计选择——那些放之四海皆准、不得罪任何人的方案——在网络训练数据中占主导。没有方向时，Claude 就从这个高概率的中心地带采样。
+
+对于构建面向客户产品的开发者来说，这种千篇一律的审美会削弱品牌识别度，让 AI 生成的界面一眼可辨——也一眼可弃。
+
+### 可引导性的挑战
+
+好消息是，只要提示得当，Claude 的可引导性（steerability）极强。告诉 Claude&quot;避免 Inter 和 Roboto&quot;或&quot;用氛围感背景代替纯色&quot;，效果立竿见影。这种对引导的敏感本身是个特性：它意味着 Claude 能适应不同的设计语境、约束和审美偏好。
+
+但这带来一个现实难题：任务越专门化，你需要提供的上下文就越多。对于前端设计，有效的指导涵盖排版原则、色彩理论、动效模式和背景处理。你需要在多个维度上指明要避开哪些默认选项、偏好哪些替代方案。
+
+你可以把这一切塞进系统提示词，但这样一来，每个请求——调试 Python、分析数据、写邮件——都会背着前端设计的上下文。于是问题变成：如何恰好在需要时为 Claude 提供领域专属的指导，而不给无关任务带来常驻的上下文开销？
+
+## **Skills：动态上下文加载**
+
+这正是 [Skills](https://www.anthropic.com/news/skills) 的设计初衷：按需交付专门上下文，而没有常驻开销。一个 Skill 是一份文档（通常是 markdown），包含指令、约束和领域知识，存放在指定目录中，Claude 可以通过简单的文件读取工具访问。Claude 可以借助这些 Skills 在运行时动态加载所需信息，渐进式地增强其上下文，而不是把所有内容预先加载。
+
+当配备了这些 Skills 以及读取它们的必要工具后，Claude 就能根据手头任务自主识别并加载相关 Skill。例如，被要求做落地页或创建 React 组件时，Claude 可以加载前端设计 Skill，即时应用其中的指令。核心心智模型就是：Skills 是按需激活的提示词和上下文资源，为特定任务类型提供专门指导，而不产生常驻的上下文开销。
+
+这让开发者既能收获 Claude 可引导性带来的红利，又不必为了塞进跨任务的杂糅指令而撑爆上下文窗口。正如我们[此前解释的](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)，上下文窗口中 token 过多会导致性能下降，因此保持上下文窗口精简聚焦，对于激发模型的最佳表现极为重要。Skills 通过让有效提示词变得可复用、可情境化，解决了这个问题。
+
+## **为更好的前端产出而提示**
+
+通过创建一个前端设计 Skill，我们可以在不产生常驻上下文开销的前提下，解锁 Claude 显著更好的 UI 生成效果。核心洞见是：像前端工程师那样思考前端设计。你越能把审美层面的改进映射到可实现的前端代码，Claude 就执行得越好。
+
+基于这一洞见，我们确定了几个针对性提示行之有效的方向：排版、动效、背景效果和主题。这些都可以干净地转化为 Claude 能写出的代码。在你的提示词中落地这些内容并不需要详尽的技术指令，只要用有针对性的语言引导模型在这些设计维度上更批判性地思考，就足以激发更强的输出。这与我们在[上下文工程](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)博客文章中给出的建议高度一致：在合适的&quot;高度&quot;上提示模型，避开两个极端——既不是指定精确色号这类低空硬编码逻辑，也不是默认对方有共同背景的高空泛泛而谈。
+
+### **排版**
+
+眼见为实，先从排版入手，把它看作可以通过提示影响的一个维度。下面的提示词专门引导 Claude 使用更有趣的字体：
+
+`&lt;use_interesting_fonts&gt;
+Typography instantly signals quality. Avoid using boring, generic fonts.
+
+Never use: Inter, Roboto, Open Sans, Lato, default system fonts
+
+Here are some examples of good, impactful choices:
+- Code aesthetic: JetBrains Mono, Fira Code, Space Grotesk
+- Editorial: Playfair Display, Crimson Pro
+- Technical: IBM Plex family, Source Sans 3
+- Distinctive: Bricolage Grotesque, Newsreader
+
+Pairing principle: High contrast = interesting. Display + monospace, serif + geometric sans, variable font across weights.
+
+Use extremes: 100/200 weight vs 800/900, not 400 vs 600. Size jumps of 3x+, not 1.5x.
+
+Pick one distinctive font, use it decisively. Load from Google Fonts.
+&lt;/use_interesting_fonts&gt;`**使用基础提示词生成的输出：**
+
+**使用基础提示词加排版部分生成的输出**
+
+‍
+
+有意思的是，&quot;用更有趣字体&quot;的要求似乎还顺带激励模型改进了设计的其他方面。
+
+仅排版一项就能带来显著提升，但字体只是一个维度。整个界面的美学一致性呢？
+
+### **主题**
+
+另一个可以提示的维度，是借鉴知名主题和美学风格的设计。Claude 对流行主题有着丰富的理解；我们可以利用这一点，把我们希望前端呈现的具体美学传达给它。举个例子：
+
+`&lt;always_use_rpg_theme&gt;
+Always design with RPG aesthetic:
+- Fantasy-inspired color palettes with rich, dramatic tones
+- Ornate borders and decorative frame elements
+- Parchment textures, leather-bound styling, and weathered materials
+- Epic, adventurous atmosphere with dramatic lighting
+- Medieval-inspired serif typography with embellished headers
+&lt;/always_use_rpg_theme&gt;`这会生成如下 RPG 主题的 UI：
+
+排版和主题证明了针对性提示有效。但逐个维度手动指定太繁琐。要是能把这些改进打包成一个可复用的资产呢？
+
+### **一个通用提示词**
+
+同样的原则适用于其他设计维度：为动效（动画和微交互）做提示，能为静态设计增添打磨感；引导模型选择更有趣的背景，则能创造纵深和视觉趣味。这正是综合性 Skill 大显身手之处。
+
+把这一切融会贯通，我们开发了一个约 400 token 的提示词——足够精简，加载时不会撑爆上下文（即使作为 Skill 加载也一样）——却能在排版、配色、动效和背景上显著改善前端输出：
+
+`&lt;frontend_aesthetics&gt;
+You tend to converge toward generic, &quot;on distribution&quot; outputs. In frontend design,this creates what users call the &quot;AI slop&quot; aesthetic. Avoid this: make creative,distinctive frontends that surprise and delight.
+
+Focus on:
+- Typography: Choose fonts that are beautiful, unique, and interesting. Avoid generic fonts like Arial and Inter; opt instead for distinctive choices that elevate the frontend's aesthetics.
+- Color &amp; Theme: Commit to a cohesive aesthetic. Use CSS variables for consistency. Dominant colors with sharp accents outperform timid, evenly-distributed palettes. Draw from IDE themes and cultural aesthetics for inspiration.
+- Motion: Use animations for effects and micro-interactions. Prioritize CSS-only solutions for HTML. Use Motion library for React when available. Focus on high-impact moments: one well-orchestrated page load with staggered reveals (animation-delay) creates more delight than scattered micro-interactions.
+- Backgrounds: Create atmosphere and depth rather than defaulting to solid colors. Layer CSS gradients, use geometric patterns, or add contextual effects that match the overall aesthetic.
+
+Avoid generic AI-generated aesthetics:
+- Overused font families (Inter, Roboto, Arial, system fonts)
+- Clichéd color schemes (particularly purple gradients on white backgrounds)
+- Predictable layouts and component patterns
+- Cookie-cutter design that lacks context-specific character
+
+Interpret creatively and make unexpected choices that feel genuinely designed for the context. Vary between light and dark themes, different fonts, different aesthetics. You still tend to converge on common choices (Space Grotesk, for example) across generations. Avoid this: it is critical that you think outside the box!
+&lt;/frontend_aesthetics&gt;`在上面的例子中，我们首先给 Claude 提供关于问题本身和我们要解决什么的一般性背景。我们发现，为模型提供这类高层背景是校准输出的有效提示技巧。接着，我们列出前面讨论过的那些设计改进向量，并给出针对性建议，鼓励模型在所有这些维度上更有创造性地思考。
+
+我们还在结尾附加了额外指导，防止 Claude 收敛到另一个局部最优。即使明确要求避开某些模式，模型仍可能默认选用其他常见选项（比如排版用 Space Grotesk）。最后那句&quot;跳出框框思考&quot;的提醒，强化了创造性变化。
+
+### **对前端设计的影响**
+
+启用这个 Skill 后，Claude 在多类前端设计上的输出都有提升，包括：
+
+**示例 1：SaaS 落地页**
+
+**图注：**AI 生成的 SaaS 落地页，使用千篇一律的 Inter 字体、紫色渐变和标准布局。未使用 Skills。**图注：**AI 生成的前端，使用与上图相同的提示词并附加前端 Skill，如今拥有独特的排版、协调的配色方案和层次丰富的背景。**示例 2：博客布局**
+
+AI 生成的博客布局，使用默认系统字体和纯白背景。未使用 Skills。AI 生成的博客布局，使用相同提示词并附加前端 Skill，采用社论风格字体，兼具氛围感纵深与考究的间距。**示例 3：管理后台**
+
+AI 生成的管理后台，使用标准 UI 组件，视觉层级较弱。未使用 Skills。‍
+
+AI 生成的管理后台，使用相同提示词并附加前端 Skill，具备大胆的排版、协调的暗色主题和有目的的动效。
+## **用 Skills 提升 **[**claude.ai**](http://claude.ai)** 中 Artifacts 的质量**
+
+设计品味并不是唯一的限制。Claude 在构建 Artifacts 时还面临架构层面的约束。** **[Artifacts](https://support.claude.com/en/articles/9487310-what-are-artifacts-and-how-do-i-use-them) 是 Claude 创建并显示在聊天旁边的可交互、可编辑内容（如代码或文档）。
+
+除了上文探讨的设计品味问题，Claude 在 [claude.ai](http://claude.ai) 中生成优秀前端 Artifact 的能力，还受到另一个默认行为的限制。目前，当被要求创建前端时，Claude 只会构建一个内含 CSS 和 JS 的单个 HTML 文件。这是因为 Claude 知道，前端必须写成单个 HTML 文件，才能被正确渲染为 Artifact。
+
+正如你会预期：如果一位人类开发者只能把 HTML/CSS/JS 写进单个文件，那也只能做出非常初级的前端。我们由此推测，如果给 Claude 指令让它使用更丰富的工具链，它就能生成更出彩的前端 Artifact。
+
+于是我们创建了 [web-artifacts-builder Skill](https://github.com/anthropics/skills/blob/main/web-artifacts-builder/SKILL.md)，它利用 Claude[操作计算机](https://www.claude.com/blog/create-files)的能力，引导 Claude 使用多个文件和现代 Web 技术（如 [React](https://react.dev/)、[Tailwind CSS](https://tailwindcss.com/) 和 [shadcn/ui](https://ui.shadcn.com/)）来构建 Artifact。在底层，该 Skill 提供了一些脚本，(1) 帮助 Claude 高效搭建基础 React 仓库，(2) 在编辑完成后用 [Parcel](https://parceljs.org/) 把所有内容打包成单个文件，以满足单 HTML 文件的要求。这正是 Skills 的核心好处之一——通过让 Claude 调用脚本来执行样板操作，Claude 得以在提升可靠性和性能的同时，把 token 用量降到最低。
+
+有了 web-artifacts-builder Skill，Claude 可以调用 shadcn/ui 的表单组件和 Tailwind 的响应式网格系统，打造更完整的 Artifact。
+
+**示例 1：白板应用**
+
+例如，在不使用 web-artifacts-builder Skill 的情况下让 Claude 做一个白板应用，它输出的是一个非常简陋的界面：
+
+而使用新的 web-artifacts-builder Skill 后，Claude 开箱即生成了一款干净得多、功能丰富得多的应用，支持绘制不同形状和文本：
+
+‍
+
+**示例 2：任务管理应用**
+
+类似地，被要求创建任务管理应用时，如果没有这个 Skill，Claude 生成的是能用但极其简陋的应用：
+
+有了这个 Skill，Claude 生成的应用开箱即更完整。例如，Claude 加入了&quot;新建任务&quot;表单组件，允许用户为任务设置关联的分类和截止日期：
+
+‍
+
+要在 [Claude.ai](http://claude.ai) 中体验这个新 Skill，只需启用它，然后在构建 Artifact 时对 Claude 说&quot;使用 web-artifacts-builder Skill&quot;。
+
+## **用 Skills 优化 Claude 的前端设计能力**
+
+这个前端设计 Skill 展示了关于语言模型能力的一个更普遍的原则：模型往往具备超越其默认表现的能力。Claude 有很强的设计理解力，但分布收敛让这份理解在没有引导时被掩盖。虽然你可以把这些指令加进系统提示词，但这意味着每个请求都背着前端设计上下文，即便这些知识与手头任务无关。而使用 Skills，则能把 Claude 从一个需要持续指导的工具，变成一个为每项任务都带来领域专长的伙伴。
+
+Skills 的高度可定制性——你可以创建契合自身需求的定制版本。这让你能定义希望固化进 Skill 的具体原语，无论是公司的设计系统、特定的组件模式，还是行业专属的 UI 惯例。通过把这些决策编码进 Skill，你把智能体思维的组成部分变成了整个开发团队都能复用的资产。Skill 成为可持续沉淀和扩展的组织知识，确保跨项目的一致质量。
+
+这一模式并不限于前端工作。任何 Claude 产出平庸但其实理解更深远的领域，都是开发 Skill 的候选。方法是一致的：识别收敛的默认行为，提供具体的替代方案，在合适的高度上组织指导，并通过 Skills 让它可复用。
+
+对前端开发来说，这意味着 Claude 无需逐次提示词工程就能生成有辨识度的界面。要开始实践，请探索我们的[前端设计 cookbook](https://github.com/anthropics/claude-cookbooks/blob/main/coding/prompting_for_frontend_aesthetics.ipynb)，或试试我们在 Claude Code 中的[全新前端设计插件](https://github.com/anthropics/claude-code/tree/main/plugins/frontend-design)。
+
+**有了灵感？想创建你自己的前端 Skills，请查看我们的 **[**skill-creator**](https://github.com/anthropics/skills/tree/main/skill-creator)**。**
+
+‍
+
+**致谢**
+本文由 Anthropic 应用 AI 团队的 Prithvi Rajasekaran、Justin Wei 和 Alexander Bricken 撰写，我们的营销伙伴 Molly Vorwerck 和 Ryan Whitehead 亦有贡献。
+
+‍</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Claude Code</span>
-            <span class="article-date">November 12, 2025</span>
-            
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-olive);">
+            <img class="hero-illo-img" src="/assets/illustrations/improving-frontend-design-through-skills.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">通过 Skills 改进前端设计</h1>
-          <a href="/posts/improving-frontend-design-through-skills/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>你可能已经注意到：如果不加引导，让一个 LLM 去做落地页，它几乎总是 Inter 字体、白底紫色渐变、寥寥几个动画。</p><p>问题出在哪？<a target="_blank" href="https://en.wikipedia.org/wiki/Convergence_of_random_variables">分布收敛（distributional convergence）</a>。在采样时，模型基于训练数据中的统计模式预测 token。安全的设计选择——那些放之四海皆准、不得罪任何人的方案——在网络训练数据中占主导。没有方向时，Claude 就从这个高概率的中心地带采样。</p><p>对于构建面向客户产品的开发者来说，这种千篇一律的审美会削弱品牌识别度，让 AI 生成的界面一眼可辨——也一眼可弃。</p><h3>可引导性的挑战</h3><p>好消息是，只要提示得当，Claude 的可引导性（steerability）极强。告诉 Claude"避免 Inter 和 Roboto"或"用氛围感背景代替纯色"，效果立竿见影。这种对引导的敏感本身是个特性：它意味着 Claude 能适应不同的设计语境、约束和审美偏好。</p><p>但这带来一个现实难题：任务越专门化，你需要提供的上下文就越多。对于前端设计，有效的指导涵盖排版原则、色彩理论、动效模式和背景处理。你需要在多个维度上指明要避开哪些默认选项、偏好哪些替代方案。</p><p>你可以把这一切塞进系统提示词，但这样一来，每个请求——调试 Python、分析数据、写邮件——都会背着前端设计的上下文。于是问题变成：如何恰好在需要时为 Claude 提供领域专属的指导，而不给无关任务带来常驻的上下文开销？</p><h2><strong>Skills：动态上下文加载</strong></h2><p>这正是 <a target="_blank" href="https://www.anthropic.com/news/skills">Skills</a> 的设计初衷：按需交付专门上下文，而没有常驻开销。一个 Skill 是一份文档（通常是 markdown），包含指令、约束和领域知识，存放在指定目录中，Claude 可以通过简单的文件读取工具访问。Claude 可以借助这些 Skills 在运行时动态加载所需信息，渐进式地增强其上下文，而不是把所有内容预先加载。</p><p>当配备了这些 Skills 以及读取它们的必要工具后，Claude 就能根据手头任务自主识别并加载相关 Skill。例如，被要求做落地页或创建 React 组件时，Claude 可以加载前端设计 Skill，即时应用其中的指令。核心心智模型就是：Skills 是按需激活的提示词和上下文资源，为特定任务类型提供专门指导，而不产生常驻的上下文开销。</p><p>这让开发者既能收获 Claude 可引导性带来的红利，又不必为了塞进跨任务的杂糅指令而撑爆上下文窗口。正如我们<a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">此前解释的</a>，上下文窗口中 token 过多会导致性能下降，因此保持上下文窗口精简聚焦，对于激发模型的最佳表现极为重要。Skills 通过让有效提示词变得可复用、可情境化，解决了这个问题。</p><h2><strong>为更好的前端产出而提示</strong></h2><p>通过创建一个前端设计 Skill，我们可以在不产生常驻上下文开销的前提下，解锁 Claude 显著更好的 UI 生成效果。核心洞见是：像前端工程师那样思考前端设计。你越能把审美层面的改进映射到可实现的前端代码，Claude 就执行得越好。</p><p>基于这一洞见，我们确定了几个针对性提示行之有效的方向：排版、动效、背景效果和主题。这些都可以干净地转化为 Claude 能写出的代码。在你的提示词中落地这些内容并不需要详尽的技术指令，只要用有针对性的语言引导模型在这些设计维度上更批判性地思考，就足以激发更强的输出。这与我们在<a target="_blank" href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">上下文工程</a>博客文章中给出的建议高度一致：在合适的"高度"上提示模型，避开两个极端——既不是指定精确色号这类低空硬编码逻辑，也不是默认对方有共同背景的高空泛泛而谈。</p><h3><strong>排版</strong></h3><p>眼见为实，先从排版入手，把它看作可以通过提示影响的一个维度。下面的提示词专门引导 Claude 使用更有趣的字体：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-plaintext" style="white-space:pre-wrap"><span><span>&lt;use_interesting_fonts&gt;
+            <h1 class="article-title u-text-style-h1">通过 Skills 改进前端设计</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>Best practices for building richer, more customized frontend design with Claude and Skills.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <div class="hero-detail-value u-text-style-body-3">Claude apps</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">November 12, 2025</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/improving-frontend-design-through-skills/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>你可能已经注意到：如果不加引导，让一个 LLM 去做落地页，它几乎总是 Inter 字体、白底紫色渐变、寥寥几个动画。</p><p>问题出在哪？<a target="_blank" href="https://en.wikipedia.org/wiki/Convergence_of_random_variables">分布收敛（distributional convergence）</a>。在采样时，模型基于训练数据中的统计模式预测 token。安全的设计选择——那些放之四海皆准、不得罪任何人的方案——在网络训练数据中占主导。没有方向时，Claude 就从这个高概率的中心地带采样。</p><p>对于构建面向客户产品的开发者来说，这种千篇一律的审美会削弱品牌识别度，让 AI 生成的界面一眼可辨——也一眼可弃。</p><h3>可引导性的挑战</h3><p>好消息是，只要提示得当，Claude 的可引导性（steerability）极强。告诉 Claude"避免 Inter 和 Roboto"或"用氛围感背景代替纯色"，效果立竿见影。这种对引导的敏感本身是个特性：它意味着 Claude 能适应不同的设计语境、约束和审美偏好。</p><p>但这带来一个现实难题：任务越专门化，你需要提供的上下文就越多。对于前端设计，有效的指导涵盖排版原则、色彩理论、动效模式和背景处理。你需要在多个维度上指明要避开哪些默认选项、偏好哪些替代方案。</p><p>你可以把这一切塞进系统提示词，但这样一来，每个请求——调试 Python、分析数据、写邮件——都会背着前端设计的上下文。于是问题变成：如何恰好在需要时为 Claude 提供领域专属的指导，而不给无关任务带来常驻的上下文开销？</p><h2><strong>Skills：动态上下文加载</strong></h2><p>这正是 <a target="_blank" href="https://www.anthropic.com/news/skills">Skills</a> 的设计初衷：按需交付专门上下文，而没有常驻开销。一个 Skill 是一份文档（通常是 markdown），包含指令、约束和领域知识，存放在指定目录中，Claude 可以通过简单的文件读取工具访问。Claude 可以借助这些 Skills 在运行时动态加载所需信息，渐进式地增强其上下文，而不是把所有内容预先加载。</p><p>当配备了这些 Skills 以及读取它们的必要工具后，Claude 就能根据手头任务自主识别并加载相关 Skill。例如，被要求做落地页或创建 React 组件时，Claude 可以加载前端设计 Skill，即时应用其中的指令。核心心智模型就是：Skills 是按需激活的提示词和上下文资源，为特定任务类型提供专门指导，而不产生常驻的上下文开销。</p><p>这让开发者既能收获 Claude 可引导性带来的红利，又不必为了塞进跨任务的杂糅指令而撑爆上下文窗口。正如我们<a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">此前解释的</a>，上下文窗口中 token 过多会导致性能下降，因此保持上下文窗口精简聚焦，对于激发模型的最佳表现极为重要。Skills 通过让有效提示词变得可复用、可情境化，解决了这个问题。</p><h2><strong>为更好的前端产出而提示</strong></h2><p>通过创建一个前端设计 Skill，我们可以在不产生常驻上下文开销的前提下，解锁 Claude 显著更好的 UI 生成效果。核心洞见是：像前端工程师那样思考前端设计。你越能把审美层面的改进映射到可实现的前端代码，Claude 就执行得越好。</p><p>基于这一洞见，我们确定了几个针对性提示行之有效的方向：排版、动效、背景效果和主题。这些都可以干净地转化为 Claude 能写出的代码。在你的提示词中落地这些内容并不需要详尽的技术指令，只要用有针对性的语言引导模型在这些设计维度上更批判性地思考，就足以激发更强的输出。这与我们在<a target="_blank" href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">上下文工程</a>博客文章中给出的建议高度一致：在合适的"高度"上提示模型，避开两个极端——既不是指定精确色号这类低空硬编码逻辑，也不是默认对方有共同背景的高空泛泛而谈。</p><h3><strong>排版</strong></h3><p>眼见为实，先从排版入手，把它看作可以通过提示影响的一个维度。下面的提示词专门引导 Claude 使用更有趣的字体：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-plaintext" style="white-space:pre-wrap"><span><span>&lt;use_interesting_fonts&gt;
 </span></span><span>Typography instantly signals quality. Avoid using boring, generic fonts.
 </span></span><span>
 </span></span><span>Never use: Inter, Roboto, Open Sans, Lato, default system fonts
@@ -76,21 +294,70 @@
 </span></span><span>
 </span></span><span>Interpret creatively and make unexpected choices that feel genuinely designed for the context. Vary between light and dark themes, different fonts, different aesthetics. You still tend to converge on common choices (Space Grotesk, for example) across generations. Avoid this: it is critical that you think outside the box!
 </span></span><span>&lt;/frontend_aesthetics&gt;</span></code></pre><p>在上面的例子中，我们首先给 Claude 提供关于问题本身和我们要解决什么的一般性背景。我们发现，为模型提供这类高层背景是校准输出的有效提示技巧。接着，我们列出前面讨论过的那些设计改进向量，并给出针对性建议，鼓励模型在所有这些维度上更有创造性地思考。</p><p>我们还在结尾附加了额外指导，防止 Claude 收敛到另一个局部最优。即使明确要求避开某些模式，模型仍可能默认选用其他常见选项（比如排版用 Space Grotesk）。最后那句"跳出框框思考"的提醒，强化了创造性变化。</p><h3><strong>对前端设计的影响</strong></h3><p>启用这个 Skill 后，Claude 在多类前端设计上的输出都有提升，包括：</p><p><strong>示例 1：SaaS 落地页</strong></p><figure style="max-width:1600pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6913d5b728dcecc13bc1f77b_6d547f28.png"></div><figcaption><strong>图注：</strong>AI 生成的 SaaS 落地页，使用千篇一律的 Inter 字体、紫色渐变和标准布局。未使用 Skills。</figcaption></figure><figure style="max-width:1600pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6913d5b728dcecc13bc1f790_c47f37ab.png"></div><figcaption><strong>图注：</strong>AI 生成的前端，使用与上图相同的提示词并附加前端 Skill，如今拥有独特的排版、协调的配色方案和层次丰富的背景。</figcaption></figure><p><strong>示例 2：博客布局</strong></p><figure style="max-width:1600pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6913d5b728dcecc13bc1f78d_f7040147.png"></div><figcaption>AI 生成的博客布局，使用默认系统字体和纯白背景。未使用 Skills。</figcaption></figure><figure style="max-width:1600pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6913d5b728dcecc13bc1f77e_0ce357ff.png"></div><figcaption>AI 生成的博客布局，使用相同提示词并附加前端 Skill，采用社论风格字体，兼具氛围感纵深与考究的间距。</figcaption></figure><p><strong>示例 3：管理后台</strong></p><figure style="max-width:1600pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6913d5b728dcecc13bc1f784_7beb17d0.png"></div><figcaption>AI 生成的管理后台，使用标准 UI 组件，视觉层级较弱。未使用 Skills。</figcaption></figure><p>‍</p><figure style="max-width:1600pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6913d5b728dcecc13bc1f781_3705adad.png"></div><figcaption>AI 生成的管理后台，使用相同提示词并附加前端 Skill，具备大胆的排版、协调的暗色主题和有目的的动效。</figcaption></figure><h2><strong>用 Skills 提升 </strong><a target="_blank" href="http://claude.ai"><strong>claude.ai</strong></a><strong> 中 Artifacts 的质量</strong></h2><p>设计品味并不是唯一的限制。Claude 在构建 Artifacts 时还面临架构层面的约束。<strong> </strong><a target="_blank" href="https://support.claude.com/en/articles/9487310-what-are-artifacts-and-how-do-i-use-them">Artifacts</a> 是 Claude 创建并显示在聊天旁边的可交互、可编辑内容（如代码或文档）。</p><p>除了上文探讨的设计品味问题，Claude 在 <a target="_blank" href="http://claude.ai">claude.ai</a> 中生成优秀前端 Artifact 的能力，还受到另一个默认行为的限制。目前，当被要求创建前端时，Claude 只会构建一个内含 CSS 和 JS 的单个 HTML 文件。这是因为 Claude 知道，前端必须写成单个 HTML 文件，才能被正确渲染为 Artifact。</p><p>正如你会预期：如果一位人类开发者只能把 HTML/CSS/JS 写进单个文件，那也只能做出非常初级的前端。我们由此推测，如果给 Claude 指令让它使用更丰富的工具链，它就能生成更出彩的前端 Artifact。</p><p>于是我们创建了 <a href="https://github.com/anthropics/skills/blob/main/web-artifacts-builder/SKILL.md" target="_blank">web-artifacts-builder Skill</a>，它利用 Claude<a target="_blank" href="https://www.claude.com/blog/create-files">操作计算机</a>的能力，引导 Claude 使用多个文件和现代 Web 技术（如 <a target="_blank" href="https://react.dev/">React</a>、<a target="_blank" href="https://tailwindcss.com/">Tailwind CSS</a> 和 <a target="_blank" href="https://ui.shadcn.com/">shadcn/ui</a>）来构建 Artifact。在底层，该 Skill 提供了一些脚本，(1) 帮助 Claude 高效搭建基础 React 仓库，(2) 在编辑完成后用 <a href="https://parceljs.org/">Parcel</a> 把所有内容打包成单个文件，以满足单 HTML 文件的要求。这正是 Skills 的核心好处之一——通过让 Claude 调用脚本来执行样板操作，Claude 得以在提升可靠性和性能的同时，把 token 用量降到最低。</p><p>有了 web-artifacts-builder Skill，Claude 可以调用 shadcn/ui 的表单组件和 Tailwind 的响应式网格系统，打造更完整的 Artifact。</p><p><strong>示例 1：白板应用</strong></p><p>例如，在不使用 web-artifacts-builder Skill 的情况下让 Claude 做一个白板应用，它输出的是一个非常简陋的界面：</p><figure style="max-width:1600pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6913d5b728dcecc13bc1f787_b07e5190.png"></div></figure><p>而使用新的 web-artifacts-builder Skill 后，Claude 开箱即生成了一款干净得多、功能丰富得多的应用，支持绘制不同形状和文本：</p><figure style="max-width:1600pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6913d5b728dcecc13bc1f78a_57c49993.png"></div></figure><p>‍</p><p><strong>示例 2：任务管理应用</strong></p><p>类似地，被要求创建任务管理应用时，如果没有这个 Skill，Claude 生成的是能用但极其简陋的应用：</p><figure style="max-width:1600pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6913d5b728dcecc13bc1f793_875d1eef.png"></div></figure><p>有了这个 Skill，Claude 生成的应用开箱即更完整。例如，Claude 加入了"新建任务"表单组件，允许用户为任务设置关联的分类和截止日期：</p><figure style="max-width:1600pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6913d5b728dcecc13bc1f7c9_7ae52606.png"></div></figure><figure style="max-width:1600pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6913d5b728dcecc13bc1f7a1_4c4951af.png"></div></figure><p>‍</p><p>要在 <a href="http://claude.ai">Claude.ai</a> 中体验这个新 Skill，只需启用它，然后在构建 Artifact 时对 Claude 说"使用 web-artifacts-builder Skill"。</p><h2><strong>用 Skills 优化 Claude 的前端设计能力</strong></h2><p>这个前端设计 Skill 展示了关于语言模型能力的一个更普遍的原则：模型往往具备超越其默认表现的能力。Claude 有很强的设计理解力，但分布收敛让这份理解在没有引导时被掩盖。虽然你可以把这些指令加进系统提示词，但这意味着每个请求都背着前端设计上下文，即便这些知识与手头任务无关。而使用 Skills，则能把 Claude 从一个需要持续指导的工具，变成一个为每项任务都带来领域专长的伙伴。</p><p>Skills 的高度可定制性——你可以创建契合自身需求的定制版本。这让你能定义希望固化进 Skill 的具体原语，无论是公司的设计系统、特定的组件模式，还是行业专属的 UI 惯例。通过把这些决策编码进 Skill，你把智能体思维的组成部分变成了整个开发团队都能复用的资产。Skill 成为可持续沉淀和扩展的组织知识，确保跨项目的一致质量。</p><p>这一模式并不限于前端工作。任何 Claude 产出平庸但其实理解更深远的领域，都是开发 Skill 的候选。方法是一致的：识别收敛的默认行为，提供具体的替代方案，在合适的高度上组织指导，并通过 Skills 让它可复用。</p><p>对前端开发来说，这意味着 Claude 无需逐次提示词工程就能生成有辨识度的界面。要开始实践，请探索我们的<a target="_blank" href="https://github.com/anthropics/claude-cookbooks/blob/main/coding/prompting_for_frontend_aesthetics.ipynb">前端设计 cookbook</a>，或试试我们在 Claude Code 中的<a href="https://github.com/anthropics/claude-code/tree/main/plugins/frontend-design">全新前端设计插件</a>。</p><p><strong>有了灵感？想创建你自己的前端 Skills，请查看我们的 </strong><a href="https://github.com/anthropics/skills/tree/main/skill-creator"><strong>skill-creator</strong></a><strong>。</strong></p><p>‍</p><p><strong>致谢</strong><br>本文由 Anthropic 应用 AI 团队的 Prithvi Rajasekaran、Justin Wei 和 Alexander Bricken 撰写，我们的营销伙伴 Molly Vorwerck 和 Ryan Whitehead 亦有贡献。</p><p>‍</p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/improving-frontend-design-through-skills" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/improving-frontend-design-through-skills" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

@@ -13,5 +13,20 @@
   "translatedTitle": "Code w/ Claude London 2026：重新思考我们的构建方式",
   "translated": true,
   "translatedAt": "2026-09-02T04:16:06Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Code",
+      "Claude Platform"
+    ],
+    "usecase": []
+  },
+  "subtitle": "Couldn't make it to London? Keynotes and breakout sessions are now live.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/product/claude-code"
 }

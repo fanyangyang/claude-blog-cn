@@ -4,39 +4,302 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>使用 LLM 保护源代码安全 — Claude Blog 中文翻译</title>
-  <meta name="description" content="使用 LLM 保护源代码安全">
+  <meta name="description" content="We share best practices for how you can work with Claude Opus to build a threat model, discover vulnerabilities in your codebase, then verify, triage, and patch them.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/using-llms-to-secure-source-code" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>使用 LLM 保护源代码安全</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/using-llms-to-secure-source-code" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/using-llms-to-secure-source-code/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># 使用 LLM 保护源代码安全
+
+We share best practices for how you can work with Claude Opus to build a threat model, discover vulnerabilities in your codebase, then verify, triage, and patch them.
+
+模型能力正在快速提升，但并不均衡。我们一直在与安全团队[合作](https://www.anthropic.com/glasswing)，在他们自己的代码和开源软件中寻找并修复漏洞。这项工作让我们更深入地理解了如何用模型来保护源代码。**我们最主要的结论是：漏洞发现如今已经很容易并行化，瓶颈已经转移到验证、分诊和修补**。
+
+为了直观说明这种落差：作为我们对开源软件[自身扫描工作](https://www.anthropic.com/research/glasswing-initial-update)的一部分，截至 2026 年 5 月 22 日，我们已披露 1,596 个漏洞。据我们所知，其中只有 97 个得到了修补。
+
+本指南将带你一步步与 Claude Opus 协作：构建威胁模型、发现代码库中的漏洞，然后验证、分诊并修补它们。虽然我们并没有全部答案，但会分享各团队是如何规模化发现环节的，以及后续阶段哪些做法行之有效。*现在就可以从*[*配套仓库*](https://github.com/anthropics/defending-code-reference-harness)*入手，其中包含用于交互式工作流的 skills 和一个自主扫描的演示 harness；阅读过程中我们会指出实现每一步的 skill。*
+
+## **发现—修复循环**
+
+发现并修复漏洞数量最多的团队，最终都收敛到对现有最佳实践的一种变体。我们将其提炼为六个步骤：
+
+- **威胁模型：**在开始扫描之前，先明确什么才算漏洞。
+
+- **沙箱：**构建一个沙箱环境，隔离 agent 并验证漏洞利用。
+
+- **发现：**让模型在你的源代码中寻找漏洞。
+
+- **验证：**独立确认哪些发现是真正可利用的。
+
+- **分诊：**对发现去重、评定严重程度、排定修复优先级。
+
+- **修补：**应用修复，确认漏洞已被消除，并搜索变体。
+
+在威胁建模和沙箱上的一次性投入，支撑起防御者的循环——由发现、验证、分诊、修补构成的不断重复的周期——瓶颈不在于发现漏洞，而在于其后的一切。
+
+前两步——构建威胁模型和沙箱——是其余环节的准备。它们通常每个代码库做一次，并在底层系统发生变化时重新审视。接下来的四步才是你要对源码反复运行的循环：发现、验证、分诊、修补。
+
+对代码库的首次运行通常发现数量最多。后续运行往往发现更少——但通常更复杂——的漏洞，因为简单的已在之前的运行中修掉了。不过，不要指望第 *nth* 次运行会零新发现。模型是随机的，大型代码库中的漏洞有一条长尾，即使代码不变也会持续零星冒出。
+
+在代码库的第一轮迭代中，你应该把这个循环跑多次，根据净新增发现的数量和你对该系统的风险容忍度来决定何时停止。第一轮迭代之后，按两种方式继续扫描：（1）定期扫描，或（2）每当代码发生实质性变更时扫描。
+
+接下来，我们将逐一详解每个步骤：为什么重要、产出什么，以及如何实现。
+
+## **1. 威胁模型：定义什么才算漏洞**
+
+误报最常见的原因，是模型对你的信任边界缺乏足够的了解。模型可能把某段代码标记为有漏洞，因为它假设客户端可能发送损坏的值、攻击者可能控制配置——尽管这些输入在你的环境中是*受信任的*。反过来，模型也可能假设某个面向互联网的服务仅限内部使用，从而漏报真实漏洞。两种情况下，模型错在威胁模型，而不是代码。
+
+*一个团队在他们的发现中注意到一个规律：模型在有完善的威胁模型文档、系统设计文档、需求和约束说明的系统上表现最好。当威胁模型定义清晰时，模型的发现“90% 的时候都是可利用的”。*
+你可以通过两步与 Claude 协作构建威胁模型：
+
+**第一步，从代码、文档和漏洞历史出发进行引导（bootstrap）。**把你在第一天会交给一位新安全工程师的材料喂给模型：架构文档、wiki、入口点、git 历史和过往漏洞。这有助于克服仅凭代码推断隐性知识、权衡取舍和设计决策的难题。然后，让模型创建一个威胁模型，涵盖系统上下文、资产、入口点和信任边界。最后，让模型把过往 bug 聚类，列出相关的漏洞类别。务必让威胁模型写清楚：哪些漏洞你在意、哪些不在意，以及原因。
+
+*一个团队回顾了数百个过往 CVE 和安全修复提交，把它们提炼成“bug 形态”提示，然后问模型两个问题：这个修复是否完整？同样的修复在其他地方是否也应用了？他们在一小时内发现了三个可利用的问题。用他们的话说：“‘过去人们利用过什么’有时是一条比‘在这个代码库里给我找漏洞’更容易成功的捷径。”*
+**第二步，让模型采访一位熟悉系统的人。**可以参考 [Shostack 四问法](https://github.com/adamshostack/4QuestionFrame)：*我们在构建什么？可能出什么问题？我们打算怎么应对？我们做得够好吗？*先跑完引导步骤，这样受访者就不必从零开始。如此一来，他们不必花数小时调研、从零构建威胁模型，而是可以直接从草稿起步。采访这一步虽然可选，但它能补充模型从代码和文档中得不到的上下文，从而改进威胁模型。
+
+几个实践可以带来很大不同：
+
+- **考虑依赖的安全策略。**许多开源项目都发布了安全策略，例如 vLLM 的 [`security.md`](https://docs.vllm.ai/en/latest/usage/security.html)、SQLite 的 [“抵御黑魔法”（Defense Against the Dark Arts）](https://www.sqlite.org/security.html)，以及 [ImageMagick 的安全策略](https://github.com/ImageMagick/ImageMagick/security/policy)。你的威胁模型应直接把它们纳入，而不是从头重建一套策略。
+
+- **明确哪些东西是受信任的。**如果你信任配置文件或已认证的客户端，就把它写进威胁模型。这些假设有助于把不可利用的 bug 与真实的漏洞利用区分开。
+
+- **在代码旁边放一份 `THREAT_MODEL.md`。**把它放进仓库，随代码变更而更新。发现 agent 就能在搜索之前先读它，跳过已知的非问题。
+
+威胁模型会在两处用到。在发现阶段，作为范围界定：切分代码、排定目标优先级、跳过范围之外的部分，这对无法全量扫描的大型代码库很有帮助。在分诊阶段，作为过滤器：广泛扫描之后，用威胁模型让严重程度更贴合你的系统和环境。
+
+*一个团队在扫描一个大型项目时误报率达 40%，于是深挖原因。发现是可复现的，PoC 也证明了可利用性。但负责该代码的开发团队却以“不符合项目威胁模型”为由把它们当作误报驳回。另一个团队的 CISO 说得很到位：“（模型）对代码的上下文掌握得很好，但对我们的上下文掌握得不好。”*
+**试试 **[**threat-model skill**](https://github.com/anthropics/defending-code-reference-harness/tree/main/.claude/skills/threat-model)**。**它完整实现了本节描述的两个步骤——`bootstrap` 从你的代码、CVE 和 git 历史推导草稿，interview 则带系统负责人过一遍 Shostack 四问来完善它。产出是一份 `THREAT_MODEL.md` 文件，供发现和分诊步骤使用。
+
+## **2. 沙箱：安全地运行 agent 并验证可利用性**
+
+**沙箱的一个目的是保护你的系统。**要让模型安全、自主地运行，需要一层强有力的隔离。没有它，agent 可能越出目标，做出意料之外的事。
+
+*一个团队告诉模型它没有网络访问权限——实际上有——结果模型发现自己反正可以从 GitHub 拉取内容。另一个团队观察到 agent 在扫描中途回复了一个 GitHub issue。两个行为都谈不上恶意，但都说明必须通过代码和配置来强制约束。*
+隔离强度要与威胁模型匹配。对只读代码的发现 agent 来说容器就够了，但运行目标及其 PoC 时，应使用微虚机（如 Firecracker）或出口流量被完全锁死的完整虚拟机，确保任何东西都碰不到你的生产系统。并且，绝不能让 agent 拿到任何凭据（`~/.aws`、`~/.ssh`、`.env`）。
+
+只在搭建阶段给沙箱网络访问。拉依赖、构建、装工具、部署目标、跑现有测试，确认一切正常。然后，给环境拍快照并移除其网络访问。扫描期间，只允许访问模型 API 的流量，并通过本地代理路由。每次运行开始时加载快照，让每次扫描都从同一个干净状态起步。
+
+**沙箱的另一个目的是证明可利用性。**在静态扫描中，模型读代码并推测什么可能出问题，但无法测试某条路径是否可达、是否存在补偿性控制。结果，模型可能会标记那些你其实并不关心的、不可利用的代码正确性 bug。当团队搭建出能让 agent 编译代码、跑测试、引爆概念验证（PoC）的沙箱后，不可利用的发现显著减少。
+
+*一个攻防安全团队构建了一个给 agent 提供测试床的 harness，验证规则很简单：只有 agent 能构建概念验证并在测试床上跑通，才算真阳性。他们六周后的评估是：“最有效的杠杆，就是给模型测试床、活系统，并实际运行 PoC。”*
+搭建沙箱时，尽可能把一切固定（pin）住，让每次运行都在同样的环境里用同样的代码：镜像 tag、commit SHA、依赖和构建命令。缓存一份本地副本，让构建不需要网络；并尽量让容器可持久化，多个测试循环直接加载即可。
+
+*一个团队的扫描标记了一个漏洞，结果发现那只是 agent 下载了旧版本库（而非实际部署的版本）产生的副作用。一位工程师读了执行记录，注意到下载的是另一个依赖，才抓住了这个问题。他们现在构建 Docker 容器时会把依赖固定为与生产一致，这样发现 agent 和验证 agent 操作的就是攻击者会面对的同一批制品。*
+搭建足够忠实于生产的沙箱很重要。排除某些依赖（如队列或数据存储）可能导致漏报生产中可能存在的 bug。反过来，忽略生产防御（如 WAF 或认证网关）则会让模型报出你的生产环境早已缓解的不可利用发现。
+
+不过，如果因为云依赖、数据存储或其他现实复杂性而无法搭建有代表性的沙箱，那就先从下面的发现步骤开始。你不一定非要在沙箱里跑 PoC。前沿模型很擅长仅通过分析源码发现漏洞，包括我们自己在内的多个团队都验证了这一点。代价体现在验证阶段：没有可运行的目标，我们就无法用 PoC 证明发现，所以要为验证留出更多时间。等到发现数量足够多、值得投入时，再回头建设沙箱也不迟。
+
+**参考 **[**harness 的 `README.md`**](https://github.com/anthropics/defending-code-reference-harness/tree/main/harness)** 中提供的参考沙箱。**在该实现中，agent 和目标运行在 gVisor 隔离的容器里，出口流量锁定为仅限模型 API。目标由固定到特定 commit 的 Dockerfile 构建，[`setup_sandbox.sh`](https://github.com/anthropics/defending-code-reference-harness/blob/main/scripts/setup_sandbox.sh) 负责搭建阶段。
+
+## **3. 发现：提供丰富上下文、更短的提示词和趁手的工具**
+
+给发现 agent 提供可按需加载的上下文，比如威胁模型、架构文档和历史扫描结果。当 agent 理解了你的信任边界和系统的真实部署方式，它就能更好地识别你系统特有的漏洞。
+
+我们发现，在发现阶段，前沿模型受益于日益简单的提示词。反直觉的是，更具指令性的提示词反而让发现效果变差——长长的检查清单往往削弱模型的创造力，产生更少的新颖 bug。以下是发现阶段行之有效的一些提示词技巧：
+
+- **给出目标和上下文。**说清“为什么”和“是什么”——为什么扫描、什么样的发现才算重要、扫描的是什么系统——把“怎么找漏洞”留给模型。前沿模型在安全任务上越来越强，过度指令化反而会收窄它尝试的范围。
+
+- **试着点名某个具体漏洞类别。**如果你想依据既往 CVE 或代码库的语言聚焦某一类漏洞，就直接说出来。描述这个漏洞类别是什么、做什么、通常出现在哪里，让模型能在你的代码库里认出它。
+
+- **定义输出。**要求一份带预定义字段的结构化报告，并排好字段顺序，让模型的推理逐字段递进。示例字段包括理由、发现、影响、严重程度等。留一个“逃生口”，让模型可以对弱发现提前退出。
+
+给模型搜索和阅读代码库的工具，比如 grep、glob 等。也让模型用上你的团队可能在用的安全工具，比如 SAST 扫描器或 fuzzer。问模型某个具体任务需要哪些工具，然后把它们准备好。最后，让模型按需自建工具：近来的前沿模型越来越擅长自己编写所需的工具。
+
+*除了源代码，一个渗透测试团队还给发现 agent 配上了发请求、查响应、查流量日志的工具。这样，agent 就不必猜测某条路径是否可达，而是可以边走边对着运行中的应用测试每个候选，把真阳性率提升到了接近 100%。*
+让模型先对系统做一轮整体扫描来切分搜索空间，比如按攻击面、端点或组件。然后，把这些分区喂给并行的发现 agent，避免它们扎堆在同样的浅层 bug 上。最后，再跑一轮系统级扫描，把分区级的发现作为上下文，去寻找漏洞。
+
+*试图蛮力堆发现量的团队很快就碰到了收益递减。一个团队说：“我们一开始想的就是横向扩展、多派 agent，但回报很有限。”另一个团队增加了关注领域和并行 agent 的数量，结果得到了“一大堆 issue”，其中大多数彼此重复。*
+如果你有可以运行目标的沙箱，就让发现 agent 为发现构建一个 PoC，比如一个脚本、一个让程序崩溃的输入，或一个失败的测试。构建 PoC 能帮助 agent 迭代、把发现钉死，这个产物也给验证 agent 提供了可评估的具体证据。当然，agent 无法复现的发现也可以照样上报，标记为“未证实”，以保住召回率。
+
+**本阶段的利器是 **[**`vuln-scan` skill**](https://github.com/anthropics/defending-code-reference-harness/tree/main/.claude/skills/vuln-scan)。它会读取你的 `THREAT_MODEL.md`，把目标切分为若干关注区域，并为每个区域展开并行的评审 agent。产出是结构化的发现，供后续步骤直接使用。
+
+## **4. 验证：过滤掉不可利用的发现**
+
+发现环节优化的是召回率；验证环节优化的是*精确率*。换言之，发现应尽可能多地找出漏洞——哪怕不太可能——而验证应剔除实际不可利用的发现。当一个 agent 试图在同一步里*两者都做*时，它会自我审查，把可利用的真阳性也排除掉。这一点我们是吃过亏才明白的：让发现 agent 顺带验证发现，结果它们过滤掉了本可被独立验证步骤确认真阳性。
+
+验证 agent 应独立于发现 agent。在全新的容器里运行验证 agent，不共享文件系统或对话历史。如果验证 agent 接触到发现 agent 的推理，它可能只是附和，而不是去验证结论。因此，只给验证 agent 两样东西：（1）概念验证或书面发现，（2）代码库——让它能去寻找发现者遗漏的缓解措施（如上游校验、认证关卡、类型约束或不可达代码）。
+
+如果单轮验证仍然放过太多不可利用的发现，可以试着跑多个独立的验证 agent。它们可以从不同角度切入，或使用不同模型，然后取多数票。也可以考虑再设一个裁判 agent，在发现与验证 agent 的结论之间做裁决。
+
+提示验证 agent 去证伪发现 agent 的结论。让验证 agent 假设每个发现都是误报，去寻找该发现不成立的理由。同时给出清晰的标准，让验证 agent 判断发现是否为真阳性。当发现 agent 的产出不含 PoC 时，这一点尤其重要。目标是不留余力地排除不可利用的发现，以减轻人工评审的负担。
+
+*在我们合作过的团队中，增加一个对抗性验证 agent 大约把发现阶段的不可利用率砍半。再要求该验证 agent 同时构建一个证实漏洞利用的 PoC，则把误报率降到了接近零。这两步加在一起，显著减轻了下游分诊和修补的负担。*
+如果你能在沙箱里充分复现生产环境（见第 2 步），就提示验证 agent 构建并执行一个可复现的 PoC。PoC 跑通，就可以断定该发现可利用。注意反过来不成立——没能产出可用的 PoC，并不证明是误报。
+
+*一个扫描开源包的团队构建了一个闭环验证步骤：扫描包、生成 PoC，然后部署一个使用该包并触发 PoC 的模拟应用。他们的结论是：“验证是最大的卡点，而 PoC 就是验证。”*
+
+## **5. 分诊：按根因去重，按前提条件与影响排序**
+
+验证确认的是发现是否可利用，分诊评估的是修补优先级。过去发现环节更费人力时，找到 bug 的工程师顺带做分诊。现在，模型能在午饭前找出一百个候选，分诊就成了瓶颈。
+
+妥善的分诊有助于防止告警疲劳。如果你提交的 bug 大量重复或严重度虚高，产品工程师可能就不再看了——哪怕其中有需要立即修补的。开源维护者尤其容易被未经分诊的发现淹没，因为依赖其软件的用户来自四面八方，都会给他们报问题。
+
+*多个团队分享了同一个教训：如果我们发给产品工程师的发现中大多数不可利用，他们就会失去对报告的信任，然后放弃。这些团队还优先处理严重和高危发现，以免淹没下游工程师。另一些团队则把模型对准自家积压的旧账——既往扫描器、既往模型、漏洞赏金项目收进来的未处理发现——几天内清理了数百条陈年条目，收获颇丰。*
+给发现去重，要看根因。扫描器常常在多个调用点标记同一个 bug，或报告同一根因的多种症状。这里有一个实用做法：先做一轮便宜的确定性处理——同一文件、同一类别、漏洞行号彼此相差不到十行。然后，让模型对剩下的应用定性规则：
+
+- **视为重复**：同一根因的不同表述；同一漏洞在多个调用点被上报；一个缺失的全局防护（如认证检查）被按端点逐个上报；同一路径上一处因与一果被分别标记。
+
+- **视为独立**：同一文件中的不同漏洞类别；不同变量流入不同的 sink；一个辅助函数里的两个独立 bug；两个端点同样缺失某个检查，但各自需要单独修复。
+
+如果你的 harness 为每个发现生成了 PoC 和补丁，还有一种去重办法：检查一个发现的补丁是否也解除了其他发现的 PoC。
+
+去重之后，根据以下维度为每个发现评级：
+
+- **可达性。**攻击者能从真实入口点触达这段代码吗，还是只有内部代码和端点可达？
+
+- **攻击者控制度。**不可信输入是原封不动地到达 sink，还是上游有东西对其做了清洗或约束？
+
+- **前提条件。**bug 触发需要什么前提：非默认配置、特定功能开关、攻击者必须命中的狭窄时间窗口？
+
+- **认证。**未认证的攻击者能触发吗，还是需要已登录用户或管理员？
+
+- **读 vs. 写。**攻击者只能读取数据，还是也能修改？
+
+- **影响面。**PoC 一旦引爆，谁受影响？一个用户还是全部用户，一个租户还是整个平台，用户态还是内核？
+
+要把这套评分标准变成一个分数，可以让模型先把每个问题的答案写出来，再评定严重程度。先过证据，能防止模型锚定在漏洞类别上（“SQL 注入，所以是严重”），再硬凑严重度来匹配。一个起步基准：零前提条件且可未认证远程访问，为严重或高危；一到两个前提条件，或需要认证的路径，为中危；三个及以上，或仅限本地，为低危。阈值请按你的系统自行调整。
+
+模型可能因为上下文不足而抬高严重度。它可能不知道攻击者实际能控制哪些输入，也可能看不到补偿性控制。前者的例子：一个 SQL 注入，由未认证请求触发就是严重，由仅限管理员的配置文件触发则根本不算事。后者的例子：上游的 WAF 或认证挡住了利用，但仅从源代码看不到这些。
+
+解决办法是在分诊时提供威胁模型，告诉模型你的系统在意和不在意哪些类型的漏洞。例如，说明“我们信任已认证的客户端”，就能简化甚至消掉一整类“严重”。
+
+*一个团队发现，除非有可供验证的东西支撑，或者有更多上下文说明某情况是否在威胁模型预期之内，否则模型往往过于自信。他们的办法是：给分诊 agent 与发现 agent 相同的威胁模型。*
+**试试 **[**`triage` skill**](https://github.com/anthropics/defending-code-reference-harness/tree/main/.claude/skills/triage)**。**它同时做验证和分诊：对每个发现做多票验证、跨运行去重，并按推导出的可利用性重新排序。产出是一份简短、有序、有归属的清单，而不是原始的倾倒。
+
+## **6. 修补：闭环并改进下一轮的上下文**
+
+修补是你闭环、修复漏洞的环节。它也适合用来根据已验证的发现改进威胁模型——更新信任边界或需要更多审视的组件——并把过往发现喂给下一轮扫描的上下文。每个循环都让代码库更坚固，让下一次扫描更有据可依。
+
+修补之前，先写一个在现有代码上会失败的新测试。然后实现修复，确认同一测试通过且没破坏其他东西。（没错，这就是测试驱动开发。）如果不加测试，修复可能悄悄回退，而且事后很难证明这个 bug 真实存在过。
+
+*一位渗透测试人员发现，他们生成的补丁时好时坏，直到 harness 要求模型用打过补丁的代码重跑概念验证来验证补丁。给模型一个可以迭代对照的反馈之后，补丁质量大幅提升，为人工评审省了大量时间。*
+模型可能只针对特定调用点修修补补，而不去动根因。简单地提示模型找出并修复根因就能奏效。然后，让模型在两个层面寻找变体：（1）同模式——同样的有缺陷代码在其他地方还有别的调用点或副本；（2）同类——一个有 SQL 注入漏洞的代码库，往往还有更多 SQL 注入漏洞。用已验证的发现和补丁更新威胁模型，完成闭环。
+
+发布补丁之前，跑一次对抗性检查。让一个全新的发现 agent 以攻击者视角探测补丁，确认补丁足够周全。然后，对过于侵入式的生成补丁做简化。最小化补丁更容易评审，也更不容易引入新 bug。提示模型做能修复根因的最小改动——不重构、不顺手清理、不重排版。
+
+*一个团队谈他们最常见的补丁失败：“推荐的补丁倾向于尽可能收紧，收紧到会破坏与其他服务的连接。问题是解决了，但服务赖以工作的依赖也被搞坏了。”*
+你可以按一道从便宜到昂贵的检查阶梯来验证每个补丁：
+
+- **构建。**补丁能编译，新测试通过。
+
+- **尝试复现。**原始 PoC 应当失效。这能抓住无效补丁。
+
+- **回归检查。**原有测试套件仍然通过。这能抓住被破坏或过度收紧的补丁。
+
+- **重新攻击。**一个全新的发现 agent 跑对抗性检查。这能抓住不完整的补丁。
+
+最后，虽然模型可以编写补丁，但补丁仍需要由人来负责。生成的补丁会以可预见的方式失败——修症状不修根因、拦截合法输入、切断对依赖服务的访问。目标是尽可能验证每个补丁，让人工评审更省力；是让开发团队把精力放在模型可能察觉不到的细微之处（比如即将合入的变更、代码风格）上，只需对补丁做最少的评审和修改。
+
+**试试 **[**`patch` skill**](https://github.com/anthropics/defending-code-reference-harness/tree/main/.claude/skills/patch)**。**它接收分诊输出，为每个发现生成候选 diff，并由一个独立的评审 agent 逐一检查。
+
+## **上手起步**
+
+试着自己跑一遍这个循环。克隆 [`defending-code-reference-harness`](https://github.com/anthropics/defending-code-reference-harness)，在 Claude Code 里执行 `run /quickstart`。它会带你在一个演示目标上走完从威胁建模、扫描到分诊的交互式工作流。仓库还包含一个自主运行的 harness 和一个 /customize skill，用于把 harness 适配到你的环境。
+
+然后，在你自己的代码上运行。挑一个服务或包。从代码和文档引导出威胁模型，完成采访。投入时间为你所处的环境搭建沙箱。扫描。用独立的 agent 验证发现。按你的标准分诊，并评审所有评为高危及以上的发现。修补。然后定期重扫。
+
+你的首次扫描浮出的发现会超出预期。大多数都需要验证和分诊。在为更多扫描做预算之前，先为扫描*之后*的流水线做预算。
+
+一些你可能觉得有用的资源：
+
+- [Claude Security](https://www.anthropic.com/product/security)：Anthropic 面向 agent 式漏洞检测与修补的托管产品。
+
+- [`defending-code-reference-harness`](https://github.com/anthropics/defending-code-reference-harness)：配套仓库，含交互式工作流 skills 和自主运行的演示 harness。
+
+- [`claude-code-security-review action`](https://github.com/anthropics/claude-code-security-review)：让 Claude 作为安全评审员审查每个 pull request 的 GitHub action。
+
+- [Threat Intelligence Enrichment Agent](https://platform.claude.com/cookbook/tool-use-threat-intel-enrichment-agent)：教你构建用威胁情报源富化失陷指标的 agent 的 Cookbook。
+
+- [Vulnerability Detection Agent](https://platform.claude.com/cookbook/claude-agent-sdk-06-the-vulnerability-detection-agent)：教你构建一个建立威胁模型、扫描漏洞并把分诊结果整理成结构化报告的 agent 的 Cookbook。
+
+## **展望**
+
+我们相信，模型在代码中[发现并利用漏洞](https://red.anthropic.com/2026/exploit-evals)正变得越来越容易。因此，我们作为防御者的工作，就是在对手利用之前，找出并修复自己代码中的漏洞。一些团队甚至走得更远，把 harness 接到了事件上：一份漏洞赏金报告触发自动变体分析；一次安全评审触发扫描并把候选发现附在评审上；一个已验证的漏洞反过来更新静态分析工具，防止同类问题再次发生。
+
+这项工作至关重要、风险极高。但做对了，它将开启一场更宏大、也更令人期待的转变：我们*能够*在攻击者利用之前，发现并修复漏洞。
+
+如果你想持续关注我们在网络安全方面的工作，请[**在这里**](https://claude.com/form/cybersecurity-mailing-list)订阅我们的邮件列表。
+
+## **致谢**
+
+本文由 Eugene Yan 和 Henna Dattani 撰写，Michael Molash、Abel Ribbink、Justin Young、Ben Morris、David Dworken 和 Hasnain Lakhani 亦有贡献。本文源自我们在 Anthropic 将模型用于安全工作的实践，以及合作伙伴与客户分享的宝贵洞见，对此我们深表感谢。
+
+‍</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Enterprise AI</span>
-            <span class="article-date">May 27, 2026</span>
-            
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-olive);">
+            <img class="hero-illo-img" src="/assets/illustrations/using-llms-to-secure-source-code.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">使用 LLM 保护源代码安全</h1>
-          <a href="/posts/using-llms-to-secure-source-code/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>模型能力正在快速提升，但并不均衡。我们一直在与安全团队<a href="https://www.anthropic.com/glasswing" target="_blank">合作</a>，在他们自己的代码和开源软件中寻找并修复漏洞。这项工作让我们更深入地理解了如何用模型来保护源代码。<strong>我们最主要的结论是：漏洞发现如今已经很容易并行化，瓶颈已经转移到验证、分诊和修补</strong>。</p>
+            <h1 class="article-title u-text-style-h1">使用 LLM 保护源代码安全</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>We share best practices for how you can work with Claude Opus to build a threat model, discover vulnerabilities in your codebase, then verify, triage, and patch them.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/enterprise-ai" target="_blank" rel="noopener noreferrer">Enterprise AI</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">May 27, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/using-llms-to-secure-source-code/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>模型能力正在快速提升，但并不均衡。我们一直在与安全团队<a href="https://www.anthropic.com/glasswing" target="_blank">合作</a>，在他们自己的代码和开源软件中寻找并修复漏洞。这项工作让我们更深入地理解了如何用模型来保护源代码。<strong>我们最主要的结论是：漏洞发现如今已经很容易并行化，瓶颈已经转移到验证、分诊和修补</strong>。</p>
 <p>为了直观说明这种落差：作为我们对开源软件<a href="https://www.anthropic.com/research/glasswing-initial-update" target="_blank">自身扫描工作</a>的一部分，截至 2026 年 5 月 22 日，我们已披露 1,596 个漏洞。据我们所知，其中只有 97 个得到了修补。</p>
 <p>本指南将带你一步步与 Claude Opus 协作：构建威胁模型、发现代码库中的漏洞，然后验证、分诊并修补它们。虽然我们并没有全部答案，但会分享各团队是如何规模化发现环节的，以及后续阶段哪些做法行之有效。<em>现在就可以从</em><a href="https://github.com/anthropics/defending-code-reference-harness" target="_blank"><em>配套仓库</em></a><em>入手，其中包含用于交互式工作流的 skills 和一个自主扫描的演示 harness；阅读过程中我们会指出实现每一步的 skill。</em></p>
 <h2><strong>发现—修复循环</strong></h2>
@@ -160,21 +423,70 @@
 <p>‍</p>
 </div>
 
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/using-llms-to-secure-source-code" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/using-llms-to-secure-source-code" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

@@ -13,5 +13,24 @@
   "heroIndex": 2,
   "inGrid": true,
   "illustration": "assets/illustrations/artifacts-in-claude-code.svg",
-  "illustrationBg": "Clay"
+  "illustrationBg": "Clay",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": [
+      "Productivity",
+      "Design",
+      "Content Creation",
+      "Work"
+    ]
+  },
+  "subtitle": "Preview your in-progress work as a live, interactive web page—built from your full session context and shareable with your team.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/product/claude-code"
 }

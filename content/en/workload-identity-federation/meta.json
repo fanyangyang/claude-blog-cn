@@ -13,5 +13,21 @@
   "translatedTitle": "用 Workload Identity Federation 安全访问 Claude Platform",
   "translated": true,
   "translatedAt": "2026-09-02T00:00:00.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Platform"
+    ],
+    "usecase": [
+      "Business"
+    ]
+  },
+  "subtitle": "WIF replaces static API keys with short-lived, scoped credentials issued at request time. WIF is compatible with any OIDC-compliant identity provider and covers all Claude API endpoints",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/platform/api"
 }

@@ -13,5 +13,24 @@
   "translatedTitle": "Claude 现在可以创建交互式图表、示意图与可视化内容",
   "translated": true,
   "translatedAt": "2026-09-02T04:12:45.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude apps"
+    ],
+    "usecase": [
+      "Education",
+      "Productivity",
+      "Work",
+      "Learning"
+    ]
+  },
+  "subtitle": "Ask Claude to explain a concept or analyze your data, and it can respond with interactive charts, diagrams, and visualizations — rendered inline as part of the conversation.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": ""
 }

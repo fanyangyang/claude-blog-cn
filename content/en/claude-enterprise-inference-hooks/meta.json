@@ -13,5 +13,23 @@
   "translatedTitle": "推理钩子：Claude Enterprise 的内联数据防泄漏",
   "translated": true,
   "translatedAt": "2026-09-02T04:30:13.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI",
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Enterprise",
+      "Claude Cowork",
+      "Claude Code",
+      "Claude apps"
+    ],
+    "usecase": []
+  },
+  "subtitle": "Inference hooks lets your compliance team inspect and enforce policy on every prompt and tool call response before they reach Claude — across Claude Enterprise surfaces including chat, Claude Code, Claude Cowork, and more.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/solutions/enterprise"
 }

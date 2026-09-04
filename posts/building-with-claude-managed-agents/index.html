@@ -4,54 +4,246 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>智能体界面的演进：使用 Claude Managed Agents 构建生产级智能体 — Claude Blog 中文翻译</title>
-  <meta name="description" content="智能体界面的演进：使用 Claude Managed Agents 构建生产级智能体">
+  <meta name="description" content="As model intelligence and agentic harnesses evolve, Anthropic's Claude Managed Agents allows teams to build and deploy agents in production environments reliably at scale. Here’s why and how teams are using it.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/building-with-claude-managed-agents" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>智能体界面的演进：使用 Claude Managed Agents 构建生产级智能体</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/building-with-claude-managed-agents" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/building-with-claude-managed-agents/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># 智能体界面的演进：使用 Claude Managed Agents 构建生产级智能体
+
+As model intelligence and agentic harnesses evolve, Anthropic's Claude Managed Agents allows teams to build and deploy agents in production environments reliably at scale. Here’s why and how teams are using it.
+
+让一个智能体进入生产环境，靠的不只是一个好提示词。智能体需要一个地方来运行它写的代码、访问你数据所需的凭证、可观测的会话，以及能随用量扩展的基础设施。在 Applied AI 团队，我们的工作正处于产品、研究与基于 Claude 构建的客户的交汇点——我们反复看到同一种模式：基础设施是原型与生产级智能体之间的分水岭。太多团队把开发周期耗费在安全、状态管理、权限控制和 harness 调优上。 
+
+[Claude Managed Agents](https://platform.claude.com/docs/en/managed-agents/overview) 是我们用于构建和部署生产级智能体的一套可组合 API，它把经过性能调优的智能体 harness 与生产级基础设施结合在一起，让团队能够在几天而非几个月内从原型走到上线。本文将介绍 Anthropic 智能体构建模块的演进历程、我们为什么构建 Claude Managed Agents，以及团队如今如何在生产中使用它。 
+
+## **智能体架构的演进**
+
+2023 年我们向开发者开放 Claude 时，API 的设计刻意保持了简单：token 进，token 出。你发送一个提示词，Claude 返回一段补全，harness 和底层基础设施都由你自己搭建。
+
+此后几年，API 的能力稳步增强，但底层契约从未改变：一次请求、一个模型回合，接下来发生什么由你的应用决定。很长一段时间里，这就够了。总结一份文档、对一个支持工单分类、改写一段文字——这些都是能轻松装进单个回合内的工作。
+
+然而渐渐地，人们想交托出去的任务不再装得进单回合了。他们希望 Claude 把任务从头做到尾：查资料、动手执行、观察变化、决定下一步。他们还希望它运行在工作本就依赖的那些系统*之中*，比如代码库、内部 wiki 或工单系统。
+
+在纯 API 的世界里，把 Claude 变成智能体意味着构建你自己的循环：问模型该做什么、运行工具、把结果喂回去，如此往复。你还要负责构建和部署智能体的脚手架，并随着模型演进不断调优。对需要完全定制化的智能体来说，这条路径是合理的。但对于那些更可预测、复杂度更低的智能体工作负载来说，随着模型和产品演进而不断优化 harness 就变得乏味了。 
+
+[Claude Code](https://claude.com/product/claude-code) 是我们 2025 年推出的智能体编码工具，让 Claude 能直接与你的代码库交互。它内部包含了我们自研的那套 harness：循环、工具执行、子智能体、上下文管理，以及让它成为高效智能体的丰富能力。开发者自然希望能在自己的领域中，为自建智能体获得类似的 harness 机制。
+
+为了支持团队在 Claude Code harness 之上构建智能体，我们发布了 [Claude Agent SDK](https://code.claude.com/docs/en/agent-sdk/overview)。Claude Agent SDK 让开发者能够用运行 Claude Code 的同一套机制构建自己的智能体，而不必维护自制的循环。对许多团队而言，智能体正是从这时起变得切实可行：harness 天然针对 Claude 调优，自带基础设施原语，并且随着 Claude Code 的演进而持续改进。
+
+不过，即便有了 harness，在生产环境中部署智能体仍然充满挑战，原因有以下几点：
+
+- **托管与扩缩。**智能体在哪里运行？一个耗时数小时的任务，进程能存活多久？用量增长时靠什么扩容？ 
+- **会话管理。**智能体的历史和进度存在哪里？一次运行能否在中断后恢复并继续？你能否回头查看之前会话里发生了什么？
+- **文件系统管理。**真正干活就意味着产出制品：改代码、写文件、构建输出。智能体在哪里获得可操作的工作区？运行之间这个工作区又会怎样？
+- **执行隔离。**Claude 写的代码必须在某处执行。如果代码出错，影响范围（blast radius）有多大？在生产环境中，什么样的隔离边界才真正值得信任？
+- **凭证。**智能体需要访问你的系统。它如何获得访问权限，又不把你敏感的信息暴露给它自己生成的代码？
+- **可观测性。**当智能体自主工作了一小时并做出意外举动时，你能否还原它走过的每一步？
+
+借助 Agent SDK，上述生产基础设施中的许多要素都通过 Claude Code 的机制来提供。智能体获得一个真实的文件系统来工作，会话状态可持久化到本地或外部存储，可观测性则可通过 OpenTelemetry 导出到你现有的任何监控体系。
+
+然而，随着越来越多团队的智能体从本地开发走向生产，他们需要一种方式在托管基础设施上规模化部署这些智能体。同时，模型及其周边 harness 变得越来越先进——运行时间更长、执行代码更多、触达系统更多、采取行动更多——扩缩、安全和沙箱化的难度也随之上升。
+
+这些障碍中有几个都源于同一个架构决策：智能体 harness 往往与它所操作的文件系统*运行在同一个容器里*。容器必须先启动（付出启动成本），Claude 才能开始思考；智能体连同代码执行紧挨着你的凭证运行；容器一旦消亡，这次运行也随之湮灭。
+
+Managed Agents 通过[把大脑与双手解耦](https://www.anthropic.com/engineering/managed-agents)解决了这些问题。调用 Claude 的 harness 与执行代码的沙箱分开运行，而会话——一份只追加的日志，记录每一次模型调用、工具调用和结果——将两者连接起来。Claude 可以在任何容器存在之前就开始推理，沙箱与你的凭证保持足够距离，而一整次运行在任何时刻都可以从其会话中完整重建。
+
+## **何时以及为何使用 Claude Managed Agents **
+
+使用 Managed Agents 构建时，用户定义任务、工具和护栏，由 Anthropic 在我们的基础设施上运行智能体，并处理底层的智能体循环：如何为智能体提供调用工具的执行环境、出现故障时如何恢复、多智能体编排，等等。
+
+当 harness 没有随模型智能同步演进时，[智能体就会掉链子](https://www.anthropic.com/engineering/harness-design-long-running-apps)。在 Claude Sonnet 4.5 上，智能体临近上下文末尾时会仓促收尾，宁可提前结束工作也不用完剩余空间——这一模式被称为“上下文焦虑”（context anxiety）。我们的修复是在 harness 中加入上下文重置（context resets），把“Claude 在临近限制时需要帮助来保持连贯”这一假设直接内置进去。但这个假设没能活过下一代模型。到了 Claude Opus 4.5，这种行为消失了，我们加上的重置机制反而成了纯粹的负担。
+
+对大多数组织来说，维护 harness 是一种无法为产品带来差异化的额外开销。harness 必须针对特定模型行为调优；压缩（compaction）、工具执行、缓存等原语在 Claude 上的工作方式与其他模型不同。有了 Claude Managed Agents，harness 会随模型一同演进，团队得以专注于真正让智能体产生差异化的东西：**上下文管理和领域专业知识。** 
+
+为了让开发者能够配置构建高效智能体所需的上下文和工具，Managed Agents 围绕三种核心资源构建：智能体（agent）、环境（environment）和会话（session）。*智能体*是一份配置：一个模型、一个提示词、一组工具，以及围绕它们的护栏。*环境*是智能体运行所处的执行上下文：沙箱容器、它的网络规则和预装的软件包，托管在我们的云上或由你控制的基础设施上。每次运行是一个*会话*，它把一个智能体与一个环境配对，并获得自己独立的沙箱实例。会话在服务端持久化完整的事件历史、沙箱状态和输出，因此长时间运行的工作可以暂停、干净地恢复，事后还能逐步追溯。使用 Managed Agents，你可以只定义一次智能体和环境，然后随着工作负载的增长，在同一份配置上运行大量会话。
+
+## **在 Managed Agents 上构建生产级和可扩展的系统**
+
+在 Applied AI 团队，我们见证智能体从原型走向生产，既发生在 Anthropic 内部，也发生在客户的系统里，横跨编码、财务、支持、法务等十几个领域。这让我们能清楚看到演示与生产就绪的智能体之间的差别，以及团队最容易卡住的地方。
+
+下面我们分享在 Claude Managed Agents 这类托管服务上构建的最常见理由： 
+
+**1. 凭证不进入沙箱。**当所有东西都跑在同一个容器里时，Claude 生成的代码就紧挨着你的凭证，提示词注入可能诱导模型读取自己的环境变量，从而泄露 token。我们固然可以在同一容器内设置严密的护栏来防范，但解耦架构提供了一条更安全的路径：让凭证完全留在沙箱之外。MCP、CLI 和 GitHub 仓库等工具所需的 token 存放在独立的 vault 中，由代理按需获取并解密。Managed Agents 提供[Vaults](https://platform.claude.com/docs/en/managed-agents/vaults)，开箱即用地处理凭证，你无需自建密钥存储、无需每次调用都传输 token，也不会弄不清某个智能体是代表哪位终端用户行事的。Vault 中的凭证在存储前经过信封加密（envelope encryption）保护，取用时则需要经过签名的请求 token 进行验证。
+
+**2. 消除沙箱开销，降低延迟。**延迟是许多企业团队最关心的指标，因为用户对等待 Claude 响应的感知非常敏锐。没有 Managed Agents 架构时，每个会话都必须启动一个容器——哪怕智能体只需要思考、根本不会运行任何工具。这部分启动时间纯属浪费，用户感受到的就是首个响应前的延迟。而使用 Managed Agents，Claude 立即开始推理，环境在并行中启动，从不运行工具的会话则完全跳过容器。这意味着用户看到第一个 token 无需等待容器启动，而当智能体需要运行什么时，环境已经就绪。在我们的测试中，中位数场景（p50）下首个 token 的时间缩短了约 60%，最慢场景（p95）下缩短超过 90%。 
+
+**3. 可靠、持久的会话，支撑会话管理、可观测性和记忆。**Managed Agents 的思维方式不是请求/响应，而是*事件*。一个会话是一条持续的事件流：每一次模型调用、工具调用和结果，都会追加到一份位于智能体进程之外的日志里。基于这种架构，你可以在智能体工作时随事件流入获得实时更新，也可以稍后恢复任意会话，无需管理任何数据库或存档点。历史记录在交互之间一直保留（除非你删除会话），会话闲置时其容器会被打快照（checkpoint），你可以从暂停处干净地继续。而且由于整次运行本身就是一份事件记录，可观测性和记忆随之而来：Claude Developer Console 提供智能体会话的原生可视化时间线视图，以及让你深入检查任意会话记录的调试体验。Managed Agents 还附带记忆（Memory）和 Dreaming 等同样依赖这种会话持久性的功能。[Dreaming](https://platform.claude.com/docs/en/managed-agents/dreams) 是一个按计划运行的进程，它会审阅你的智能体会话和记忆存储、提取模式并整理记忆，让智能体随时间不断进步。Dreaming 在会话之间打磨记忆，通过读取持久化的会话日志，从反复出现的错误和用户偏好中学习改进。
+
+**4. 在 Anthropic 托管或自托管云容器之间灵活选择。**默认情况下，使用 Managed Agents 时，你可以把编排和工具执行都交给 Anthropic 托管的云容器。这让托管和扩缩变得简单省事，提供了更快的投产路径。正因为 Managed Agents 中大脑与双手是解耦的，双手可以放在任何地方——包括你自己的虚拟私有云（VPC）内。因此，我们也为希望掌控工具执行的团队提供[自托管沙箱](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes)（self-hosted sandboxes），让智能体的代码、文件系统和网络出口永不离开你的环境。我们还提供 [MCP tunnels](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/overview)，让你能把 Claude 连接到运行在你私有网络内的 Model Context Protocol（MCP）服务器。所以，自托管沙箱控制的是*智能体代码在哪里执行*，而 MCP tunnels 控制的是*Anthropic 如何触达你网络中的 MCP 服务器*，两者配合，让你能精确控制什么留在你的边界之内。
+
+*Claude Managed Agents 内置的可观测性控制台记录每一个事件，你可以拖动时间线、打开任意步骤并阅读其原始负载。*除上述功能外，还有更多能力，包括让智能体按评分标准（rubric）给自己打分的 outcomes、多智能体编排、权限策略和 webhooks。更多详情请见[这里](https://platform.claude.com/docs/en/managed-agents/overview)。
+
+### **客户如今如何在 Managed Agents 上构建**
+
+在各个行业中，客户已经在用 Claude Managed Agents 把智能体推向生产。以下是几个例子：
+
+- [Notion](https://claude.com/customers/notion) 在 Managed Agents 上运行其 Custom Agents：团队直接从任务看板给 Claude 派活，Claude 收集每个任务相关的文档、会议记录和已连接的数据，完成的代码、演示文稿和站点会回到工作区中等待审阅。数十个任务并行运行，他们团队曾这样描述一个早期原型：把大约十二小时的工作压缩成了二十分钟。
+- [Rakuten](https://claude.com/customers/rakuten) 使用 Managed Agents 在产品、销售、营销和财务领域上线了多个专业智能体，每个都在大约一周内投入使用。[ ](https://claude.com/customers/sentry)
+- [Sentry](https://claude.com/customers/sentry) 将其 Seer 调试智能体与一个负责编写补丁并发起 PR 的 Claude 智能体配对，由一名工程师在数周（而非数月）内建成。[ ](https://claude.com/blog/claude-managed-agents)
+- [Asana](https://claude.com/blog/claude-managed-agents) 构建了在项目内认领任务的 AI Teammates，而[ Atlassian](https://claude.com/blog/claude-managed-agents) 则把开发者智能体接入了 Jira 工作流。 
+
+## **开始使用 Claude Managed Agents**
+
+我们构建 Managed Agents 的目标是：让你能通过 Claude Code 和 Claude Developer Console（[platform.claude.com](http://platform.claude.com)）尽可能轻松地启动智能体。例如，Console 的快速入门功能让你可以从智能体模板开始，或用自然语言描述一个智能体，然后把它变成一个可在几分钟内完成加固和部署的生产就绪智能体。
+
+*platform.claude.com 的智能体快速入门：从模板开始，或描述你想构建的东西。**几步之后：智能体创建完成，环境配置就绪，会话已经上线。控制台实时流式展示运行过程。*在 Claude Code 中，[/claude-api skill ](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/claude-api-skill)默认提供，为 Claude 提供构建 Claude Managed Agents 应用的详细、最新的参考资料。我们强烈建议你利用它获取设置 Managed Agents 应用的最佳实践。运行 /claude-api managed-agents-onboard 即可开始，它会以访谈式引导的方式，带你从零设置一个新的 Managed Agent。
+
+## **托管智能体构建的未来**
+
+随着各团队分享他们在 Managed Agents 上的构建成果，我们看到：过去花在生产基础设施上的时间，如今投向了真正让智能体产生差异化的地方——管理上下文、为用户量身打造体验。现在，新模型发布后，你只需更新智能体让它使用新模型、重跑你的评测，就能把改进发布上线，完全不必触动底层架构。
+
+我们期待看到你构建的作品。
+
+[***开始使用***](https://platform.claude.com/docs/en/managed-agents/overview)*** Claude Managed Agents。***
+
+*本文由 Anthropic Applied AI 团队的技术成员 Gagan Bhat 和 Isabella He 撰写。他们感谢 Hema Thanki、Jess Yan 和 Molly Vorwerck 的贡献。*</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Agents</span>
-            <span class="article-date">June 10, 2026</span>
-            
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-olive);">
+            <img class="hero-illo-img" src="/assets/illustrations/building-with-claude-managed-agents.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">智能体界面的演进：使用 Claude Managed Agents 构建生产级智能体</h1>
-          <a href="/posts/building-with-claude-managed-agents/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><figure class="w-richtext-figure-type-video w-richtext-align-fullwidth" style="padding-bottom:75%" data-rt-type="video" data-rt-align="fullwidth" data-rt-max-width="" data-rt-max-height="75%" data-rt-dimensions="640:480" data-page-url="https://youtu.be/ksfm6jeTg3Q?si=f3HSIkdpnCCC4End"><div><iframe src="https://www.youtube.com/embed/ksfm6jeTg3Q" title="Building the future of agentic infrastructure" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><p>让一个智能体进入生产环境，靠的不只是一个好提示词。智能体需要一个地方来运行它写的代码、访问你数据所需的凭证、可观测的会话，以及能随用量扩展的基础设施。在 Applied AI 团队，我们的工作正处于产品、研究与基于 Claude 构建的客户的交汇点——我们反复看到同一种模式：基础设施是原型与生产级智能体之间的分水岭。太多团队把开发周期耗费在安全、状态管理、权限控制和 harness 调优上。&nbsp;</p><p><a href="https://platform.claude.com/docs/en/managed-agents/overview" target="_blank">Claude Managed Agents</a> 是我们用于构建和部署生产级智能体的一套可组合 API，它把经过性能调优的智能体 harness 与生产级基础设施结合在一起，让团队能够在几天而非几个月内从原型走到上线。本文将介绍 Anthropic 智能体构建模块的演进历程、我们为什么构建 Claude Managed Agents，以及团队如今如何在生产中使用它。&nbsp;</p><h2><strong>智能体架构的演进</strong></h2><p>2023 年我们向开发者开放 Claude 时，API 的设计刻意保持了简单：token 进，token 出。你发送一个提示词，Claude 返回一段补全，harness 和底层基础设施都由你自己搭建。</p><p>此后几年，API 的能力稳步增强，但底层契约从未改变：一次请求、一个模型回合，接下来发生什么由你的应用决定。很长一段时间里，这就够了。总结一份文档、对一个支持工单分类、改写一段文字——这些都是能轻松装进单个回合内的工作。</p><p>然而渐渐地，人们想交托出去的任务不再装得进单回合了。他们希望 Claude 把任务从头做到尾：查资料、动手执行、观察变化、决定下一步。他们还希望它运行在工作本就依赖的那些系统<em>之中</em>，比如代码库、内部 wiki 或工单系统。</p><p>在纯 API 的世界里，把 Claude 变成智能体意味着构建你自己的循环：问模型该做什么、运行工具、把结果喂回去，如此往复。你还要负责构建和部署智能体的脚手架，并随着模型演进不断调优。对需要完全定制化的智能体来说，这条路径是合理的。但对于那些更可预测、复杂度更低的智能体工作负载来说，随着模型和产品演进而不断优化 harness 就变得乏味了。&nbsp;</p><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:4800px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="4800px"><div><img alt="__wf_reserved_inherit" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a298c28f950480f89a8dfcf_01%20_%20Messages%20API.png" width="auto" height="auto" loading="lazy"></div></figure><p><a href="https://claude.com/product/claude-code" target="_blank">Claude Code</a> 是我们 2025 年推出的智能体编码工具，让 Claude 能直接与你的代码库交互。它内部包含了我们自研的那套 harness：循环、工具执行、子智能体、上下文管理，以及让它成为高效智能体的丰富能力。开发者自然希望能在自己的领域中，为自建智能体获得类似的 harness 机制。</p><p>为了支持团队在 Claude Code harness 之上构建智能体，我们发布了 <a href="https://code.claude.com/docs/en/agent-sdk/overview" target="_blank">Claude Agent SDK</a>。Claude Agent SDK 让开发者能够用运行 Claude Code 的同一套机制构建自己的智能体，而不必维护自制的循环。对许多团队而言，智能体正是从这时起变得切实可行：harness 天然针对 Claude 调优，自带基础设施原语，并且随着 Claude Code 的演进而持续改进。</p><p>不过，即便有了 harness，在生产环境中部署智能体仍然充满挑战，原因有以下几点：</p><ul><li><strong>托管与扩缩。</strong>智能体在哪里运行？一个耗时数小时的任务，进程能存活多久？用量增长时靠什么扩容？&nbsp;</li><li><strong>会话管理。</strong>智能体的历史和进度存在哪里？一次运行能否在中断后恢复并继续？你能否回头查看之前会话里发生了什么？</li><li><strong>文件系统管理。</strong>真正干活就意味着产出制品：改代码、写文件、构建输出。智能体在哪里获得可操作的工作区？运行之间这个工作区又会怎样？</li><li><strong>执行隔离。</strong>Claude 写的代码必须在某处执行。如果代码出错，影响范围（blast radius）有多大？在生产环境中，什么样的隔离边界才真正值得信任？</li><li><strong>凭证。</strong>智能体需要访问你的系统。它如何获得访问权限，又不把你敏感的信息暴露给它自己生成的代码？</li><li><strong>可观测性。</strong>当智能体自主工作了一小时并做出意外举动时，你能否还原它走过的每一步？</li></ul><p>借助 Agent SDK，上述生产基础设施中的许多要素都通过 Claude Code 的机制来提供。智能体获得一个真实的文件系统来工作，会话状态可持久化到本地或外部存储，可观测性则可通过 OpenTelemetry 导出到你现有的任何监控体系。</p><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:4800px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="4800px"><div><img alt="__wf_reserved_inherit" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a298c53aaeeee508f2b3166_02%20_%20Claude%20Agent%20SDK.png" width="auto" height="auto" loading="lazy"></div></figure><p>然而，随着越来越多团队的智能体从本地开发走向生产，他们需要一种方式在托管基础设施上规模化部署这些智能体。同时，模型及其周边 harness 变得越来越先进——运行时间更长、执行代码更多、触达系统更多、采取行动更多——扩缩、安全和沙箱化的难度也随之上升。</p><p>这些障碍中有几个都源于同一个架构决策：智能体 harness 往往与它所操作的文件系统<em>运行在同一个容器里</em>。容器必须先启动（付出启动成本），Claude 才能开始思考；智能体连同代码执行紧挨着你的凭证运行；容器一旦消亡，这次运行也随之湮灭。</p><p>Managed Agents 通过<a href="https://www.anthropic.com/engineering/managed-agents" target="_blank">把大脑与双手解耦</a>解决了这些问题。调用 Claude 的 harness 与执行代码的沙箱分开运行，而会话——一份只追加的日志，记录每一次模型调用、工具调用和结果——将两者连接起来。Claude 可以在任何容器存在之前就开始推理，沙箱与你的凭证保持足够距离，而一整次运行在任何时刻都可以从其会话中完整重建。</p><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:4800px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="4800px"><div><img alt="__wf_reserved_inherit" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a298c97d4a887f2666a50b6_03%20_%20Claude%20Managed%20Agents.png" width="auto" height="auto" loading="lazy"></div></figure><h2><strong>何时以及为何使用 Claude Managed Agents&nbsp;</strong></h2><p>使用 Managed Agents 构建时，用户定义任务、工具和护栏，由 Anthropic 在我们的基础设施上运行智能体，并处理底层的智能体循环：如何为智能体提供调用工具的执行环境、出现故障时如何恢复、多智能体编排，等等。</p><p>当 harness 没有随模型智能同步演进时，<a href="https://www.anthropic.com/engineering/harness-design-long-running-apps" target="_blank">智能体就会掉链子</a>。在 Claude Sonnet 4.5 上，智能体临近上下文末尾时会仓促收尾，宁可提前结束工作也不用完剩余空间——这一模式被称为“上下文焦虑”（context anxiety）。我们的修复是在 harness 中加入上下文重置（context resets），把“Claude 在临近限制时需要帮助来保持连贯”这一假设直接内置进去。但这个假设没能活过下一代模型。到了 Claude Opus 4.5，这种行为消失了，我们加上的重置机制反而成了纯粹的负担。</p><p>对大多数组织来说，维护 harness 是一种无法为产品带来差异化的额外开销。harness 必须针对特定模型行为调优；压缩（compaction）、工具执行、缓存等原语在 Claude 上的工作方式与其他模型不同。有了 Claude Managed Agents，harness 会随模型一同演进，团队得以专注于真正让智能体产生差异化的东西：<strong>上下文管理和领域专业知识。</strong>&nbsp;</p><p>为了让开发者能够配置构建高效智能体所需的上下文和工具，Managed Agents 围绕三种核心资源构建：智能体（agent）、环境（environment）和会话（session）。<em>智能体</em>是一份配置：一个模型、一个提示词、一组工具，以及围绕它们的护栏。<em>环境</em>是智能体运行所处的执行上下文：沙箱容器、它的网络规则和预装的软件包，托管在我们的云上或由你控制的基础设施上。每次运行是一个<em>会话</em>，它把一个智能体与一个环境配对，并获得自己独立的沙箱实例。会话在服务端持久化完整的事件历史、沙箱状态和输出，因此长时间运行的工作可以暂停、干净地恢复，事后还能逐步追溯。使用 Managed Agents，你可以只定义一次智能体和环境，然后随着工作负载的增长，在同一份配置上运行大量会话。</p><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:4800px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="4800px"><div><img alt="__wf_reserved_inherit" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a29a18bb07e245f8389acb9_04%20_%20Agents_%20environments_%20sessions%20(2).png" width="auto" height="auto" loading="lazy"></div></figure><h2><strong>在 Managed Agents 上构建生产级和可扩展的系统</strong></h2><p>在 Applied AI 团队，我们见证智能体从原型走向生产，既发生在 Anthropic 内部，也发生在客户的系统里，横跨编码、财务、支持、法务等十几个领域。这让我们能清楚看到演示与生产就绪的智能体之间的差别，以及团队最容易卡住的地方。</p><p>下面我们分享在 Claude Managed Agents 这类托管服务上构建的最常见理由：&nbsp;</p><p><strong>1. 凭证不进入沙箱。</strong>当所有东西都跑在同一个容器里时，Claude 生成的代码就紧挨着你的凭证，提示词注入可能诱导模型读取自己的环境变量，从而泄露 token。我们固然可以在同一容器内设置严密的护栏来防范，但解耦架构提供了一条更安全的路径：让凭证完全留在沙箱之外。MCP、CLI 和 GitHub 仓库等工具所需的 token 存放在独立的 vault 中，由代理按需获取并解密。Managed Agents 提供<a href="https://platform.claude.com/docs/en/managed-agents/vaults" target="_blank">Vaults</a>，开箱即用地处理凭证，你无需自建密钥存储、无需每次调用都传输 token，也不会弄不清某个智能体是代表哪位终端用户行事的。Vault 中的凭证在存储前经过信封加密（envelope encryption）保护，取用时则需要经过签名的请求 token 进行验证。</p><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:4800px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="4800px"><div><img alt="__wf_reserved_inherit" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a29a19cebb4eb7adac0a8ec_05%20_%20Managed%20Agents%20runtime%20(1).png" width="auto" height="auto" loading="lazy"></div></figure><p><strong>2. 消除沙箱开销，降低延迟。</strong>延迟是许多企业团队最关心的指标，因为用户对等待 Claude 响应的感知非常敏锐。没有 Managed Agents 架构时，每个会话都必须启动一个容器——哪怕智能体只需要思考、根本不会运行任何工具。这部分启动时间纯属浪费，用户感受到的就是首个响应前的延迟。而使用 Managed Agents，Claude 立即开始推理，环境在并行中启动，从不运行工具的会话则完全跳过容器。这意味着用户看到第一个 token 无需等待容器启动，而当智能体需要运行什么时，环境已经就绪。在我们的测试中，中位数场景（p50）下首个 token 的时间缩短了约 60%，最慢场景（p95）下缩短超过 90%。&nbsp;</p><p><strong>3. 可靠、持久的会话，支撑会话管理、可观测性和记忆。</strong>Managed Agents 的思维方式不是请求/响应，而是<em>事件</em>。一个会话是一条持续的事件流：每一次模型调用、工具调用和结果，都会追加到一份位于智能体进程之外的日志里。基于这种架构，你可以在智能体工作时随事件流入获得实时更新，也可以稍后恢复任意会话，无需管理任何数据库或存档点。历史记录在交互之间一直保留（除非你删除会话），会话闲置时其容器会被打快照（checkpoint），你可以从暂停处干净地继续。而且由于整次运行本身就是一份事件记录，可观测性和记忆随之而来：Claude Developer Console 提供智能体会话的原生可视化时间线视图，以及让你深入检查任意会话记录的调试体验。Managed Agents 还附带记忆（Memory）和 Dreaming 等同样依赖这种会话持久性的功能。<a href="https://platform.claude.com/docs/en/managed-agents/dreams" target="_blank">Dreaming</a> 是一个按计划运行的进程，它会审阅你的智能体会话和记忆存储、提取模式并整理记忆，让智能体随时间不断进步。Dreaming 在会话之间打磨记忆，通过读取持久化的会话日志，从反复出现的错误和用户偏好中学习改进。</p><p><strong>4. 在 Anthropic 托管或自托管云容器之间灵活选择。</strong>默认情况下，使用 Managed Agents 时，你可以把编排和工具执行都交给 Anthropic 托管的云容器。这让托管和扩缩变得简单省事，提供了更快的投产路径。正因为 Managed Agents 中大脑与双手是解耦的，双手可以放在任何地方——包括你自己的虚拟私有云（VPC）内。因此，我们也为希望掌控工具执行的团队提供<a href="https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes" target="_blank">自托管沙箱</a>（self-hosted sandboxes），让智能体的代码、文件系统和网络出口永不离开你的环境。我们还提供 <a href="https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/overview" target="_blank">MCP tunnels</a>，让你能把 Claude 连接到运行在你私有网络内的 Model Context Protocol（MCP）服务器。所以，自托管沙箱控制的是<em>智能体代码在哪里执行</em>，而 MCP tunnels 控制的是<em>Anthropic 如何触达你网络中的 MCP 服务器</em>，两者配合，让你能精确控制什么留在你的边界之内。</p><figure class="w-richtext-figure-type-image w-richtext-align-center" data-rt-type="image" data-rt-align="center"><div><img alt="__wf_reserved_inherit" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a298e427c7a804ea4295163_image7.png" width="auto" height="auto" loading="lazy"></div><figcaption><em>Claude Managed Agents 内置的可观测性控制台记录每一个事件，你可以拖动时间线、打开任意步骤并阅读其原始负载。</em></figcaption></figure><p>除上述功能外，还有更多能力，包括让智能体按评分标准（rubric）给自己打分的 outcomes、多智能体编排、权限策略和 webhooks。更多详情请见<a href="https://platform.claude.com/docs/en/managed-agents/overview">这里</a>。</p><h3><strong>客户如今如何在 Managed Agents 上构建</strong></h3><p>在各个行业中，客户已经在用 Claude Managed Agents 把智能体推向生产。以下是几个例子：</p><ul><li><a href="https://claude.com/customers/notion" target="_blank">Notion</a> 在 Managed Agents 上运行其 Custom Agents：团队直接从任务看板给 Claude 派活，Claude 收集每个任务相关的文档、会议记录和已连接的数据，完成的代码、演示文稿和站点会回到工作区中等待审阅。数十个任务并行运行，他们团队曾这样描述一个早期原型：把大约十二小时的工作压缩成了二十分钟。</li><li><a href="https://claude.com/customers/rakuten" target="_blank">Rakuten</a> 使用 Managed Agents 在产品、销售、营销和财务领域上线了多个专业智能体，每个都在大约一周内投入使用。<a href="https://claude.com/customers/sentry">&nbsp;</a></li><li><a href="https://claude.com/customers/sentry" target="_blank">Sentry</a> 将其 Seer 调试智能体与一个负责编写补丁并发起 PR 的 Claude 智能体配对，由一名工程师在数周（而非数月）内建成。<a href="https://claude.com/blog/claude-managed-agents">&nbsp;</a></li><li><a href="https://claude.com/blog/claude-managed-agents" target="_blank">Asana</a> 构建了在项目内认领任务的 AI Teammates，而<a href="https://claude.com/blog/claude-managed-agents" target="_blank"> Atlassian</a> 则把开发者智能体接入了 Jira 工作流。&nbsp;</li></ul><h2><strong>开始使用 Claude Managed Agents</strong></h2><p>我们构建 Managed Agents 的目标是：让你能通过 Claude Code 和 Claude Developer Console（<a href="http://platform.claude.com" target="_blank">platform.claude.com</a>）尽可能轻松地启动智能体。例如，Console 的快速入门功能让你可以从智能体模板开始，或用自然语言描述一个智能体，然后把它变成一个可在几分钟内完成加固和部署的生产就绪智能体。</p><figure class="w-richtext-figure-type-image w-richtext-align-center" data-rt-type="image" data-rt-align="center"><div><img alt="__wf_reserved_inherit" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a298e9b866a4402a3c9bb5d_image5.png" width="auto" height="auto" loading="lazy"></div><figcaption><em>platform.claude.com 的智能体快速入门：从模板开始，或描述你想构建的东西。</em></figcaption></figure><figure class="w-richtext-figure-type-image w-richtext-align-center" data-rt-type="image" data-rt-align="center"><div><img alt="__wf_reserved_inherit" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a298ebdff6d26839e052c63_image9.png" width="auto" height="auto" loading="lazy"></div><figcaption><em>几步之后：智能体创建完成，环境配置就绪，会话已经上线。控制台实时流式展示运行过程。</em></figcaption></figure><p>在 Claude Code 中，<a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/claude-api-skill" target="_blank">/claude-api skill </a>默认提供，为 Claude 提供构建 Claude Managed Agents 应用的详细、最新的参考资料。我们强烈建议你利用它获取设置 Managed Agents 应用的最佳实践。运行 /claude-api managed-agents-onboard 即可开始，它会以访谈式引导的方式，带你从零设置一个新的 Managed Agent。</p><figure class="w-richtext-figure-type-image w-richtext-align-center" data-rt-type="image" data-rt-align="center"><div><img alt="__wf_reserved_inherit" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a298ef3765ce453971174cd_image6.png" width="auto" height="auto" loading="lazy"></div></figure><h2><strong>托管智能体构建的未来</strong></h2><p>随着各团队分享他们在 Managed Agents 上的构建成果，我们看到：过去花在生产基础设施上的时间，如今投向了真正让智能体产生差异化的地方——管理上下文、为用户量身打造体验。现在，新模型发布后，你只需更新智能体让它使用新模型、重跑你的评测，就能把改进发布上线，完全不必触动底层架构。</p><p>我们期待看到你构建的作品。</p><p><a href="https://platform.claude.com/docs/en/managed-agents/overview" target="_blank"><strong><em>开始使用</em></strong></a><strong><em> Claude Managed Agents。</em></strong></p><p><em>本文由 Anthropic Applied AI 团队的技术成员 Gagan Bhat 和 Isabella He 撰写。他们感谢 Hema Thanki、Jess Yan 和 Molly Vorwerck 的贡献。</em></p></div>
+            <h1 class="article-title u-text-style-h1">智能体界面的演进：使用 Claude Managed Agents 构建生产级智能体</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>As model intelligence and agentic harnesses evolve, Anthropic's Claude Managed Agents allows teams to build and deploy agents in production environments reliably at scale. Here’s why and how teams are using it.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/agents" target="_blank" rel="noopener noreferrer">Agents</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/platform/api" target="_blank" rel="noopener noreferrer">Claude Platform</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">June 10, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/building-with-claude-managed-agents/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/building-with-claude-managed-agents" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><figure class="w-richtext-figure-type-video w-richtext-align-fullwidth" style="padding-bottom:75%" data-rt-type="video" data-rt-align="fullwidth" data-rt-max-width="" data-rt-max-height="75%" data-rt-dimensions="640:480" data-page-url="https://youtu.be/ksfm6jeTg3Q?si=f3HSIkdpnCCC4End"><div><iframe src="https://www.youtube.com/embed/ksfm6jeTg3Q" title="Building the future of agentic infrastructure" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><p>让一个智能体进入生产环境，靠的不只是一个好提示词。智能体需要一个地方来运行它写的代码、访问你数据所需的凭证、可观测的会话，以及能随用量扩展的基础设施。在 Applied AI 团队，我们的工作正处于产品、研究与基于 Claude 构建的客户的交汇点——我们反复看到同一种模式：基础设施是原型与生产级智能体之间的分水岭。太多团队把开发周期耗费在安全、状态管理、权限控制和 harness 调优上。&nbsp;</p><p><a href="https://platform.claude.com/docs/en/managed-agents/overview" target="_blank">Claude Managed Agents</a> 是我们用于构建和部署生产级智能体的一套可组合 API，它把经过性能调优的智能体 harness 与生产级基础设施结合在一起，让团队能够在几天而非几个月内从原型走到上线。本文将介绍 Anthropic 智能体构建模块的演进历程、我们为什么构建 Claude Managed Agents，以及团队如今如何在生产中使用它。&nbsp;</p><h2><strong>智能体架构的演进</strong></h2><p>2023 年我们向开发者开放 Claude 时，API 的设计刻意保持了简单：token 进，token 出。你发送一个提示词，Claude 返回一段补全，harness 和底层基础设施都由你自己搭建。</p><p>此后几年，API 的能力稳步增强，但底层契约从未改变：一次请求、一个模型回合，接下来发生什么由你的应用决定。很长一段时间里，这就够了。总结一份文档、对一个支持工单分类、改写一段文字——这些都是能轻松装进单个回合内的工作。</p><p>然而渐渐地，人们想交托出去的任务不再装得进单回合了。他们希望 Claude 把任务从头做到尾：查资料、动手执行、观察变化、决定下一步。他们还希望它运行在工作本就依赖的那些系统<em>之中</em>，比如代码库、内部 wiki 或工单系统。</p><p>在纯 API 的世界里，把 Claude 变成智能体意味着构建你自己的循环：问模型该做什么、运行工具、把结果喂回去，如此往复。你还要负责构建和部署智能体的脚手架，并随着模型演进不断调优。对需要完全定制化的智能体来说，这条路径是合理的。但对于那些更可预测、复杂度更低的智能体工作负载来说，随着模型和产品演进而不断优化 harness 就变得乏味了。&nbsp;</p><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:4800px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="4800px"><div><img alt="__wf_reserved_inherit" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a298c28f950480f89a8dfcf_01%20_%20Messages%20API.png" width="auto" height="auto" loading="lazy"></div></figure><p><a href="https://claude.com/product/claude-code" target="_blank">Claude Code</a> 是我们 2025 年推出的智能体编码工具，让 Claude 能直接与你的代码库交互。它内部包含了我们自研的那套 harness：循环、工具执行、子智能体、上下文管理，以及让它成为高效智能体的丰富能力。开发者自然希望能在自己的领域中，为自建智能体获得类似的 harness 机制。</p><p>为了支持团队在 Claude Code harness 之上构建智能体，我们发布了 <a href="https://code.claude.com/docs/en/agent-sdk/overview" target="_blank">Claude Agent SDK</a>。Claude Agent SDK 让开发者能够用运行 Claude Code 的同一套机制构建自己的智能体，而不必维护自制的循环。对许多团队而言，智能体正是从这时起变得切实可行：harness 天然针对 Claude 调优，自带基础设施原语，并且随着 Claude Code 的演进而持续改进。</p><p>不过，即便有了 harness，在生产环境中部署智能体仍然充满挑战，原因有以下几点：</p><ul><li><strong>托管与扩缩。</strong>智能体在哪里运行？一个耗时数小时的任务，进程能存活多久？用量增长时靠什么扩容？&nbsp;</li><li><strong>会话管理。</strong>智能体的历史和进度存在哪里？一次运行能否在中断后恢复并继续？你能否回头查看之前会话里发生了什么？</li><li><strong>文件系统管理。</strong>真正干活就意味着产出制品：改代码、写文件、构建输出。智能体在哪里获得可操作的工作区？运行之间这个工作区又会怎样？</li><li><strong>执行隔离。</strong>Claude 写的代码必须在某处执行。如果代码出错，影响范围（blast radius）有多大？在生产环境中，什么样的隔离边界才真正值得信任？</li><li><strong>凭证。</strong>智能体需要访问你的系统。它如何获得访问权限，又不把你敏感的信息暴露给它自己生成的代码？</li><li><strong>可观测性。</strong>当智能体自主工作了一小时并做出意外举动时，你能否还原它走过的每一步？</li></ul><p>借助 Agent SDK，上述生产基础设施中的许多要素都通过 Claude Code 的机制来提供。智能体获得一个真实的文件系统来工作，会话状态可持久化到本地或外部存储，可观测性则可通过 OpenTelemetry 导出到你现有的任何监控体系。</p><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:4800px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="4800px"><div><img alt="__wf_reserved_inherit" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a298c53aaeeee508f2b3166_02%20_%20Claude%20Agent%20SDK.png" width="auto" height="auto" loading="lazy"></div></figure><p>然而，随着越来越多团队的智能体从本地开发走向生产，他们需要一种方式在托管基础设施上规模化部署这些智能体。同时，模型及其周边 harness 变得越来越先进——运行时间更长、执行代码更多、触达系统更多、采取行动更多——扩缩、安全和沙箱化的难度也随之上升。</p><p>这些障碍中有几个都源于同一个架构决策：智能体 harness 往往与它所操作的文件系统<em>运行在同一个容器里</em>。容器必须先启动（付出启动成本），Claude 才能开始思考；智能体连同代码执行紧挨着你的凭证运行；容器一旦消亡，这次运行也随之湮灭。</p><p>Managed Agents 通过<a href="https://www.anthropic.com/engineering/managed-agents" target="_blank">把大脑与双手解耦</a>解决了这些问题。调用 Claude 的 harness 与执行代码的沙箱分开运行，而会话——一份只追加的日志，记录每一次模型调用、工具调用和结果——将两者连接起来。Claude 可以在任何容器存在之前就开始推理，沙箱与你的凭证保持足够距离，而一整次运行在任何时刻都可以从其会话中完整重建。</p><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:4800px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="4800px"><div><img alt="__wf_reserved_inherit" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a298c97d4a887f2666a50b6_03%20_%20Claude%20Managed%20Agents.png" width="auto" height="auto" loading="lazy"></div></figure><h2><strong>何时以及为何使用 Claude Managed Agents&nbsp;</strong></h2><p>使用 Managed Agents 构建时，用户定义任务、工具和护栏，由 Anthropic 在我们的基础设施上运行智能体，并处理底层的智能体循环：如何为智能体提供调用工具的执行环境、出现故障时如何恢复、多智能体编排，等等。</p><p>当 harness 没有随模型智能同步演进时，<a href="https://www.anthropic.com/engineering/harness-design-long-running-apps" target="_blank">智能体就会掉链子</a>。在 Claude Sonnet 4.5 上，智能体临近上下文末尾时会仓促收尾，宁可提前结束工作也不用完剩余空间——这一模式被称为“上下文焦虑”（context anxiety）。我们的修复是在 harness 中加入上下文重置（context resets），把“Claude 在临近限制时需要帮助来保持连贯”这一假设直接内置进去。但这个假设没能活过下一代模型。到了 Claude Opus 4.5，这种行为消失了，我们加上的重置机制反而成了纯粹的负担。</p><p>对大多数组织来说，维护 harness 是一种无法为产品带来差异化的额外开销。harness 必须针对特定模型行为调优；压缩（compaction）、工具执行、缓存等原语在 Claude 上的工作方式与其他模型不同。有了 Claude Managed Agents，harness 会随模型一同演进，团队得以专注于真正让智能体产生差异化的东西：<strong>上下文管理和领域专业知识。</strong>&nbsp;</p><p>为了让开发者能够配置构建高效智能体所需的上下文和工具，Managed Agents 围绕三种核心资源构建：智能体（agent）、环境（environment）和会话（session）。<em>智能体</em>是一份配置：一个模型、一个提示词、一组工具，以及围绕它们的护栏。<em>环境</em>是智能体运行所处的执行上下文：沙箱容器、它的网络规则和预装的软件包，托管在我们的云上或由你控制的基础设施上。每次运行是一个<em>会话</em>，它把一个智能体与一个环境配对，并获得自己独立的沙箱实例。会话在服务端持久化完整的事件历史、沙箱状态和输出，因此长时间运行的工作可以暂停、干净地恢复，事后还能逐步追溯。使用 Managed Agents，你可以只定义一次智能体和环境，然后随着工作负载的增长，在同一份配置上运行大量会话。</p><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:4800px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="4800px"><div><img alt="__wf_reserved_inherit" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a29a18bb07e245f8389acb9_04%20_%20Agents_%20environments_%20sessions%20(2).png" width="auto" height="auto" loading="lazy"></div></figure><h2><strong>在 Managed Agents 上构建生产级和可扩展的系统</strong></h2><p>在 Applied AI 团队，我们见证智能体从原型走向生产，既发生在 Anthropic 内部，也发生在客户的系统里，横跨编码、财务、支持、法务等十几个领域。这让我们能清楚看到演示与生产就绪的智能体之间的差别，以及团队最容易卡住的地方。</p><p>下面我们分享在 Claude Managed Agents 这类托管服务上构建的最常见理由：&nbsp;</p><p><strong>1. 凭证不进入沙箱。</strong>当所有东西都跑在同一个容器里时，Claude 生成的代码就紧挨着你的凭证，提示词注入可能诱导模型读取自己的环境变量，从而泄露 token。我们固然可以在同一容器内设置严密的护栏来防范，但解耦架构提供了一条更安全的路径：让凭证完全留在沙箱之外。MCP、CLI 和 GitHub 仓库等工具所需的 token 存放在独立的 vault 中，由代理按需获取并解密。Managed Agents 提供<a href="https://platform.claude.com/docs/en/managed-agents/vaults" target="_blank">Vaults</a>，开箱即用地处理凭证，你无需自建密钥存储、无需每次调用都传输 token，也不会弄不清某个智能体是代表哪位终端用户行事的。Vault 中的凭证在存储前经过信封加密（envelope encryption）保护，取用时则需要经过签名的请求 token 进行验证。</p><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:4800px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="4800px"><div><img alt="__wf_reserved_inherit" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a29a19cebb4eb7adac0a8ec_05%20_%20Managed%20Agents%20runtime%20(1).png" width="auto" height="auto" loading="lazy"></div></figure><p><strong>2. 消除沙箱开销，降低延迟。</strong>延迟是许多企业团队最关心的指标，因为用户对等待 Claude 响应的感知非常敏锐。没有 Managed Agents 架构时，每个会话都必须启动一个容器——哪怕智能体只需要思考、根本不会运行任何工具。这部分启动时间纯属浪费，用户感受到的就是首个响应前的延迟。而使用 Managed Agents，Claude 立即开始推理，环境在并行中启动，从不运行工具的会话则完全跳过容器。这意味着用户看到第一个 token 无需等待容器启动，而当智能体需要运行什么时，环境已经就绪。在我们的测试中，中位数场景（p50）下首个 token 的时间缩短了约 60%，最慢场景（p95）下缩短超过 90%。&nbsp;</p><p><strong>3. 可靠、持久的会话，支撑会话管理、可观测性和记忆。</strong>Managed Agents 的思维方式不是请求/响应，而是<em>事件</em>。一个会话是一条持续的事件流：每一次模型调用、工具调用和结果，都会追加到一份位于智能体进程之外的日志里。基于这种架构，你可以在智能体工作时随事件流入获得实时更新，也可以稍后恢复任意会话，无需管理任何数据库或存档点。历史记录在交互之间一直保留（除非你删除会话），会话闲置时其容器会被打快照（checkpoint），你可以从暂停处干净地继续。而且由于整次运行本身就是一份事件记录，可观测性和记忆随之而来：Claude Developer Console 提供智能体会话的原生可视化时间线视图，以及让你深入检查任意会话记录的调试体验。Managed Agents 还附带记忆（Memory）和 Dreaming 等同样依赖这种会话持久性的功能。<a href="https://platform.claude.com/docs/en/managed-agents/dreams" target="_blank">Dreaming</a> 是一个按计划运行的进程，它会审阅你的智能体会话和记忆存储、提取模式并整理记忆，让智能体随时间不断进步。Dreaming 在会话之间打磨记忆，通过读取持久化的会话日志，从反复出现的错误和用户偏好中学习改进。</p><p><strong>4. 在 Anthropic 托管或自托管云容器之间灵活选择。</strong>默认情况下，使用 Managed Agents 时，你可以把编排和工具执行都交给 Anthropic 托管的云容器。这让托管和扩缩变得简单省事，提供了更快的投产路径。正因为 Managed Agents 中大脑与双手是解耦的，双手可以放在任何地方——包括你自己的虚拟私有云（VPC）内。因此，我们也为希望掌控工具执行的团队提供<a href="https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes" target="_blank">自托管沙箱</a>（self-hosted sandboxes），让智能体的代码、文件系统和网络出口永不离开你的环境。我们还提供 <a href="https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/overview" target="_blank">MCP tunnels</a>，让你能把 Claude 连接到运行在你私有网络内的 Model Context Protocol（MCP）服务器。所以，自托管沙箱控制的是<em>智能体代码在哪里执行</em>，而 MCP tunnels 控制的是<em>Anthropic 如何触达你网络中的 MCP 服务器</em>，两者配合，让你能精确控制什么留在你的边界之内。</p><figure class="w-richtext-figure-type-image w-richtext-align-center" data-rt-type="image" data-rt-align="center"><div><img alt="__wf_reserved_inherit" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a298e427c7a804ea4295163_image7.png" width="auto" height="auto" loading="lazy"></div><figcaption><em>Claude Managed Agents 内置的可观测性控制台记录每一个事件，你可以拖动时间线、打开任意步骤并阅读其原始负载。</em></figcaption></figure><p>除上述功能外，还有更多能力，包括让智能体按评分标准（rubric）给自己打分的 outcomes、多智能体编排、权限策略和 webhooks。更多详情请见<a href="https://platform.claude.com/docs/en/managed-agents/overview">这里</a>。</p><h3><strong>客户如今如何在 Managed Agents 上构建</strong></h3><p>在各个行业中，客户已经在用 Claude Managed Agents 把智能体推向生产。以下是几个例子：</p><ul><li><a href="https://claude.com/customers/notion" target="_blank">Notion</a> 在 Managed Agents 上运行其 Custom Agents：团队直接从任务看板给 Claude 派活，Claude 收集每个任务相关的文档、会议记录和已连接的数据，完成的代码、演示文稿和站点会回到工作区中等待审阅。数十个任务并行运行，他们团队曾这样描述一个早期原型：把大约十二小时的工作压缩成了二十分钟。</li><li><a href="https://claude.com/customers/rakuten" target="_blank">Rakuten</a> 使用 Managed Agents 在产品、销售、营销和财务领域上线了多个专业智能体，每个都在大约一周内投入使用。<a href="https://claude.com/customers/sentry">&nbsp;</a></li><li><a href="https://claude.com/customers/sentry" target="_blank">Sentry</a> 将其 Seer 调试智能体与一个负责编写补丁并发起 PR 的 Claude 智能体配对，由一名工程师在数周（而非数月）内建成。<a href="https://claude.com/blog/claude-managed-agents">&nbsp;</a></li><li><a href="https://claude.com/blog/claude-managed-agents" target="_blank">Asana</a> 构建了在项目内认领任务的 AI Teammates，而<a href="https://claude.com/blog/claude-managed-agents" target="_blank"> Atlassian</a> 则把开发者智能体接入了 Jira 工作流。&nbsp;</li></ul><h2><strong>开始使用 Claude Managed Agents</strong></h2><p>我们构建 Managed Agents 的目标是：让你能通过 Claude Code 和 Claude Developer Console（<a href="http://platform.claude.com" target="_blank">platform.claude.com</a>）尽可能轻松地启动智能体。例如，Console 的快速入门功能让你可以从智能体模板开始，或用自然语言描述一个智能体，然后把它变成一个可在几分钟内完成加固和部署的生产就绪智能体。</p><figure class="w-richtext-figure-type-image w-richtext-align-center" data-rt-type="image" data-rt-align="center"><div><img alt="__wf_reserved_inherit" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a298e9b866a4402a3c9bb5d_image5.png" width="auto" height="auto" loading="lazy"></div><figcaption><em>platform.claude.com 的智能体快速入门：从模板开始，或描述你想构建的东西。</em></figcaption></figure><figure class="w-richtext-figure-type-image w-richtext-align-center" data-rt-type="image" data-rt-align="center"><div><img alt="__wf_reserved_inherit" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a298ebdff6d26839e052c63_image9.png" width="auto" height="auto" loading="lazy"></div><figcaption><em>几步之后：智能体创建完成，环境配置就绪，会话已经上线。控制台实时流式展示运行过程。</em></figcaption></figure><p>在 Claude Code 中，<a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/claude-api-skill" target="_blank">/claude-api skill </a>默认提供，为 Claude 提供构建 Claude Managed Agents 应用的详细、最新的参考资料。我们强烈建议你利用它获取设置 Managed Agents 应用的最佳实践。运行 /claude-api managed-agents-onboard 即可开始，它会以访谈式引导的方式，带你从零设置一个新的 Managed Agent。</p><figure class="w-richtext-figure-type-image w-richtext-align-center" data-rt-type="image" data-rt-align="center"><div><img alt="__wf_reserved_inherit" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a298ef3765ce453971174cd_image6.png" width="auto" height="auto" loading="lazy"></div></figure><h2><strong>托管智能体构建的未来</strong></h2><p>随着各团队分享他们在 Managed Agents 上的构建成果，我们看到：过去花在生产基础设施上的时间，如今投向了真正让智能体产生差异化的地方——管理上下文、为用户量身打造体验。现在，新模型发布后，你只需更新智能体让它使用新模型、重跑你的评测，就能把改进发布上线，完全不必触动底层架构。</p><p>我们期待看到你构建的作品。</p><p><a href="https://platform.claude.com/docs/en/managed-agents/overview" target="_blank"><strong><em>开始使用</em></strong></a><strong><em> Claude Managed Agents。</em></strong></p><p><em>本文由 Anthropic Applied AI 团队的技术成员 Gagan Bhat 和 Isabella He 撰写。他们感谢 Hema Thanki、Jess Yan 和 Molly Vorwerck 的贡献。</em></p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/building-with-claude-managed-agents" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

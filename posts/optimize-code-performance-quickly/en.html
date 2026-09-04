@@ -4,50 +4,244 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Optimize code performance quickly — Claude Blog CN</title>
-  <meta name="description" content="Optimize code performance quickly">
+  <meta name="description" content="Go from reactive profiling to proactive optimization. Find and fix bottlenecks in your codebase before they slow down production.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="/posts/optimize-code-performance-quickly/" class="nav-link">中文版 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>Optimize code performance quickly</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/optimize-code-performance-quickly" target="_blank" rel="noopener noreferrer">Ask questions about this page</a>
+        <button type="button" class="explore-item" data-copy-markdown>Copy as markdown</button>
+        <a class="explore-item" href="/posts/optimize-code-performance-quickly/">阅读中文翻译 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># Optimize code performance quickly
+
+Go from reactive profiling to proactive optimization. Find and fix bottlenecks in your codebase before they slow down production.
+
+Performance bottlenecks sneak up on you. Your API was fast last week, but now it's timing out. User dashboards that load instantly are suddenly crawling. The payment flow that worked fine in testing chokes under real traffic.
+
+Traditional code optimization requires deep expertise: understanding profiler output, analyzing algorithmic complexity, correlating performance metrics with business logic. Each optimization cycle means profiling, analyzing, implementing, testing—stretching performance improvements across multiple sprints.
+
+Here's how to turn reactive performance fixes into proactive optimization that prevents bottlenecks before they impact users.
+
+## How most performance optimization happens
+
+### Profile and analyze bottlenecks
+
+Performance optimization typically starts when users complain or monitoring alerts fire. Developers reach for profiling tools like Chrome DevTools, New Relic, or Datadog to identify where applications spend time. You examine flame graphs, identify CPU hotspots, and correlate slow functions with business logic.
+
+Profiling reveals where time gets spent but not why specific code paths are inefficient. Production profiling requires careful sampling to avoid impacting performance further, leaving you with data pointing to slow functions without clear optimization paths.
+
+### Review algorithms manually
+
+Next comes systematically reviewing code for nested loops, inefficient data structures, and redundant operations. This means calculating time complexity and replacing brute-force solutions with optimized implementations.
+
+The challenge is that this requires deeper codebase knowledge, and modern codebases can contain upwards of hundreds of thousands of lines. Critical bottlenecks hide in unexpected places that escape initial review.
+
+### Load testing and benchmarking
+
+To better stress-test applications, developers create traffic simulations to establish performance baselines, implement improvements, then measure throughput and latency changes under simulated production load.
+
+Accurate load testing needs sophisticated environment setup and realistic data generation. The cycle of implementing changes, deploying to test environments, and collecting metrics extends optimization projects across multiple sprint cycles.
+
+### Refactor code incrementally
+
+Incremental refactoring replaces inefficient code with proven alternatives by optimizing database queries, implementing caching, and refactoring algorithms.
+
+This approach minimizes deployment risk but requires coordination across multiple engineers and extensive testing. Large-scale optimizations span repositories and demand understanding complex interactions between system components.
+
+## Systematic optimization with Claude
+
+Many development teams are moving beyond reactive profiling tools toward proactive performance engineering with AI coding assistants like Claude. These tools analyze functions instantly, identify algorithmic bottlenecks, and provide ways to improve your code. You can work with Claude in two ways:
+
+- [**Claude.ai**](https://claude.ai): Free web interface. Paste slow functions, get complexity analysis and optimization recommendations. Any browser, no setup required.
+- [**Claude Code**](https://claude.com/product/claude-code): Agentic terminal coding tool that integrates with your development environment. Analyzes project-wide performance patterns, directly implements optimizations across multiple files. Install with npm.
+
+## Start with Claude.ai
+
+Before setting up complex profiling environments or writing benchmark suites, paste short code snippets in [Claude.ai](https://claude.ai) to quickly determine whether a performance issue is algorithmic, structural, or configuration-related. Unlike traditional profilers that only show where time is spent, Claude explains why code is slow and how to fix it. This initial analysis helps you decide between a quick code change or a comprehensive architectural review.
+
+### Get quick optimization ideas
+
+The most straightforward approach with Claude.ai is copying a problematic function and asking for help. Developers typically paste anywhere from a few lines to entire functions that are causing bottlenecks in their applications. Claude analyzes the code structure, identifies inefficient patterns like nested loops or redundant operations, and suggests specific optimizations.
+
+`User: &quot;This function is slowing down our user dashboard. How can I make it faster?&quot;
+
+[pastes 20-line function with nested loops]
+
+Claude: &quot;I see two main bottlenecks here: 1. The nested loop creates O(n²) complexity 2. You're making a database call inside the inner loop Here's an optimized version using a single query and hash map lookup...&quot;`Typical questions that work well:
+
+- [&quot;Why are my code functions slow with large datasets?&quot;](https://claude.ai/new?q=Why+are+my+code+functions+slow+with+large+datasets%3F)
+- [&quot;Can you rewrite my code to be more efficient?&quot;](https://claude.ai/new?q=Can+you+help+me+rewrite+my+code+to+be+more+efficient%3F)
+- [&quot;What's wrong with this algorithm performance-wise?&quot;](https://claude.ai/new?q=What%27s+wrong+with+this+algorithm+performance-wise%3F)
+
+### Understand why your code is slow
+
+Sometimes you need to understand the root cause before jumping into optimization. Claude.ai excels at breaking down performance issues in accessible language, explaining exactly why certain code patterns become bottlenecks as your application scales. You can paste code that's consuming excessive memory, causing API timeouts, or degrading under load, then ask Claude to explain what's happening. 
+
+## Scale optimizations with Claude Code
+
+For performance challenges spanning multiple files or requiring architectural changes, [Claude Code](https://claude.com/product/claude-code) agentically provides project-wide optimization capabilities that traditional profiling tools can't match.
+
+Install:
+
+`npm install -g @anthropic-ai/claude-code`Launch in your project:
+
+`claude`Start asking Claude about ways to optimize your code:
+
+Claude Code autonomously analyzes your entire codebase, correlates recent changes with performance degradation, and provides specific optimization recommendations targeting root causes rather than symptoms.
+
+### Implement with automated testing
+
+Once Claude Code identifies bottlenecks, it orchestrates targeted fixes by automatically creating a step-by-step workflow to generate tests, validate improvements, and prevent regressions.
+
+`&gt; Optimize this payment processing function and benchmark results`Claude Code identifies inefficient algorithms, suggests optimized implementations, and can write benchmark code to help you measure performance improvements.
+
+### Handle enterprise-scale improvements
+
+Claude Code optimizes workflows in large codebases, updating code to increase efficiency:
+
+**Focus on critical paths**: Run Claude Code inside performance-critical directories (api/, core/) avoiding analysis of static assets or configuration files that don't impact performance.
+
+**Apply systematic patterns**: Claude Code identifies recurring inefficiencies and suggests architectural improvements addressing multiple bottlenecks simultaneously: connection pooling, strategic caching, optimized database query patterns.
+
+### Example: eliminate N+1 database queries
+
+Claude Code scans your codebase for loops triggering database queries, identifies specific ORM patterns causing N+1 problems, implements eager loading or batch query solutions, measures query reduction and response time improvements, generates tests preventing N+1 regressions.
+
+Claude Code typically identifies additional optimizations such as adding composite indexes on frequently queried columns or implementing Redis caching for repeated queries.
+
+## Choose your optimization approach
+
+[**Claude.ai**](https://claude.ai): Use Claude.ai when you're investigating a specific slow function, validating an optimization approach, or need quick analysis without environment setup. The browser interface makes it ideal for sharing optimization ideas with others or getting second opinions on performance tradeoffs.
+
+[**Claude Code**](https://claude.com/product/claude-code): Use Claude Code when performance issues span multiple files, require coordinated changes across services, or need automated testing to verify improvements. The terminal integration is essential for implementing optimizations that touch database schemas, API contracts, or caching layers. 
+
+## **Real results with Ramp**
+
+[Ramp](https://claude.com/customers/ramp) uses Claude Code to accelerate delivery across hundreds of services.
+
+Results:
+
+- **1M+ lines of AI-suggested code** in 30 days
+- **80% reduction in incident triage time**
+- **50% weekly active usage** across engineering teams
+
+&quot;When we discovered Claude Code, our teams immediately recognized its potential and integrated it into our workflows&quot;— Austin Ray, Senior Software Engineer at Ramp
+
+## Get started with systematic optimization
+
+**Immediate performance analysis**: Visit [Claude.ai](https://claude.ai), paste slow functions, get instant complexity analysis and optimization recommendations.
+
+**Comprehensive optimization**: Install [Claude Code](https://claude.com/product/claude-code):
+
+`npm install -g @anthropic-ai/claude-code`Whether you're targeting sub-100ms API response times, reducing memory consumption, or eliminating database bottlenecks, Claude serves as your thinking partner to ship faster, more efficient software without extending development cycles through manual optimization guesswork. Get started today.
+
+## FAQ
+
+### What causes slow API response times?
+
+Common causes include algorithmic bottlenecks like O(n²) complexity from nested loops, N+1 database query problems where you make database calls inside loops, inefficient database queries that don't use indexes properly, lack of caching for repeated operations, and redundant data processing.
+
+### How can I find performance bottlenecks in my code?
+
+You can identify bottlenecks by pasting suspicious functions into Claude.ai for immediate analysis, or use Claude Code to scan your entire codebase for performance issues. Traditional approaches involve profiling tools like Chrome DevTools, New Relic, or Datadog to examine flame graphs and CPU hotspots, but these show where time is spent without explaining why code is inefficient.
+
+### Should I use profiling tools or AI for code optimization?
+
+Use both approaches together for best results. Traditional profiling tools like Chrome DevTools or Datadog show where your application spends time and help identify hot spots in production environments. AI tools like Claude explain why specific code is slow and suggest concrete optimizations. Start with Claude.ai to quickly determine whether a performance issue is algorithmic, structural, or configuration-related before setting up complex profiling environments.
+
+### How much performance improvement should I expect from code optimization?
+
+It depends on your starting point. Eliminating N+1 queries can reduce response times from seconds to milliseconds—often 10-100x improvements. Replacing O(n²) algorithms with O(n) implementations shows dramatic gains with large datasets but minimal difference with small ones. Tools like Claude Code can generate benchmark tests to measure improvements objectively, helping you validate whether optimizations actually deliver the expected gains.</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Claude Code</span>
-            <span class="article-date">October 6, 2025</span>
-            <span class="lang-badge-large">EN</span>
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            
+            <h1 class="article-title u-text-style-h1">Optimize code performance quickly</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>Go from reactive profiling to proactive optimization. Find and fix bottlenecks in your codebase before they slow down production.</p></div>
           </div>
-          <h1 class="article-title">Optimize code performance quickly</h1>
-          <a href="/posts/optimize-code-performance-quickly/" class="lang-toggle">阅读中文翻译 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>Performance bottlenecks sneak up on you. Your API was fast last week, but now it's timing out. User dashboards that load instantly are suddenly crawling. The payment flow that worked fine in testing chokes under real traffic.</p><p>Traditional code optimization requires deep expertise: understanding profiler output, analyzing algorithmic complexity, correlating performance metrics with business logic. Each optimization cycle means profiling, analyzing, implementing, testing—stretching performance improvements across multiple sprints.</p><p>Here's how to turn reactive performance fixes into proactive optimization that prevents bottlenecks before they impact users.</p><h2>How most performance optimization happens</h2><h3>Profile and analyze bottlenecks</h3><p>Performance optimization typically starts when users complain or monitoring alerts fire. Developers reach for profiling tools like Chrome DevTools, New Relic, or Datadog to identify where applications spend time. You examine flame graphs, identify CPU hotspots, and correlate slow functions with business logic.</p><p>Profiling reveals where time gets spent but not why specific code paths are inefficient. Production profiling requires careful sampling to avoid impacting performance further, leaving you with data pointing to slow functions without clear optimization paths.</p><h3>Review algorithms manually</h3><p>Next comes systematically reviewing code for nested loops, inefficient data structures, and redundant operations. This means calculating time complexity and replacing brute-force solutions with optimized implementations.</p><p>The challenge is that this requires deeper codebase knowledge, and modern codebases can contain upwards of hundreds of thousands of lines. Critical bottlenecks hide in unexpected places that escape initial review.</p><h3>Load testing and benchmarking</h3><p>To better stress-test applications, developers create traffic simulations to establish performance baselines, implement improvements, then measure throughput and latency changes under simulated production load.</p><p>Accurate load testing needs sophisticated environment setup and realistic data generation. The cycle of implementing changes, deploying to test environments, and collecting metrics extends optimization projects across multiple sprint cycles.</p><h3>Refactor code incrementally</h3><p>Incremental refactoring replaces inefficient code with proven alternatives by optimizing database queries, implementing caching, and refactoring algorithms.</p><p>This approach minimizes deployment risk but requires coordination across multiple engineers and extensive testing. Large-scale optimizations span repositories and demand understanding complex interactions between system components.</p><h2>Systematic optimization with Claude</h2><p>Many development teams are moving beyond reactive profiling tools toward proactive performance engineering with AI coding assistants like Claude. These tools analyze functions instantly, identify algorithmic bottlenecks, and provide ways to improve your code. You can work with Claude in two ways:</p><ul role="list"><li><a href="https://claude.ai"><strong>Claude.ai</strong></a>: Free web interface. Paste slow functions, get complexity analysis and optimization recommendations. Any browser, no setup required.</li><li><a href="https://claude.com/product/claude-code"><strong>Claude Code</strong></a>: Agentic terminal coding tool that integrates with your development environment. Analyzes project-wide performance patterns, directly implements optimizations across multiple files. Install with npm.</li></ul><h2>Start with Claude.ai</h2><p>Before setting up complex profiling environments or writing benchmark suites, paste short code snippets in <a href="https://claude.ai">Claude.ai</a> to quickly determine whether a performance issue is algorithmic, structural, or configuration-related. Unlike traditional profilers that only show where time is spent, Claude explains why code is slow and how to fix it. This initial analysis helps you decide between a quick code change or a comprehensive architectural review.</p><h3>Get quick optimization ideas</h3><p>The most straightforward approach with Claude.ai is copying a problematic function and asking for help. Developers typically paste anywhere from a few lines to entire functions that are causing bottlenecks in their applications. Claude analyzes the code structure, identifies inefficient patterns like nested loops or redundant operations, and suggests specific optimizations.</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>User: </span><span style="color:#008000">"This function is slowing down our user dashboard. How can I make it faster?"</span><span>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/product/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">October 6, 2025</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/optimize-code-performance-quickly/en.html">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>Performance bottlenecks sneak up on you. Your API was fast last week, but now it's timing out. User dashboards that load instantly are suddenly crawling. The payment flow that worked fine in testing chokes under real traffic.</p><p>Traditional code optimization requires deep expertise: understanding profiler output, analyzing algorithmic complexity, correlating performance metrics with business logic. Each optimization cycle means profiling, analyzing, implementing, testing—stretching performance improvements across multiple sprints.</p><p>Here's how to turn reactive performance fixes into proactive optimization that prevents bottlenecks before they impact users.</p><h2>How most performance optimization happens</h2><h3>Profile and analyze bottlenecks</h3><p>Performance optimization typically starts when users complain or monitoring alerts fire. Developers reach for profiling tools like Chrome DevTools, New Relic, or Datadog to identify where applications spend time. You examine flame graphs, identify CPU hotspots, and correlate slow functions with business logic.</p><p>Profiling reveals where time gets spent but not why specific code paths are inefficient. Production profiling requires careful sampling to avoid impacting performance further, leaving you with data pointing to slow functions without clear optimization paths.</p><h3>Review algorithms manually</h3><p>Next comes systematically reviewing code for nested loops, inefficient data structures, and redundant operations. This means calculating time complexity and replacing brute-force solutions with optimized implementations.</p><p>The challenge is that this requires deeper codebase knowledge, and modern codebases can contain upwards of hundreds of thousands of lines. Critical bottlenecks hide in unexpected places that escape initial review.</p><h3>Load testing and benchmarking</h3><p>To better stress-test applications, developers create traffic simulations to establish performance baselines, implement improvements, then measure throughput and latency changes under simulated production load.</p><p>Accurate load testing needs sophisticated environment setup and realistic data generation. The cycle of implementing changes, deploying to test environments, and collecting metrics extends optimization projects across multiple sprint cycles.</p><h3>Refactor code incrementally</h3><p>Incremental refactoring replaces inefficient code with proven alternatives by optimizing database queries, implementing caching, and refactoring algorithms.</p><p>This approach minimizes deployment risk but requires coordination across multiple engineers and extensive testing. Large-scale optimizations span repositories and demand understanding complex interactions between system components.</p><h2>Systematic optimization with Claude</h2><p>Many development teams are moving beyond reactive profiling tools toward proactive performance engineering with AI coding assistants like Claude. These tools analyze functions instantly, identify algorithmic bottlenecks, and provide ways to improve your code. You can work with Claude in two ways:</p><ul role="list"><li><a href="https://claude.ai"><strong>Claude.ai</strong></a>: Free web interface. Paste slow functions, get complexity analysis and optimization recommendations. Any browser, no setup required.</li><li><a href="https://claude.com/product/claude-code"><strong>Claude Code</strong></a>: Agentic terminal coding tool that integrates with your development environment. Analyzes project-wide performance patterns, directly implements optimizations across multiple files. Install with npm.</li></ul><h2>Start with Claude.ai</h2><p>Before setting up complex profiling environments or writing benchmark suites, paste short code snippets in <a href="https://claude.ai">Claude.ai</a> to quickly determine whether a performance issue is algorithmic, structural, or configuration-related. Unlike traditional profilers that only show where time is spent, Claude explains why code is slow and how to fix it. This initial analysis helps you decide between a quick code change or a comprehensive architectural review.</p><h3>Get quick optimization ideas</h3><p>The most straightforward approach with Claude.ai is copying a problematic function and asking for help. Developers typically paste anywhere from a few lines to entire functions that are causing bottlenecks in their applications. Claude analyzes the code structure, identifies inefficient patterns like nested loops or redundant operations, and suggests specific optimizations.</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>User: </span><span style="color:#008000">"This function is slowing down our user dashboard. How can I make it faster?"</span><span>
 </span></span><span>
 </span><span><span>[pastes 20-line </span><span style="color:#7928a1">function</span><span> with nested loops]
 </span></span><span>
-</span><span><span>Claude: </span><span style="color:#008000">"I see two main bottlenecks here: 1. The nested loop creates O(n²) complexity 2. You're making a database call inside the inner loop Here's an optimized version using a single query and hash map lookup..."</span></span></code></pre><p>Typical questions that work well:</p><ul role="list"><li><a href="https://claude.ai/new?q=Why+are+my+code+functions+slow+with+large+datasets%3F">"Why are my code functions slow with large datasets?"</a></li><li><a href="https://claude.ai/new?q=Can+you+help+me+rewrite+my+code+to+be+more+efficient%3F">"Can you rewrite my code to be more efficient?"</a></li><li><a href="https://claude.ai/new?q=What%27s+wrong+with+this+algorithm+performance-wise%3F">"What's wrong with this algorithm performance-wise?"</a></li></ul><h3>Understand why your code is slow</h3><p>Sometimes you need to understand the root cause before jumping into optimization. Claude.ai excels at breaking down performance issues in accessible language, explaining exactly why certain code patterns become bottlenecks as your application scales. You can paste code that's consuming excessive memory, causing API timeouts, or degrading under load, then ask Claude to explain what's happening.&nbsp;</p><figure style="max-width:1700pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68f13857ee0625a58a13a7bd____.png"></div></figure><h2>Scale optimizations with Claude Code</h2><p>For performance challenges spanning multiple files or requiring architectural changes, <a href="https://claude.com/product/claude-code">Claude Code</a> agentically provides project-wide optimization capabilities that traditional profiling tools can't match.</p><p>Install:</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>npm install -g @anthropic-ai/claude-code</span></span></code></pre><p>Launch in your project:</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>claude</span></span></code></pre><p>Start asking Claude about ways to optimize your code:</p><figure style="max-width:3840pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e9533ec45c4d79d1a6c54d_5.png"></div></figure><p>Claude Code autonomously analyzes your entire codebase, correlates recent changes with performance degradation, and provides specific optimization recommendations targeting root causes rather than symptoms.</p><h3>Implement with automated testing</h3><p>Once Claude Code identifies bottlenecks, it orchestrates targeted fixes by automatically creating a step-by-step workflow to generate tests, validate improvements, and prevent regressions.</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>&gt; Optimize this payment processing </span><span style="color:#7928a1">function</span><span> and benchmark results</span></span></code></pre><p>Claude Code identifies inefficient algorithms, suggests optimized implementations, and can write benchmark code to help you measure performance improvements.</p><h3>Handle enterprise-scale improvements</h3><p>Claude Code optimizes workflows in large codebases, updating code to increase efficiency:</p><p><strong>Focus on critical paths</strong>: Run Claude Code inside performance-critical directories (api/, core/) avoiding analysis of static assets or configuration files that don't impact performance.</p><p><strong>Apply systematic patterns</strong>: Claude Code identifies recurring inefficiencies and suggests architectural improvements addressing multiple bottlenecks simultaneously: connection pooling, strategic caching, optimized database query patterns.</p><h3>Example: eliminate N+1 database queries</h3><figure style="max-width:3840pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e95463e1157246ac222647_6.png"></div></figure><p>Claude Code scans your codebase for loops triggering database queries, identifies specific ORM patterns causing N+1 problems, implements eager loading or batch query solutions, measures query reduction and response time improvements, generates tests preventing N+1 regressions.</p><p>Claude Code typically identifies additional optimizations such as adding composite indexes on frequently queried columns or implementing Redis caching for repeated queries.</p><h2>Choose your optimization approach</h2><p><a href="https://claude.ai"><strong>Claude.ai</strong></a>: Use Claude.ai when you're investigating a specific slow function, validating an optimization approach, or need quick analysis without environment setup. The browser interface makes it ideal for sharing optimization ideas with others or getting second opinions on performance tradeoffs.</p><p><a href="https://claude.com/product/claude-code"><strong>Claude Code</strong></a>: Use Claude Code when performance issues span multiple files, require coordinated changes across services, or need automated testing to verify improvements. The terminal integration is essential for implementing optimizations that touch database schemas, API contracts, or caching layers.&nbsp;</p><h2><strong>Real results with Ramp</strong></h2><p><a href="https://claude.com/customers/ramp">Ramp</a> uses Claude Code to accelerate delivery across hundreds of services.</p><p>Results:</p><ul role="list"><li><strong>1M+ lines of AI-suggested code</strong> in 30 days</li><li><strong>80% reduction in incident triage time</strong></li><li><strong>50% weekly active usage</strong> across engineering teams</li></ul><blockquote>"When we discovered Claude Code, our teams immediately recognized its potential and integrated it into our workflows"</blockquote><p>— Austin Ray, Senior Software Engineer at Ramp</p><h2>Get started with systematic optimization</h2><p><strong>Immediate performance analysis</strong>: Visit <a href="https://claude.ai">Claude.ai</a>, paste slow functions, get instant complexity analysis and optimization recommendations.</p><p><strong>Comprehensive optimization</strong>: Install <a href="https://claude.com/product/claude-code">Claude Code</a>:</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>npm install -g @anthropic-ai/claude-code</span></span></code></pre><p>Whether you're targeting sub-100ms API response times, reducing memory consumption, or eliminating database bottlenecks, Claude serves as your thinking partner to ship faster, more efficient software without extending development cycles through manual optimization guesswork. Get started today.</p></div>
+</span><span><span>Claude: </span><span style="color:#008000">"I see two main bottlenecks here: 1. The nested loop creates O(n²) complexity 2. You're making a database call inside the inner loop Here's an optimized version using a single query and hash map lookup..."</span></span></code></pre><p>Typical questions that work well:</p><ul role="list"><li><a href="https://claude.ai/new?q=Why+are+my+code+functions+slow+with+large+datasets%3F">"Why are my code functions slow with large datasets?"</a></li><li><a href="https://claude.ai/new?q=Can+you+help+me+rewrite+my+code+to+be+more+efficient%3F">"Can you rewrite my code to be more efficient?"</a></li><li><a href="https://claude.ai/new?q=What%27s+wrong+with+this+algorithm+performance-wise%3F">"What's wrong with this algorithm performance-wise?"</a></li></ul><h3>Understand why your code is slow</h3><p>Sometimes you need to understand the root cause before jumping into optimization. Claude.ai excels at breaking down performance issues in accessible language, explaining exactly why certain code patterns become bottlenecks as your application scales. You can paste code that's consuming excessive memory, causing API timeouts, or degrading under load, then ask Claude to explain what's happening.&nbsp;</p><figure style="max-width:1700pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68f13857ee0625a58a13a7bd____.png"></div></figure><h2>Scale optimizations with Claude Code</h2><p>For performance challenges spanning multiple files or requiring architectural changes, <a href="https://claude.com/product/claude-code">Claude Code</a> agentically provides project-wide optimization capabilities that traditional profiling tools can't match.</p><p>Install:</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>npm install -g @anthropic-ai/claude-code</span></span></code></pre><p>Launch in your project:</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>claude</span></span></code></pre><p>Start asking Claude about ways to optimize your code:</p><figure style="max-width:3840pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e9533ec45c4d79d1a6c54d_5.png"></div></figure><p>Claude Code autonomously analyzes your entire codebase, correlates recent changes with performance degradation, and provides specific optimization recommendations targeting root causes rather than symptoms.</p><h3>Implement with automated testing</h3><p>Once Claude Code identifies bottlenecks, it orchestrates targeted fixes by automatically creating a step-by-step workflow to generate tests, validate improvements, and prevent regressions.</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>&gt; Optimize this payment processing </span><span style="color:#7928a1">function</span><span> and benchmark results</span></span></code></pre><p>Claude Code identifies inefficient algorithms, suggests optimized implementations, and can write benchmark code to help you measure performance improvements.</p><h3>Handle enterprise-scale improvements</h3><p>Claude Code optimizes workflows in large codebases, updating code to increase efficiency:</p><p><strong>Focus on critical paths</strong>: Run Claude Code inside performance-critical directories (api/, core/) avoiding analysis of static assets or configuration files that don't impact performance.</p><p><strong>Apply systematic patterns</strong>: Claude Code identifies recurring inefficiencies and suggests architectural improvements addressing multiple bottlenecks simultaneously: connection pooling, strategic caching, optimized database query patterns.</p><h3>Example: eliminate N+1 database queries</h3><figure style="max-width:3840pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e95463e1157246ac222647_6.png"></div></figure><p>Claude Code scans your codebase for loops triggering database queries, identifies specific ORM patterns causing N+1 problems, implements eager loading or batch query solutions, measures query reduction and response time improvements, generates tests preventing N+1 regressions.</p><p>Claude Code typically identifies additional optimizations such as adding composite indexes on frequently queried columns or implementing Redis caching for repeated queries.</p><h2>Choose your optimization approach</h2><p><a href="https://claude.ai"><strong>Claude.ai</strong></a>: Use Claude.ai when you're investigating a specific slow function, validating an optimization approach, or need quick analysis without environment setup. The browser interface makes it ideal for sharing optimization ideas with others or getting second opinions on performance tradeoffs.</p><p><a href="https://claude.com/product/claude-code"><strong>Claude Code</strong></a>: Use Claude Code when performance issues span multiple files, require coordinated changes across services, or need automated testing to verify improvements. The terminal integration is essential for implementing optimizations that touch database schemas, API contracts, or caching layers.&nbsp;</p><h2><strong>Real results with Ramp</strong></h2><p><a href="https://claude.com/customers/ramp">Ramp</a> uses Claude Code to accelerate delivery across hundreds of services.</p><p>Results:</p><ul role="list"><li><strong>1M+ lines of AI-suggested code</strong> in 30 days</li><li><strong>80% reduction in incident triage time</strong></li><li><strong>50% weekly active usage</strong> across engineering teams</li></ul><blockquote>"When we discovered Claude Code, our teams immediately recognized its potential and integrated it into our workflows"</blockquote><p>— Austin Ray, Senior Software Engineer at Ramp</p><h2>Get started with systematic optimization</h2><p><strong>Immediate performance analysis</strong>: Visit <a href="https://claude.ai">Claude.ai</a>, paste slow functions, get instant complexity analysis and optimization recommendations.</p><p><strong>Comprehensive optimization</strong>: Install <a href="https://claude.com/product/claude-code">Claude Code</a>:</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>npm install -g @anthropic-ai/claude-code</span></span></code></pre><p>Whether you're targeting sub-100ms API response times, reducing memory consumption, or eliminating database bottlenecks, Claude serves as your thinking partner to ship faster, more efficient software without extending development cycles through manual optimization guesswork. Get started today.</p><h2>FAQ</h2><div class="article-faq"><h3>What causes slow API response times?</h3><p>Common causes include algorithmic bottlenecks like O(n²) complexity from nested loops, N+1 database query problems where you make database calls inside loops, inefficient database queries that don't use indexes properly, lack of caching for repeated operations, and redundant data processing.</p><h3>How can I find performance bottlenecks in my code?</h3><p>You can identify bottlenecks by pasting suspicious functions into Claude.ai for immediate analysis, or use Claude Code to scan your entire codebase for performance issues. Traditional approaches involve profiling tools like Chrome DevTools, New Relic, or Datadog to examine flame graphs and CPU hotspots, but these show where time is spent without explaining why code is inefficient.</p><h3>Should I use profiling tools or AI for code optimization?</h3><p>Use both approaches together for best results. Traditional profiling tools like Chrome DevTools or Datadog show where your application spends time and help identify hot spots in production environments. AI tools like Claude explain why specific code is slow and suggest concrete optimizations. Start with Claude.ai to quickly determine whether a performance issue is algorithmic, structural, or configuration-related before setting up complex profiling environments.</p><h3>How much performance improvement should I expect from code optimization?</h3><p>It depends on your starting point. Eliminating N+1 queries can reduce response times from seconds to milliseconds—often 10-100x improvements. Replacing O(n²) algorithms with O(n) implementations shows dramatic gains with large datasets but minimal difference with small ones. Tools like Claude Code can generate benchmark tests to measure improvements objectively, helping you validate whether optimizations actually deliver the expected gains.</p></div></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/optimize-code-performance-quickly" target="_blank">View original</a></p>
+              <p><a href="/">← Back to home</a></p>
+            </footer>
+          </article>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/optimize-code-performance-quickly" target="_blank">View original</a></p>
-          <p><a href="/">← Back to home</a></p>
-        </footer>
-      </article>
+      </div>
     </div>
   </main>
 <footer class="footer">
@@ -55,6 +249,53 @@
       <p>Content from <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · Translation by AI</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

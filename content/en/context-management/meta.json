@@ -13,5 +13,22 @@
   "translated": true,
   "translatedTitle": "在 Claude Developer Platform 上管理上下文",
   "translatedAt": "2026-09-02T12:22:00.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Platform"
+    ],
+    "usecase": [
+      "Agents",
+      "Business"
+    ]
+  },
+  "subtitle": "Introducing context editing and the memory tool to help developers build more effective agents that handle long-running tasks.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/platform/api"
 }

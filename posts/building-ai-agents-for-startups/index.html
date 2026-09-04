@@ -4,54 +4,262 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>初创公司如何构建 AI 智能体 — Claude Blog 中文翻译</title>
-  <meta name="description" content="初创公司如何构建 AI 智能体">
+  <meta name="description" content="For resource-constrained startups, AI agents autonomously handle complex processes, reclaiming founder time, providing expert-level capabilities, and maintaining quality while moving fast.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/building-ai-agents-for-startups" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>初创公司如何构建 AI 智能体</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/building-ai-agents-for-startups" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/building-ai-agents-for-startups/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># 初创公司如何构建 AI 智能体
+
+For resource-constrained startups, AI agents autonomously handle complex processes, reclaiming founder time, providing expert-level capabilities, and maintaining quality while moving fast.
+
+随便问一位创始人：创建一家初创公司意味着身兼数职、在有限资源下艰难权衡，并不断优先考虑那些能推动业务前进的事情。要做的工作永无止境，人手却永远不够。
+
+AI 智能体正在改变这一局面。与那些需要人类持续指挥才能将信息转化为行动的传统 AI 工具不同，智能体可以在人类监督（human-in-the-loop）下自主管理业务流程。对于资源受限的初创公司来说，这一转变具有变革性意义。
+
+本文将探讨初创公司如何部署 AI 智能体来夺回创始人的时间、获得专家级能力，并在保持初创速度的同时兼顾质量。
+
+## **智能体为初创公司创造价值的三种方式**
+
+之所以发生这种转变，是因为智能体直接化解了每家初创公司都面临的三种资源约束：它们夺回花在重复性工作上的时间，在内部缺乏相应技能时提供专业能力，并以初创公司的速度运转同时保证质量。
+
+### 消除杂务
+
+创始人（以及早期员工）花在运营杂务上的每一小时，都是没有花在战略、融资或产品构建上的一小时。
+
+最直接的解决办法是招人来处理这些事务，但对早期初创公司来说这并不总是可行的。找到合适的人选需要团队根本没有的时间，而招错人带来的挫折是精简团队难以承受的。AI 智能体可以自动化重复性工作，在不增加人手的情况下为初创公司赢回时间。
+
+[**Campfire**](https://claude.com/customers/campfire) 是一家现代化会计软件提供商，它使用 Claude 帮助会计团队加速月度结账流程，将周期缩短了 3 天，银行对账工作时间减少 90%，并通过其 Ember AI 聊天界面将报表速度提升 50%。
+
+[**Armanino**](https://claude.com/customers/armanino) 是美国最大的会计师事务所之一，其在 Amazon Bedrock 上部署了 Claude，将手动写作任务花费的时间减少了 65%，后续澄清沟通减少了 60%。
+
+[**ClassDojo**](https://claude.com/customers/classdojo) 是一个服务于全美 90% 小学、拥有 4500 万用户的教育平台，它使用 Claude 驱动其 Sidekick AI 教学助手，将过去教师按班级名册处理需要 20-30 分钟的行政工作压缩到几秒钟。
+
+当过去要耗费数小时的重复性任务现在只需几分钟时，你就能真正专注于推动业务前进的工作，而不是被行政琐事淹没。
+
+### 获得难以招到的人才的专业能力
+
+初创公司需要在每个职能上都有世界级的工作成果，但找到这样的人才非常困难。AI 智能体可以提供专家级的分析和决策能力，而这些能力如果靠招聘可能需要数月才能获得。
+
+[**eSentire**](https://claude.com/customers/esentire) 是一家为 80 多个国家/地区的关键基础设施提供托管检测与响应（MDR）服务的提供商，它使用 Claude 复刻了其精英 SOC 分析师的调查流程。他们将分析时间从 5 小时压缩到 7 分钟，实现了 95% 的准确率和 99.3% 的威胁抑制率。
+
+[**Gradient Labs**](https://claude.com/customers/gradient-labs?m=1) 是一个面向金融机构的 AI 客户支持平台，在复杂的金融支持场景中保持了 80-90% 的问题解决率和 98% 的客户满意度。小团队如今也能交付过去需要招聘拥有多年领域经验的博士级专家才能实现的分析质量。
+
+### 速度与质量的权衡
+
+无论公司规模大小，如何既能跑得足够快来保持领先，又能维持质量标准，一直是个难题。发布太快，质量就会受损；过度追求发布完美产品，竞争对手又会超越你。AI 智能体打破了这一权衡，在大幅提升执行速度的同时保持高标准。
+
+[**Brex**](https://www.claude.com/customers/brex) 在自动化 75% 的交易、每年为客户节省 5650 万美元的同时，达到了 94% 的合规率，而行业标准仅为 70%。[**StackBlitz**](https://www.claude.com/customers/stackblitz) 在将 Claude 集成到 Bolt 之后，仅用 4 周时间就从零做到 400 万美元 ARR，用户的应用开发成本降低了 99%，同时保持了生产级的质量。
+
+当你既能以初创公司的速度前进，又不必承受传统上随之而来的质量妥协时，你就能两全其美。工作发布得更快，成果也经得起推敲。
+
+## **常见的智能体应用场景**
+
+初创公司正在让智能体去解决那些过去需要专职人员（而他们往往没有）来处理的运营难题。结果是：更低的成本、更快的执行，以及超出团队规模的能力。
+
+### 扩展运营
+
+[Micro1](https://claude.com/customers/micro1) 使用 Claude 每天进行 3000 多场 AI 驱动的面试，从而变革了技术招聘，与传统方式相比**将招聘成本降低了 85%**。这个人才搜寻平台在经过 AI 筛选的候选人进入人类面试环节时，达到了 5 倍更高的通过率。
+
+借助 Micro1 基于 Claude 的技术面试平台，[**Legal Soft**](https://www.claude.com/customers/micro1#:~:text=micro1%20uses%20Claude%20to%20conduct,with%2064%25%20less%20staff%20time) 将面试团队从 33 人精简到 12 人，同时保持每月 10,000 名候选人的筛选量，每年节省超过 40 万美元的招聘成本，并将 EBITDA 利润率提高了 30%。
+
+[**Inscribe**](https://claude.com/customers/inscribe) 使用基于 Claude 的 AI Risk Agents，将欺诈审查周期从**30 分钟缩短到 90 秒**。通过自动化文档验证、欺诈检测和风险分析（同时保持严格的数据隐私标准），Inscribe 帮助其金融机构客户将审查产出提升了 70 倍。
+
+### 把数天或数周变成几分钟
+
+[**BlueFlame**](https://claude.com/customers/blueflame) 利用 Claude 的视觉能力处理富含图表的金融文档，为精简的投资团队将文档分析时间从**4 小时以上压缩到几分钟**。该平台使小团队能够完成过去需要庞大技术部门支撑的机构级分析，平均每天支持 30 个客户查询，并自动完成数百家公司的同步对比。
+
+[**Biomni**](https://claude.com/customers/biomni) 将科学研究分析从**三周压缩到 35 分钟**（快 800 倍），同时在生物医学基准测试中保持人类水平的表现。这个由斯坦福开发的平台可自动化文献综述、生物信息学分析和实验方案设计。过去把 80% 时间花在重复任务上的研究人员，现在可以同时推进多条研究线，其克隆实验经验证达到了 5 年以上专家的工作水平。
+
+### 加速产品开发周期
+
+[**Lovable**](https://claude.com/customers/lovable) 让非工程师和开发者都能通过与 Claude 自然对话，以 20 倍于传统编码的速度构建生产级 Web 应用，**在不到六个月内达到了 4000 万美元 ARR**。该平台每月服务超过一百万活跃用户，他们无需编写代码即可创建从 SaaS 产品到内部工具的各种应用。
+
+[**Genspark**](https://claude.com/customers/genspark) 以 Claude 作为八个专用 AI 模型的主协调器，构建了一套多智能体任务自动化系统，在推出其 Super Agent 平台后**45 天内达到了 3600 万美元 ARR**。这个 AI 驱动的搜索引擎为超过五百万用户服务，其动态工作流可以随查询复杂度自适应调整。他们的 AI 幻灯片功能将五分钟的自动化研究工作压缩到相当于三小时手动工作的成果，让用户得以应对过去人工根本无法处理的研究项目的规模和复杂度。
+
+## **在初创公司中落地 AI 智能体**
+
+上面的例子展示了可能性，但要实现它，需要从第一天起就在实施上做出明智选择。起点选错，你会浪费时间和信誉；从小处着手、选对问题，你就为日后处理越来越有野心的应用打下了基础。
+
+### 找到合适的切入点
+
+我们建议在那些已有人类监督、且不完美的自动化不会造成大问题的领域启动你的智能体计划，让智能体立刻减轻工作量，同时由人类验证结果。
+
+这些起步部署能让团队了解智能体的工作方式、它们的短板，以及如何有效集成——这一切都在没有关键任务压力的情况下完成，也为日后应对那些更看重正确性、监督也更困难的高难度应用打下基础。
+
+### 从初步胜利中扩展
+
+一旦智能体开始处理实际工作并赢得团队信任，你就可以构建更宏大的东西：跨多个职能运作的共享系统，并最终处理那些真正驱动业务成果的复杂高风险流程。
+
+#### 发展多用途能力
+
+构建能够解决多个问题的基础智能体能力，而不是为每个需求单独造一套方案。一个能处理个性化触达的智能体，可以给候选人发送 HR 初筛问题、给潜在客户起草定制营销邮件，也可以跟进投资人。每一个使用场景都会让它更擅长写出符合语境的得体信息。
+
+#### 攻克更大的挑战
+
+到了这个阶段，你已经有 AI 智能体在业务的各个部分处理实际工作。你已经构建并打磨了多人日常使用的核心能力，证明智能体能带来有意义的成果。你的技术团队也积累了实战经验，从让智能体跑起来的过程中学到了切实的教训。
+
+这时你就准备好去追求更大的挑战了。要成功构建它们，需要从一开始就融入以下能力：
+
+- **从一开始就构建模块化。**你的需求会演进，从头重做会浪费已有的进展。模块化系统让你可以替换组件、增加能力，而不必推倒重来。
+- **让智能体的决策可见。**当出现问题或某个决策看起来不对劲时，你需要能精确追溯智能体是如何得出该结论的。最好从第一天起就把可观测性内建到系统中，事后给复杂智能体补装可观测性是非常痛苦的。
+- **在关键环节保留人类参与。**自主性很强大，但有些决策需要人类判断。设计智能体时，应让它将特定情形标记出来请求批准，而不是在所有事情上要么全自动、要么全不自动。
+
+正是这些能力，区分了那些能承担更多职责的智能体和那些始终停留在处理简单任务层面的智能体。培养这些能力需要时间和经验，这也是为什么从小处着手如此重要。
+
+## **迈出第一步**
+
+那些取得早期成果的初创公司都有一个一致的模式：选择一个高影响的问题，其自动化能释放他们最捉襟见肘的资源——比如消耗创始人时间的候选人筛选、堆积如山的支持请求，或者让销售团队无暇顾及真正潜在客户的线索资格审查。
+
+这些首次部署带来的不只是立竿见影的成果。它们让初创公司了解在自己的具体场景中什么最重要：数据如何与智能体集成、什么提示词适合自己的用例、工作流需要如何调整。这些洞察将成为日后规模化扩展的行动指南。
+
+‍</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Enterprise AI</span>
-            <span class="article-date">November 3, 2025</span>
-            
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-sky);">
+            <img class="hero-illo-img" src="/assets/illustrations/building-ai-agents-for-startups.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">初创公司如何构建 AI 智能体</h1>
-          <a href="/posts/building-ai-agents-for-startups/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>随便问一位创始人：创建一家初创公司意味着身兼数职、在有限资源下艰难权衡，并不断优先考虑那些能推动业务前进的事情。要做的工作永无止境，人手却永远不够。</p><p>AI 智能体正在改变这一局面。与那些需要人类持续指挥才能将信息转化为行动的传统 AI 工具不同，智能体可以在人类监督（human-in-the-loop）下自主管理业务流程。对于资源受限的初创公司来说，这一转变具有变革性意义。</p><p>本文将探讨初创公司如何部署 AI 智能体来夺回创始人的时间、获得专家级能力，并在保持初创速度的同时兼顾质量。</p><h2><strong>智能体为初创公司创造价值的三种方式</strong></h2><p>之所以发生这种转变，是因为智能体直接化解了每家初创公司都面临的三种资源约束：它们夺回花在重复性工作上的时间，在内部缺乏相应技能时提供专业能力，并以初创公司的速度运转同时保证质量。</p><h3>消除杂务</h3><p>创始人（以及早期员工）花在运营杂务上的每一小时，都是没有花在战略、融资或产品构建上的一小时。</p><p>最直接的解决办法是招人来处理这些事务，但对早期初创公司来说这并不总是可行的。找到合适的人选需要团队根本没有的时间，而招错人带来的挫折是精简团队难以承受的。AI 智能体可以自动化重复性工作，在不增加人手的情况下为初创公司赢回时间。</p><p><a href="https://claude.com/customers/campfire"><strong>Campfire</strong></a> 是一家现代化会计软件提供商，它使用 Claude 帮助会计团队加速月度结账流程，将周期缩短了 3 天，银行对账工作时间减少 90%，并通过其 Ember AI 聊天界面将报表速度提升 50%。</p><p><a href="https://claude.com/customers/armanino"><strong>Armanino</strong></a> 是美国最大的会计师事务所之一，其在 Amazon Bedrock 上部署了 Claude，将手动写作任务花费的时间减少了 65%，后续澄清沟通减少了 60%。</p><p><a href="https://claude.com/customers/classdojo"><strong>ClassDojo</strong></a> 是一个服务于全美 90% 小学、拥有 4500 万用户的教育平台，它使用 Claude 驱动其 Sidekick AI 教学助手，将过去教师按班级名册处理需要 20-30 分钟的行政工作压缩到几秒钟。</p><p>当过去要耗费数小时的重复性任务现在只需几分钟时，你就能真正专注于推动业务前进的工作，而不是被行政琐事淹没。</p><h3>获得难以招到的人才的专业能力</h3><p>初创公司需要在每个职能上都有世界级的工作成果，但找到这样的人才非常困难。AI 智能体可以提供专家级的分析和决策能力，而这些能力如果靠招聘可能需要数月才能获得。</p><p><a href="https://claude.com/customers/esentire"><strong>eSentire</strong></a> 是一家为 80 多个国家/地区的关键基础设施提供托管检测与响应（MDR）服务的提供商，它使用 Claude 复刻了其精英 SOC 分析师的调查流程。他们将分析时间从 5 小时压缩到 7 分钟，实现了 95% 的准确率和 99.3% 的威胁抑制率。</p><p><a href="https://claude.com/customers/gradient-labs?m=1"><strong>Gradient Labs</strong></a> 是一个面向金融机构的 AI 客户支持平台，在复杂的金融支持场景中保持了 80-90% 的问题解决率和 98% 的客户满意度。小团队如今也能交付过去需要招聘拥有多年领域经验的博士级专家才能实现的分析质量。</p><h3>速度与质量的权衡</h3><p>无论公司规模大小，如何既能跑得足够快来保持领先，又能维持质量标准，一直是个难题。发布太快，质量就会受损；过度追求发布完美产品，竞争对手又会超越你。AI 智能体打破了这一权衡，在大幅提升执行速度的同时保持高标准。</p><p><a href="https://www.claude.com/customers/brex"><strong>Brex</strong></a> 在自动化 75% 的交易、每年为客户节省 5650 万美元的同时，达到了 94% 的合规率，而行业标准仅为 70%。<a href="https://www.claude.com/customers/stackblitz"><strong>StackBlitz</strong></a> 在将 Claude 集成到 Bolt 之后，仅用 4 周时间就从零做到 400 万美元 ARR，用户的应用开发成本降低了 99%，同时保持了生产级的质量。</p><p>当你既能以初创公司的速度前进，又不必承受传统上随之而来的质量妥协时，你就能两全其美。工作发布得更快，成果也经得起推敲。</p><h2><strong>常见的智能体应用场景</strong></h2><p>初创公司正在让智能体去解决那些过去需要专职人员（而他们往往没有）来处理的运营难题。结果是：更低的成本、更快的执行，以及超出团队规模的能力。</p><h3>扩展运营</h3><p><a href="https://claude.com/customers/micro1">Micro1</a> 使用 Claude 每天进行 3000 多场 AI 驱动的面试，从而变革了技术招聘，与传统方式相比<strong>将招聘成本降低了 85%</strong>。这个人才搜寻平台在经过 AI 筛选的候选人进入人类面试环节时，达到了 5 倍更高的通过率。</p><p>借助 Micro1 基于 Claude 的技术面试平台，<a href="https://www.claude.com/customers/micro1#:~:text=micro1%20uses%20Claude%20to%20conduct,with%2064%25%20less%20staff%20time"><strong>Legal Soft</strong></a> 将面试团队从 33 人精简到 12 人，同时保持每月 10,000 名候选人的筛选量，每年节省超过 40 万美元的招聘成本，并将 EBITDA 利润率提高了 30%。</p><p><a href="https://claude.com/customers/inscribe"><strong>Inscribe</strong></a> 使用基于 Claude 的 AI Risk Agents，将欺诈审查周期从<strong>30 分钟缩短到 90 秒</strong>。通过自动化文档验证、欺诈检测和风险分析（同时保持严格的数据隐私标准），Inscribe 帮助其金融机构客户将审查产出提升了 70 倍。</p><h3>把数天或数周变成几分钟</h3><p><a href="https://claude.com/customers/blueflame"><strong>BlueFlame</strong></a> 利用 Claude 的视觉能力处理富含图表的金融文档，为精简的投资团队将文档分析时间从<strong>4 小时以上压缩到几分钟</strong>。该平台使小团队能够完成过去需要庞大技术部门支撑的机构级分析，平均每天支持 30 个客户查询，并自动完成数百家公司的同步对比。</p><p><a href="https://claude.com/customers/biomni"><strong>Biomni</strong></a> 将科学研究分析从<strong>三周压缩到 35 分钟</strong>（快 800 倍），同时在生物医学基准测试中保持人类水平的表现。这个由斯坦福开发的平台可自动化文献综述、生物信息学分析和实验方案设计。过去把 80% 时间花在重复任务上的研究人员，现在可以同时推进多条研究线，其克隆实验经验证达到了 5 年以上专家的工作水平。</p><h3>加速产品开发周期</h3><p><a href="https://claude.com/customers/lovable"><strong>Lovable</strong></a> 让非工程师和开发者都能通过与 Claude 自然对话，以 20 倍于传统编码的速度构建生产级 Web 应用，<strong>在不到六个月内达到了 4000 万美元 ARR</strong>。该平台每月服务超过一百万活跃用户，他们无需编写代码即可创建从 SaaS 产品到内部工具的各种应用。</p><p><a href="https://claude.com/customers/genspark"><strong>Genspark</strong></a> 以 Claude 作为八个专用 AI 模型的主协调器，构建了一套多智能体任务自动化系统，在推出其 Super Agent 平台后<strong>45 天内达到了 3600 万美元 ARR</strong>。这个 AI 驱动的搜索引擎为超过五百万用户服务，其动态工作流可以随查询复杂度自适应调整。他们的 AI 幻灯片功能将五分钟的自动化研究工作压缩到相当于三小时手动工作的成果，让用户得以应对过去人工根本无法处理的研究项目的规模和复杂度。</p><h2><strong>在初创公司中落地 AI 智能体</strong></h2><p>上面的例子展示了可能性，但要实现它，需要从第一天起就在实施上做出明智选择。起点选错，你会浪费时间和信誉；从小处着手、选对问题，你就为日后处理越来越有野心的应用打下了基础。</p><h3>找到合适的切入点</h3><p>我们建议在那些已有人类监督、且不完美的自动化不会造成大问题的领域启动你的智能体计划，让智能体立刻减轻工作量，同时由人类验证结果。</p><p>这些起步部署能让团队了解智能体的工作方式、它们的短板，以及如何有效集成——这一切都在没有关键任务压力的情况下完成，也为日后应对那些更看重正确性、监督也更困难的高难度应用打下基础。</p><h3>从初步胜利中扩展</h3><p>一旦智能体开始处理实际工作并赢得团队信任，你就可以构建更宏大的东西：跨多个职能运作的共享系统，并最终处理那些真正驱动业务成果的复杂高风险流程。</p><h4>发展多用途能力</h4><p>构建能够解决多个问题的基础智能体能力，而不是为每个需求单独造一套方案。一个能处理个性化触达的智能体，可以给候选人发送 HR 初筛问题、给潜在客户起草定制营销邮件，也可以跟进投资人。每一个使用场景都会让它更擅长写出符合语境的得体信息。</p><h4>攻克更大的挑战</h4><p>到了这个阶段，你已经有 AI 智能体在业务的各个部分处理实际工作。你已经构建并打磨了多人日常使用的核心能力，证明智能体能带来有意义的成果。你的技术团队也积累了实战经验，从让智能体跑起来的过程中学到了切实的教训。</p><p>这时你就准备好去追求更大的挑战了。要成功构建它们，需要从一开始就融入以下能力：</p><ul role="list"><li><strong>从一开始就构建模块化。</strong>你的需求会演进，从头重做会浪费已有的进展。模块化系统让你可以替换组件、增加能力，而不必推倒重来。</li><li><strong>让智能体的决策可见。</strong>当出现问题或某个决策看起来不对劲时，你需要能精确追溯智能体是如何得出该结论的。最好从第一天起就把可观测性内建到系统中，事后给复杂智能体补装可观测性是非常痛苦的。</li><li><strong>在关键环节保留人类参与。</strong>自主性很强大，但有些决策需要人类判断。设计智能体时，应让它将特定情形标记出来请求批准，而不是在所有事情上要么全自动、要么全不自动。</li></ul><p>正是这些能力，区分了那些能承担更多职责的智能体和那些始终停留在处理简单任务层面的智能体。培养这些能力需要时间和经验，这也是为什么从小处着手如此重要。</p><h2><strong>迈出第一步</strong></h2><p>那些取得早期成果的初创公司都有一个一致的模式：选择一个高影响的问题，其自动化能释放他们最捉襟见肘的资源——比如消耗创始人时间的候选人筛选、堆积如山的支持请求，或者让销售团队无暇顾及真正潜在客户的线索资格审查。</p><p>这些首次部署带来的不只是立竿见影的成果。它们让初创公司了解在自己的具体场景中什么最重要：数据如何与智能体集成、什么提示词适合自己的用例、工作流需要如何调整。这些洞察将成为日后规模化扩展的行动指南。</p><p>‍</p></div>
+            <h1 class="article-title u-text-style-h1">初创公司如何构建 AI 智能体</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>For resource-constrained startups, AI agents autonomously handle complex processes, reclaiming founder time, providing expert-level capabilities, and maintaining quality while moving fast.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/enterprise-ai" target="_blank" rel="noopener noreferrer">Enterprise AI</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/platform/api" target="_blank" rel="noopener noreferrer">Claude Platform</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">November 3, 2025</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/building-ai-agents-for-startups/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/building-ai-agents-for-startups" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>随便问一位创始人：创建一家初创公司意味着身兼数职、在有限资源下艰难权衡，并不断优先考虑那些能推动业务前进的事情。要做的工作永无止境，人手却永远不够。</p><p>AI 智能体正在改变这一局面。与那些需要人类持续指挥才能将信息转化为行动的传统 AI 工具不同，智能体可以在人类监督（human-in-the-loop）下自主管理业务流程。对于资源受限的初创公司来说，这一转变具有变革性意义。</p><p>本文将探讨初创公司如何部署 AI 智能体来夺回创始人的时间、获得专家级能力，并在保持初创速度的同时兼顾质量。</p><h2><strong>智能体为初创公司创造价值的三种方式</strong></h2><p>之所以发生这种转变，是因为智能体直接化解了每家初创公司都面临的三种资源约束：它们夺回花在重复性工作上的时间，在内部缺乏相应技能时提供专业能力，并以初创公司的速度运转同时保证质量。</p><h3>消除杂务</h3><p>创始人（以及早期员工）花在运营杂务上的每一小时，都是没有花在战略、融资或产品构建上的一小时。</p><p>最直接的解决办法是招人来处理这些事务，但对早期初创公司来说这并不总是可行的。找到合适的人选需要团队根本没有的时间，而招错人带来的挫折是精简团队难以承受的。AI 智能体可以自动化重复性工作，在不增加人手的情况下为初创公司赢回时间。</p><p><a href="https://claude.com/customers/campfire"><strong>Campfire</strong></a> 是一家现代化会计软件提供商，它使用 Claude 帮助会计团队加速月度结账流程，将周期缩短了 3 天，银行对账工作时间减少 90%，并通过其 Ember AI 聊天界面将报表速度提升 50%。</p><p><a href="https://claude.com/customers/armanino"><strong>Armanino</strong></a> 是美国最大的会计师事务所之一，其在 Amazon Bedrock 上部署了 Claude，将手动写作任务花费的时间减少了 65%，后续澄清沟通减少了 60%。</p><p><a href="https://claude.com/customers/classdojo"><strong>ClassDojo</strong></a> 是一个服务于全美 90% 小学、拥有 4500 万用户的教育平台，它使用 Claude 驱动其 Sidekick AI 教学助手，将过去教师按班级名册处理需要 20-30 分钟的行政工作压缩到几秒钟。</p><p>当过去要耗费数小时的重复性任务现在只需几分钟时，你就能真正专注于推动业务前进的工作，而不是被行政琐事淹没。</p><h3>获得难以招到的人才的专业能力</h3><p>初创公司需要在每个职能上都有世界级的工作成果，但找到这样的人才非常困难。AI 智能体可以提供专家级的分析和决策能力，而这些能力如果靠招聘可能需要数月才能获得。</p><p><a href="https://claude.com/customers/esentire"><strong>eSentire</strong></a> 是一家为 80 多个国家/地区的关键基础设施提供托管检测与响应（MDR）服务的提供商，它使用 Claude 复刻了其精英 SOC 分析师的调查流程。他们将分析时间从 5 小时压缩到 7 分钟，实现了 95% 的准确率和 99.3% 的威胁抑制率。</p><p><a href="https://claude.com/customers/gradient-labs?m=1"><strong>Gradient Labs</strong></a> 是一个面向金融机构的 AI 客户支持平台，在复杂的金融支持场景中保持了 80-90% 的问题解决率和 98% 的客户满意度。小团队如今也能交付过去需要招聘拥有多年领域经验的博士级专家才能实现的分析质量。</p><h3>速度与质量的权衡</h3><p>无论公司规模大小，如何既能跑得足够快来保持领先，又能维持质量标准，一直是个难题。发布太快，质量就会受损；过度追求发布完美产品，竞争对手又会超越你。AI 智能体打破了这一权衡，在大幅提升执行速度的同时保持高标准。</p><p><a href="https://www.claude.com/customers/brex"><strong>Brex</strong></a> 在自动化 75% 的交易、每年为客户节省 5650 万美元的同时，达到了 94% 的合规率，而行业标准仅为 70%。<a href="https://www.claude.com/customers/stackblitz"><strong>StackBlitz</strong></a> 在将 Claude 集成到 Bolt 之后，仅用 4 周时间就从零做到 400 万美元 ARR，用户的应用开发成本降低了 99%，同时保持了生产级的质量。</p><p>当你既能以初创公司的速度前进，又不必承受传统上随之而来的质量妥协时，你就能两全其美。工作发布得更快，成果也经得起推敲。</p><h2><strong>常见的智能体应用场景</strong></h2><p>初创公司正在让智能体去解决那些过去需要专职人员（而他们往往没有）来处理的运营难题。结果是：更低的成本、更快的执行，以及超出团队规模的能力。</p><h3>扩展运营</h3><p><a href="https://claude.com/customers/micro1">Micro1</a> 使用 Claude 每天进行 3000 多场 AI 驱动的面试，从而变革了技术招聘，与传统方式相比<strong>将招聘成本降低了 85%</strong>。这个人才搜寻平台在经过 AI 筛选的候选人进入人类面试环节时，达到了 5 倍更高的通过率。</p><p>借助 Micro1 基于 Claude 的技术面试平台，<a href="https://www.claude.com/customers/micro1#:~:text=micro1%20uses%20Claude%20to%20conduct,with%2064%25%20less%20staff%20time"><strong>Legal Soft</strong></a> 将面试团队从 33 人精简到 12 人，同时保持每月 10,000 名候选人的筛选量，每年节省超过 40 万美元的招聘成本，并将 EBITDA 利润率提高了 30%。</p><p><a href="https://claude.com/customers/inscribe"><strong>Inscribe</strong></a> 使用基于 Claude 的 AI Risk Agents，将欺诈审查周期从<strong>30 分钟缩短到 90 秒</strong>。通过自动化文档验证、欺诈检测和风险分析（同时保持严格的数据隐私标准），Inscribe 帮助其金融机构客户将审查产出提升了 70 倍。</p><h3>把数天或数周变成几分钟</h3><p><a href="https://claude.com/customers/blueflame"><strong>BlueFlame</strong></a> 利用 Claude 的视觉能力处理富含图表的金融文档，为精简的投资团队将文档分析时间从<strong>4 小时以上压缩到几分钟</strong>。该平台使小团队能够完成过去需要庞大技术部门支撑的机构级分析，平均每天支持 30 个客户查询，并自动完成数百家公司的同步对比。</p><p><a href="https://claude.com/customers/biomni"><strong>Biomni</strong></a> 将科学研究分析从<strong>三周压缩到 35 分钟</strong>（快 800 倍），同时在生物医学基准测试中保持人类水平的表现。这个由斯坦福开发的平台可自动化文献综述、生物信息学分析和实验方案设计。过去把 80% 时间花在重复任务上的研究人员，现在可以同时推进多条研究线，其克隆实验经验证达到了 5 年以上专家的工作水平。</p><h3>加速产品开发周期</h3><p><a href="https://claude.com/customers/lovable"><strong>Lovable</strong></a> 让非工程师和开发者都能通过与 Claude 自然对话，以 20 倍于传统编码的速度构建生产级 Web 应用，<strong>在不到六个月内达到了 4000 万美元 ARR</strong>。该平台每月服务超过一百万活跃用户，他们无需编写代码即可创建从 SaaS 产品到内部工具的各种应用。</p><p><a href="https://claude.com/customers/genspark"><strong>Genspark</strong></a> 以 Claude 作为八个专用 AI 模型的主协调器，构建了一套多智能体任务自动化系统，在推出其 Super Agent 平台后<strong>45 天内达到了 3600 万美元 ARR</strong>。这个 AI 驱动的搜索引擎为超过五百万用户服务，其动态工作流可以随查询复杂度自适应调整。他们的 AI 幻灯片功能将五分钟的自动化研究工作压缩到相当于三小时手动工作的成果，让用户得以应对过去人工根本无法处理的研究项目的规模和复杂度。</p><h2><strong>在初创公司中落地 AI 智能体</strong></h2><p>上面的例子展示了可能性，但要实现它，需要从第一天起就在实施上做出明智选择。起点选错，你会浪费时间和信誉；从小处着手、选对问题，你就为日后处理越来越有野心的应用打下了基础。</p><h3>找到合适的切入点</h3><p>我们建议在那些已有人类监督、且不完美的自动化不会造成大问题的领域启动你的智能体计划，让智能体立刻减轻工作量，同时由人类验证结果。</p><p>这些起步部署能让团队了解智能体的工作方式、它们的短板，以及如何有效集成——这一切都在没有关键任务压力的情况下完成，也为日后应对那些更看重正确性、监督也更困难的高难度应用打下基础。</p><h3>从初步胜利中扩展</h3><p>一旦智能体开始处理实际工作并赢得团队信任，你就可以构建更宏大的东西：跨多个职能运作的共享系统，并最终处理那些真正驱动业务成果的复杂高风险流程。</p><h4>发展多用途能力</h4><p>构建能够解决多个问题的基础智能体能力，而不是为每个需求单独造一套方案。一个能处理个性化触达的智能体，可以给候选人发送 HR 初筛问题、给潜在客户起草定制营销邮件，也可以跟进投资人。每一个使用场景都会让它更擅长写出符合语境的得体信息。</p><h4>攻克更大的挑战</h4><p>到了这个阶段，你已经有 AI 智能体在业务的各个部分处理实际工作。你已经构建并打磨了多人日常使用的核心能力，证明智能体能带来有意义的成果。你的技术团队也积累了实战经验，从让智能体跑起来的过程中学到了切实的教训。</p><p>这时你就准备好去追求更大的挑战了。要成功构建它们，需要从一开始就融入以下能力：</p><ul role="list"><li><strong>从一开始就构建模块化。</strong>你的需求会演进，从头重做会浪费已有的进展。模块化系统让你可以替换组件、增加能力，而不必推倒重来。</li><li><strong>让智能体的决策可见。</strong>当出现问题或某个决策看起来不对劲时，你需要能精确追溯智能体是如何得出该结论的。最好从第一天起就把可观测性内建到系统中，事后给复杂智能体补装可观测性是非常痛苦的。</li><li><strong>在关键环节保留人类参与。</strong>自主性很强大，但有些决策需要人类判断。设计智能体时，应让它将特定情形标记出来请求批准，而不是在所有事情上要么全自动、要么全不自动。</li></ul><p>正是这些能力，区分了那些能承担更多职责的智能体和那些始终停留在处理简单任务层面的智能体。培养这些能力需要时间和经验，这也是为什么从小处着手如此重要。</p><h2><strong>迈出第一步</strong></h2><p>那些取得早期成果的初创公司都有一个一致的模式：选择一个高影响的问题，其自动化能释放他们最捉襟见肘的资源——比如消耗创始人时间的候选人筛选、堆积如山的支持请求，或者让销售团队无暇顾及真正潜在客户的线索资格审查。</p><p>这些首次部署带来的不只是立竿见影的成果。它们让初创公司了解在自己的具体场景中什么最重要：数据如何与智能体集成、什么提示词适合自己的用例、工作流需要如何调整。这些洞察将成为日后规模化扩展的行动指南。</p><p>‍</p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/building-ai-agents-for-startups" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

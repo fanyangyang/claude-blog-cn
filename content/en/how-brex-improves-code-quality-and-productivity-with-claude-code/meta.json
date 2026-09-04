@@ -13,5 +13,22 @@
   "translatedTitle": "Brex 如何用 Claude Code 提升代码质量与生产力",
   "translated": true,
   "translatedAt": "2026-09-02T04:41:15.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": [
+      "Coding",
+      "Productivity"
+    ]
+  },
+  "subtitle": "Learn how Claude Code breaks down barriers between technical and non-technical teams by making programming easier and more accessible.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/product/claude-code"
 }

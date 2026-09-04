@@ -13,5 +13,25 @@
   "translatedTitle": "Anthropic 如何保障其 AI 原生软件开发生命周期的安全",
   "translated": true,
   "translatedAt": "2026-09-02T04:14:34.101Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Claude Code",
+      "Enterprise AI",
+      "Agents"
+    ],
+    "product": [
+      "Claude Code",
+      "Claude Tag",
+      "Claude Enterprise"
+    ],
+    "usecase": []
+  },
+  "subtitle": "Anthropic Deputy CISO, Jason Clinton, details how the Security Engineering team secures a SDLC that has AI authoring 80% of merged code.",
+  "authors": [
+    "Jason Clinton"
+  ],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/claude-code",
+  "productUrl": "https://claude.com/product/claude-code"
 }

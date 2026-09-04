@@ -13,5 +13,19 @@
   "translatedTitle": "让管理员对 Claude 的用量与支出拥有更多可见性和控制力",
   "translated": true,
   "translatedAt": "2026-09-02T04:50:00.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Enterprise"
+    ],
+    "usecase": []
+  },
+  "subtitle": "New analytics and cost controls are available for Claude Enterprise.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/solutions/enterprise"
 }

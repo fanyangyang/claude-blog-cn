@@ -4,54 +4,233 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Anthropic 营销运营团队如何用 Claude Cowork 自动化报表与活动搭建 — Claude Blog 中文翻译</title>
-  <meta name="description" content="Anthropic 营销运营团队如何用 Claude Cowork 自动化报表与活动搭建">
+  <meta name="description" content="Ian Chan and Annabel Custer, in marketing operations at Anthropic, share how they automate work their team used to do by hand across multiple platforms.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/how-anthropics-marketing-operations-team-uses-claude-cowork-to-automate-reporting-and-campaign-builds" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>Anthropic 营销运营团队如何用 Claude Cowork 自动化报表与活动搭建</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/how-anthropics-marketing-operations-team-uses-claude-cowork-to-automate-reporting-and-campaign-builds" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/how-anthropics-marketing-operations-team-uses-claude-cowork-to-automate-reporting-and-campaign-builds/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># Anthropic 营销运营团队如何用 Claude Cowork 自动化报表与活动搭建
+
+Ian Chan and Annabel Custer, in marketing operations at Anthropic, share how they automate work their team used to do by hand across multiple platforms.
+
+营销运营团队要花相当一部分时间，让营销项目背后的系统与业务保持同步。自动化固然在他们的职责范围内，但实际工作却远非自动化可言：营销技术工具之间无法干净地集成，报表要靠手工汇总，落地页只能一个一个地搭。
+
+Anthropic 营销运营团队的 Ian Chan 过去每周要花一到两天时间整理每周营销指标回顾。负责活动运营的 Annabel Custer 过去每上线一个新活动，都要按顺序在 Salesforce、HubSpot、Swoogo 和邮件工具里逐个点击配置。如今，两人都在 Claude Cowork 中搭建了工作流，把过去几天的人工工作压缩到了几个小时。
+
+省下来的时间改变了他们工作的形态。Ian 和 Annabel 如今花在系统里点来点去的时间少了，而花在赋能、校验，以及营销团队赖以运转的底层数据和流程上的时间多了——因为公司里越来越多的人在自行拉取数据、主导自己的项目。
+
+## **生成每周营销指标报告**
+
+在一个理想世界里，Ian 为营销团队和管理层准备的每周报告中的每一项指标，都应该躺在仪表盘里，他的工作只是把叙事组织起来。但现实中，有些指标已经在仪表盘里，有些还没从数据仓库同步过去，还有些根本没有接入仓库。新的指标可能只存在于一条 Slack 消息或一通电话的会议记录里。
+
+在 Anthropic，业务变化的速度超过了传统报表管线的跟进速度，Ian 过去每周都要花一到两天时间追踪数据并核验。现在，Claude Cowork 承担了这份数据搜寻工作的大部分。
+
+一个定时任务在每周日晚上运行，提示 Claude 阅读上周的回顾和最新的会议记录，查看 Slack 了解销售团队在关注什么，查询数据仓库，然后留下一个包含各项数字和若干建议关注点的文件夹。
+
+周一早上，Ian 打开 Claude Cowork 拉取初版报告，其中包含指标表和建议的标题，也就是重点关注领域。
+
+*图中所示的每周业务回顾摘要使用演示数据创建，所有信息均已匿名化或为发布而修改。*Ian 审阅之后，一旦确认或决定了叙事的焦点，就告诉 Claude 用支撑性细节和案例进行展开。有些周团队在响应销售侧的重点，有些周则在响应产品发布。到了季度交替时，Ian 会告诉 Claude 以季度计划开篇，并把季度回顾文档喂给它。
+
+Claude 基于同样的数据和叙事生成管理层幻灯片：什么发生了变化、为什么，以及各团队正在采取什么行动。所有后续事项都会变成 Asana 任务。
+
+*每周指标报告（图中使用演示数据，所有信息均已匿名化或为发布而修改）包含关键指标和建议的关注领域。*当数字对不上时，Claude 会标记出差异，而不是瞎猜。比如销售团队经历了一次组织调整后，营销侧的报表数据与他们的数据不再吻合。Claude 标记了这个差异，并询问 Ian 该如何处理。
+
+整个流程运行在与团队所用营销平台和工具相连的连接器之上，外加 Ian 搭建并持续更新的三个 Skills：
+
+- **一个准备 Skill** 负责驱动报告组装，包括确定焦点、生成标题，以及用支撑细节进行展开。
+- **一个校对 Skill** 会把草稿中的每一个数字与已验证的来源逐一核对。
+- **一个行动项 Skill** 把后续事项转化为 Asana 任务。
+
+在每次周度会话结束时，Ian 会请 Claude 总结本次出现的问题，看哪些应该写回 Skills。比如新的销售组织架构、他做的修正，或者他希望标题换一种框架来表述。就 Ian 的情况而言，这个过去最多耗时两天的工作流程，如今最多只需要两个小时。
+
+现在，Ian 有相当一部分时间转而去帮助营销人员打磨问题、精炼提示词，以及在他们自己从 Claude 拉取数据时解读结果。他也有余力深入数据层，确保 Claude 对数字、定义和区域结构的理解与数据仓库保持一致。
+
+人工校验已经成为两条工作流中不可或缺的一环——随着 Claude 把传统上占据营销分析师大量时间的枯燥手工任务自动化，这一转变正在加速。
+
+## **自动化活动搭建与数据导入**
+
+搭建营销活动背后的基础设施，历来是营销工作中最依赖人力的环节之一。每一场活动、网络研讨会或整合营销活动，都需要在 CRM 中设置，在负责邮件序列及其自动化的营销自动化平台中设置，还要在负责注册页面和活动落地页的活动管理平台中设置。这些通常出自三家不同的供应商，而它们之间的集成很少是完整的。
+
+在使用 Claude Cowork 之前，Annabel 要从专门的 Slack 频道接下每一个请求，然后手工完成整个流程。她的新方案则几乎完全由 Claude 处理。流程始于一张需求表单，申请人需注明所需的支持类型：活动搭建、数据导入、申请参会，还是审批支持。
+
+每个小时，一个**调度 Skill** 会读取频道，挑选最紧急的请求，在工单上打上标记以避免重复处理，然后将其交给 Annabel 设置的五个专业 Skill 之一去执行具体工作。调度 Skill 本身不做任何活动设置；它的职责是决定接下来运行什么，而把它独立出来，让 Annabel 可以单独打磨每个专业 Skill，而不必触碰路由逻辑。
+
+*调度 Skill（为发布而编辑，展示演示数据和信息）读取频道，并将请求交给五个负责具体工作的专业 Skill 之一。*对于最复杂的请求类型——活动搭建，一个**活动搭建 Skill** 会端到端处理完整流程：创建 CRM 活动、搭建带工作流和列表的营销自动化活动、配置活动平台、起草邮件、生成落地页，以及它们之间的所有集成。
+
+*活动搭建 Skill（为发布节选并编辑）会安排两条 Slack 通知：一条在 Claude 接手请求时，一条在落地页已就绪、等待申请人审阅且审计接手时。*搭建完成后，它会移交给一个新的 agent 进行审计。**审计 agent** 从零开始、不带任何先验上下文，在正式上线的落地页上提交一次测试注册，在 Gmail 中打开确认邮件，如果一切正常就把 Asana 任务标记为完成。Annabel 会在每个结果发布前进行审阅。
+
+这个工作流运行在与 Annabel 打交道的营销平台和工具相连的连接器之上，外加她搭建并随新边界情况不断更新的若干 Skills：
+
+- **一个调度 Skill** 读取需求频道，把每个请求路由到下面正确的专业 Skill。
+- **一个活动搭建 Skill** 驱动跨平台的端到端配置。
+- **一个网络研讨会落地页创建 Skill** 为网络研讨会快速生成落地页。
+- **一个审计 Skill**，由一个全新的独立 Claude 实例运行，在任务标记完成前验证活动搭建 Skill 的输出。
+- **一个申请参会 Skill** 处理注册流程中的临时变更：
+- **一个审批支持 Skill** 处理活动审批，并按计划节奏发送相应邮件。
+- **一个数据导入** **Skill** 清洗列表并处理参会者数据。
+
+她还保持一个独立的&quot;管理者&quot;agent 常开。当某次运行出了岔子，她就打开管理者 agent，让它查看发生了什么，并提出调整建议。凡是值得保留的东西，都会写回相关的 Skill。
+
+虽然这些自动化工作流会为 Annabel 节省大量时间，但她搭建它们的首要动机是工作质量。随着营销团队扩张，营销人员从手边随便哪个模板克隆活动页面可能产生各种 Bug，比如确认邮件里出现错误的城市名，或者落地页打不开。借助 Claude Cowork，她获得了大规模且跨活动一致的搭建质量。
+
+随着 Claude 承担起活动运营中的重复性环节，Annabel 得以专注于更具战略性的项目，比如团队赋能，以及为实现更好的洞察而进行流程和活动架构的自动化与优化。
+
+## **给营销运营团队的 Claude Cowork 入门建议**
+
+- **把反复出现的修正变成 Skill。**当你发现自己在同一件事上纠正 Claude 超过一次，这条反馈就应该写进一个 Skill。你甚至不需要亲手搭建 Skill：Claude 可以代劳。
+- **先搭建一个校对 Skill。**校对 Skill 会检查 Claude 写进报告的每一个数字是否都能追溯到已验证的来源。
+
+- **让 Claude 复盘。**Claude 阅读指令的方式与人类书写指令的方式不同，因此在一条新工作流的最初几次运行后，问问它指令里哪些地方不好懂。Annabel 会把暴露出的问题作为持续更新 Skills 实践的一部分，回写到相应 Skill 中。
+
+- **善用定时任务。**每个周日晚上或每个小时自动运行的工作，就是没有人需要惦记着去做的工作。
+
+‍</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Enterprise AI</span>
-            <span class="article-date">July 8, 2026</span>
-            
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-plum);">
+            <img class="hero-illo-img" src="/assets/illustrations/how-anthropics-marketing-operations-team-uses-claude-cowork-to-automate-reporting-and-campaign-builds.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">Anthropic 营销运营团队如何用 Claude Cowork 自动化报表与活动搭建</h1>
-          <a href="/posts/how-anthropics-marketing-operations-team-uses-claude-cowork-to-automate-reporting-and-campaign-builds/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>营销运营团队要花相当一部分时间，让营销项目背后的系统与业务保持同步。自动化固然在他们的职责范围内，但实际工作却远非自动化可言：营销技术工具之间无法干净地集成，报表要靠手工汇总，落地页只能一个一个地搭。</p><p>Anthropic 营销运营团队的 Ian Chan 过去每周要花一到两天时间整理每周营销指标回顾。负责活动运营的 Annabel Custer 过去每上线一个新活动，都要按顺序在 Salesforce、HubSpot、Swoogo 和邮件工具里逐个点击配置。如今，两人都在 Claude Cowork 中搭建了工作流，把过去几天的人工工作压缩到了几个小时。</p><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/lsufr1i6ACY" title="Claude Cowork for marketing ops" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><p>省下来的时间改变了他们工作的形态。Ian 和 Annabel 如今花在系统里点来点去的时间少了，而花在赋能、校验，以及营销团队赖以运转的底层数据和流程上的时间多了——因为公司里越来越多的人在自行拉取数据、主导自己的项目。</p><h2><strong>生成每周营销指标报告</strong></h2><p>在一个理想世界里，Ian 为营销团队和管理层准备的每周报告中的每一项指标，都应该躺在仪表盘里，他的工作只是把叙事组织起来。但现实中，有些指标已经在仪表盘里，有些还没从数据仓库同步过去，还有些根本没有接入仓库。新的指标可能只存在于一条 Slack 消息或一通电话的会议记录里。</p><p>在 Anthropic，业务变化的速度超过了传统报表管线的跟进速度，Ian 过去每周都要花一到两天时间追踪数据并核验。现在，Claude Cowork 承担了这份数据搜寻工作的大部分。</p><p>一个定时任务在每周日晚上运行，提示 Claude 阅读上周的回顾和最新的会议记录，查看 Slack 了解销售团队在关注什么，查询数据仓库，然后留下一个包含各项数字和若干建议关注点的文件夹。</p><p>周一早上，Ian 打开 Claude Cowork 拉取初版报告，其中包含指标表和建议的标题，也就是重点关注领域。</p><figure style="max-width:2048pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a4c4a528dff4302c054e6cd_47666869.png" loading="lazy"></div><figcaption><em>图中所示的每周业务回顾摘要使用演示数据创建，所有信息均已匿名化或为发布而修改。</em></figcaption></figure><p>Ian 审阅之后，一旦确认或决定了叙事的焦点，就告诉 Claude 用支撑性细节和案例进行展开。有些周团队在响应销售侧的重点，有些周则在响应产品发布。到了季度交替时，Ian 会告诉 Claude 以季度计划开篇，并把季度回顾文档喂给它。</p><p>Claude 基于同样的数据和叙事生成管理层幻灯片：什么发生了变化、为什么，以及各团队正在采取什么行动。所有后续事项都会变成 Asana 任务。</p><figure style="max-width:1794pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a4c4a528dff4302c054e6d0_9a64f8ed.png" loading="lazy"></div><figcaption><em>每周指标报告（图中使用演示数据，所有信息均已匿名化或为发布而修改）包含关键指标和建议的关注领域。</em></figcaption></figure><p>当数字对不上时，Claude 会标记出差异，而不是瞎猜。比如销售团队经历了一次组织调整后，营销侧的报表数据与他们的数据不再吻合。Claude 标记了这个差异，并询问 Ian 该如何处理。</p><p>整个流程运行在与团队所用营销平台和工具相连的连接器之上，外加 Ian 搭建并持续更新的三个 Skills：</p><ul role="list"><li><strong>一个准备 Skill</strong> 负责驱动报告组装，包括确定焦点、生成标题，以及用支撑细节进行展开。</li><li><strong>一个校对 Skill</strong> 会把草稿中的每一个数字与已验证的来源逐一核对。</li><li><strong>一个行动项 Skill</strong> 把后续事项转化为 Asana 任务。</li></ul><p>在每次周度会话结束时，Ian 会请 Claude 总结本次出现的问题，看哪些应该写回 Skills。比如新的销售组织架构、他做的修正，或者他希望标题换一种框架来表述。就 Ian 的情况而言，这个过去最多耗时两天的工作流程，如今最多只需要两个小时。</p><p>现在，Ian 有相当一部分时间转而去帮助营销人员打磨问题、精炼提示词，以及在他们自己从 Claude 拉取数据时解读结果。他也有余力深入数据层，确保 Claude 对数字、定义和区域结构的理解与数据仓库保持一致。</p><p>人工校验已经成为两条工作流中不可或缺的一环——随着 Claude 把传统上占据营销分析师大量时间的枯燥手工任务自动化，这一转变正在加速。</p><h2><strong>自动化活动搭建与数据导入</strong></h2><p>搭建营销活动背后的基础设施，历来是营销工作中最依赖人力的环节之一。每一场活动、网络研讨会或整合营销活动，都需要在 CRM 中设置，在负责邮件序列及其自动化的营销自动化平台中设置，还要在负责注册页面和活动落地页的活动管理平台中设置。这些通常出自三家不同的供应商，而它们之间的集成很少是完整的。</p><p>在使用 Claude Cowork 之前，Annabel 要从专门的 Slack 频道接下每一个请求，然后手工完成整个流程。她的新方案则几乎完全由 Claude 处理。流程始于一张需求表单，申请人需注明所需的支持类型：活动搭建、数据导入、申请参会，还是审批支持。</p><p>每个小时，一个<strong>调度 Skill</strong> 会读取频道，挑选最紧急的请求，在工单上打上标记以避免重复处理，然后将其交给 Annabel 设置的五个专业 Skill 之一去执行具体工作。调度 Skill 本身不做任何活动设置；它的职责是决定接下来运行什么，而把它独立出来，让 Annabel 可以单独打磨每个专业 Skill，而不必触碰路由逻辑。</p><figure style="max-width:1791pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a4c4a528dff4302c054e6d3_36d62936.png" loading="lazy"></div><figcaption><em>调度 Skill（为发布而编辑，展示演示数据和信息）读取频道，并将请求交给五个负责具体工作的专业 Skill 之一。</em></figcaption></figure><p>对于最复杂的请求类型——活动搭建，一个<strong>活动搭建 Skill</strong> 会端到端处理完整流程：创建 CRM 活动、搭建带工作流和列表的营销自动化活动、配置活动平台、起草邮件、生成落地页，以及它们之间的所有集成。</p><figure style="max-width:1785pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a4c4a528dff4302c054e6d8_be52735c.png" loading="lazy"></div><figcaption><em>活动搭建 Skill（为发布节选并编辑）会安排两条 Slack 通知：一条在 Claude 接手请求时，一条在落地页已就绪、等待申请人审阅且审计接手时。</em></figcaption></figure><p>搭建完成后，它会移交给一个新的 agent 进行审计。<strong>审计 agent</strong> 从零开始、不带任何先验上下文，在正式上线的落地页上提交一次测试注册，在 Gmail 中打开确认邮件，如果一切正常就把 Asana 任务标记为完成。Annabel 会在每个结果发布前进行审阅。</p><p>这个工作流运行在与 Annabel 打交道的营销平台和工具相连的连接器之上，外加她搭建并随新边界情况不断更新的若干 Skills：</p><ul role="list"><li><strong>一个调度 Skill</strong> 读取需求频道，把每个请求路由到下面正确的专业 Skill。</li><li><strong>一个活动搭建 Skill</strong> 驱动跨平台的端到端配置。</li><li><strong>一个网络研讨会落地页创建 Skill</strong> 为网络研讨会快速生成落地页。</li><li><strong>一个审计 Skill</strong>，由一个全新的独立 Claude 实例运行，在任务标记完成前验证活动搭建 Skill 的输出。</li><li><strong>一个申请参会 Skill</strong> 处理注册流程中的临时变更：</li><li><strong>一个审批支持 Skill</strong> 处理活动审批，并按计划节奏发送相应邮件。</li><li><strong>一个数据导入</strong> <strong>Skill</strong> 清洗列表并处理参会者数据。</li></ul><p>她还保持一个独立的"管理者"agent 常开。当某次运行出了岔子，她就打开管理者 agent，让它查看发生了什么，并提出调整建议。凡是值得保留的东西，都会写回相关的 Skill。</p><p>虽然这些自动化工作流会为 Annabel 节省大量时间，但她搭建它们的首要动机是工作质量。随着营销团队扩张，营销人员从手边随便哪个模板克隆活动页面可能产生各种 Bug，比如确认邮件里出现错误的城市名，或者落地页打不开。借助 Claude Cowork，她获得了大规模且跨活动一致的搭建质量。</p><p>随着 Claude 承担起活动运营中的重复性环节，Annabel 得以专注于更具战略性的项目，比如团队赋能，以及为实现更好的洞察而进行流程和活动架构的自动化与优化。</p><h2><strong>给营销运营团队的 Claude Cowork 入门建议</strong></h2><ul role="list"><li><strong>把反复出现的修正变成 Skill。</strong>当你发现自己在同一件事上纠正 Claude 超过一次，这条反馈就应该写进一个 Skill。你甚至不需要亲手搭建 Skill：Claude 可以代劳。</li><li><strong>先搭建一个校对 Skill。</strong>校对 Skill 会检查 Claude 写进报告的每一个数字是否都能追溯到已验证的来源。</li></ul><ul role="list"><li><strong>让 Claude 复盘。</strong>Claude 阅读指令的方式与人类书写指令的方式不同，因此在一条新工作流的最初几次运行后，问问它指令里哪些地方不好懂。Annabel 会把暴露出的问题作为持续更新 Skills 实践的一部分，回写到相应 Skill 中。</li></ul><ul role="list"><li><strong>善用定时任务。</strong>每个周日晚上或每个小时自动运行的工作，就是没有人需要惦记着去做的工作。</li></ul><p>‍</p></div>
+            <h1 class="article-title u-text-style-h1">Anthropic 营销运营团队如何用 Claude Cowork 自动化报表与活动搭建</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>Ian Chan and Annabel Custer, in marketing operations at Anthropic, share how they automate work their team used to do by hand across multiple platforms.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/enterprise-ai" target="_blank" rel="noopener noreferrer">Enterprise AI</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/product/cowork" target="_blank" rel="noopener noreferrer">Claude Cowork</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">July 8, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/how-anthropics-marketing-operations-team-uses-claude-cowork-to-automate-reporting-and-campaign-builds/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/how-anthropics-marketing-operations-team-uses-claude-cowork-to-automate-reporting-and-campaign-builds" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>营销运营团队要花相当一部分时间，让营销项目背后的系统与业务保持同步。自动化固然在他们的职责范围内，但实际工作却远非自动化可言：营销技术工具之间无法干净地集成，报表要靠手工汇总，落地页只能一个一个地搭。</p><p>Anthropic 营销运营团队的 Ian Chan 过去每周要花一到两天时间整理每周营销指标回顾。负责活动运营的 Annabel Custer 过去每上线一个新活动，都要按顺序在 Salesforce、HubSpot、Swoogo 和邮件工具里逐个点击配置。如今，两人都在 Claude Cowork 中搭建了工作流，把过去几天的人工工作压缩到了几个小时。</p><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/lsufr1i6ACY" title="Claude Cowork for marketing ops" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><p>省下来的时间改变了他们工作的形态。Ian 和 Annabel 如今花在系统里点来点去的时间少了，而花在赋能、校验，以及营销团队赖以运转的底层数据和流程上的时间多了——因为公司里越来越多的人在自行拉取数据、主导自己的项目。</p><h2><strong>生成每周营销指标报告</strong></h2><p>在一个理想世界里，Ian 为营销团队和管理层准备的每周报告中的每一项指标，都应该躺在仪表盘里，他的工作只是把叙事组织起来。但现实中，有些指标已经在仪表盘里，有些还没从数据仓库同步过去，还有些根本没有接入仓库。新的指标可能只存在于一条 Slack 消息或一通电话的会议记录里。</p><p>在 Anthropic，业务变化的速度超过了传统报表管线的跟进速度，Ian 过去每周都要花一到两天时间追踪数据并核验。现在，Claude Cowork 承担了这份数据搜寻工作的大部分。</p><p>一个定时任务在每周日晚上运行，提示 Claude 阅读上周的回顾和最新的会议记录，查看 Slack 了解销售团队在关注什么，查询数据仓库，然后留下一个包含各项数字和若干建议关注点的文件夹。</p><p>周一早上，Ian 打开 Claude Cowork 拉取初版报告，其中包含指标表和建议的标题，也就是重点关注领域。</p><figure style="max-width:2048pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a4c4a528dff4302c054e6cd_47666869.png" loading="lazy"></div><figcaption><em>图中所示的每周业务回顾摘要使用演示数据创建，所有信息均已匿名化或为发布而修改。</em></figcaption></figure><p>Ian 审阅之后，一旦确认或决定了叙事的焦点，就告诉 Claude 用支撑性细节和案例进行展开。有些周团队在响应销售侧的重点，有些周则在响应产品发布。到了季度交替时，Ian 会告诉 Claude 以季度计划开篇，并把季度回顾文档喂给它。</p><p>Claude 基于同样的数据和叙事生成管理层幻灯片：什么发生了变化、为什么，以及各团队正在采取什么行动。所有后续事项都会变成 Asana 任务。</p><figure style="max-width:1794pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a4c4a528dff4302c054e6d0_9a64f8ed.png" loading="lazy"></div><figcaption><em>每周指标报告（图中使用演示数据，所有信息均已匿名化或为发布而修改）包含关键指标和建议的关注领域。</em></figcaption></figure><p>当数字对不上时，Claude 会标记出差异，而不是瞎猜。比如销售团队经历了一次组织调整后，营销侧的报表数据与他们的数据不再吻合。Claude 标记了这个差异，并询问 Ian 该如何处理。</p><p>整个流程运行在与团队所用营销平台和工具相连的连接器之上，外加 Ian 搭建并持续更新的三个 Skills：</p><ul role="list"><li><strong>一个准备 Skill</strong> 负责驱动报告组装，包括确定焦点、生成标题，以及用支撑细节进行展开。</li><li><strong>一个校对 Skill</strong> 会把草稿中的每一个数字与已验证的来源逐一核对。</li><li><strong>一个行动项 Skill</strong> 把后续事项转化为 Asana 任务。</li></ul><p>在每次周度会话结束时，Ian 会请 Claude 总结本次出现的问题，看哪些应该写回 Skills。比如新的销售组织架构、他做的修正，或者他希望标题换一种框架来表述。就 Ian 的情况而言，这个过去最多耗时两天的工作流程，如今最多只需要两个小时。</p><p>现在，Ian 有相当一部分时间转而去帮助营销人员打磨问题、精炼提示词，以及在他们自己从 Claude 拉取数据时解读结果。他也有余力深入数据层，确保 Claude 对数字、定义和区域结构的理解与数据仓库保持一致。</p><p>人工校验已经成为两条工作流中不可或缺的一环——随着 Claude 把传统上占据营销分析师大量时间的枯燥手工任务自动化，这一转变正在加速。</p><h2><strong>自动化活动搭建与数据导入</strong></h2><p>搭建营销活动背后的基础设施，历来是营销工作中最依赖人力的环节之一。每一场活动、网络研讨会或整合营销活动，都需要在 CRM 中设置，在负责邮件序列及其自动化的营销自动化平台中设置，还要在负责注册页面和活动落地页的活动管理平台中设置。这些通常出自三家不同的供应商，而它们之间的集成很少是完整的。</p><p>在使用 Claude Cowork 之前，Annabel 要从专门的 Slack 频道接下每一个请求，然后手工完成整个流程。她的新方案则几乎完全由 Claude 处理。流程始于一张需求表单，申请人需注明所需的支持类型：活动搭建、数据导入、申请参会，还是审批支持。</p><p>每个小时，一个<strong>调度 Skill</strong> 会读取频道，挑选最紧急的请求，在工单上打上标记以避免重复处理，然后将其交给 Annabel 设置的五个专业 Skill 之一去执行具体工作。调度 Skill 本身不做任何活动设置；它的职责是决定接下来运行什么，而把它独立出来，让 Annabel 可以单独打磨每个专业 Skill，而不必触碰路由逻辑。</p><figure style="max-width:1791pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a4c4a528dff4302c054e6d3_36d62936.png" loading="lazy"></div><figcaption><em>调度 Skill（为发布而编辑，展示演示数据和信息）读取频道，并将请求交给五个负责具体工作的专业 Skill 之一。</em></figcaption></figure><p>对于最复杂的请求类型——活动搭建，一个<strong>活动搭建 Skill</strong> 会端到端处理完整流程：创建 CRM 活动、搭建带工作流和列表的营销自动化活动、配置活动平台、起草邮件、生成落地页，以及它们之间的所有集成。</p><figure style="max-width:1785pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a4c4a528dff4302c054e6d8_be52735c.png" loading="lazy"></div><figcaption><em>活动搭建 Skill（为发布节选并编辑）会安排两条 Slack 通知：一条在 Claude 接手请求时，一条在落地页已就绪、等待申请人审阅且审计接手时。</em></figcaption></figure><p>搭建完成后，它会移交给一个新的 agent 进行审计。<strong>审计 agent</strong> 从零开始、不带任何先验上下文，在正式上线的落地页上提交一次测试注册，在 Gmail 中打开确认邮件，如果一切正常就把 Asana 任务标记为完成。Annabel 会在每个结果发布前进行审阅。</p><p>这个工作流运行在与 Annabel 打交道的营销平台和工具相连的连接器之上，外加她搭建并随新边界情况不断更新的若干 Skills：</p><ul role="list"><li><strong>一个调度 Skill</strong> 读取需求频道，把每个请求路由到下面正确的专业 Skill。</li><li><strong>一个活动搭建 Skill</strong> 驱动跨平台的端到端配置。</li><li><strong>一个网络研讨会落地页创建 Skill</strong> 为网络研讨会快速生成落地页。</li><li><strong>一个审计 Skill</strong>，由一个全新的独立 Claude 实例运行，在任务标记完成前验证活动搭建 Skill 的输出。</li><li><strong>一个申请参会 Skill</strong> 处理注册流程中的临时变更：</li><li><strong>一个审批支持 Skill</strong> 处理活动审批，并按计划节奏发送相应邮件。</li><li><strong>一个数据导入</strong> <strong>Skill</strong> 清洗列表并处理参会者数据。</li></ul><p>她还保持一个独立的"管理者"agent 常开。当某次运行出了岔子，她就打开管理者 agent，让它查看发生了什么，并提出调整建议。凡是值得保留的东西，都会写回相关的 Skill。</p><p>虽然这些自动化工作流会为 Annabel 节省大量时间，但她搭建它们的首要动机是工作质量。随着营销团队扩张，营销人员从手边随便哪个模板克隆活动页面可能产生各种 Bug，比如确认邮件里出现错误的城市名，或者落地页打不开。借助 Claude Cowork，她获得了大规模且跨活动一致的搭建质量。</p><p>随着 Claude 承担起活动运营中的重复性环节，Annabel 得以专注于更具战略性的项目，比如团队赋能，以及为实现更好的洞察而进行流程和活动架构的自动化与优化。</p><h2><strong>给营销运营团队的 Claude Cowork 入门建议</strong></h2><ul role="list"><li><strong>把反复出现的修正变成 Skill。</strong>当你发现自己在同一件事上纠正 Claude 超过一次，这条反馈就应该写进一个 Skill。你甚至不需要亲手搭建 Skill：Claude 可以代劳。</li><li><strong>先搭建一个校对 Skill。</strong>校对 Skill 会检查 Claude 写进报告的每一个数字是否都能追溯到已验证的来源。</li></ul><ul role="list"><li><strong>让 Claude 复盘。</strong>Claude 阅读指令的方式与人类书写指令的方式不同，因此在一条新工作流的最初几次运行后，问问它指令里哪些地方不好懂。Annabel 会把暴露出的问题作为持续更新 Skills 实践的一部分，回写到相应 Skill 中。</li></ul><ul role="list"><li><strong>善用定时任务。</strong>每个周日晚上或每个小时自动运行的工作，就是没有人需要惦记着去做的工作。</li></ul><p>‍</p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/how-anthropics-marketing-operations-team-uses-claude-cowork-to-automate-reporting-and-campaign-builds" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

@@ -22,6 +22,12 @@
  *   inGrid: boolean        - appears in the home main grid
  *   illustration: string   - repo-relative path, no leading slash
  *   illustrationBg: string - palette name, e.g. "Clay"
+ *   subtitle: string       - English hero subtitle / meta description
+ *   translatedSubtitle: string - optional Chinese subtitle
+ *   authors: string[]      - hero Author(s) list
+ *   readingMinutes: number - official reading time in minutes
+ *   categoryUrl / productUrl: string - official detail-link hrefs
+ *   facets: { category, product, usecase }
  */
 
 const fs = require('fs');
@@ -152,8 +158,11 @@ function renderFooter(variant, meta) {
 
 /**
  * Shared page shell. All asset references go through ${BASE_PATH}.
+ * Pass headerHtml to replace the default site header (article pages use the
+ * official-style breadcrumb + Explore here topbar instead).
  */
-function renderPage({ lang, title, description, body, headExtra = '', navLinks, footerVariant, meta = null, bodyExtra = '' }) {
+function renderPage({ lang, title, description, body, headExtra = '', navLinks, footerVariant, meta = null, bodyExtra = '', headerHtml }) {
+  const header = headerHtml !== undefined ? headerHtml : renderHeader(navLinks || []);
   return `<!DOCTYPE html>
 <html lang="${lang}">
 <head>
@@ -166,7 +175,7 @@ function renderPage({ lang, title, description, body, headExtra = '', navLinks, 
   ${headExtra}
 </head>
 <body>
-${renderHeader(navLinks)}
+${header}
 ${body}
 ${renderFooter(footerVariant, meta)}
 ${bodyExtra}
@@ -241,6 +250,13 @@ const SEARCH_ICON_PATH = 'M8.5 2C12.0899 2 15 4.91015 15 8.5C15 10.1149 14.4094 
 
 // Official accordion chevron (stories_filters_dropdown_icon is-mobile svg).
 const CHEVRON_ICON_PATH = 'M14.128 7.16482C14.3126 6.95983 14.6298 6.94336 14.835 7.12771C15.0402 7.31242 15.0567 7.62952 14.8721 7.83477L10.372 12.835L10.2939 12.9053C10.2093 12.9667 10.1063 13 9.99995 13C9.85833 12.9999 9.72264 12.9402 9.62788 12.835L5.12778 7.83477L5.0682 7.75273C4.95072 7.55225 4.98544 7.28926 5.16489 7.12771C5.34445 6.96617 5.60969 6.95939 5.79674 7.09744L5.87193 7.16482L9.99995 11.7519L14.128 7.16482Z';
+
+// Official hero category arrow (hero_blog_list_item_arrow svg).
+const HERO_ARROW_PATH = 'M11.1465 4.64648C11.3417 4.45127 11.6582 4.45136 11.8535 4.64648L16.8535 9.64649L16.916 9.72267C16.9703 9.80418 17 9.90061 17 10C17 10.1326 16.9473 10.2598 16.8535 10.3535L11.8535 15.3535C11.6583 15.5486 11.3417 15.5487 11.1465 15.3535C10.9513 15.1583 10.9514 14.8418 11.1465 14.6465L15.293 10.5H3.5C3.2239 10.5 3.00006 10.2761 3 10C3 9.72387 3.22386 9.50001 3.5 9.50001H15.293L11.1465 5.35352C10.9514 5.15826 10.9513 4.8417 11.1465 4.64648Z';
+
+// Official Grid/List view-toggle icons (tab_btn_icon svg, viewBox 0 0 18 18).
+const GRID_ICON_PATH = 'M6.3125 10.1875C7.14093 10.1875 7.8125 10.8591 7.8125 11.6875V14.1875C7.8125 15.0159 7.14093 15.6875 6.3125 15.6875H3.8125C2.98407 15.6875 2.3125 15.0159 2.3125 14.1875V11.6875C2.3125 10.8591 2.98407 10.1875 3.8125 10.1875H6.3125ZM14.1875 10.1875C15.0159 10.1875 15.6875 10.8591 15.6875 11.6875V14.1875C15.6875 15.0159 15.0159 15.6875 14.1875 15.6875H11.6875C10.8591 15.6875 10.1875 15.0159 10.1875 14.1875V11.6875C10.1875 10.8591 10.8591 10.1875 11.6875 10.1875H14.1875ZM3.8125 11.1875C3.53636 11.1875 3.3125 11.4114 3.3125 11.6875V14.1875C3.3125 14.4636 3.53636 14.6875 3.8125 14.6875H6.3125C6.58864 14.6875 6.8125 14.4636 6.8125 14.1875V11.6875C6.8125 11.4114 6.58864 11.1875 6.3125 11.1875H3.8125ZM11.6875 11.1875C11.4114 11.1875 11.1875 11.4114 11.1875 11.6875V14.1875C11.1875 14.4636 11.4114 14.6875 11.6875 14.6875H14.1875C14.4636 14.6875 14.6875 14.4636 14.6875 14.1875V11.6875C14.6875 11.4114 14.4636 11.1875 14.1875 11.1875H11.6875ZM6.3125 2.3125C7.14093 2.3125 7.8125 2.98407 7.8125 3.8125V6.3125C7.8125 7.14093 7.14093 7.8125 6.3125 7.8125H3.8125C2.98407 7.8125 2.3125 7.14093 2.3125 6.3125V3.8125C2.3125 2.98407 2.98407 2.3125 3.8125 2.3125H6.3125ZM14.1875 2.3125C15.0159 2.3125 15.6875 2.98407 15.6875 3.8125V6.3125C15.6875 7.14093 15.0159 7.8125 14.1875 7.8125H11.6875C10.8591 7.8125 10.1875 7.14093 10.1875 6.3125V3.8125C10.1875 2.98407 10.8591 2.3125 11.6875 2.3125H14.1875ZM3.8125 3.3125C3.53636 3.3125 3.3125 3.53636 3.3125 3.8125V6.3125C3.3125 6.58864 3.53636 6.8125 3.8125 6.8125H6.3125C6.58864 6.8125 6.8125 6.58864 6.8125 6.3125V3.8125C6.8125 3.53636 6.58864 3.3125 6.3125 3.3125H3.8125ZM11.6875 3.3125C11.4114 3.3125 11.1875 3.53636 11.1875 3.8125V6.3125C11.1875 6.58864 11.4114 6.8125 11.6875 6.8125H14.1875C14.4636 6.8125 14.6875 6.58864 14.6875 6.3125V3.8125C14.6875 3.53636 14.4636 3.3125 14.1875 3.3125H11.6875Z';
+const LIST_ICON_PATH = 'M3.82422 12.825C4.44554 12.825 4.94922 13.3287 4.94922 13.95C4.94922 14.5714 4.44554 15.075 3.82422 15.075C3.2029 15.075 2.69922 14.5714 2.69922 13.95C2.69922 13.3287 3.2029 12.825 3.82422 12.825ZM14.8492 13.5C15.0977 13.5 15.2992 13.7015 15.2992 13.95C15.2992 14.1986 15.0977 14.4 14.8492 14.4H7.64922C7.40069 14.4 7.19922 14.1986 7.19922 13.95C7.19922 13.7015 7.40069 13.5 7.64922 13.5H14.8492ZM3.82422 7.87505C4.44554 7.87505 4.94922 8.37873 4.94922 9.00005C4.94922 9.62137 4.44554 10.125 3.82422 10.125C3.2029 10.125 2.69922 9.62137 2.69922 9.00005C2.69922 8.37873 3.2029 7.87505 3.82422 7.87505ZM14.8492 8.55005C15.0977 8.55005 15.2992 8.75152 15.2992 9.00005C15.2992 9.24858 15.0977 9.45005 14.8492 9.45005H7.64922C7.40069 9.45005 7.19922 9.24858 7.19922 9.00005C7.19922 8.75152 7.40069 8.55005 7.64922 8.55005H14.8492ZM3.82422 2.92505C4.44554 2.92505 4.94922 3.42873 4.94922 4.05005C4.94922 4.67137 4.44554 5.17505 3.82422 5.17505C3.2029 5.17505 2.69922 4.67137 2.69922 4.05005C2.69922 3.42873 3.2029 2.92505 3.82422 2.92505ZM14.8492 3.60005C15.0977 3.60005 15.2992 3.80152 15.2992 4.05005C15.2992 4.29858 15.0977 4.50005 14.8492 4.50005H7.64922C7.40069 4.50005 7.19922 4.29858 7.19922 4.05005C7.19922 3.80152 7.40069 3.60005 7.64922 3.60005H14.8492Z';
 
 function categoryIcon(category) {
   const icon = CATEGORY_ICONS[category];
@@ -318,6 +334,16 @@ ${items}
 `;
 }
 
+// List-view column header (hidden in grid mode, shown in list mode).
+function listHeader() {
+  return `        <div class="list-header">
+          <span class="list-header-title"></span>
+          <span class="list-header-col">Category</span>
+          <span class="list-header-col">Product</span>
+          <span class="list-header-col">Usecase</span>
+        </div>`;
+}
+
 function gridCards(articles) {
   return articles.map((a) => {
     const hasZh = hasZhContent(a);
@@ -325,7 +351,9 @@ function gridCards(articles) {
     const langBadge = hasZh ? '' : '<span class="lang-badge">EN</span>';
     const shortDate = toShortDate(a.date);
     // Official card date: "Aug 28, 2026" (three-letter month, spec appendix).
-    const dateNode = shortDate ? `\n            <div class="u-text-style-caption u-foreground-tertiary u-mb-1-5">${shortDate}</div>` : '';
+    const dateNode = shortDate
+      ? `<div class="u-text-style-caption u-foreground-tertiary u-mb-1-5">${shortDate}</div>\n            `
+      : '';
     // Guard: grid cards without an illustration fall back to the swatch only.
     const illo = a.illustration
       ? `<img class="card-illo" src="${illoSrc(a)}" alt="" loading="lazy">`
@@ -338,18 +366,28 @@ function gridCards(articles) {
     const tagNodes = category
       ? `${categoryIcon(category)}<div class="u-text-style-caption">${htmlEscape(category)}</div>`
       : '<div class="u-text-style-caption"></div>';
+    // List-view columns: category, product, usecase (hidden in grid, visible
+    // in list mode). Multiple values are comma-separated.
+    const productText = facetValues(a, 'product').join(', ');
+    const usecaseText = facetValues(a, 'usecase').join(', ');
     return `        <article class="grid-card card_blog_wrap" data-category="${facetDataAttr(a, 'category')}" data-product="${facetDataAttr(a, 'product')}" data-usecase="${facetDataAttr(a, 'usecase')}" data-date="${iso}" data-title="${htmlEscape(title)}">
           <div class="grid-card-visual card_blog_visual_wrap" style="background-color: var(${illoVar(a.illustrationBg)});">
             ${illo}
           </div>
           <div class="grid-card-content card_blog_content">
-            ${dateNode.trim()}
-            <h2 class="grid-card-title u-text-style-h6">${htmlEscape(title)}${langBadge}</h2>
+            <div class="grid-card-copy">
+            ${dateNode}<h2 class="grid-card-title u-text-style-h6">${htmlEscape(title)}${langBadge}</h2>
+            </div>
             <div class="card-main_tag-wrap">
               ${tagNodes}
             </div>
           </div>
-          <a class="clickable-link" href="${articleLink(a, hasZh)}"${isExternalLink(a, hasZh) ? ' target="_blank" rel="noopener noreferrer"' : ''} aria-label="${htmlEscape(title)}"></a>
+          <span class="list-col list-col-category">${htmlEscape(category)}</span>
+          <span class="list-col list-col-product">${htmlEscape(productText)}</span>
+          <span class="list-col list-col-usecase">${htmlEscape(usecaseText)}</span>
+          <div class="clickable_wrap u-cover-absolute">
+            <a class="clickable_link" href="${articleLink(a, hasZh)}"${isExternalLink(a, hasZh) ? ' target="_blank" rel="noopener noreferrer"' : ''} aria-label="${htmlEscape(title)}"><span class="u-sr-only">阅读</span></a>
+          </div>
         </article>`;
   }).join('\n');
 }
@@ -441,8 +479,8 @@ const HOME_JS = `  <script>
       if (sortSelect) sortSelect.addEventListener('change', function () { state.sort = sortSelect.value; apply(); });
       if (btn) btn.addEventListener('click', function () { state.page += PAGE; apply(); });
 
-      /* Accordion groups: default all collapsed (data-open-by-default="0"),
-         multiple groups may stay open (data-close-previous="false"). */
+      /* Accordion groups: default all expanded (is-opened on render), multiple
+         groups may stay open (data-close-previous="false"). Click toggles. */
       Array.prototype.forEach.call(document.querySelectorAll('[data-accordion="component"]'), function (comp) {
         var toggle = comp.querySelector('[data-accordion="toggle"]');
         if (!toggle) return;
@@ -460,19 +498,29 @@ const HOME_JS = `  <script>
           if (grid) grid.classList.toggle('is-list', b.getAttribute('data-view') === 'list');
         });
       });
-      /* Hero category items: toggle the matching sidebar checkbox + filter. */
-      Array.prototype.forEach.call(document.querySelectorAll('.hero_cat-item'), function (it) {
-        it.addEventListener('click', function (e) {
-          e.preventDefault();
-          var cat = it.getAttribute('data-filter-cat');
-          var cb = document.querySelector('input[type="checkbox"][data-facet="category"][value="' + cat + '"]');
-          if (cb) { cb.checked = !cb.checked; readFacets(); state.page = PAGE; apply(); }
-          var g = document.getElementById('grid');
-          if (g) g.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        });
-      });
       readFacets();
       apply();
+    })();
+    /* Card scroll-in entrance — progressive enhancement. Hidden only when
+       JS is active (body.js-anim); IntersectionObserver reveals on scroll.
+       No JS = cards visible immediately (no invisible-content risk). */
+    (function () {
+      try {
+        document.body.classList.add('js-anim');
+        var cards = document.querySelectorAll('.grid-card');
+        if (!('IntersectionObserver' in window)) {
+          cards.forEach(function (c) { c.classList.add('is-visible'); });
+          return;
+        }
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (en) {
+            if (en.isIntersecting) { en.target.classList.add('is-visible'); io.unobserve(en.target); }
+          });
+        }, { rootMargin: '0px 0px -10% 0px' });
+        cards.forEach(function (c) { io.observe(c); });
+      } catch (e) {
+        document.querySelectorAll('.grid-card').forEach(function (c) { c.classList.add('is-visible'); });
+      }
     })();
   </script>`;
 
@@ -564,11 +612,13 @@ ${facetGroup('Use case', 'usecase', usecaseOptions)}
 // Main toolbar: Grid/List view tabs (search removed per request).
 function toolbarSection() {
   return `          <div class="blog_main_toolbar">
-            <div class="tab_menu_inner view-toggle" role="group" aria-label="视图切换">
-              <button class="view-toggle-btn tab_btn_wrap is-active" data-view="grid" type="button" aria-label="Grid">
+            <div data-tabs="menu" role="tablist" class="tab_menu_inner view-toggle">
+              <button class="view-toggle-btn tab_btn_wrap is-active" data-view="grid" type="button" role="tab" aria-label="Grid">
+                <span class="tab_btn_icon"><svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 18 18" fill="none" class="u-svg"><path d="${GRID_ICON_PATH}" fill="currentColor"/></svg></span>
                 <span class="tab_btn_text u-text-style-caption">Grid</span>
               </button>
-              <button class="view-toggle-btn tab_btn_wrap" data-view="list" type="button" aria-label="List">
+              <button class="view-toggle-btn tab_btn_wrap" data-view="list" type="button" role="tab" aria-label="List">
+                <span class="tab_btn_icon"><svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 18 18" fill="none" class="u-svg"><path d="${LIST_ICON_PATH}" fill="currentColor"/></svg></span>
                 <span class="tab_btn_text u-text-style-caption">List</span>
               </button>
             </div>
@@ -576,30 +626,38 @@ function toolbarSection() {
 }
 
 function heroBlogSection(articles) {
-  const CATS = ['Agents', 'Claude Code', 'Enterprise AI', 'Product announcements'];
-  const count = (c) => articles.filter(a => {
-    const cats = (a.facets && a.facets.category && a.facets.category.length) ? a.facets.category : (a.category ? [a.category] : []);
-    return cats.indexOf(c) !== -1;
-  }).length;
-  const total = articles.length;
-  const items = CATS.map((c, i) => `          <a class="hero_cat-item" data-filter-cat="${c}" href="#grid">
-            <span class="hero_cat-num">${String(i + 1).padStart(2, '0')}</span>
-            <span class="hero_cat-name">${c}</span>
-            <span class="hero_cat-count">${count(c)}</span>
-            <span class="hero_cat-arrow" aria-hidden="true">→</span>
+  // 1:1 with the official hero right column (hero_blog_list): each item is a
+  // big h1 category title + arrow, linking to the official /blog-category page
+  // (this mirror has no local category page). No number/count/head row.
+  const CATS = [
+    { name: 'Agents', slug: 'agents' },
+    { name: 'Claude Code', slug: 'claude-code' },
+    { name: 'Enterprise AI', slug: 'enterprise-ai' },
+    { name: 'Product announcements', slug: 'announcements' },
+  ];
+  const items = CATS.map(c => `          <a class="hero_blog_list_item" href="https://claude.com/blog-category/${c.slug}" target="_blank" rel="noopener noreferrer">
+            <div class="hero_blog_list_item_content">
+              <h2 class="hero_blog_list_item_title u-text-style-h1">${c.name}<span class="hero_blog_list_item_arrow" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 20 20" fill="none" class="u-svg"><path d="${HERO_ARROW_PATH}" fill="currentColor"/></svg></span></h2>
+            </div>
           </a>`).join('\n');
   return `  <section class="hero_blog_wrap">
+    <div class="u-section-spacer is-page-top" aria-hidden="true"></div>
     <div class="container">
       <div class="hero_blog_layout">
         <div class="hero_blog_desc">
-          <h1 class="hero_blog_heading">Blog</h1>
-          <p class="hero_blog_text">产品动态，以及团队使用 Claude 的最佳实践。</p>
-          <a class="hero_cta" href="https://claude.ai" target="_blank" rel="noopener noreferrer">试用 Claude</a>
+          <div class="hero_blog_desc_top">
+            <h1 class="hero_blog_heading u-text-style-body-1 u-weight-semibold">Blog</h1>
+          </div>
+          <div class="hero_blog_desc_bottom">
+            <p class="hero_blog_text u-text-style-body-2">产品动态，以及团队使用 Claude 的最佳实践。</p>
+            <a class="hero_cta" href="https://claude.ai" target="_blank" rel="noopener noreferrer">试用 Claude</a>
+          </div>
         </div>
-        <div class="hero_blog_cats">
-          <div class="hero_blog_cats_head"><span>全部文章</span><span>${total}</span></div>
-          <div class="hero_cat_list">
+        <div class="hero_blog_content">
+          <div class="hero_blog_list_wrap">
+            <div role="list" class="hero_blog_list">
 ${items}
+            </div>
           </div>
         </div>
       </div>
@@ -616,18 +674,17 @@ function buildIndex(meta) {
 
   const heroBlog = heroBlogSection(articles);
   const marquee = marqueeSection(hero);
+  const spacer = `  <div class="u-section-spacer is-main" aria-hidden="true"></div>\n`;
 
   const gridSection = grid.length > 0
     ? `  <section class="grid-section" id="grid">
     <div class="container">
-      <div class="section-head">
-        <h2>全部文章</h2>
-      </div>
       <div class="blog-layout">
 ${sidebarSection(articles)}
         <div class="blog-main usecase_content">
 ${toolbarSection()}
           <div class="blog-grid">
+${listHeader()}
 ${gridCards(grid)}
           </div>
           <div class="grid-foot">
@@ -636,11 +693,12 @@ ${gridCards(grid)}
         </div>
       </div>
     </div>
-  </section>`
+  </section>
+  <div class="u-section-spacer is-main" aria-hidden="true"></div>`
     : '';
 
   const body = `<main class="main">
-${heroBlog}${marquee}${gridSection}
+${heroBlog}${spacer}${marquee}${marquee ? spacer : ''}${gridSection}
 </main>`;
 
   return renderPage({
@@ -668,90 +726,299 @@ function readContent(file) {
     .replace(/<br\s*\/?>\s*<br\s*\/?>/g, '<br>');
 }
 
+// Rough HTML → markdown for the Explore-here "Copy as markdown" action.
+function htmlToMarkdown(html) {
+  let s = String(html || '');
+  s = s.replace(/<script[\s\S]*?<\/script>/gi, '');
+  s = s.replace(/<style[\s\S]*?<\/style>/gi, '');
+  s = s.replace(/<h1[^>]*>([\s\S]*?)<\/h1>/gi, '\n# $1\n\n');
+  s = s.replace(/<h2[^>]*>([\s\S]*?)<\/h2>/gi, '\n## $1\n\n');
+  s = s.replace(/<h3[^>]*>([\s\S]*?)<\/h3>/gi, '\n### $1\n\n');
+  s = s.replace(/<h4[^>]*>([\s\S]*?)<\/h4>/gi, '\n#### $1\n\n');
+  s = s.replace(/<li[^>]*>([\s\S]*?)<\/li>/gi, '- $1\n');
+  s = s.replace(/<\/?(ul|ol)[^>]*>/gi, '\n');
+  s = s.replace(/<br\s*\/?>/gi, '\n');
+  s = s.replace(/<\/p>/gi, '\n\n');
+  s = s.replace(/<a[^>]*href="([^"]*)"[^>]*>([\s\S]*?)<\/a>/gi, '[$2]($1)');
+  s = s.replace(/<(strong|b)[^>]*>([\s\S]*?)<\/\1>/gi, '**$2**');
+  s = s.replace(/<(em|i)[^>]*>([\s\S]*?)<\/\1>/gi, '*$2*');
+  s = s.replace(/<code[^>]*>([\s\S]*?)<\/code>/gi, '`$1`');
+  s = s.replace(/<[^>]+>/g, '');
+  s = s.replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+  return s.replace(/\n{3,}/g, '\n\n').trim();
+}
+
+const DETAIL_ICONS = {
+  category: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg>',
+  product: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg>',
+  date: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg>',
+  reading: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg>',
+  share: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg>',
+  author: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M15.5117 1.99707C15.9213 2.0091 16.3438 2.13396 16.6768 2.46679C17.0278 2.81814 17.1209 3.26428 17.0801 3.68261C17.0404 4.08745 16.8765 4.49344 16.6787 4.85058C16.3934 5.36546 15.9941 5.85569 15.6348 6.20898C15.7682 6.41421 15.8912 6.66414 15.9551 6.9453C16.0804 7.4977 15.9714 8.13389 15.4043 8.70116C14.8566 9.24884 13.974 9.54823 13.1943 9.71679C12.7628 9.81003 12.3303 9.86698 11.9473 9.90233C12.0596 10.2558 12.0902 10.7051 11.8779 11.2012L11.8223 11.3203C11.5396 11.8854 11.0275 12.2035 10.4785 12.3965C9.93492 12.5875 9.29028 12.6792 8.65332 12.75C7.99579 12.8231 7.34376 12.8744 6.70117 12.9775C6.14371 13.067 5.63021 13.1903 5.18652 13.3818L5.00585 13.4658C4.53515 14.2245 4.13745 14.9658 3.80957 15.6465C4.43885 15.2764 5.1935 15 5.99999 15C6.27614 15 6.49999 15.2238 6.49999 15.5C6.49999 15.7761 6.27613 16 5.99999 16C5.35538 16 4.71132 16.2477 4.15039 16.6103C3.58861 16.9736 3.14957 17.427 2.91601 17.7773C2.91191 17.7835 2.90568 17.788 2.90136 17.7939C2.88821 17.8119 2.8746 17.8289 2.85937 17.8447C2.85117 17.8533 2.84268 17.8612 2.83398 17.8691C2.81803 17.8835 2.80174 17.897 2.78417 17.9092C2.774 17.9162 2.76353 17.9225 2.75292 17.9287C2.73854 17.9372 2.72412 17.9451 2.70898 17.9521C2.69079 17.9605 2.6723 17.9675 2.65332 17.9736C2.6417 17.9774 2.63005 17.9805 2.61816 17.9834C2.60263 17.9872 2.5871 17.9899 2.57128 17.9922C2.55312 17.9948 2.53511 17.9974 2.5166 17.998C2.50387 17.9985 2.49127 17.9976 2.47851 17.9971C2.45899 17.9962 2.43952 17.9954 2.41992 17.9922C2.40511 17.9898 2.39062 17.9862 2.37597 17.9824C2.36477 17.9795 2.35294 17.9783 2.34179 17.9746C2.33697 17.973 2.33286 17.9695 2.32812 17.9678C2.31042 17.9612 2.29351 17.953 2.27636 17.9443C2.26332 17.9378 2.25053 17.9314 2.23828 17.9238C2.23339 17.9208 2.22747 17.9192 2.22265 17.916C2.21414 17.9103 2.20726 17.9026 2.19921 17.8965C2.18396 17.8849 2.16896 17.8735 2.15527 17.8603C2.14518 17.8507 2.13609 17.8404 2.12695 17.8301C2.11463 17.8161 2.10244 17.8023 2.09179 17.7871C2.08368 17.7756 2.07736 17.7631 2.07031 17.751C2.06168 17.7362 2.05297 17.7216 2.04589 17.706C2.03868 17.6901 2.03283 17.6738 2.02734 17.6572C2.0228 17.6436 2.01801 17.6302 2.01464 17.6162C2.01117 17.6017 2.009 17.587 2.00683 17.5722C2.00411 17.5538 2.00161 17.5354 2.00097 17.5166C2.00054 17.5039 2.00141 17.4912 2.00195 17.4785C2.00279 17.459 2.00364 17.4395 2.00683 17.4199C2.00902 17.4064 2.01327 17.3933 2.0166 17.3799C2.01973 17.3673 2.02123 17.3543 2.02539 17.3418C2.41772 16.1648 3.18163 14.466 4.30468 12.7012C4.31908 12.5557 4.34007 12.3582 4.36914 12.1201C4.43379 11.5907 4.53836 10.8564 4.69921 10.0381C5.0174 8.41955 5.56814 6.39783 6.50585 4.9912L6.73242 4.66894C7.27701 3.93277 7.93079 3.30953 8.61035 2.85156C9.3797 2.33311 10.2221 2 11.001 2C11.7951 2.00025 12.3531 2.35795 12.7012 2.70605C12.7723 2.77723 12.8348 2.84998 12.8896 2.91796C13.2829 2.66884 13.7917 2.39502 14.3174 2.21191C14.6946 2.08056 15.1094 1.98537 15.5117 1.99707ZM17.04 15.5537C17.1486 15.3 17.4425 15.1818 17.6963 15.29C17.95 15.3986 18.0683 15.6925 17.96 15.9463C17.4827 17.0612 16.692 18 15.5 18C14.6309 17.9999 13.9764 17.5003 13.5 16.7978C13.0236 17.5003 12.3691 18 11.5 18C10.6309 17.9999 9.97639 17.5003 9.49999 16.7978C9.02359 17.5003 8.36911 18 7.49999 18C7.22391 17.9999 7 17.7761 6.99999 17.5C6.99999 17.2239 7.22391 17 7.49999 17C8.07039 17 8.6095 16.5593 9.04003 15.5537L9.07421 15.4873C9.16428 15.3412 9.32494 15.25 9.49999 15.25C9.70008 15.25 9.88121 15.3698 9.95996 15.5537L10.042 15.7353C10.4581 16.6125 10.9652 16.9999 11.5 17C12.0704 17 12.6095 16.5593 13.04 15.5537L13.0742 15.4873C13.1643 15.3412 13.3249 15.25 13.5 15.25C13.7001 15.25 13.8812 15.3698 13.96 15.5537L14.042 15.7353C14.4581 16.6125 14.9652 16.9999 15.5 17C16.0704 17 16.6095 16.5593 17.04 15.5537ZM15.4824 2.99707C15.247 2.99022 14.9608 3.04682 14.6465 3.15624C14.0173 3.37541 13.389 3.76516 13.0498 4.01953C12.9277 4.11112 12.7697 4.14131 12.6221 4.10253C12.4745 4.06357 12.3522 3.9591 12.291 3.81933V3.81835C12.2892 3.81468 12.2861 3.80833 12.2822 3.80078C12.272 3.78092 12.2541 3.7485 12.2295 3.70898C12.1794 3.62874 12.1011 3.52019 11.9941 3.41308C11.7831 3.2021 11.4662 3.00024 11.001 2.99999C10.4904 2.99999 9.84173 3.22729 9.16894 3.68066C8.58685 4.07297 8.01568 4.61599 7.5371 5.26269L7.33789 5.54589C6.51634 6.77827 5.99475 8.63369 5.68066 10.2314C5.63363 10.4707 5.5913 10.7025 5.55371 10.9238C7.03031 9.01824 8.94157 7.19047 11.2812 6.05077C11.5295 5.92989 11.8283 6.03301 11.9492 6.28124C12.0701 6.52949 11.967 6.82829 11.7187 6.94921C9.33153 8.11208 7.38648 10.0746 5.91406 12.1103C6.12313 12.0632 6.33385 12.0238 6.54296 11.9902C7.21709 11.8821 7.92723 11.8243 8.54296 11.7558C9.17886 11.6852 9.72123 11.6025 10.1465 11.4531C10.5662 11.3056 10.8063 11.1158 10.9277 10.873L10.9795 10.7549C11.0776 10.487 11.0316 10.2723 10.9609 10.1123C10.918 10.0155 10.8636 9.93595 10.8203 9.88183C10.7996 9.85598 10.7822 9.83638 10.7715 9.82518L10.7607 9.81542L10.7627 9.8164L10.7646 9.81835C10.6114 9.67972 10.5597 9.46044 10.6338 9.26757C10.7082 9.07475 10.8939 8.94726 11.1006 8.94726C11.5282 8.94719 12.26 8.8956 12.9834 8.73925C13.7297 8.5779 14.3654 8.32602 14.6973 7.99413C15.0087 7.68254 15.0327 7.40213 14.9795 7.16698C14.9332 6.96327 14.8204 6.77099 14.707 6.62792L14.5957 6.50195C14.4933 6.39957 14.4401 6.25769 14.4502 6.11327C14.4605 5.96888 14.5327 5.83599 14.6484 5.74902C14.9558 5.51849 15.4742 4.96086 15.8037 4.3662C15.9675 4.07048 16.0637 3.80137 16.085 3.58593C16.1047 3.38427 16.0578 3.26213 15.9697 3.17382C15.8631 3.06726 15.7102 3.00377 15.4824 2.99707Z" fill="currentColor"></path></svg>'
+}
+
+function detailValueHtml(text, href) {
+  const safe = htmlEscape(text);
+  if (href) {
+    return `<a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="${htmlEscape(href)}" target="_blank" rel="noopener noreferrer">${safe}</a>`;
+  }
+  return `<div class="hero-detail-value u-text-style-body-3">${safe}</div>`;
+}
+
+// Official Category/Product can list several underlined links stacked.
+function detailLinksHtml(values, href) {
+  const list = (values || []).map(v => String(v || '').trim()).filter(Boolean);
+  if (!list.length) return '';
+  if (list.length === 1) return detailValueHtml(list[0], href);
+  return `<div class="hero-detail-value-stack">${list.map((v, i) => {
+    const link = i === 0 ? href : '';
+    return detailValueHtml(v, link);
+  }).join('')}</div>`;
+}
+
+function renderDetailItem(icon, label, valueHtml) {
+  if (!valueHtml) return '';
+  return `              <li class="hero-detail-item">
+                <div class="hero-detail-icon">${icon}</div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">${htmlEscape(label)}</div>
+                  ${valueHtml}
+                </div>
+              </li>`;
+}
+
+function renderArticleTopbar({ title, officialUrl, langToggleLabel, langToggleHref, markdownText, copyAskLabel, copyMdLabel, exploreLabel }) {
+  return `<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="${BASE_PATH}/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>${htmlEscape(title)}</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>${htmlEscape(exploreLabel)}</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="${htmlEscape(officialUrl)}" target="_blank" rel="noopener noreferrer">${htmlEscape(copyAskLabel)}</a>
+        <button type="button" class="explore-item" data-copy-markdown>${htmlEscape(copyMdLabel)}</button>
+        <a class="explore-item" href="${langToggleHref}">${htmlEscape(langToggleLabel)}</a>
+      </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true">${htmlEscape(markdownText)}</textarea>
+    </div>
+  </div>
+</header>`;
+}
+
+function renderArticleHero(article, { title, subtitle, pageUrl }) {
+  const illo = article.illustration
+    ? `<div class="hero-illo-wrap" style="background-color: var(${illoVar(article.illustrationBg)});">
+            <img class="hero-illo-img" src="${illoSrc(article)}" alt="" loading="lazy">
+          </div>`
+    : '';
+
+  const productValues = facetValues(article, 'product');
+  const categoryValues = facetValues(article, 'category');
+  if (!categoryValues.length && article.category) categoryValues.push(article.category);
+  const authors = Array.isArray(article.authors) ? article.authors.filter(Boolean) : [];
+  const reading = article.readingMinutes > 0
+    ? `<div class="hero-detail-value u-text-style-body-3"><span>${article.readingMinutes}</span> min</div>`
+    : '';
+
+  const details = [
+    renderDetailItem(DETAIL_ICONS.category, 'Category', detailLinksHtml(categoryValues, article.categoryUrl)),
+    renderDetailItem(DETAIL_ICONS.product, 'Product', detailLinksHtml(productValues, article.productUrl)),
+    renderDetailItem(DETAIL_ICONS.date, 'Date', article.date ? detailValueHtml(article.date) : ''),
+    renderDetailItem(DETAIL_ICONS.reading, 'Reading time', reading),
+    renderDetailItem(
+      DETAIL_ICONS.share,
+      'Share',
+      `<button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="${htmlEscape(pageUrl)}">Copy link</button>`
+    ),
+    renderDetailItem(
+      DETAIL_ICONS.author,
+      'Author(s)',
+      authors.length ? `<div class="hero-detail-value u-text-style-body-3">${htmlEscape(authors.join(', '))}</div>` : ''
+    ),
+  ].filter(Boolean).join('\n');
+
+  return `<section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            ${illo}
+            <h1 class="article-title u-text-style-h1">${htmlEscape(title)}</h1>
+            ${subtitle ? `<div class="hero-subtitle u-text-wrap-pretty"><p>${htmlEscape(subtitle)}</p></div>` : ''}
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+${details}
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>`;
+}
+
+const ARTICLE_JS = `  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>`;
+
 function buildArticlePage(article, hasTranslation, meta) {
   const contentHtml = hasTranslation
     ? readContent(path.join(ZH_DIR, article.slug, 'content.html'))
     : readContent(path.join(EN_DIR, article.slug, 'content.html'));
   const title = hasTranslation && article.translatedTitle ? article.translatedTitle : article.title;
+  const subtitle = (hasTranslation && article.translatedSubtitle)
+    ? article.translatedSubtitle
+    : (article.subtitle || '');
+  const pageUrl = `${SITE_URL}/posts/${article.slug}/`;
+  const officialUrl = article.url || `https://claude.com/blog/${article.slug}`;
+  const markdownText = `# ${title}\n\n${subtitle ? subtitle + '\n\n' : ''}${htmlToMarkdown(contentHtml)}`;
 
-  const langLabel = hasTranslation ? '' : '<span class="lang-badge-large">EN</span>';
-  const langToggle = hasTranslation
-    ? `<a href="${BASE_PATH}/posts/${article.slug}/en.html" class="lang-toggle">阅读英文原文 →</a>`
-    : '';
+  const headerHtml = renderArticleTopbar({
+    title,
+    officialUrl,
+    langToggleLabel: hasTranslation ? '阅读英文原文 →' : '阅读中文翻译 →',
+    langToggleHref: hasTranslation
+      ? `${BASE_PATH}/posts/${article.slug}/en.html`
+      : `${BASE_PATH}/posts/${article.slug}/`,
+    markdownText,
+    copyAskLabel: '关于本页提问',
+    copyMdLabel: '复制为 Markdown',
+    exploreLabel: 'Explore here',
+  });
 
-  const body = `<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">${htmlEscape(article.category)}</span>
-            <span class="article-date">${htmlEscape(article.date)}</span>
-            ${langLabel}
-          </div>
-          <h1 class="article-title">${htmlEscape(title)}</h1>
-          ${langToggle}
-        </header>
-        <div class="article-content u-rich-text">
-          ${contentHtml}
+  const body = `<main class="main article-main">
+    ${renderArticleHero(article, { title, subtitle, pageUrl })}
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              ${contentHtml}
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="${htmlEscape(officialUrl)}" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="${BASE_PATH}/">← 返回首页</a></p>
+            </footer>
+          </article>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/${article.slug}" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="${BASE_PATH}/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
     </div>
   </main>`;
 
   return renderPage({
     lang: 'zh-CN',
     title: `${title} — Claude Blog 中文翻译`,
-    description: title,
+    description: subtitle || title,
     body,
-    navLinks: articleNav(article),
+    headerHtml,
     footerVariant: 'zh',
     meta,
+    bodyExtra: ARTICLE_JS,
   });
 }
 
 function buildEnglishPage(article, meta) {
   const contentHtml = readContent(path.join(EN_DIR, article.slug, 'content.html'));
+  const title = article.title;
+  const subtitle = article.subtitle || '';
+  const pageUrl = `${SITE_URL}/posts/${article.slug}/en.html`;
+  const officialUrl = article.url || `https://claude.com/blog/${article.slug}`;
+  const markdownText = `# ${title}\n\n${subtitle ? subtitle + '\n\n' : ''}${htmlToMarkdown(contentHtml)}`;
+  const hasZh = hasZhContent(article);
 
-  const body = `<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">${htmlEscape(article.category)}</span>
-            <span class="article-date">${htmlEscape(article.date)}</span>
-            <span class="lang-badge-large">EN</span>
-          </div>
-          <h1 class="article-title">${htmlEscape(article.title)}</h1>
-          <a href="${BASE_PATH}/posts/${article.slug}/" class="lang-toggle">阅读中文翻译 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          ${contentHtml}
+  const headerHtml = renderArticleTopbar({
+    title,
+    officialUrl,
+    langToggleLabel: hasZh ? '阅读中文翻译 →' : '← Back to home',
+    langToggleHref: hasZh ? `${BASE_PATH}/posts/${article.slug}/` : `${BASE_PATH}/`,
+    markdownText,
+    copyAskLabel: 'Ask questions about this page',
+    copyMdLabel: 'Copy as markdown',
+    exploreLabel: 'Explore here',
+  });
+
+  const body = `<main class="main article-main">
+    ${renderArticleHero(article, { title, subtitle, pageUrl })}
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              ${contentHtml}
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="${htmlEscape(officialUrl)}" target="_blank">View original</a></p>
+              <p><a href="${BASE_PATH}/">← Back to home</a></p>
+            </footer>
+          </article>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/${article.slug}" target="_blank">View original</a></p>
-          <p><a href="${BASE_PATH}/">← Back to home</a></p>
-        </footer>
-      </article>
+      </div>
     </div>
   </main>`;
 
   return renderPage({
     lang: 'en',
     title: `${article.title} — Claude Blog CN`,
-    description: article.title,
+    description: subtitle || article.title,
     body,
-    navLinks: [
-      { href: `${BASE_PATH}/`, label: '首页' },
-      { href: `${BASE_PATH}/posts/${article.slug}/`, label: '中文版 →' },
-    ],
+    headerHtml,
     footerVariant: 'en',
     meta,
+    bodyExtra: ARTICLE_JS,
   });
 }
 

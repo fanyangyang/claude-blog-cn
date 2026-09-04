@@ -1,1 +1,57 @@
-<div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><h2>循环（Loop）入门</h2><p>眼下关于循环工程（loop engineering）或"设计循环"而非给编码 agent 写提示词的讨论很多。如果你在 X 上花些时间想弄清楚循环到底是什么，会找到好几种不同的答案。</p><p>在 Claude Code 团队，我们把<strong>循环定义为 agent 反复执行工作周期，直到满足停止条件</strong>。我们基于以下几点把循环分为几种类型：</p><ul role="list"><li>如何触发</li><li>如何停止</li><li>使用哪种 Claude Code 原语</li><li>每类循环最适合什么类型的任务。</li></ul><p>我们将介绍主要的循环类型、各自的适用场景，以及如何在控制 token 用量的同时保持代码质量。并非所有任务都需要复杂的循环；从最简单的方案开始，再有选择地使用这些模式。</p></div>
+<div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><h2>循环（Loop）入门</h2><p>眼下关于循环工程（loop engineering）或"设计循环"而非给编码 agent 写提示词的讨论很多。如果你在 X 上花些时间想弄清楚循环到底是什么，会找到好几种不同的答案。</p><p>在 Claude Code 团队，我们把<strong>循环定义为 agent 反复执行工作周期，直到满足停止条件</strong>。我们基于以下几点把循环分为几种类型：</p><ul role="list"><li>如何触发</li><li>如何停止</li><li>使用哪种 Claude Code 原语</li><li>每类循环最适合什么类型的任务。</li></ul><p>我们将介绍主要的循环类型、各自的适用场景，以及如何在控制 token 用量的同时保持代码质量。并非所有任务都需要复杂的循环；从最简单的方案开始，再有选择地使用这些模式。</p><h2><strong>回合制循环</strong></h2><figure style="max-width:2024pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="Di" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a43eb603762e725a739d98c_8ace2295.png" loading="lazy"></div></figure><ul role="list"><li><strong>触发方式</strong>：用户提示词。</li><li><strong>停止条件</strong>：Claude 判断任务已完成，或需要更多上下文。</li><li><strong>最适合：</strong>较短、不属于固定流程或日程的任务。</li><li><strong>控制用量：</strong>写更具体的提示词，并用 skills 加强验证，减少回合数。<strong>‍</strong></li></ul><p>你发出的每条提示词都会开启一个手动循环，每一回合都由你来指挥。Claude 收集上下文、采取行动、检查工作，必要时再重复，然后给出回复。我们把这叫做 agentic loop。</p><p>例如，让 Claude 做一个点赞按钮。它会读你的代码、改一处、跑测试，再交出它<em>认为</em>能用的结果。然后你手动检查，再写下一条提示词。</p><p>你可以把手工检查步骤写进 SKILL.md，让 Claude 自己把更多工作从头到尾验完，从而改进验证这一步。（要在 skills、hooks 和 subagents 之间做选择，见我们的 <a href="https://claude.com/blog/steering-claude-code-skills-hooks-rules-subagents-and-more" target="_blank">steering Claude Code</a> 指南。） </p><p>这里应包含能让 Claude <em>看见</em>、<em>度量</em>或<em>交互</em>结果的工具或 connectors。检查越定量，Claude 就越容易自验。</p><p>例如，在 SKILL.md 里你可以写：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-plaintext" style="white-space:pre-wrap"><span><span>--- 
+</span></span><span>name: verify-frontend-change 
+</span><span>description: Verify any UI change end-to-end before declaring it done. 
+</span><span>--- 
+</span><span>
+</span><span># Verifying frontend changes 
+</span><span>Never report a UI change as complete based on a successful edit alone. Verify it the way a human reviewer would: 
+</span><span>
+</span><span>1. Start the dev server and open the edited page in the browser. 
+</span><span>
+</span><span>2. Interact with the change directly. For a new control (button, input, toggle): click it, confirm the expected state change, and screenshot before/after. 
+</span><span>
+</span><span>3. Check the browser console: zero new errors or warnings. 
+</span><span>
+</span><span>4. Use the Chrome Devtools MCP, run a performance trace and audit Core Web Vitals.
+</span><span>
+</span><span>If any step fails, fix the issue and rerun from step 1 — do not hand back partially verified work.
+</span><span></span></code></pre><h2><strong>目标制循环（/goal）</strong></h2><figure style="max-width:2024pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a43eb603762e725a739d98f_c6fa9ae5.png" loading="lazy"></div></figure><ul role="list"><li><strong>触发方式</strong>：实时发出的手动提示词。</li><li><strong>停止条件</strong>：目标达成，或达到最大回合数。</li><li><strong>最适合：</strong>有可验证退出条件的任务。</li><li><strong>控制用量：</strong>设定具体的完成标准，并明确回合上限，例如 "stop after 5 tries."</li></ul><p>有时一个回合不够，尤其是更复杂的任务。Agent 能迭代时表现更好。用 /goal 定义怎样算完成，就能延长 Claude 继续迭代的时间。</p><p>你定义了成功标准之后，Claude 就不必自己判断什么叫"够好"然后提前结束循环。每次 Claude 想停下来，评估模型都会核对你的条件，再把它送回去继续干，直到目标达成，或达到你设定的回合数。</p><p>这就是为什么确定性标准特别有效，比如通过的测试数量，或清掉某个分数门槛。</p><p>例如：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-plaintext" style="white-space:pre-wrap"><span><span>/goal get the homepage Lighthouse score to 90 or above, stop after 5 tries.</span></span></code></pre><h2><strong>时间制循环（/loop 和 /schedule）</strong></h2><ul role="list"><li><strong>触发方式</strong>：指定的时间间隔。</li><li><strong>停止条件</strong>：你取消它，或工作完成（PR 合并、队列清空）。</li><li><strong>最适合：</strong>周期性工作，或对接外部环境 / 系统。</li><li><strong>控制用量：</strong>拉长间隔，或按事件而不是按时间来响应。</li></ul><p>有些智能体工作是周期性的：任务本身不变，变的只是输入。比如每天早上汇总 Slack 消息。另一些工作依赖外部系统，对接的简单办法是按间隔检查，再对变化做出反应。比如一条可能收到 code review 或 CI 失败的 PR。</p><p>对这类情况，可以用 `/loop` 按间隔重跑一条提示词来触发 Claude。例如：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-plaintext" style="white-space:pre-wrap"><span><span>/loop 5m check my PR, address review comments, and fix failing CI</span></span></code></pre><p>`/loop` 跑在你的电脑上，关机它就停。用 `/schedule` 建一条 routine，可以把循环挪到云上。</p><h2><strong>主动式循环</strong></h2><figure style="max-width:2024pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a43eb603762e725a739d989_eb9e496a.png" loading="lazy"></div></figure><ul role="list"><li><strong>触发方式</strong>：事件或日程，实时没有人在场。</li><li><strong>停止条件</strong>：每个任务在目标达成时退出。routine 本身一直跑到你关掉为止。</li><li><strong>最适合：</strong>定义清楚的周期性工作流：bug 报告、issue 分诊、迁移、依赖升级等。</li><li><strong>控制用量：</strong>把 routine 路由到更小、更快的模型，把最强的模型留给需要判断的环节。</li></ul><p>上面这些原语，再加上 Claude Code 的其他能力，比如 <strong>auto mode</strong> 和 <strong>dynamic workflows </strong>（research preview），可以组合成面向长时间工作的循环。</p><p>例如，处理进来的反馈时，你可以用：</p><ol role="list"><li><strong>`/schedule` </strong>（research preview）跑一条 routine，检查有没有新报告</li><li><strong>`/goal`</strong> 定义怎样算完成，并用 <strong>skills</strong> 记下如何验证</li><li><strong>Dynamic workflows</strong> 编排多个 agent，分别做分诊、修复和评审修复</li><li><strong>Auto mode</strong> 让 routine 跑下去，不必停下来问权限</li></ol><p>拼起来，一条提示词可以长这样：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-plaintext" style="white-space:pre-wrap"><span><span>/schedule every hour: check #project-feedback for bug reports. /goal: don't stop until every report found this run is triaged, actioned, and responded to. When fixing a bug, use a workflow to explore three solutions in parallel worktrees and have a judge adversarially review them.</span></span></code></pre><h2><strong>保持代码质量</strong></h2><p>循环产出的质量取决于它周围的系统。设计系统时：</p><ul role="list"><li><strong>先把代码库本身保持干净</strong>：Claude 会跟随代码库里已有的模式和约定。</li><li><strong>给 Claude 一种自验工作的方式</strong>：用 <a href="https://code.claude.com/docs/en/skills">skills</a> 把对你和团队来说怎样算好写下来。</li><li><strong>让文档容易够到：</strong>框架和库的文档里有最新的最佳实践。</li><li><strong>用第二个 agent 做 code review</strong>：带着全新上下文的评审者偏见更少，也不受主 agent 推理的影响。你可以用内置的 `/code-review` skill，或 GitHub 上的 <a href="https://code.claude.com/docs/en/code-review">Code Review</a>。写代码的循环需要检查代码的循环，见 <a href="https://claude.com/blog/how-anthropic-secures-its-ai-native-software-development-lifecycle">how Anthropic secures an AI-native SDLC</a>。</li></ul><p>当某一次结果没达到标准时，不要只修这一处，试着把它写进系统，让以后每一轮迭代都更好。</p><h2><strong>管理 token 用量</strong></h2><p>要管理 token 用量，循环应有清楚的边界：</p><ul role="list"><li><strong>为任务选对原语和模型：</strong>更小的任务不需要多个 agent 或循环。有些任务可以用更便宜、更快的模型。</li><li><strong>定义清楚的成功和停止条件：</strong>具体写出怎样算完成，让 Claude 更快到达解（但不要太快）。</li><li><strong>大规模跑之前先试点：</strong>Dynamic workflows 可以拉起上百个 agent。先在一小片工作上估用量。</li><li><strong>确定性工作用脚本</strong>：跑脚本比一步步推理更便宜。例如，一个 PDF skill 可以自带填表脚本，Claude 每次直接跑，而不用重新推导代码。</li><li><strong>不要比需要的更频繁地跑 routine：</strong>让间隔匹配你在盯的东西变化的频率</li><li><strong>查看用量：</strong>`/usage` 命令按 skills、subagents 和 MCP 拆开近期用量，不带参数的 `/goal` 显示目前的回合数和 token 用量，`/workflows` 显示每个 agent 的 token 用量，你可以随时停掉一个 agent。</li></ul><p>你的 <a href="https://claude.com/blog/claude-model-and-effort-level-in-claude-code">model and effort level</a> 选择，是循环成本最大的杠杆之一。</p><h2><strong>开始使用</strong></h2><p>总结一下：</p><div class="w-embed"><figure>
+  <div role="region" tabindex="0">
+    <table>
+      <thead>
+        <tr>
+          <th>循环</th>
+          <th>你交出的部分</th>
+          <th>适用场景</th>
+          <th>用什么</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>回合制</td>
+          <td>检查</td>
+          <td>你在探索或做决策</td>
+          <td>自定义 verification skills</td>
+        </tr>
+        <tr>
+          <td>目标制</td>
+          <td>停止条件</td>
+          <td>你清楚怎样算完成</td>
+          <td><code>/goal</code></td>
+        </tr>
+        <tr>
+          <td>时间制</td>
+          <td>触发器</td>
+          <td>工作按日程在项目外发生</td>
+          <td><code>/loop</code>, <code>/schedule</code></td>
+        </tr>
+        <tr>
+          <td>主动式</td>
+          <td>提示词</td>
+          <td>工作是重复且定义清楚的</td>
+          <td>以上全部，以及 dynamic workflows</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</figure></div><p>要开始用循环，先看你已经在做的工作。挑一项你自己是瓶颈的任务，问哪一块可以交出去：你能写出验证检查吗？目标够清楚吗？工作是按日程到来的吗？</p><p>有了想法就跑循环，观察结果，看它卡在哪里或越界到哪里，然后放心去迭代它。</p><p>更多信息见 Claude Code 文档中的 <a href="https://code.claude.com/docs/en/agents">running agents in parallel,</a> 以及 <a href="https://code.claude.com/docs/en/goal">loop</a>、<a href="https://code.claude.com/docs/en/routines">schedule</a>、<a href="https://code.claude.com/docs/en/goal">goal</a> 和 <a href="https://code.claude.com/docs/en/workflows#orchestrate-subagents-at-scale-with-dynamic-workflows">dynamic workflows</a> 页面。要让检查跨会话可复用，见 <a href="https://claude.com/blog/building-verification-loops-in-claude-code-with-skills">building verification loops in Claude Code with skills</a>。</p><p><em>本文作者是 Delba de Oliveira 和 Michael Segner</em></p></div>

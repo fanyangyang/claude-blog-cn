@@ -13,5 +13,19 @@
   "translatedTitle": "使用 Compliance API 审计 Claude Platform 活动",
   "translated": true,
   "translatedAt": "2026-09-02T04:07:33.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Platform"
+    ],
+    "usecase": []
+  },
+  "subtitle": "The Compliance API gives admins programmatic access to audit logs across their Claude Platform organization.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/platform/api"
 }

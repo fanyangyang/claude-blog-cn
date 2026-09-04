@@ -4,46 +4,203 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>COBOL Modernization with AI: Breaking the Cost Barrier — Claude Blog CN</title>
-  <meta name="description" content="COBOL Modernization with AI: Breaking the Cost Barrier">
+  <meta name="description" content="Legacy code modernization stalled for years because understanding legacy code cost more than rewriting it. AI flips that equation.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="/posts/how-ai-helps-break-cost-barrier-cobol-modernization/" class="nav-link">中文版 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>COBOL Modernization with AI: Breaking the Cost Barrier</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/how-ai-helps-break-cost-barrier-cobol-modernization" target="_blank" rel="noopener noreferrer">Ask questions about this page</a>
+        <button type="button" class="explore-item" data-copy-markdown>Copy as markdown</button>
+        <a class="explore-item" href="/posts/how-ai-helps-break-cost-barrier-cobol-modernization/">阅读中文翻译 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># COBOL Modernization with AI: Breaking the Cost Barrier
+
+Legacy code modernization stalled for years because understanding legacy code cost more than rewriting it. AI flips that equation.
+
+# COBOL modernization with AI: breaking the cost barrier
+
+COBOL is everywhere. It handles an estimated [95% of ATM transactions in the US](https://aisel.aisnet.org/cgi/viewcontent.cgi?article=1090&amp;context=treos_icis2022). Hundreds of billions of lines of COBOL run in production every day, powering critical systems in finance, airlines, and government.
+Despite that, the number of people who understand it shrinks every year.
+
+The developers who built these systems retired years ago, and the institutional knowledge they carried left with them. Production code has been modified repeatedly over decades, but the documentation hasn't kept up. Meanwhile, we aren't exactly minting replacements—COBOL is taught at only a handful of universities, and finding engineers who can read it gets harder every quarter.
+
+Given these roadblocks, how can organizations [modernize](https://claude.com/solutions/code-modernization) their systems without losing the reliability, availability, and data they’ve accumulated over decades? And without breaking anything?
+
+# **What is COBOL modernization?**
+
+COBOL modernization is the process of updating legacy COBOL applications—by rehosting them on new infrastructure, refactoring the code, rewriting it in a modern language like Java, or replacing the system entirely—while preserving the decades of business logic embedded in them. Cost has historically been the barrier: understanding what the code does is the most expensive step.
+
+## Why COBOL modernization is different
+
+COBOL modernization differs fundamentally from typical legacy code refactoring. You aren’t just updating familiar code to use better patterns, you’re reverse engineering business logic from systems built when Nixon was president. You’re untangling dependencies that evolved over decades, and translating institutional knowledge that now exists only in the code itself. 
+
+Modernizing a COBOL system once required armies of consultants spending years mapping workflows. This resulted in large timelines and high costs that few were willing to take on.
+
+AI changes this.
+
+[Claude Code](https://www.claude.com/product/claude-code), Anthropic's agentic coding tool, can automate the exploration and analysis phases that consume most of the effort in COBOL modernization. These tools can:
+
+- Map dependencies across thousands of lines of code
+- Document workflows that nobody remembers
+- Identify risks that would take human analysts months to surface 
+- Provide teams with the deep insights they need to make informed decisions
+
+With AI, teams can modernize their COBOL codebase in quarters instead of years.
+
+## **Four approaches to COBOL modernization: rehost, refactor, rewrite, replace**
+
+Most modernization efforts pick from four approaches. 
+
+‍*Rehosting* moves COBOL unchanged onto cheaper infrastructure—fast, but the maintainability problem remains. 
+
+‍*Refactoring* restructures the code without changing behavior. *Rewriting* converts it to a modern language like Java or Python—the highest payoff and, historically, the highest cost and risk. 
+
+‍*Replacing* swaps the system for a commercial product, when one fits. The economics of the rewrite path are what AI changes most, which is the focus of the rest of this post.
+
+## How AI changes COBOL modernization
+
+AI excels at streamlining the tasks that once made COBOL modernization cost-prohibitive. With it, your team can focus on strategy, risk assessment, and business logic while AI automates the code analysis and implementation.
+
+### Automated exploration and discovery
+
+AI starts by reading your entire COBOL codebase and mapping the structure. 
+
+It identifies program entry points, traces execution paths through called subroutines, maps data flows between modules, and documents dependencies that span hundreds of files. 
+
+This kind of mapping goes beyond simple call graphs. Shared data structures, file operations that create coupling between modules, initialization sequences that affect runtime behavior—these implicit dependencies don't show up in static analysis because they involve data shared through files, databases, or global state. They're also exactly what makes COBOL modernization risky, which is why automated discovery matters: it finds these hidden relationships before they cause problems during migration.
+
+Workflow documentation also emerges out of this analysis. 
+
+By tracing how data moves through a system from input to output, AI can produce diagrams and written descriptions of processing pipelines that nobody remembers building but everyone depends on.
+
+### Risk analysis and opportunity mapping
+
+With the codebase mapped, AI can assess which components are safe to move and which need careful handling. Modules with high coupling can be more risky to modernize. Isolated components surface as candidates for early, independent modernization. Duplicated logic points to refactoring opportunities. Areas with accumulated technical debt get documented before they become migration surprises.
+
+### Strategic planning with expert oversight
+
+This is where human judgment becomes essential. Your COBOL engineers bring the understanding of regulatory requirements, business priorities, operational constraints, and risk tolerance that AI cannot.
+
+**The planning phase** develops a detailed roadmap that sequences modernization work strategically:
+
+- AI suggests prioritization based on the risks, dependencies, and complexity it identified during analysis.
+- Your team reviews these recommendations and decides which components to modernize first based on business value, technical risk, and organizational priorities.
+- This is also when your team defines the target architecture, code standards, and integration requirements for modernized components.
+
+**Code testing and validation **are also defined before any code changes:
+
+- AI designs preliminary function tests that verify migrated code produces identical outputs to legacy COBOL. 
+- Your team decides whether those tests are sufficient, which business scenarios need manual validation by subject-matter experts, and what performance benchmarks the modernized components need to meet.
+
+### Incremental implementation with continuous validation
+
+Execution happens one component at a time, with validation at each step. AI translates COBOL logic into modern languages, creates API wrappers around legacy components that stay in place, and builds the scaffolding to run old and new code side by side during transition.
+
+Each step either succeeds and gets validated, or fails and gets corrected while the scope is small. 
+
+You never have massive changes in flight where failure means rolling back weeks of work. As your team sees modernized components passing tests, they gain confidence to tackle progressively more complex parts of the system.
+
+## Start your COBOL modernization
+
+The approach outlined above works for COBOL systems of any size. 
+
+Tools like Claude Code can automate much of the exploration and analysis work described, giving your team the comprehensive understanding they need to plan and execute migrations confidently.
+
+Start with a single component or workflow that has clear boundaries and moderate complexity. Use AI to analyze and document it thoroughly, plan the modernization with your engineers, implement incrementally with testing at each step, and validate carefully.  This will build organizational confidence and surface adjustments needed for your systems.
+
+The economics of COBOL modernization have shifted. AI makes the economics work by automating what used to require armies of consultants, freeing your engineers to make the migration decisions that require their domain expertise.*‍*
+
+*For a step-by-step guide, see Anthropic's *[***Code Modernization Playbook***](https://resources.anthropic.com/code-modernization-playbook)*. *
+
+*For the step-by-step process behind ports like these, see how Anthropic runs *[*large-scale code migrations with Claude Code*](https://claude.com/blog/ai-code-migration)*.
+Thanks to Dan Mason, technical member of Anthropic staff, for their contributions.*</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Claude Code</span>
-            <span class="article-date">February 23, 2026</span>
-            <span class="lang-badge-large">EN</span>
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-cactus);">
+            <img class="hero-illo-img" src="/assets/illustrations/how-ai-helps-break-cost-barrier-cobol-modernization.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">COBOL Modernization with AI: Breaking the Cost Barrier</h1>
-          <a href="/posts/how-ai-helps-break-cost-barrier-cobol-modernization/" class="lang-toggle">阅读中文翻译 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><h1>COBOL modernization with AI: breaking the cost barrier</h1><p>COBOL is everywhere. It handles an estimated <a href="https://aisel.aisnet.org/cgi/viewcontent.cgi?article=1090&amp;context=treos_icis2022" target="_blank">95% of ATM transactions in the US</a>. Hundreds of billions of lines of COBOL run in production every day, powering critical systems in finance, airlines, and government.<br>Despite that, the number of people who understand it shrinks every year.</p><p>The developers who built these systems retired years ago, and the institutional knowledge they carried left with them. Production code has been modified repeatedly over decades, but the documentation hasn't kept up. Meanwhile, we aren't exactly minting replacements—COBOL is taught at only a handful of universities, and finding engineers who can read it gets harder every quarter.</p><p>Given these roadblocks, how can organizations <a href="https://claude.com/solutions/code-modernization" target="_blank">modernize</a> their systems without losing the reliability, availability, and data they’ve accumulated over decades? And without breaking anything?</p><h1><strong>What is COBOL modernization?</strong></h1><p>COBOL modernization is the process of updating legacy COBOL applications—by rehosting them on new infrastructure, refactoring the code, rewriting it in a modern language like Java, or replacing the system entirely—while preserving the decades of business logic embedded in them. Cost has historically been the barrier: understanding what the code does is the most expensive step.</p><h2>Why COBOL modernization is different</h2><p>COBOL modernization differs fundamentally from typical legacy code refactoring. You aren’t just updating familiar code to use better patterns, you’re reverse engineering business logic from systems built when Nixon was president. You’re untangling dependencies that evolved over decades, and translating institutional knowledge that now exists only in the code itself.&nbsp;</p><p>Modernizing a COBOL system once required armies of consultants spending years mapping workflows. This resulted in large timelines and high costs that few were willing to take on.</p><p>AI changes this.</p><p><a href="https://www.claude.com/product/claude-code" target="_blank">Claude Code</a>, Anthropic's agentic coding tool, can automate the exploration and analysis phases that consume most of the effort in COBOL modernization. These tools can:</p><ol role="list"><li>Map dependencies across thousands of lines of code</li><li>Document workflows that nobody remembers</li><li>Identify risks that would take human analysts months to surface&nbsp;</li><li>Provide teams with the deep insights they need to make informed decisions</li></ol><p>With AI, teams can modernize their COBOL codebase in quarters instead of years.</p><h2><strong>Four approaches to COBOL modernization: rehost, refactor, rewrite, replace</strong></h2><p>Most modernization efforts pick from four approaches. </p><p>‍<em>Rehosting</em> moves COBOL unchanged onto cheaper infrastructure—fast, but the maintainability problem remains. </p><p>‍<em>Refactoring</em> restructures the code without changing behavior. <em>Rewriting</em> converts it to a modern language like Java or Python—the highest payoff and, historically, the highest cost and risk. </p><p>‍<em>Replacing</em> swaps the system for a commercial product, when one fits. The economics of the rewrite path are what AI changes most, which is the focus of the rest of this post.</p><h2>How AI changes COBOL modernization</h2><p>AI excels at streamlining the tasks that once made COBOL modernization cost-prohibitive. With it, your team can focus on strategy, risk assessment, and business logic while AI automates the code analysis and implementation.</p><h3>Automated exploration and discovery</h3><p>AI starts by reading your entire COBOL codebase and mapping the structure.&nbsp;</p><p>It identifies program entry points, traces execution paths through called subroutines, maps data flows between modules, and documents dependencies that span hundreds of files.&nbsp;</p><p>This kind of mapping goes beyond simple call graphs. Shared data structures, file operations that create coupling between modules, initialization sequences that affect runtime behavior—these implicit dependencies don't show up in static analysis because they involve data shared through files, databases, or global state. They're also exactly what makes COBOL modernization risky, which is why automated discovery matters: it finds these hidden relationships before they cause problems during migration.</p><p>Workflow documentation also emerges out of this analysis.&nbsp;</p><p>By tracing how data moves through a system from input to output, AI can produce diagrams and written descriptions of processing pipelines that nobody remembers building but everyone depends on.</p><h3>Risk analysis and opportunity mapping</h3><p>With the codebase mapped, AI can assess which components are safe to move and which need careful handling. Modules with high coupling can be more risky to modernize. Isolated components surface as candidates for early, independent modernization. Duplicated logic points to refactoring opportunities. Areas with accumulated technical debt get documented before they become migration surprises.</p><h3>Strategic planning with expert oversight</h3><p>This is where human judgment becomes essential. Your COBOL engineers bring the understanding of regulatory requirements, business priorities, operational constraints, and risk tolerance that AI cannot.</p><p><strong>The planning phase</strong> develops a detailed roadmap that sequences modernization work strategically:<br></p><ul role="list"><li>AI suggests prioritization based on the risks, dependencies, and complexity it identified during analysis.</li><li>Your team reviews these recommendations and decides which components to modernize first based on business value, technical risk, and organizational priorities.</li><li>This is also when your team defines the target architecture, code standards, and integration requirements for modernized components.<br></li></ul><p><strong>Code testing and validation </strong>are also defined before any code changes:<br></p><ul role="list"><li>AI designs preliminary function tests that verify migrated code produces identical outputs to legacy COBOL.&nbsp;</li><li>Your team decides whether those tests are sufficient, which business scenarios need manual validation by subject-matter experts, and what performance benchmarks the modernized components need to meet.</li></ul><h3>Incremental implementation with continuous validation</h3><p>Execution happens one component at a time, with validation at each step. AI translates COBOL logic into modern languages, creates API wrappers around legacy components that stay in place, and builds the scaffolding to run old and new code side by side during transition.</p><p>Each step either succeeds and gets validated, or fails and gets corrected while the scope is small.&nbsp;</p><p>You never have massive changes in flight where failure means rolling back weeks of work. As your team sees modernized components passing tests, they gain confidence to tackle progressively more complex parts of the system.</p><h2>Start your COBOL modernization</h2><p>The approach outlined above works for COBOL systems of any size.&nbsp;</p><p>Tools like Claude Code can automate much of the exploration and analysis work described, giving your team the comprehensive understanding they need to plan and execute migrations confidently.</p><p>Start with a single component or workflow that has clear boundaries and moderate complexity. Use AI to analyze and document it thoroughly, plan the modernization with your engineers, implement incrementally with testing at each step, and validate carefully.&nbsp; This will build organizational confidence and surface adjustments needed for your systems.</p><p>The economics of COBOL modernization have shifted. AI makes the economics work by automating what used to require armies of consultants, freeing your engineers to make the migration decisions that require their domain expertise.<em>‍</em></p><p><em>For a step-by-step guide, see Anthropic's </em><a href="https://resources.anthropic.com/code-modernization-playbook" target="_blank"><strong><em>Code Modernization Playbook</em></strong></a><em>. </em></p><p><em>For the step-by-step process behind ports like these, see how Anthropic runs </em><a href="https://claude.com/blog/ai-code-migration"><em>large-scale code migrations with Claude Code</em></a><em>.<br>Thanks to Dan Mason, technical member of Anthropic staff, for their contributions.</em></p></div>
+            <h1 class="article-title u-text-style-h1">COBOL Modernization with AI: Breaking the Cost Barrier</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>Legacy code modernization stalled for years because understanding legacy code cost more than rewriting it. AI flips that equation.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/product/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">February 23, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/how-ai-helps-break-cost-barrier-cobol-modernization/en.html">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/how-ai-helps-break-cost-barrier-cobol-modernization" target="_blank">View original</a></p>
-          <p><a href="/">← Back to home</a></p>
-        </footer>
-      </article>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><h1>COBOL modernization with AI: breaking the cost barrier</h1><p>COBOL is everywhere. It handles an estimated <a href="https://aisel.aisnet.org/cgi/viewcontent.cgi?article=1090&amp;context=treos_icis2022" target="_blank">95% of ATM transactions in the US</a>. Hundreds of billions of lines of COBOL run in production every day, powering critical systems in finance, airlines, and government.<br>Despite that, the number of people who understand it shrinks every year.</p><p>The developers who built these systems retired years ago, and the institutional knowledge they carried left with them. Production code has been modified repeatedly over decades, but the documentation hasn't kept up. Meanwhile, we aren't exactly minting replacements—COBOL is taught at only a handful of universities, and finding engineers who can read it gets harder every quarter.</p><p>Given these roadblocks, how can organizations <a href="https://claude.com/solutions/code-modernization" target="_blank">modernize</a> their systems without losing the reliability, availability, and data they’ve accumulated over decades? And without breaking anything?</p><h1><strong>What is COBOL modernization?</strong></h1><p>COBOL modernization is the process of updating legacy COBOL applications—by rehosting them on new infrastructure, refactoring the code, rewriting it in a modern language like Java, or replacing the system entirely—while preserving the decades of business logic embedded in them. Cost has historically been the barrier: understanding what the code does is the most expensive step.</p><h2>Why COBOL modernization is different</h2><p>COBOL modernization differs fundamentally from typical legacy code refactoring. You aren’t just updating familiar code to use better patterns, you’re reverse engineering business logic from systems built when Nixon was president. You’re untangling dependencies that evolved over decades, and translating institutional knowledge that now exists only in the code itself.&nbsp;</p><p>Modernizing a COBOL system once required armies of consultants spending years mapping workflows. This resulted in large timelines and high costs that few were willing to take on.</p><p>AI changes this.</p><p><a href="https://www.claude.com/product/claude-code" target="_blank">Claude Code</a>, Anthropic's agentic coding tool, can automate the exploration and analysis phases that consume most of the effort in COBOL modernization. These tools can:</p><ol role="list"><li>Map dependencies across thousands of lines of code</li><li>Document workflows that nobody remembers</li><li>Identify risks that would take human analysts months to surface&nbsp;</li><li>Provide teams with the deep insights they need to make informed decisions</li></ol><p>With AI, teams can modernize their COBOL codebase in quarters instead of years.</p><h2><strong>Four approaches to COBOL modernization: rehost, refactor, rewrite, replace</strong></h2><p>Most modernization efforts pick from four approaches. </p><p>‍<em>Rehosting</em> moves COBOL unchanged onto cheaper infrastructure—fast, but the maintainability problem remains. </p><p>‍<em>Refactoring</em> restructures the code without changing behavior. <em>Rewriting</em> converts it to a modern language like Java or Python—the highest payoff and, historically, the highest cost and risk. </p><p>‍<em>Replacing</em> swaps the system for a commercial product, when one fits. The economics of the rewrite path are what AI changes most, which is the focus of the rest of this post.</p><h2>How AI changes COBOL modernization</h2><p>AI excels at streamlining the tasks that once made COBOL modernization cost-prohibitive. With it, your team can focus on strategy, risk assessment, and business logic while AI automates the code analysis and implementation.</p><h3>Automated exploration and discovery</h3><p>AI starts by reading your entire COBOL codebase and mapping the structure.&nbsp;</p><p>It identifies program entry points, traces execution paths through called subroutines, maps data flows between modules, and documents dependencies that span hundreds of files.&nbsp;</p><p>This kind of mapping goes beyond simple call graphs. Shared data structures, file operations that create coupling between modules, initialization sequences that affect runtime behavior—these implicit dependencies don't show up in static analysis because they involve data shared through files, databases, or global state. They're also exactly what makes COBOL modernization risky, which is why automated discovery matters: it finds these hidden relationships before they cause problems during migration.</p><p>Workflow documentation also emerges out of this analysis.&nbsp;</p><p>By tracing how data moves through a system from input to output, AI can produce diagrams and written descriptions of processing pipelines that nobody remembers building but everyone depends on.</p><h3>Risk analysis and opportunity mapping</h3><p>With the codebase mapped, AI can assess which components are safe to move and which need careful handling. Modules with high coupling can be more risky to modernize. Isolated components surface as candidates for early, independent modernization. Duplicated logic points to refactoring opportunities. Areas with accumulated technical debt get documented before they become migration surprises.</p><h3>Strategic planning with expert oversight</h3><p>This is where human judgment becomes essential. Your COBOL engineers bring the understanding of regulatory requirements, business priorities, operational constraints, and risk tolerance that AI cannot.</p><p><strong>The planning phase</strong> develops a detailed roadmap that sequences modernization work strategically:<br></p><ul role="list"><li>AI suggests prioritization based on the risks, dependencies, and complexity it identified during analysis.</li><li>Your team reviews these recommendations and decides which components to modernize first based on business value, technical risk, and organizational priorities.</li><li>This is also when your team defines the target architecture, code standards, and integration requirements for modernized components.<br></li></ul><p><strong>Code testing and validation </strong>are also defined before any code changes:<br></p><ul role="list"><li>AI designs preliminary function tests that verify migrated code produces identical outputs to legacy COBOL.&nbsp;</li><li>Your team decides whether those tests are sufficient, which business scenarios need manual validation by subject-matter experts, and what performance benchmarks the modernized components need to meet.</li></ul><h3>Incremental implementation with continuous validation</h3><p>Execution happens one component at a time, with validation at each step. AI translates COBOL logic into modern languages, creates API wrappers around legacy components that stay in place, and builds the scaffolding to run old and new code side by side during transition.</p><p>Each step either succeeds and gets validated, or fails and gets corrected while the scope is small.&nbsp;</p><p>You never have massive changes in flight where failure means rolling back weeks of work. As your team sees modernized components passing tests, they gain confidence to tackle progressively more complex parts of the system.</p><h2>Start your COBOL modernization</h2><p>The approach outlined above works for COBOL systems of any size.&nbsp;</p><p>Tools like Claude Code can automate much of the exploration and analysis work described, giving your team the comprehensive understanding they need to plan and execute migrations confidently.</p><p>Start with a single component or workflow that has clear boundaries and moderate complexity. Use AI to analyze and document it thoroughly, plan the modernization with your engineers, implement incrementally with testing at each step, and validate carefully.&nbsp; This will build organizational confidence and surface adjustments needed for your systems.</p><p>The economics of COBOL modernization have shifted. AI makes the economics work by automating what used to require armies of consultants, freeing your engineers to make the migration decisions that require their domain expertise.<em>‍</em></p><p><em>For a step-by-step guide, see Anthropic's </em><a href="https://resources.anthropic.com/code-modernization-playbook" target="_blank"><strong><em>Code Modernization Playbook</em></strong></a><em>. </em></p><p><em>For the step-by-step process behind ports like these, see how Anthropic runs </em><a href="https://claude.com/blog/ai-code-migration"><em>large-scale code migrations with Claude Code</em></a><em>.<br>Thanks to Dan Mason, technical member of Anthropic staff, for their contributions.</em></p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/how-ai-helps-break-cost-barrier-cobol-modernization" target="_blank">View original</a></p>
+              <p><a href="/">← Back to home</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
     </div>
   </main>
 <footer class="footer">
@@ -51,6 +208,53 @@
       <p>Content from <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · Translation by AI</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

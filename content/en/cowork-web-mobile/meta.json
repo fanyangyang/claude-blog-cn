@@ -13,5 +13,23 @@
   "translatedTitle": "Claude Cowork 登陆移动端和 Web 端",
   "translated": true,
   "translatedAt": "2026-09-02T04:35:00.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Cowork"
+    ],
+    "usecase": [
+      "Business",
+      "Work",
+      "Productivity"
+    ]
+  },
+  "subtitle": "Your work goes everywhere with you, and keeps going without you.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/product/cowork"
 }

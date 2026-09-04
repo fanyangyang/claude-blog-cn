@@ -13,5 +13,22 @@
   "translatedTitle": "将想法变成可交互的 AI 应用",
   "translated": true,
   "translatedAt": "2026-09-02T04:44:54.905Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude apps"
+    ],
+    "usecase": [
+      "Productivity",
+      "Content Creation"
+    ]
+  },
+  "subtitle": "Turn ideas into interactive AI-powered apps through conversation—no coding required—with artifacts.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": ""
 }

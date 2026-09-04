@@ -13,5 +13,19 @@
   "translatedTitle": "Claude Tag 现在能读懂更多对话语境",
   "translated": true,
   "translatedAt": "2026-09-02T04:30:13.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Tag"
+    ],
+    "usecase": []
+  },
+  "subtitle": "Claude has more context to decide when to proactively collaborate in Slack (and when not to)",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/product/tag"
 }

@@ -13,5 +13,19 @@
   "illustrationBg": "Peach",
   "translatedTitle": "Claude 的记忆随处可用，内容由你决定",
   "translatedAt": "2026-09-02T05:12:35.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Cowork"
+    ],
+    "usecase": []
+  },
+  "subtitle": "Wherever you work with Claude from Anthropic, it starts from what it already knows about you.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/product/cowork"
 }

@@ -12,7 +12,30 @@
       "illustration": "assets/illustrations/the-anatomy-of-effective-commerce-agents.svg",
       "illustrationBg": "Cactus",
       "fetchedAt": "2026-09-02T16:05:00.313Z",
-      "translated": false
+      "translated": true,
+      "translatedAt": "2026-09-03T06:33:24.000Z",
+      "translateLang": "zh-CN",
+      "translatedTitle": "高效电商智能体深度剖析",
+      "facets": {
+        "category": [
+          "Agents"
+        ],
+        "product": [
+          "Claude Platform"
+        ],
+        "usecase": [
+          "Agents"
+        ]
+      },
+      "subtitle": "The architecture, latency & cost techniques, and eval practices for agents that make it easier to buy and sell online.",
+      "authors": [
+        "Ali Shazal",
+        "Matthew Koen"
+      ],
+      "readingMinutes": 25,
+      "categoryUrl": "https://claude.com/blog/category/agents",
+      "productUrl": "https://claude.com/platform/api",
+      "translatedSubtitle": "面向让买卖更顺畅的智能体：架构、延迟与成本技术，以及评估实践。"
     },
     {
       "slug": "claude-for-commerce-agents",
@@ -27,9 +50,27 @@
       "illustrationBg": "Clay",
       "fetchedAt": "2026-09-02T16:11:20.522Z",
       "translated": true,
-      "translatedAt": "2026-09-02T22:13:34.423Z",
-      "translateLang": "zh-CN",
-      "translatedTitle": "使用 Claude 构建电商智能体"
+      "translatedAt": "2026-09-03T10:20:00.000Z",
+      "translateLang": "zh",
+      "translatedTitle": "使用 Claude 构建电商智能体",
+      "translatedSubtitle": "在 Claude 上运行购物智能体的零售商看到购物车最多增大 35%，购物者完成购买的可能性提高 60%。",
+      "facets": {
+        "category": [
+          "Product announcements",
+          "Agents"
+        ],
+        "product": [
+          "Claude Platform"
+        ],
+        "usecase": [
+          "Agents"
+        ]
+      },
+      "subtitle": "Retailers running shopping agents on Claude have seen carts up to 35% larger and shoppers 60% more likely to complete a purchase.",
+      "authors": [],
+      "readingMinutes": 3,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "how-anthropic-employees-use-claude-tag",
@@ -39,7 +80,7 @@
       "url": "https://claude.com/blog/how-anthropic-employees-use-claude-tag",
       "fetchedAt": "2026-09-01T11:10:15.077Z",
       "translated": true,
-      "translatedAt": "2026-09-01T11:19:19.936Z",
+      "translatedAt": "2026-09-01T11:19:00.000Z",
       "translateLang": "zh",
       "translatedTitle": "Anthropic 员工如何使用 Claude Tag",
       "inHero": false,
@@ -55,7 +96,14 @@
           "Claude Tag"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "Producing customer-ready collateral, compiling weekly issue reports, and running legal review, all where the work already happens.",
+      "authors": [
+        "Aleksandra Todorova"
+      ],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/product/tag"
     },
     {
       "slug": "claude-for-teachers-now-available-for-schools-and-districts",
@@ -66,7 +114,7 @@
       "fetchedAt": "2026-09-01T11:10:17.013Z",
       "translated": true,
       "translatedTitle": "Claude for Teachers 现已面向美国 K-12 学校和学区开放",
-      "translatedAt": "2026-09-01T11:19:19.935Z",
+      "translatedAt": "2026-09-01T11:14:09.464Z",
       "translateLang": "zh",
       "inHero": false,
       "heroIndex": -1,
@@ -83,7 +131,12 @@
         "usecase": [
           "Education"
         ]
-      }
+      },
+      "subtitle": "Starting today, Claude for Teachers is available for U.S. K-12 schools and districts as a free Enterprise offering. This includes premium Claude capabilities like teaching skills grounded in learning science and a direct connection to academic standards in all 50 states. Qualifying organizations that sign up by June 30, 2027 get a full year of free access.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": ""
     },
     {
       "slug": "how-warp-builds-self-improving-agents-on-claude",
@@ -93,7 +146,7 @@
       "url": "https://claude.com/blog/how-warp-builds-self-improving-agents-on-claude",
       "fetchedAt": "2026-09-01T11:10:18.987Z",
       "translated": true,
-      "translatedAt": "2026-09-01T11:19:19.936Z",
+      "translatedAt": "2026-09-01T11:19:30.000Z",
       "translateLang": "zh",
       "translatedTitle": "Warp 如何在 Claude 上构建自改进代理",
       "inHero": false,
@@ -109,7 +162,14 @@
           "Claude Platform"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "Learn how Warp devised a simple development pattern that anyone can use to create self-improving agents.",
+      "authors": [
+        "Michael Segner"
+      ],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/agents",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "claude-in-chrome-generally-available",
@@ -119,7 +179,7 @@
       "url": "https://claude.com/blog/claude-in-chrome-generally-available",
       "fetchedAt": "2026-09-01T11:10:20.934Z",
       "translated": true,
-      "translatedAt": "2026-09-01T11:19:19.935Z",
+      "translatedAt": "2026-09-01T11:20:00.000Z",
       "translateLang": "zh",
       "translatedTitle": "Claude in Chrome 现已全面可用",
       "inHero": true,
@@ -139,7 +199,12 @@
           "Work",
           "Productivity"
         ]
-      }
+      },
+      "subtitle": "Give Claude a task in your browser, work across tabs, and continue the conversation in the desktop, mobile, and web apps.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/product/cowork"
     },
     {
       "slug": "cowork-built-in-browser",
@@ -150,7 +215,7 @@
       "fetchedAt": "2026-09-01T11:10:22.881Z",
       "translated": true,
       "translatedTitle": "Claude Cowork 内置浏览器：无需安装",
-      "translatedAt": "2026-09-01T11:19:19.936Z",
+      "translatedAt": "2026-09-01T11:12:27.766Z",
       "translateLang": "zh",
       "inHero": true,
       "heroIndex": 1,
@@ -169,7 +234,12 @@
           "Work",
           "Productivity"
         ]
-      }
+      },
+      "subtitle": "Claude opens its own browser to navigate sites, read pages, and fill forms, inside the desktop app.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/product/cowork"
     },
     {
       "slug": "bain-company-joins-the-claude-partner-network-as-a-global-premier-partner",
@@ -179,9 +249,9 @@
       "url": "https://claude.com/blog/bain-company-joins-the-claude-partner-network-as-a-global-premier-partner",
       "fetchedAt": "2026-09-01T11:10:24.841Z",
       "translated": true,
-      "translatedTitle": "Bain & Company 加入 Claude Partner Network，成为全球优先合作伙伴",
-      "translatedAt": "2026-09-02T05:12:35.000Z",
-      "translateLang": "zh-CN",
+      "translatedTitle": "Bain & Company 加入 Claude Partner Network，成为全球首要合作伙伴",
+      "translatedAt": "2026-09-01T11:14:09.468Z",
+      "translateLang": "zh",
       "inHero": false,
       "heroIndex": -1,
       "inGrid": true,
@@ -193,7 +263,12 @@
         ],
         "product": [],
         "usecase": []
-      }
+      },
+      "subtitle": "Anthropic and Bain & Company are partnering to help enterprises deploy AI, building on Bain's rollout of Claude to its 19,000 employees.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": ""
     },
     {
       "slug": "claudes-memory-works-everywhere-and-you-decide-whats-in-it",
@@ -203,9 +278,9 @@
       "url": "https://claude.com/blog/claudes-memory-works-everywhere-and-you-decide-whats-in-it",
       "fetchedAt": "2026-09-01T11:10:26.750Z",
       "translated": true,
-      "translatedTitle": "Claude 的记忆随处可用，内容由你决定",
-      "translatedAt": "2026-09-02T05:12:35.000Z",
-      "translateLang": "zh-CN",
+      "translatedTitle": "Claude 的记忆功能全面可用，内容由你决定",
+      "translatedAt": "2026-09-01T11:14:09.468Z",
+      "translateLang": "zh",
       "inHero": false,
       "heroIndex": -1,
       "inGrid": true,
@@ -219,7 +294,12 @@
           "Claude Cowork"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "Wherever you work with Claude from Anthropic, it starts from what it already knows about you.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/product/cowork"
     },
     {
       "slug": "how-an-anthropic-field-marketer-uses-claude-code-to-send-weekly-personalized-updates-to-every-sales-rep",
@@ -230,7 +310,7 @@
       "fetchedAt": "2026-09-01T11:10:28.738Z",
       "translated": true,
       "translatedTitle": "Anthropic 现场营销人员如何使用 Claude Code 为每位销售代表发送每周个性化更新",
-      "translatedAt": "2026-09-01T11:19:19.936Z",
+      "translatedAt": "2026-09-01T11:20:30.000Z",
       "translateLang": "zh",
       "inHero": false,
       "heroIndex": -1,
@@ -248,7 +328,14 @@
           "Sales",
           "Productivity"
         ]
-      }
+      },
+      "subtitle": "Adam Ward, on Anthropic’s marketing team, shares how he uses Claude to turn one weekly sales report into a personalized Monday briefing for every account executive he supports.",
+      "authors": [
+        "Adam Ward"
+      ],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "bringing-claude-mythos-5-to-more-defenders",
@@ -259,7 +346,7 @@
       "fetchedAt": "2026-09-01T11:10:30.681Z",
       "translated": true,
       "translatedTitle": "将 Claude Mythos 5 的网络安全能力带给更多防御者",
-      "translatedAt": "2026-09-01T11:19:19.935Z",
+      "translatedAt": "2026-09-01T11:21:00.000Z",
       "translateLang": "zh",
       "inHero": false,
       "heroIndex": -1,
@@ -272,7 +359,12 @@
         ],
         "product": [],
         "usecase": []
-      }
+      },
+      "subtitle": "We’re sharing an update on our efforts to help more teams leverage frontier capabilities for cyber defense.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": ""
     },
     {
       "slug": "the-ai-native-sdlc-playbook",
@@ -282,9 +374,9 @@
       "url": "https://claude.com/blog/the-ai-native-sdlc-playbook",
       "fetchedAt": "2026-09-01T11:10:32.672Z",
       "translated": true,
-      "translatedTitle": "AI 原生 SDLC 实战手册",
-      "translatedAt": "2026-09-02T06:27:53.000Z",
-      "translateLang": "zh-CN",
+      "translatedTitle": "AI 原生软件开发生命周期手册",
+      "translatedAt": "2026-09-01T11:19:56.930Z",
+      "translateLang": "zh",
       "inHero": false,
       "heroIndex": -1,
       "inGrid": true,
@@ -303,7 +395,14 @@
         "usecase": [
           "Coding"
         ]
-      }
+      },
+      "subtitle": "How to transform your software development lifecycle with AI—stage by stage.",
+      "authors": [
+        "Louis Claxton"
+      ],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/solutions/enterprise"
     },
     {
       "slug": "anthropics-approach-to-teaching-and-learning-ai",
@@ -313,9 +412,9 @@
       "url": "https://claude.com/blog/anthropics-approach-to-teaching-and-learning-ai",
       "fetchedAt": "2026-09-01T11:10:34.611Z",
       "translated": true,
-      "translatedTitle": "Anthropic 的 AI 教学与学习方法",
-      "translatedAt": "2026-09-02T05:12:35.000Z",
-      "translateLang": "zh-CN",
+      "translatedTitle": "Anthropic 的 AI 教学与学习方法论",
+      "translatedAt": "2026-09-01T11:19:56.924Z",
+      "translateLang": "zh",
       "inHero": false,
       "heroIndex": -1,
       "inGrid": true,
@@ -331,7 +430,12 @@
           "Agents",
           "Productivity"
         ]
-      }
+      },
+      "subtitle": "Claude Academy gives users the educational tools they need to learn how to use AI effectively. In this post, we highlight why we’re launching it and how our own approach to teaching and learning influenced its development.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": ""
     },
     {
       "slug": "how-monday-com-transformed-its-platform-into-an-agent-first-product-where-humans-and-agents-collaborate",
@@ -341,9 +445,9 @@
       "url": "https://claude.com/blog/how-monday-com-transformed-its-platform-into-an-agent-first-product-where-humans-and-agents-collaborate",
       "fetchedAt": "2026-09-01T11:10:36.575Z",
       "translated": true,
-      "translatedTitle": "monday.com 如何把平台重塑为人与 agent 协作的 agent 优先产品",
-      "translatedAt": "2026-09-02T05:12:42.000Z",
-      "translateLang": "zh-CN",
+      "translatedTitle": "monday.com 如何将平台转变为人类与 AI 代理协作的产品",
+      "translatedAt": "2026-09-01T11:19:56.930Z",
+      "translateLang": "zh",
       "inHero": false,
       "heroIndex": -1,
       "inGrid": true,
@@ -359,7 +463,14 @@
         "usecase": [
           "Business"
         ]
-      }
+      },
+      "subtitle": "After it hit a ceiling with add-on AI features, monday rebuilt its platform around Claude. Two months and five million agent interactions later, its team shares five lessons from the transition to an agent-first product.",
+      "authors": [
+        "Aleksandra Todorova"
+      ],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/agents",
+      "productUrl": "https://claude.com/solutions/enterprise"
     },
     {
       "slug": "claude-code-guide-for-startups",
@@ -369,9 +480,9 @@
       "url": "https://claude.com/blog/claude-code-guide-for-startups",
       "fetchedAt": "2026-09-01T11:10:38.536Z",
       "translated": true,
-      "translatedTitle": "面向创业公司的 Claude Code 指南",
-      "translatedAt": "2026-09-02T05:12:42.000Z",
-      "translateLang": "zh-CN",
+      "translatedTitle": "创业公司 Claude Code 指南",
+      "translatedAt": "2026-09-01T11:19:56.929Z",
+      "translateLang": "zh",
       "inHero": false,
       "heroIndex": -1,
       "inGrid": true,
@@ -387,7 +498,14 @@
         "usecase": [
           "Startups"
         ]
-      }
+      },
+      "subtitle": "How fast-growing startups use Claude Code to ship—five operating principles drawn from interviews with more than a dozen companies.",
+      "authors": [
+        "Michael Segner"
+      ],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "computer-use-skills-api-files-api",
@@ -397,9 +515,9 @@
       "url": "https://claude.com/blog/computer-use-skills-api-files-api",
       "fetchedAt": "2026-09-01T11:10:40.489Z",
       "translated": true,
-      "translatedTitle": "使用 Computer use、Skills API 和 Files API 构建生产级智能体",
-      "translatedAt": "2026-09-02T05:12:35.000Z",
-      "translateLang": "zh-CN",
+      "translatedTitle": "Computer Use、Skills API 和 Files API 现已全面可用",
+      "translatedAt": "2026-09-03T11:00:00.000Z",
+      "translateLang": "zh",
       "inHero": false,
       "heroIndex": -1,
       "inGrid": true,
@@ -417,7 +535,12 @@
         "usecase": [
           "Agents"
         ]
-      }
+      },
+      "subtitle": "Computer use, the Skills API, and the Files API are generally available on the Claude Platform today. Computer use also adds a new browser use tool for agents that work in web applications. Together they let you build agents that operate software, apply your team's expertise, and return finished files.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "turning-conversation-into-knowledge-how-slack-builds-human-agent-teams",
@@ -427,9 +550,9 @@
       "url": "https://claude.com/blog/turning-conversation-into-knowledge-how-slack-builds-human-agent-teams",
       "fetchedAt": "2026-09-01T11:10:42.427Z",
       "translated": true,
-      "translatedTitle": "把对话变成知识：Slack 如何构建人机协作团队",
-      "translatedAt": "2026-09-02T05:14:34.865Z",
-      "translateLang": "zh-CN",
+      "translatedTitle": "将对话转化为知识：Slack 如何构建人机协作团队",
+      "translatedAt": "2026-09-01T11:19:56.930Z",
+      "translateLang": "zh",
       "inHero": false,
       "heroIndex": -1,
       "inGrid": true,
@@ -441,7 +564,12 @@
         ],
         "product": [],
         "usecase": []
-      }
+      },
+      "subtitle": "A conversation with Jaime DeLanghe, Chief Product Officer at Slack.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": ""
     },
     {
       "slug": "ai-ci-cd-on-call",
@@ -471,7 +599,14 @@
         "usecase": [
           "Coding"
         ]
-      }
+      },
+      "subtitle": "An engineer on our Continuous Integration team walks through the agent he built that powers CI incident response at Anthropic.",
+      "authors": [
+        "Sachin Malhotra"
+      ],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/product/tag"
     },
     {
       "slug": "how-abc-legal-turned-every-employee-into-a-builder-with-claude-managed-agents",
@@ -499,7 +634,12 @@
         "usecase": [
           "Legal"
         ]
-      }
+      },
+      "subtitle": "ABC Legal transformed their organization’s AI adoption from scattered experiments to a governed fleet of specialized agents with Claude.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/solutions/enterprise"
     },
     {
       "slug": "maximizing-the-value-of-your-claude-code-sessions",
@@ -515,8 +655,8 @@
       "fetchedAt": "2026-09-02T03:50:17.776Z",
       "translated": true,
       "translatedTitle": "最大化你的 Claude Code 会话价值",
-      "translatedAt": "2026-09-02T04:30:13.000Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T10:56:00.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Claude Code",
@@ -526,7 +666,15 @@
           "Claude Code"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "How to run efficient sessions that get the most value from every token.",
+      "authors": [
+        "Lydia Hallie"
+      ],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code",
+      "translatedSubtitle": "如何运行高效会话，让每一个 token 都花在真正要做的事上。"
     },
     {
       "slug": "self-service-data-analytics-in-slack-how-anthropic-deploys-claude-tag-for-ad-hoc-questions",
@@ -542,8 +690,8 @@
       "fetchedAt": "2026-09-02T03:50:17.776Z",
       "translated": true,
       "translatedTitle": "Slack 里的自助数据分析：Anthropic 如何部署 Claude Tag 应对临时数据问题",
-      "translatedAt": "2026-09-02T04:30:13.000Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T10:56:00.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Agents",
@@ -555,7 +703,16 @@
           "Claude Tag"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "How Anthropic's data team uses Claude Tag for self-service data analytics with the same governed definitions analysts use.",
+      "authors": [
+        "Clement Peng",
+        "Lily Zhao"
+      ],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/agents",
+      "productUrl": "https://claude.com/product/tag",
+      "translatedSubtitle": "Anthropic 的数据团队如何用 Claude Tag 做自助数据分析，并沿用分析师使用的同一套治理定义。"
     },
     {
       "slug": "claude-tag-now-reads-even-more-of-the-room",
@@ -581,7 +738,12 @@
           "Claude Tag"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "Claude has more context to decide when to proactively collaborate in Slack (and when not to)",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/product/tag"
     },
     {
       "slug": "how-jetbrains-evaluates-and-deploys-claude-fable-5",
@@ -605,7 +767,12 @@
         ],
         "product": [],
         "usecase": []
-      }
+      },
+      "subtitle": "JetBrains Agent Systems CTO Vladislav Tankov on how the company evaluates frontier models against its private repositories, when his team reaches for Claude Fable 5, and why he treats safeguards and data retention as central to working with them.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": ""
     },
     {
       "slug": "cowork-chrome-side-panel",
@@ -635,7 +802,12 @@
           "Work",
           "Productivity"
         ]
-      }
+      },
+      "subtitle": "Give Claude a task in your browser, work across tabs, and continue the conversation in the desktop, mobile, and web apps.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/product/cowork"
     },
     {
       "slug": "compliance-api-cowork-and-claude-code",
@@ -660,14 +832,19 @@
         ],
         "product": [
           "Claude Enterprise",
-          "Claude apps",
           "Claude Code",
-          "Claude Cowork"
+          "Claude Cowork",
+          "Claude apps"
         ],
         "usecase": [
           "Business"
         ]
-      }
+      },
+      "subtitle": "Claude's Compliance API now covers Cowork across the desktop app, web, and mobile, as well as Claude Code in the CLI and desktop app. Coverage is in beta for Claude Enterprise customers.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/solutions/enterprise"
     },
     {
       "slug": "how-anthropics-business-development-team-uses-claude-to-run-inbound-and-outbound-at-scale",
@@ -695,7 +872,14 @@
         "usecase": [
           "Sales"
         ]
-      }
+      },
+      "subtitle": "John Albert, a business development rep at Anthropic, shares how his team uses Claude to research account books, draft customer replies, and address the ad-hoc requests that used to queue behind data teams.",
+      "authors": [
+        "John Albert"
+      ],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/product/cowork"
     },
     {
       "slug": "auto-mode-default-in-claude-code",
@@ -711,8 +895,8 @@
       "fetchedAt": "2026-09-02T03:50:17.776Z",
       "translated": true,
       "translatedTitle": "自动模式现已成为 Claude Code Pro、Max 和 Team 计划的默认设置",
-      "translatedAt": "2026-09-02T04:30:13.000Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T11:00:00.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Claude Code"
@@ -721,7 +905,13 @@
           "Claude Code"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "Claude Code will soon run auto mode by default for Pro, Max, and Team plans, enabling longer-running autonomous work, and catching more dangerous commands than manual review in our testing.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code",
+      "translatedSubtitle": "Claude Code 即将在 Pro、Max 和 Team 计划中默认运行自动模式，支持更长时间的自主工作，并在我们的测试中比人工审查捕获更多危险命令。"
     },
     {
       "slug": "auto-mode-in-production",
@@ -749,7 +939,14 @@
         "usecase": [
           "Coding"
         ]
-      }
+      },
+      "subtitle": "How the teams at Nuro, Gusto, and Garner Health use auto mode to balance speed and safety at production scale.",
+      "authors": [
+        "Molly Vorwerck"
+      ],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "millennium-and-anthropic-are-building-a-digital-risk-analyst-with-claude",
@@ -779,7 +976,12 @@
         "usecase": [
           "Financial services"
         ]
-      }
+      },
+      "subtitle": "Anthropic is working with Millennium to co-develop a digital risk analyst to surface new risk insights and form opinions on risk exposure across asset classes.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/solutions/enterprise"
     },
     {
       "slug": "run-claude-code-sessions-on-your-own-compute",
@@ -795,8 +997,8 @@
       "fetchedAt": "2026-09-02T03:50:17.776Z",
       "translated": true,
       "translatedTitle": "在你自己的算力上运行 Claude Code 会话",
-      "translatedAt": "2026-09-02T04:30:13.000Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T11:00:00.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Product announcements"
@@ -805,7 +1007,12 @@
           "Claude Code"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "Self-hosted environments are in public beta. Run Claude Code sessions on your own infrastructure, inside your network and next to your internal services.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "claude-enterprise-inference-hooks",
@@ -830,12 +1037,17 @@
         ],
         "product": [
           "Claude Enterprise",
-          "Claude apps",
           "Claude Cowork",
-          "Claude Code"
+          "Claude Code",
+          "Claude apps"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "Inference hooks lets your compliance team inspect and enforce policy on every prompt and tool call response before they reach Claude — across Claude Enterprise surfaces including chat, Claude Code, Claude Cowork, and more.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/solutions/enterprise"
     },
     {
       "slug": "a-guide-to-cost-visibility-and-control-in-claude",
@@ -861,7 +1073,12 @@
           "Claude Enterprise"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "Learn how to optimize costs on Claude Enterprise with cost controls for IT admins.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/solutions/enterprise"
     },
     {
       "slug": "bringing-mcp-2026-07-28-to-claude",
@@ -877,20 +1094,25 @@
       "fetchedAt": "2026-09-02T03:50:17.788Z",
       "translated": true,
       "translatedTitle": "将 MCP 2026-07-28 带入 Claude",
-      "translatedAt": "2026-09-02T04:06:29.981Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T10:59:38.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Product announcements"
         ],
         "product": [
-          "Claude apps",
-          "Claude Platform"
+          "Claude Platform",
+          "Claude apps"
         ],
         "usecase": [
           "Agents"
         ]
-      }
+      },
+      "subtitle": "The MCP 2026-07-28 spec is live, moving the Model Context Protocol to a stateless core with standardized extensions and hardened auth. Support is rolling out across Claude products soon. See what's new and how MCP is advancing in Claude.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "how-the-product-designer-who-built-claude-design-uses-it-to-explore-ideas-before-building-them",
@@ -918,7 +1140,12 @@
         "usecase": [
           "Design"
         ]
-      }
+      },
+      "subtitle": "Nate Parrott, a product designer at Anthropic, shares how he uses Claude Design (in beta) to explore, iterate on, and share visual ideas early, from product prototypes to slide decks and animations.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/product/design"
     },
     {
       "slug": "the-new-rules-of-context-engineering-for-claude-5-generation-models",
@@ -934,8 +1161,8 @@
       "fetchedAt": "2026-09-02T03:50:17.788Z",
       "translated": true,
       "translatedTitle": "面向 Claude 5 世代模型的上下文工程新法则",
-      "translatedAt": "2026-09-02T04:06:29.981Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T10:56:00.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Claude Code",
@@ -950,7 +1177,14 @@
           "Agents",
           "Coding"
         ]
-      }
+      },
+      "subtitle": "We removed over 80% of Claude Code's system prompt for more advanced models. How to apply the lessons we learned to your own context engineering in Claude Code and with your own agents.",
+      "authors": [
+        "Thariq Shihipar"
+      ],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "claude-models-explained-choosing-the-best-model-for-your-use-case",
@@ -982,7 +1216,14 @@
           "Claude Platform"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "Anthropic's guide to choosing the best Claude model for your use case — how Fable, Opus, Sonnet, and Haiku differ in intelligence, speed, and cost, and when to use each.",
+      "authors": [
+        "Michael Segner"
+      ],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "four-role-based-claude-certifications",
@@ -1005,15 +1246,20 @@
           "Enterprise AI"
         ],
         "product": [
-          "Claude apps",
-          "Claude Platform"
+          "Claude Platform",
+          "Claude apps"
         ],
         "usecase": [
           "Business",
           "Productivity",
           "Work"
         ]
-      }
+      },
+      "subtitle": "We're expanding the Claude Certification Program with three new role-based certifications that span the full team a customer needs to deploy AI.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "think-through-hard-problems-in-voice-mode",
@@ -1041,7 +1287,12 @@
         "usecase": [
           "Productivity"
         ]
-      }
+      },
+      "subtitle": "Starting today, voice mode runs on Claude Opus, Claude Sonnet, and Claude Haiku, reaches the tools you’ve connected like Gmail and Slack, and speaks many more languages.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": ""
     },
     {
       "slug": "building-verification-loops-in-claude-code-with-skills",
@@ -1057,8 +1308,8 @@
       "fetchedAt": "2026-09-02T03:50:17.788Z",
       "translated": true,
       "translatedTitle": "在 Claude Code 中用 Skills 构建验证循环",
-      "translatedAt": "2026-09-02T04:10:15.615Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T10:56:00.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Claude Code"
@@ -1069,7 +1320,14 @@
         "usecase": [
           "Coding"
         ]
-      }
+      },
+      "subtitle": "How to turn your manual checks into skills, so Claude closes its own feedback loop.",
+      "authors": [
+        "Delba de Oliveira"
+      ],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "how-outtake-built-a-cyber-investigator-on-claude",
@@ -1085,8 +1343,8 @@
       "fetchedAt": "2026-09-02T03:50:17.788Z",
       "translated": true,
       "translatedTitle": "Outtake 如何在 Claude 上构建网络犯罪调查员",
-      "translatedAt": "2026-09-02T04:14:34.101Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T11:00:00.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Agents",
@@ -1100,7 +1358,15 @@
           "Agents",
           "Startups"
         ]
-      }
+      },
+      "subtitle": "How Outtake ensures multi-hour agent sessions stay on track to uncover attack network operations",
+      "authors": [
+        "Michael Segner"
+      ],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/agents",
+      "productUrl": "https://claude.com/product/claude-code",
+      "translatedSubtitle": "Outtake 如何让长达数小时的智能体会话保持正轨，揭开攻击网络的运作"
     },
     {
       "slug": "how-anthropic-secures-its-ai-native-software-development-lifecycle",
@@ -1116,8 +1382,8 @@
       "fetchedAt": "2026-09-02T03:50:17.788Z",
       "translated": true,
       "translatedTitle": "Anthropic 如何保障其 AI 原生软件开发生命周期的安全",
-      "translatedAt": "2026-09-02T04:14:34.101Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T10:57:06Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Claude Code",
@@ -1130,7 +1396,15 @@
           "Claude Enterprise"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "Anthropic Deputy CISO, Jason Clinton, details how the Security Engineering team secures a SDLC that has AI authoring 80% of merged code.",
+      "authors": [
+        "Jason Clinton"
+      ],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code",
+      "translatedSubtitle": "Anthropic Deputy CISO Jason Clinton 详述安全工程团队如何保障一条由 AI 编写 80% 合入代码的 SDLC。"
     },
     {
       "slug": "how-datadog-built-a-universal-machine-tool-for-claude-code",
@@ -1146,8 +1420,8 @@
       "fetchedAt": "2026-09-02T03:50:17.788Z",
       "translated": true,
       "translatedTitle": "Datadog 如何为 Claude Code 打造一把“万能机床”",
-      "translatedAt": "2026-09-02T04:14:34.101Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T11:00:00.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Claude Code",
@@ -1159,7 +1433,15 @@
         "usecase": [
           "Coding"
         ]
-      }
+      },
+      "subtitle": "Datadog has an agent write specifications for a deterministic kernel to write application code.",
+      "authors": [
+        "Michael Segner"
+      ],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code",
+      "translatedSubtitle": "Datadog 让智能体写规格，再由确定性内核生成应用代码。"
     },
     {
       "slug": "working-at-the-frontier-rakuten",
@@ -1190,7 +1472,12 @@
           "Coding",
           "Agents"
         ]
-      }
+      },
+      "subtitle": "Yusuke Kaji, General Manager of AI for Business at Rakuten, has been testing Claude models since Sep 2024. Here’s why he thinks Claude Fable 5 is a step change for long-running enterprise agents.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "working-at-the-frontier-cursor",
@@ -1216,7 +1503,12 @@
           "Claude Platform"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "Nate Schmidt's job at Cursor is to evaluate frontier models against their ability to tackle long-running, real-world engineering problems. Here’s why–and how–Claude Fable 5 changed the calculus on what coding agents are capable of.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "ciso-guide-to-agentic-ai",
@@ -1240,7 +1532,14 @@
         ],
         "product": [],
         "usecase": []
-      }
+      },
+      "subtitle": "Anthropic's Deputy CISO, Jason Clinton, shares his team's lessons learned adopting agentic AI, and the risk assessment framework they've developed for building and deploying agents securely.",
+      "authors": [
+        "Jason Clinton"
+      ],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": ""
     },
     {
       "slug": "ai-code-migration",
@@ -1256,8 +1555,8 @@
       "fetchedAt": "2026-09-02T03:50:17.788Z",
       "translated": true,
       "translatedTitle": "Anthropic 如何用 Claude Code 执行大规模代码迁移",
-      "translatedAt": "2026-09-02T04:14:34.101Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T10:57:06Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Claude Code",
@@ -1269,7 +1568,13 @@
         "usecase": [
           "Coding"
         ]
-      }
+      },
+      "subtitle": "A step-by-step guide to running large code migrations with AI agents — including Bun's million-line Zig-to-Rust port.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code",
+      "translatedSubtitle": "用 AI 智能体跑大规模代码迁移的分步指南，包括 Bun 百万行 Zig 到 Rust 的移植。"
     },
     {
       "slug": "working-with-claude-fable-5-in-claude-cowork",
@@ -1297,7 +1602,12 @@
         "usecase": [
           "Work"
         ]
-      }
+      },
+      "subtitle": "Claude Fable 5 can carry long, complex work on its own. Here’s how to get the most out of it in Claude Cowork, starting with as little as an idea and getting to finished work.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/product/cowork"
     },
     {
       "slug": "working-at-the-frontier-why-base44-trusts-claude-fable-5-with-their-most-challenging-engineering-work",
@@ -1323,7 +1633,12 @@
           "Claude Platform"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "Yoav Orlev, Head of Product at Base44, joined the vibe coding platform as its first employee and has seen his team build on every Claude model since Sonnet 4. Here's why he thinks Claude Fable 5 is the first model that reasons about software the way a senior engineer would, and what that frees the rest of his team to build.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "working-at-the-frontier-how-hebbia-builds-ai-for-financial-diligence-that-cant-miss-a-detail",
@@ -1349,7 +1664,12 @@
         "usecase": [
           "Financial services"
         ]
-      }
+      },
+      "subtitle": "Hebbia builds research and diligence software for financial professionals, and tests every new model against finance evals tied to expert outcomes. In testing, Claude Fable 5 posted the biggest accuracy gain its research team has recorded, and tracked complex queries that prior models kept dropping.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": ""
     },
     {
       "slug": "working-at-the-frontier-how-cognition-trusts-claude-fable-5-to-work-through-the-night",
@@ -1375,7 +1695,12 @@
         "usecase": [
           "Coding"
         ]
-      }
+      },
+      "subtitle": "Silas Alberti, SVP of Research at Cognition, has tested nearly every Claude model inside Devin, the company's AI software engineer. Claude Fable 5 is the first he'd trust to leave running overnight.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": ""
     },
     {
       "slug": "working-at-the-frontier-how-thomson-reuters-builds-ai-for-high--stakes-professional-work",
@@ -1406,7 +1731,12 @@
           "Legal",
           "Work"
         ]
-      }
+      },
+      "subtitle": "Joel Hron, CTO at Thomson Reuters, has spent years putting AI inside products trusted by lawyers and accountants. Here is why he considers Claude Fable 5 a critical evolution in what’s possible with AI for knowledge work.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "how-anthropics-marketing-operations-team-uses-claude-cowork-to-automate-reporting-and-campaign-builds",
@@ -1434,7 +1764,12 @@
         "usecase": [
           "Business"
         ]
-      }
+      },
+      "subtitle": "Ian Chan and Annabel Custer, in marketing operations at Anthropic, share how they automate work their team used to do by hand across multiple platforms.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/product/cowork"
     },
     {
       "slug": "bringing-claude-code-and-claude-cowork-to-government",
@@ -1464,7 +1799,12 @@
         "usecase": [
           "Government"
         ]
-      }
+      },
+      "subtitle": "Claude Code and Claude Cowork from Anthropic are now available in public beta in Claude for Government Desktop",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "claude-model-and-effort-level-in-claude-code",
@@ -1480,8 +1820,8 @@
       "fetchedAt": "2026-09-02T03:50:17.784Z",
       "translated": true,
       "translatedTitle": "在 Claude Code 中选择 Claude 模型与投入档位",
-      "translatedAt": "2026-09-02T04:30:00.000Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T10:56:00.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Claude Code"
@@ -1492,7 +1832,15 @@
         "usecase": [
           "Coding"
         ]
-      }
+      },
+      "subtitle": "Anthropic's guide to the Claude Code effort level and model selection: when to raise or lower effort—low, medium, high, and max—and how to choose between Claude Fable, Opus, and Sonnet.",
+      "authors": [
+        "Lydia Hallie"
+      ],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code",
+      "translatedSubtitle": "Anthropic 关于 Claude Code 努力级别与模型选择的指南：何时提高或降低 effort（low、medium、high、max），以及如何在 Claude Fable、Opus 和 Sonnet 之间选择。"
     },
     {
       "slug": "cowork-web-mobile",
@@ -1522,7 +1870,12 @@
           "Work",
           "Productivity"
         ]
-      }
+      },
+      "subtitle": "Your work goes everywhere with you, and keeps going without you.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/product/cowork"
     },
     {
       "slug": "how-people-are-using-claude-cowork",
@@ -1550,7 +1903,12 @@
         "usecase": [
           "Productivity"
         ]
-      }
+      },
+      "subtitle": "In a sample of Claude Cowork sessions, we found that roughly half of all usage comprises “the work around the work”—tasks that are part of a broad swath of jobs, but are rarely a person’s core responsibility.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/product/cowork"
     },
     {
       "slug": "a-field-guide-to-claude-fable-finding-your-unknowns",
@@ -1566,8 +1924,8 @@
       "fetchedAt": "2026-09-02T03:50:17.784Z",
       "translated": true,
       "translatedTitle": "Claude Fable 5 实战指南：发现你的未知项",
-      "translatedAt": "2026-09-02T04:45:00.000Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T11:00:00.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Claude Code"
@@ -1578,7 +1936,13 @@
         "usecase": [
           "Coding"
         ]
-      }
+      },
+      "subtitle": "Practical patterns for agentic coding with Claude Fable: how to find your unknowns before, during, and after implementation, from the team at Anthropic.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code",
+      "translatedSubtitle": "Anthropic 团队分享的 Claude Fable 智能体式编码实践：如何在实现之前、之中和之后发现你的未知项。"
     },
     {
       "slug": "giving-admins-more-visibility-and-control-over-claude-usage-and-spend",
@@ -1594,8 +1958,8 @@
       "fetchedAt": "2026-09-02T03:50:17.784Z",
       "translated": true,
       "translatedTitle": "让管理员对 Claude 的用量与支出拥有更多可见性和控制力",
-      "translatedAt": "2026-09-02T04:50:00.000Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T11:00:00.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Product announcements"
@@ -1604,7 +1968,12 @@
           "Claude Enterprise"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "New analytics and cost controls are available for Claude Enterprise.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/solutions/enterprise"
     },
     {
       "slug": "getting-started-with-loops",
@@ -1620,8 +1989,8 @@
       "fetchedAt": "2026-09-02T03:50:17.784Z",
       "translated": true,
       "translatedTitle": "循环工程：循环（Loop）入门",
-      "translatedAt": "2026-09-02T04:55:00.000Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T10:56:00.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Claude Code"
@@ -1632,7 +2001,15 @@
         "usecase": [
           "Coding"
         ]
-      }
+      },
+      "subtitle": "Learn how the Claude Code team defines agentic loops, with practical guidance on progressing from turn-based to goal-based, time-based, and proactive loops—and when to use each.",
+      "authors": [
+        "Delba de Oliveira",
+        "Michael Segner"
+      ],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "introducing-the-claude-apps-gateway",
@@ -1658,7 +2035,12 @@
           "Claude Code"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "Connect Claude Code to Amazon Bedrock and Google Cloud with the new Claude apps gateway: corporate SSO login, centrally enforced policy, role-based access, per-user cost attribution, and spend caps—all from one stateless container on your infrastructure.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "claude-in-microsoft-foundry",
@@ -1674,8 +2056,8 @@
       "fetchedAt": "2026-09-02T03:50:17.784Z",
       "translated": true,
       "translatedTitle": "Claude 在 Microsoft Foundry 上正式全面可用",
-      "translatedAt": "2026-09-02T05:05:00.000Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T11:00:00.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Product announcements"
@@ -1688,7 +2070,12 @@
           "Coding",
           "Startups"
         ]
-      }
+      },
+      "subtitle": "Starting today, Claude models are generally available in Microsoft Foundry, hosted on Azure.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "building-effective-human-agent-teams",
@@ -1716,7 +2103,12 @@
         "usecase": [
           "Agents"
         ]
-      }
+      },
+      "subtitle": "The way we work with AI is evolving from a single-player to a multiplayer experience, where humans and agents work together as a team to achieve shared goals. We share examples of this new way of working in action.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/product/tag"
     },
     {
       "slug": "agent-identity-access-model",
@@ -1742,7 +2134,12 @@
           "Claude Tag"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "How Claude Tag’s agent identity access model works, and best practices for configuring it in your team’s workspace.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/tag"
     },
     {
       "slug": "the-full-claude-desktop-experience-on-aws-google-cloud-and-microsoft-foundry",
@@ -1771,7 +2168,12 @@
           "Business",
           "Productivity"
         ]
-      }
+      },
+      "subtitle": "Deploy the full Claude desktop experience - chat, Claude Cowork, and Claude Code - using inference on AWS, Google Cloud and Microsoft Foundry. Available today in beta.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/solutions/enterprise"
     },
     {
       "slug": "artifacts-in-claude-code",
@@ -1781,9 +2183,9 @@
       "url": "https://claude.com/blog/artifacts-in-claude-code",
       "fetchedAt": "2026-09-01T22:57:53.189Z",
       "translated": true,
-      "translatedTitle": "Claude Code 现已支持 artifacts",
-      "translatedAt": "2026-09-02T05:12:42.000Z",
-      "translateLang": "zh-CN",
+      "translatedTitle": "Claude Code 现已支持 Artifacts",
+      "translatedAt": "2026-09-01T22:58:46.948Z",
+      "translateLang": "zh",
       "inHero": true,
       "heroIndex": 2,
       "inGrid": true,
@@ -1802,7 +2204,12 @@
           "Content Creation",
           "Work"
         ]
-      }
+      },
+      "subtitle": "Preview your in-progress work as a live, interactive web page—built from your full session context and shareable with your team.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "steering-claude-code-skills-hooks-rules-subagents-and-more",
@@ -1818,8 +2225,8 @@
       "fetchedAt": "2026-09-02T03:50:17.789Z",
       "translated": true,
       "translatedTitle": "驾驭 Claude Code：何时使用 CLAUDE.md、skills、hooks 和 subagents",
-      "translatedAt": "2026-09-02T00:00:00.000Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T10:56:00.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Claude Code"
@@ -1830,7 +2237,13 @@
         "usecase": [
           "Coding"
         ]
-      }
+      },
+      "subtitle": "Seven ways to steer Claude Code—CLAUDE.md files, rules, skills, subagents, hooks, and more—and when to use each, based on context cost and authority.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code",
+      "translatedSubtitle": "驾驭 Claude Code 的七种方式——CLAUDE.md 文件、rules、skills、subagents、hooks 等——以及按上下文开销和约束力判断该用哪一种。"
     },
     {
       "slug": "enterprise-managed-auth",
@@ -1846,8 +2259,8 @@
       "fetchedAt": "2026-09-02T03:50:17.789Z",
       "translated": true,
       "translatedTitle": "集中管理 MCP 连接器的授权",
-      "translatedAt": "2026-09-02T00:00:00.000Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T10:56:00.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Enterprise AI",
@@ -1862,7 +2275,12 @@
           "Productivity",
           "Work"
         ]
-      }
+      },
+      "subtitle": "Admins can now provision MCP connectors for their whole organization through their identity provider, starting with Okta. Users get connector access automatically on first login, with authorization configured centrally by their organization.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/solutions/enterprise"
     },
     {
       "slug": "meet-the-winners-of-our-claude-opus-4-8-build-day-hackathon",
@@ -1890,7 +2308,12 @@
         "usecase": [
           "Coding"
         ]
-      }
+      },
+      "subtitle": "From reconstructing Tang Dynasty architecture to polling a synthetic San Francisco, see what the winners of our latest hackathon built with Claude Opus 4.8 in a day.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "claude-design-stays-on-brand-for-daily-work",
@@ -1906,8 +2329,8 @@
       "fetchedAt": "2026-09-02T03:50:17.791Z",
       "translated": true,
       "translatedTitle": "Claude Design：日常工作中始终保持品牌一致",
-      "translatedAt": "2026-09-02T00:00:00.000Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T10:59:38.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Product announcements"
@@ -1921,7 +2344,12 @@
           "Productivity",
           "Work"
         ]
-      }
+      },
+      "subtitle": "Claude Design now sticks to your design system across projects, works fluidly with Claude Code, lets you edit directly on the canvas, and connects to more tools you already use. It has a new home in the sidebar on the Claude desktop app; you can also find it at claude.ai/design.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/product/design"
     },
     {
       "slug": "workload-identity-federation",
@@ -1937,8 +2365,8 @@
       "fetchedAt": "2026-09-02T03:50:17.791Z",
       "translated": true,
       "translatedTitle": "用 Workload Identity Federation 安全访问 Claude Platform",
-      "translatedAt": "2026-09-02T00:00:00.000Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T11:00:00.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Product announcements"
@@ -1949,7 +2377,12 @@
         "usecase": [
           "Business"
         ]
-      }
+      },
+      "subtitle": "WIF replaces static API keys with short-lived, scoped credentials issued at request time. WIF is compatible with any OIDC-compliant identity provider and covers all Claude API endpoints",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "meet-the-winners-of-built-with-opus-4-7-claude-code-hackathon",
@@ -1977,7 +2410,12 @@
         "usecase": [
           "Coding"
         ]
-      }
+      },
+      "subtitle": "From medical training and electronics repair to coding education and factory maintenance, see the projects built by the winners of our latest virtual hackathon.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "building-with-claude-managed-agents",
@@ -2005,7 +2443,12 @@
         "usecase": [
           "Agents"
         ]
-      }
+      },
+      "subtitle": "As model intelligence and agentic harnesses evolve, Anthropic's Claude Managed Agents allows teams to build and deploy agents in production environments reliably at scale. Here’s why and how teams are using it.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/agents",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "whats-new-in-claude-managed-agents",
@@ -2021,8 +2464,8 @@
       "fetchedAt": "2026-09-02T03:50:17.791Z",
       "translated": true,
       "translatedTitle": "Claude Managed Agents 新功能：定时运行智能体并在 Vault 中存储环境变量",
-      "translatedAt": "2026-09-02T04:24:57Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T10:59:38.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Product announcements"
@@ -2033,7 +2476,12 @@
         "usecase": [
           "Agents"
         ]
-      }
+      },
+      "subtitle": "Claude Managed Agents now supports scheduled deployments and vaults: run agents on a cron schedule and securely authenticate CLI tools and other services.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "claude-for-foundation-models",
@@ -2043,9 +2491,9 @@
       "url": "https://claude.com/blog/claude-for-foundation-models",
       "fetchedAt": "2026-09-01T22:57:55.171Z",
       "translated": true,
-      "translatedTitle": "在 Foundation Models 框架中使用 Claude，为 Apple 平台构建智能应用",
-      "translatedAt": "2026-09-02T05:14:34.865Z",
-      "translateLang": "zh-CN",
+      "translatedTitle": "Claude 支持苹果 Foundation Models 框架",
+      "translatedAt": "2026-09-01T22:58:46.955Z",
+      "translateLang": "zh",
       "inHero": true,
       "heroIndex": 3,
       "inGrid": true,
@@ -2060,7 +2508,12 @@
           "Claude apps"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "A new Swift package connects Apple's Foundation Models framework to Claude. Hand off complex reasoning from on-device models with typed Swift outputs.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "observability-for-developers-building-connectors",
@@ -2086,7 +2539,12 @@
           "Claude apps"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "Developers can now monitor their connectors' performance across Claude products and submit connectors to the directory in-app.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": ""
     },
     {
       "slug": "the-claude-cowork-product-guide",
@@ -2114,7 +2572,12 @@
         "usecase": [
           "Work"
         ]
-      }
+      },
+      "subtitle": "We share how to get started with Claude Cowork, including the workflows, habits, and plugins that turn your ideas into polished deliverables.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/product/cowork"
     },
     {
       "slug": "how-anthropic-uses-claude-gtm-engineering",
@@ -2144,7 +2607,12 @@
         "usecase": [
           "Sales"
         ]
-      }
+      },
+      "subtitle": "Before he joined Anthropic, Jared Sires, GTM product manager, had never opened a terminal. Now Anthropic’s Sales team uses his tools.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "how-anthropic-enables-self-service-data-analytics-with-claude",
@@ -2160,8 +2628,8 @@
       "fetchedAt": "2026-09-02T03:50:17.788Z",
       "translated": true,
       "translatedTitle": "Anthropic 如何用 Claude 实现自助式数据分析",
-      "translatedAt": "2026-09-02T04:24:57Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T10:57:06Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Enterprise AI"
@@ -2170,7 +2638,19 @@
           "Claude Code"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "How Anthropic enables self-service data analytics with Claude: the governed data foundations, sources of truth, skills, and validation techniques that make AI-driven analytics trustworthy.",
+      "authors": [
+        "Josh Cherry",
+        "Clement Peng",
+        "Johanne Jiao",
+        "Justin Leder",
+        "Chen Chang"
+      ],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/product/claude-code",
+      "translatedSubtitle": "受治理的数据基础、事实来源、skills 与验证方法，让 AI 驱动的分析真正可信。"
     },
     {
       "slug": "lessons-from-building-claude-code-how-we-use-skills",
@@ -2186,8 +2666,8 @@
       "fetchedAt": "2026-09-02T03:50:17.788Z",
       "translated": true,
       "translatedTitle": "构建 Claude Code 的经验：我们如何使用 Skills",
-      "translatedAt": "2026-09-02T04:24:57Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T10:57:06Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Claude Code"
@@ -2196,7 +2676,13 @@
           "Claude Code"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "What we learned building and scaling hundreds of skills internally at Anthropic.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code",
+      "translatedSubtitle": "我们在 Anthropic 内部构建并规模化数百个 skills 的收获。"
     },
     {
       "slug": "best-practices-for-getting-started-with-claude-cowork",
@@ -2225,7 +2711,12 @@
           "Work",
           "Productivity"
         ]
-      }
+      },
+      "subtitle": "Austin Lau, growth marketing lead at Anthropic, explains when to use Claude Cowork, how to decide what workflows to delegate, and concrete steps to get started. On June 4, Austin will share how he uses Claude Cowork for marketing.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/product/cowork"
     },
     {
       "slug": "running-an-ai-native-engineering-org",
@@ -2253,7 +2744,12 @@
         "usecase": [
           "Coding"
         ]
-      }
+      },
+      "subtitle": "At Code w/ Claude SF 2026, Director of Engineering for Claude Code and Claude Cowork Fiona Fung walked through how the team’s processes and structure changed once agentic coding became the default way of working.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "a-harness-for-every-task-dynamic-workflows-in-claude-code",
@@ -2277,7 +2773,14 @@
         ],
         "product": [],
         "usecase": []
-      }
+      },
+      "subtitle": "Claude Code can now write and orchestrate its own multi-agent harness on the fly. Here's how dynamic workflows work, and the patterns that get the most out of them.",
+      "authors": [
+        "Thariq Shihipar"
+      ],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": ""
     },
     {
       "slug": "introducing-dynamic-workflows-in-claude-code",
@@ -2293,8 +2796,8 @@
       "fetchedAt": "2026-09-02T03:50:17.788Z",
       "translated": true,
       "translatedTitle": "Claude Code 中的动态工作流（dynamic workflows）介绍",
-      "translatedAt": "2026-09-02T04:16:06Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T11:00:00.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Product announcements"
@@ -2305,7 +2808,12 @@
         "usecase": [
           "Coding"
         ]
-      }
+      },
+      "subtitle": "Dynamic workflows in Claude Code let Claude tackle the most challenging tasks by executing across 10s to 100s of parallel subagents, and checking its work before anything reaches you.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "using-llms-to-secure-source-code",
@@ -2329,7 +2837,12 @@
         ],
         "product": [],
         "usecase": []
-      }
+      },
+      "subtitle": "We share best practices for how you can work with Claude Opus to build a threat model, discover vulnerabilities in your codebase, then verify, triage, and patch them.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": ""
     },
     {
       "slug": "how-coderabbit-used-claude-to-build-an-agent-orchestration-system",
@@ -2357,7 +2870,12 @@
         "usecase": [
           "Coding"
         ]
-      }
+      },
+      "subtitle": "CodeRabbit built a layer on Claude that sits between a coding request and a coding agent, producing a structured coding plan the team can review before any code gets generated.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "zero-trust-for-ai-agents",
@@ -2384,7 +2902,12 @@
           "Claude Security"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "We share a security framework for deploying autonomous AI agents in the enterprise, covering the new threat landscape, a tiered Zero Trust architecture, and defensive operations built for AI-accelerated attacks.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/product/claude-security"
     },
     {
       "slug": "code-w-claude-london-2026-rethinking-how-we-build",
@@ -2411,7 +2934,12 @@
           "Claude Platform"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "Couldn't make it to London? Keynotes and breakout sessions are now live.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "how-anthropics-finance-team-uses-claude-to-shape-the-narrative-behind-the-numbers",
@@ -2440,7 +2968,12 @@
           "Productivity",
           "Financial services"
         ]
-      }
+      },
+      "subtitle": "Alice Fong, on the corporate finance and strategy team at Anthropic, shares how she uses Claude to maintain a single coherent financial narrative for the CFO and board, and free up 10 to 20 hours a week for higher-impact work.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/product/cowork"
     },
     {
       "slug": "compliance-api-security-partners",
@@ -2470,7 +3003,12 @@
           "Work",
           "Business"
         ]
-      }
+      },
+      "subtitle": "Today we're introducing integrations with notable security and compliance tools. Now IT and security teams can govern Claude across our platform and suite of products, the same way they govern other applications in their stack.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/solutions/enterprise"
     },
     {
       "slug": "how-our-partners-are-putting-opus-to-work-for-cybersecurity",
@@ -2497,7 +3035,12 @@
           "Claude Platform"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "Learn how companies like Wiz, Palo Alto Networks, and Accenture are using Claude Opus to find and fix vulnerabilities faster and deploy AI defense at scale.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/product/claude-security"
     },
     {
       "slug": "using-claude-code-the-unreasonable-effectiveness-of-html",
@@ -2513,8 +3056,8 @@
       "fetchedAt": "2026-09-02T03:50:17.788Z",
       "translated": true,
       "translatedTitle": "使用 Claude Code：HTML 意外地好用",
-      "translatedAt": "2026-09-02T04:16:06Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T11:00:00.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Claude Code"
@@ -2523,7 +3066,15 @@
           "Claude Code"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "How and why members of the Claude Code team use HTML instead of Markdown to produce richer, more readable, and easily shareable outputs.",
+      "authors": [
+        "Thariq Shihipar"
+      ],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code",
+      "translatedSubtitle": "Claude Code 团队成员为何以及如何用 HTML 替代 Markdown，做出更丰富、更好读、更易分享的产出。"
     },
     {
       "slug": "how-an-anthropic-sales-leader-uses-claude-cowork-to-run-a-4-000-account-book",
@@ -2552,7 +3103,12 @@
           "Productivity",
           "Sales"
         ]
-      }
+      },
+      "subtitle": "Travis Bryant, Head of US Mid-Market GTM at Anthropic, shares how he uses Claude Cowork to prepare customer briefs and weekly forecasts, and to run an overnight territory scoring that used to take cross-functional teams hundreds of hours.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/product/cowork"
     },
     {
       "slug": "claude-managed-agents-updates",
@@ -2563,8 +3119,8 @@
       "fetchedAt": "2026-09-01T22:57:57.119Z",
       "translated": true,
       "translatedTitle": "Claude Managed Agents 新功能：自托管沙箱与 MCP tunnels",
-      "translatedAt": "2026-09-02T05:14:34.865Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T11:00:00.000Z",
+      "translateLang": "zh",
       "inHero": true,
       "heroIndex": 4,
       "inGrid": true,
@@ -2580,7 +3136,12 @@
         "usecase": [
           "Agents"
         ]
-      }
+      },
+      "subtitle": "Claude Managed Agents can now operate in a sandbox you control and connect to your private Model Context Protocol (MCP) servers",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "new-in-claude-managed-agents",
@@ -2591,8 +3152,8 @@
       "fetchedAt": "2026-09-01T22:57:59.069Z",
       "translated": true,
       "translatedTitle": "Claude Managed Agents 新功能：dreaming、outcomes 与多智能体编排",
-      "translatedAt": "2026-09-02T05:14:34.865Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T11:00:00.000Z",
+      "translateLang": "zh",
       "inHero": true,
       "heroIndex": 5,
       "inGrid": true,
@@ -2608,7 +3169,12 @@
         "usecase": [
           "Agents"
         ]
-      }
+      },
+      "subtitle": "Dreaming, outcomes, and multiagent orchestration are now available in Claude Managed Agents. Build agents that learn, meet a quality bar, and work in parallel.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "deploying-claude-across-the-legal-industry",
@@ -2636,7 +3202,12 @@
         "usecase": [
           "Legal"
         ]
-      }
+      },
+      "subtitle": "We share how legal professionals are using Claude to accelerate their most tedious workflows, covering when to use what product, new connectors, practice-area plugins, and a three-phase adoption roadmap.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/product/cowork"
     },
     {
       "slug": "the-founders-playbook",
@@ -2667,7 +3238,12 @@
         "usecase": [
           "Startups"
         ]
-      }
+      },
+      "subtitle": "We share how founders are using AI at every stage of the startup journey, with practical exercises, frameworks, and prompts for using Claude.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/cowork"
     },
     {
       "slug": "how-claude-code-works-in-large-codebases-best-practices-and-where-to-start",
@@ -2693,7 +3269,12 @@
           "Claude Code"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "The most successful Claude Code deployments share a set of recognizable patterns across configurations, tooling, and org structure. This article is part of Claude Code at scale, a new series covering best practices for engineering organizations building with Claude Code at enterprise scale.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "best-practices-for-computer-and-browser-use-with-claude",
@@ -2719,7 +3300,12 @@
           "Claude Platform"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "Practical guidance for developers building computer and browser use integrations with the Claude model family.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/agents",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "code-w-claude-sf-2026-sf",
@@ -2748,7 +3334,12 @@
         "usecase": [
           "Coding"
         ]
-      }
+      },
+      "subtitle": "Missed our SF Code w/ Claude developer conference? Keynotes and breakout sessions are now on YouTube.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "claude-for-the-legal-industry",
@@ -2764,8 +3355,8 @@
       "fetchedAt": "2026-09-02T03:50:17.788Z",
       "translated": true,
       "translatedTitle": "Claude 面向法律行业",
-      "translatedAt": "2026-09-02T04:22:36.115Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T11:00:00.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Product announcements"
@@ -2776,7 +3367,13 @@
         "usecase": [
           "Legal"
         ]
-      }
+      },
+      "subtitle": "We're releasing 20+ new MCP connectors that link Claude to the software that the legal industry runs on and 12 new plugins tailored to specific legal work and practice areas.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/product/cowork",
+      "translatedSubtitle": "我们发布 20 多个新的 MCP 连接器，把 Claude 接到法律行业运转所依赖的软件，以及 12 个针对具体法律工作与执业领域定制的插件。"
     },
     {
       "slug": "how-anthropic-uses-claude-cybersecurity",
@@ -2802,7 +3399,12 @@
           "Claude Code"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "Jackie Bow, technical lead for Anthropic's Detection Platform Engineering team, shares how her team uses Claude Code to build tools that automate alert triage, accelerate investigations, and transform how security analysts work.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "agent-view-in-claude-code",
@@ -2831,7 +3433,12 @@
           "Coding",
           "Productivity"
         ]
-      }
+      },
+      "subtitle": "Today we're introducing agent view in Claude Code: one place to manage all your Claude Code sessions.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "claude-platform-on-aws",
@@ -2847,8 +3454,8 @@
       "fetchedAt": "2026-09-02T03:50:17.788Z",
       "translated": true,
       "translatedTitle": "推出 Claude Platform on AWS",
-      "translatedAt": "2026-09-02T04:19:19.723Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T11:00:00.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Product announcements"
@@ -2859,7 +3466,12 @@
         "usecase": [
           "Agents"
         ]
-      }
+      },
+      "subtitle": "The Claude Platform on AWS is now generally available, offering a new way for AWS customers to access the full set of Claude platform features with AWS authentication, billing, and commitment retirement.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "collaborate-with-claude-across-excel-powerpoint-word-and-outlook",
@@ -2875,8 +3487,8 @@
       "fetchedAt": "2026-09-02T03:50:17.788Z",
       "translated": true,
       "translatedTitle": "在 Excel、PowerPoint、Word 和 Outlook 中与 Claude 协作",
-      "translatedAt": "2026-09-02T04:19:19.723Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T11:00:00.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Product announcements"
@@ -2888,7 +3500,12 @@
           "Agents",
           "Productivity"
         ]
-      }
+      },
+      "subtitle": "One conversation that carries context across all four apps",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/solutions/enterprise"
     },
     {
       "slug": "deploying-claude-across-financial-services",
@@ -2917,7 +3534,12 @@
         "usecase": [
           "Financial services"
         ]
-      }
+      },
+      "subtitle": "In this guide, we share how financial services firms are using Claude to compress their most time-consuming work, including customer examples and a practical adoption roadmap.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/product/cowork"
     },
     {
       "slug": "how-a-non-technical-project-manager-built-and-shipped-a-stress-management-app-with-claude-code-in-six-weeks",
@@ -2945,7 +3567,12 @@
         "usecase": [
           "Coding"
         ]
-      }
+      },
+      "subtitle": "Kostiantyn Vlasenko had never written a line of code when he set out to build Respiro. Just over a month later, his product was live on the App Store.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "claude-security-public-beta",
@@ -2961,8 +3588,8 @@
       "fetchedAt": "2026-09-02T03:50:17.776Z",
       "translated": true,
       "translatedTitle": "Claude Security 现已开启公开测试",
-      "translatedAt": "2026-09-02T04:20:29.710Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T10:59:38.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Product announcements"
@@ -2971,7 +3598,12 @@
           "Claude Security"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "Claude Security is now in public beta for Claude Enterprise customers. Scan code for vulnerabilities and generate proposed fixes with Opus 4.7, on the Claude Platform, or through technology and services partners building with Claude.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/product/claude-security"
     },
     {
       "slug": "lessons-from-building-claude-code-prompt-caching-is-everything",
@@ -2999,7 +3631,12 @@
         "usecase": [
           "Coding"
         ]
-      }
+      },
+      "subtitle": "We share best practices for optimizing prompt caching in Claude Code, including how to most effectively structure your prompt, use tools, and layer on compaction.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "how-kepler-built-verifiable-ai-for-financial-services-with-claude",
@@ -3027,7 +3664,12 @@
         "usecase": [
           "Financial services"
         ]
-      }
+      },
+      "subtitle": "Inside a platform that indexes 26M+ SEC filings, earnings call transcripts, IR presentations, consensus estimates, and private data across 14,000+ companies and 27 global markets, and how the team behind it built AI that validates every number to the exact filing, page, and line item.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "building-ai-agents-for-the-enterprise",
@@ -3055,7 +3697,12 @@
         "usecase": [
           "Work"
         ]
-      }
+      },
+      "subtitle": "In this guide, we share how leading organizations are using agents to transform their work today, and how Claude Cowork brings these capabilities to every team.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/agents",
+      "productUrl": "https://claude.com/product/cowork"
     },
     {
       "slug": "new-guide-deploying-claude-across-the-enterprise-with-claude-cowork",
@@ -3081,7 +3728,12 @@
         "usecase": [
           "Work"
         ]
-      }
+      },
+      "subtitle": "Learn how organizations are using Claude Cowork to transform their day-to-day work, including use cases and best practices from Anthropic’s own teams.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "",
+      "productUrl": "https://claude.com/product/cowork"
     },
     {
       "slug": "claude-api-skill",
@@ -3097,8 +3749,8 @@
       "fetchedAt": "2026-09-02T03:50:17.776Z",
       "translated": true,
       "translatedTitle": "Claude API skill 现已登陆 CodeRabbit、JetBrains、Resolve AI 和 Warp",
-      "translatedAt": "2026-09-02T04:32:12.000Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T11:00:00.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Agents",
@@ -3112,7 +3764,12 @@
           "Agents",
           "Coding"
         ]
-      }
+      },
+      "subtitle": "Today, CodeRabbit, JetBrains, Resolve AI, and Warp are bundling the claude-api skill, giving developers production-ready Claude API code wherever they build. First introduced in Claude Code in March, the skill is now in more of the tools developers already use.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/agents",
+      "productUrl": "https://claude.com/solutions/enterprise"
     },
     {
       "slug": "product-development-in-the-agentic-era",
@@ -3142,7 +3799,12 @@
           "Productivity",
           "Work"
         ]
-      }
+      },
+      "subtitle": "Jess Yan, Claude Managed Agents product manager, shares how she uses the product to unblock herself and free up time to hone her craft.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/agents",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "onboarding-claude-code-like-a-new-developer-lessons-from-17-years-of-development",
@@ -3171,7 +3833,12 @@
           "Health care and life sciences",
           "Coding"
         ]
-      }
+      },
+      "subtitle": "The methodology that onboards new developers to MacCoss Lab's 700,000-line codebase works on Claude Code, too. Here's how Brendan MacLean, a Claude Developer Ambassador whose lab is part of our Claude for Open Source program, did it.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "connectors-for-everyday-life",
@@ -3181,9 +3848,9 @@
       "url": "https://claude.com/blog/connectors-for-everyday-life",
       "fetchedAt": "2026-09-01T22:58:00.999Z",
       "translated": true,
-      "translatedTitle": "Claude 新增面向日常生活的连接器",
-      "translatedAt": "2026-09-02T05:14:34.865Z",
-      "translateLang": "zh-CN",
+      "translatedTitle": "Claude 新增日常连接器",
+      "translatedAt": "2026-09-01T22:58:46.955Z",
+      "translateLang": "zh",
       "inHero": true,
       "heroIndex": 6,
       "inGrid": true,
@@ -3199,7 +3866,12 @@
         "usecase": [
           "Productivity"
         ]
-      }
+      },
+      "subtitle": "Claude now connects to the apps you use every week, including AllTrails, Instacart, Audible, Booking.com, and TripAdvisor. Ask, and Claude brings in the right app.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": ""
     },
     {
       "slug": "claude-managed-agents-memory",
@@ -3210,8 +3882,8 @@
       "fetchedAt": "2026-09-01T22:58:02.943Z",
       "translated": true,
       "translatedTitle": "Claude Managed Agents 的内置记忆",
-      "translatedAt": "2026-09-02T05:12:35.000Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T11:00:00.000Z",
+      "translateLang": "zh",
       "inHero": true,
       "heroIndex": 7,
       "inGrid": true,
@@ -3227,7 +3899,12 @@
         "usecase": [
           "Agents"
         ]
-      }
+      },
+      "subtitle": "Memory for Claude Managed Agents is a built-in memory layer that lets agents learn across sessions, improve over time, and share what they've learned.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "building-agents-that-reach-production-systems-with-mcp",
@@ -3255,7 +3932,12 @@
         "usecase": [
           "Agents"
         ]
-      }
+      },
+      "subtitle": "Patterns for building effective MCP integrations: server design, OAuth with CIMD and vaults, context-efficient clients, and skills. Plus where MCP fits alongside direct API calls and CLIs for connecting agents to your systems.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/agents",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "meet-the-winners-of-our-built-with-opus-4-6-claude-code-hackathon",
@@ -3281,7 +3963,12 @@
           "Claude Code"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "From a cardiologist to an electronic musician, get to the know the winners of our Built with Opus 4.6 hackathon.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "best-practices-for-using-claude-opus-4-7-with-claude-code",
@@ -3309,7 +3996,12 @@
         "usecase": [
           "Coding"
         ]
-      }
+      },
+      "subtitle": "Learn how to use recalibrated effort levels, adaptive thinking, and new defaults to optimize your Claude Code setup with Opus 4.7.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "using-claude-code-session-management-and-1m-context",
@@ -3335,7 +4027,12 @@
           "Claude Code"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "How you manage sessions, context, and compaction in Claude Code shapes your results more than you might expect. Here's a practical guide to making the right call at every turn.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "claude-code-desktop-redesign",
@@ -3345,9 +4042,9 @@
       "url": "https://claude.com/blog/claude-code-desktop-redesign",
       "fetchedAt": "2026-09-01T22:58:04.866Z",
       "translated": true,
-      "translatedTitle": "为并行智能体重新设计桌面端 Claude Code",
-      "translatedAt": "2026-09-02T05:14:34.865Z",
-      "translateLang": "zh-CN",
+      "translatedTitle": "桌面版 Claude Code 重新设计：支持并行代理",
+      "translatedAt": "2026-09-01T22:58:46.956Z",
+      "translateLang": "zh",
       "inHero": true,
       "heroIndex": 8,
       "inGrid": true,
@@ -3362,7 +4059,12 @@
           "Claude Code"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "Today, we're releasing a redesign of the Claude Code desktop app, built to help you run more Claude Code tasks at once.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "introducing-routines-in-claude-code",
@@ -3393,7 +4095,12 @@
           "Productivity",
           "Agents"
         ]
-      }
+      },
+      "subtitle": "Define repeatable routines that work your backlog, review your PRs, and respond to events in the cloud.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "preparing-your-security-program-for-ai-accelerated-offense",
@@ -3403,9 +4110,9 @@
       "url": "https://claude.com/blog/preparing-your-security-program-for-ai-accelerated-offense",
       "fetchedAt": "2026-09-01T22:58:06.803Z",
       "translated": true,
-      "translatedTitle": "为 AI 加速的攻击面做好准备：安全项目应对指南",
-      "translatedAt": "2026-09-02T05:12:42.000Z",
-      "translateLang": "zh-CN",
+      "translatedTitle": "为 AI 加速的攻击做好安全准备",
+      "translatedAt": "2026-09-01T22:58:46.956Z",
+      "translateLang": "zh",
       "inHero": true,
       "heroIndex": 9,
       "inGrid": true,
@@ -3419,7 +4126,12 @@
           "Claude Enterprise"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "AI is changing the speed at which vulnerabilities are found and exploited. We're publishing an initial set of recommendations to shore up your defenses based on our own findings and security practices.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/agents",
+      "productUrl": "https://claude.com/solutions/enterprise"
     },
     {
       "slug": "seeing-like-an-agent",
@@ -3448,7 +4160,12 @@
           "Coding",
           "Agents"
         ]
-      }
+      },
+      "subtitle": "Learn how the Claude Code team designs, tests, and evolves tools by thinking from the model's point of view.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "multi-agent-coordination-patterns",
@@ -3476,7 +4193,12 @@
         "usecase": [
           "Coding"
         ]
-      }
+      },
+      "subtitle": "Five multi-agent coordination patterns, their trade-offs, and when to evolve from one to another.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/agents",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "the-advisor-strategy",
@@ -3492,8 +4214,8 @@
       "fetchedAt": "2026-09-02T03:50:17.784Z",
       "translated": true,
       "translatedTitle": "顾问策略：为 agent 提供一次智能升级",
-      "translatedAt": "2026-09-02T04:46:32Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T11:00:00.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Product announcements"
@@ -3506,7 +4228,12 @@
           "Coding",
           "Productivity"
         ]
-      }
+      },
+      "subtitle": "Pair Opus as an advisor with Sonnet or Haiku as an executor, and get near Opus-level intelligence in your agents at a fraction of the cost.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "cowork-for-enterprise",
@@ -3522,8 +4249,8 @@
       "fetchedAt": "2026-09-02T03:50:17.784Z",
       "translated": true,
       "translatedTitle": "让 Claude Cowork 为企业级使用做好准备",
-      "translatedAt": "2026-09-02T04:47:04Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T11:00:00.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Product announcements"
@@ -3536,7 +4263,12 @@
           "Productivity",
           "Work"
         ]
-      }
+      },
+      "subtitle": "Claude Cowork from Anthropic is now generally available on all paid plans. Within companies, Claude Cowork has become a key part of how teams operate: handling tasks, drafting project deliverables, and keeping teams up to date.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/solutions/enterprise"
     },
     {
       "slug": "claude-managed-agents",
@@ -3552,8 +4284,8 @@
       "fetchedAt": "2026-09-02T03:50:17.784Z",
       "translated": true,
       "translatedTitle": "Claude Managed Agents：以 10 倍速度迈向生产环境",
-      "translatedAt": "2026-09-02T04:47:38Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T10:56:00.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Product announcements"
@@ -3564,7 +4296,12 @@
         "usecase": [
           "Agents"
         ]
-      }
+      },
+      "subtitle": "Announcing Claude Managed Agents, Anthropic's new suite of composable APIs for building and deploying cloud-hosted agents at scale.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "carta-healthcare-clinical-abstractor",
@@ -3580,8 +4317,8 @@
       "fetchedAt": "2026-09-02T03:50:17.784Z",
       "translated": true,
       "translatedTitle": "Carta Healthcare 如何让 AI 像临床抽象员一样推理",
-      "translatedAt": "2026-09-02T04:48:07Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T10:59:38.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Enterprise AI"
@@ -3592,7 +4329,12 @@
         "usecase": [
           "Business"
         ]
-      }
+      },
+      "subtitle": "Inside a clinical data abstraction platform processing 22,000 surgical cases a year—and how the team reached 99% accuracy by getting context engineering right.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "subagents-in-claude-code",
@@ -3620,7 +4362,12 @@
         "usecase": [
           "Coding"
         ]
-      }
+      },
+      "subtitle": "A practical guide to Claude Code subagents: when they help, how to direct them, and the signals that tell you delegation is worth it.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "harnessing-claudes-intelligence",
@@ -3646,7 +4393,12 @@
           "Claude Platform"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "Building applications that balance intelligence, latency, and cost.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/agents",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "claude-platform-compliance-api",
@@ -3672,7 +4424,12 @@
           "Claude Platform"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "The Compliance API gives admins programmatic access to audit logs across their Claude Platform organization.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "auto-mode",
@@ -3701,7 +4458,12 @@
         "usecase": [
           "Coding"
         ]
-      }
+      },
+      "subtitle": "Auto mode provides a safer long-running alternative to --dangerously-skip-permissions.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "dispatch-and-computer-use",
@@ -3724,14 +4486,19 @@
           "Product announcements"
         ],
         "product": [
-          "Claude apps",
-          "Claude Code"
+          "Claude Code",
+          "Claude apps"
         ],
         "usecase": [
           "Coding",
           "Productivity"
         ]
-      }
+      },
+      "subtitle": "In Claude Cowork and Claude Code, Claude can use your computer to point, click, and complete tasks. Dispatch lets you assign them from your phone.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "product-management-on-the-ai-exponential",
@@ -3757,7 +4524,14 @@
           "Claude Code"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "Claude Code’s Head of Product Cat Wu shares how product management teams are adapting their workflows and roadmaps in the face of rapidly evolving model intelligence.",
+      "authors": [
+        "Cat Wu"
+      ],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "code-with-claude-san-francisco-london-tokyo",
@@ -3783,7 +4557,12 @@
           "Claude Code"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "Technical sessions, live demos of new capabilities, and office hours with Anthropic engineers—watch live or apply to attend.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "1m-context-ga",
@@ -3799,8 +4578,8 @@
       "fetchedAt": "2026-09-02T03:50:17.784Z",
       "translated": true,
       "translatedTitle": "1M 上下文窗口正式发布，适用于 Opus 4.6 和 Sonnet 4.6",
-      "translatedAt": "2026-09-02T04:12:09.000Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T11:00:00.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Product announcements",
@@ -3814,7 +4593,12 @@
           "Agents",
           "Coding"
         ]
-      }
+      },
+      "subtitle": "Standard pricing now applies across the full 1M window for both models, with no long-context premium. Media limits expand to 600 images or PDF pages.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "claude-builds-visuals",
@@ -3845,7 +4629,12 @@
           "Work",
           "Learning"
         ]
-      }
+      },
+      "subtitle": "Ask Claude to explain a concept or analyze your data, and it can respond with interactive charts, diagrams, and visualizations — rendered inline as part of the conversation.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": ""
     },
     {
       "slug": "claude-excel-powerpoint-updates",
@@ -3871,7 +4660,12 @@
           "Claude Enterprise"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "Claude for Excel and PowerPoint now share full context across open files, and skills make any workflow instantly repeatable.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/solutions/enterprise"
     },
     {
       "slug": "code-review",
@@ -3900,7 +4694,12 @@
         "usecase": [
           "Coding"
         ]
-      }
+      },
+      "subtitle": "Practical guidance on how to structure agent tasks using three common workflow patterns, with tradeoffs and benefits for each.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "common-workflow-patterns-for-ai-agents-and-when-to-use-them",
@@ -3926,7 +4725,12 @@
           "Claude Platform"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "Practical guidance on how to structure agent tasks using three common workflow patterns, with tradeoffs and benefits for each.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/agents",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "skills-explained",
@@ -3949,11 +4753,16 @@
           "Agents"
         ],
         "product": [
-          "Claude apps",
-          "Claude Platform"
+          "Claude Platform",
+          "Claude apps"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "Skills are an increasingly powerful tool for creating custom AI workflows and agents, but where do they fit in the Claude stack? We explain what tool to use when - and how they all work together.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/agents",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "improving-skill-creator-test-measure-and-refine-agent-skills",
@@ -3980,7 +4789,12 @@
           "Claude Code"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "Skill authors can now verify that their skills work, catch regressions, and improve descriptions.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "cowork-plugins-finance",
@@ -4007,7 +4821,12 @@
           "Claude Enterprise"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "New plugins built for how finance actually works, plus cross-app workflows that move with you from Excel to PowerPoint to final deliverable.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/solutions/enterprise"
     },
     {
       "slug": "cowork-plugins-across-enterprise",
@@ -4040,7 +4859,12 @@
           "Business",
           "Productivity"
         ]
-      }
+      },
+      "subtitle": "Admins can now create private plugin marketplaces, with better control over plugins, connectors, and skills. We've also added new plugins and connectors across more departments.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/agents",
+      "productUrl": "https://claude.com/solutions/enterprise"
     },
     {
       "slug": "how-ai-helps-break-cost-barrier-cobol-modernization",
@@ -4066,7 +4890,12 @@
           "Claude Code"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "Legacy code modernization stalled for years because understanding legacy code cost more than rewriting it. AI flips that equation.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "preview-review-and-merge-with-claude-code",
@@ -4095,7 +4924,12 @@
         "usecase": [
           "Coding"
         ]
-      }
+      },
+      "subtitle": "Updates to Claude Code on desktop help you close the development loop, so you can go from writing code to merging PRs in one place.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "improved-web-search-with-dynamic-filtering",
@@ -4123,7 +4957,12 @@
         "usecase": [
           "Agents"
         ]
-      }
+      },
+      "subtitle": "Dynamic filtering makes Claude more accurate and efficient on complex web search tasks. Here’s how it works, and how to enable it on the API.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "self-serve-enterprise",
@@ -4153,7 +4992,12 @@
           "Work",
           "Productivity"
         ]
-      }
+      },
+      "subtitle": "Starting today, any organization can purchase Claude Enterprise directly on our website with no sales conversation required. Set up your workspace, configure SSO, and start inviting team members in minutes.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/solutions/enterprise"
     },
     {
       "slug": "behind-model-launch-what-customers-discovered-testing-claude-opus-4-6-early",
@@ -4177,7 +5021,12 @@
         ],
         "product": [],
         "usecase": []
-      }
+      },
+      "subtitle": "Inside the tight window between pre-production access and public launch, when customers race to test what a new Claude model can really do.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": ""
     },
     {
       "slug": "opus-4-6-finance",
@@ -4203,7 +5052,12 @@
           "Claude apps"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "With Claude Opus 4.6, finance teams get better reasoning on complex analyses, cleaner first-pass deliverables, and new tools built for where analysts actually spend their time.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": ""
     },
     {
       "slug": "cowork-plugins",
@@ -4237,7 +5091,12 @@
           "Sales",
           "Legal"
         ]
-      }
+      },
+      "subtitle": "We built Cowork to bring the power of Claude Code to everyone. Today, we're adding support for plugins, which let you bundle any skills, connectors, slash commands, and sub-agents together to turn Claude into a specialist for your role, team, and company.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/solutions/enterprise"
     },
     {
       "slug": "complete-guide-to-building-skills-for-claude",
@@ -4263,7 +5122,12 @@
           "Claude Code"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "Skills let you teach Claude your workflows once and apply them consistently. This guide covers how to build, test, and distribute them—whether for standalone workflows or MCP-enhanced integrations.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "contribution-metrics",
@@ -4292,7 +5156,12 @@
         "usecase": [
           "Coding"
         ]
-      }
+      },
+      "subtitle": "Measure how Claude Code impacts your team's velocity. Track PRs shipped and code committed with GitHub integration—no extra tools required.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "how-leading-retailers-are-turning-ai-pilots-into-enterprise-wide-transformation",
@@ -4318,7 +5187,12 @@
           "Claude Enterprise"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "Most enterprise AI initiatives start strong and stall fast. Our new guide documents what the organizations pulling ahead are doing differently.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/solutions/enterprise"
     },
     {
       "slug": "claude-team-updates",
@@ -4348,7 +5222,12 @@
           "Business",
           "Productivity"
         ]
-      }
+      },
+      "subtitle": "We're making the Claude Team plan more accessible for growing teams. We’re lowering prices and introducing an annual discount for premium seats.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": ""
     },
     {
       "slug": "interactive-tools-in-claude",
@@ -4379,7 +5258,12 @@
           "Productivity",
           "Work"
         ]
-      }
+      },
+      "subtitle": "Open Asana, Slack, Figma, and more in chat with MCP Apps",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": ""
     },
     {
       "slug": "how-anthropic-uses-claude-marketing",
@@ -4405,7 +5289,12 @@
           "Claude Enterprise"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "Austin Lau, growth marketer at Anthropic, shares how he went from never having opened a terminal to building Figma plugins and automated ad generation workflows, without writing a single line of code.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/solutions/enterprise"
     },
     {
       "slug": "building-multi-agent-systems-when-and-how-to-use-them",
@@ -4432,7 +5321,12 @@
           "Claude Code"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "While single-agent systems handle most enterprise workflows effectively, multi-agent architectures can unlock additional value for your organization. Learn when and how to use them.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/agents",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "building-agents-with-skills-equipping-agents-for-specialized-work",
@@ -4459,7 +5353,12 @@
           "Claude Code"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "Skills package domain expertise in files agents can access and apply—turning general-purpose agents into knowledgeable specialists for real work.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/agents",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "eight-trends-defining-how-software-gets-built-in-2026",
@@ -4486,7 +5385,12 @@
           "Claude Code"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "How is AI changing the way software gets built—and what should engineering leaders expect in 2026? We analyzed the patterns emerging across the industry.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/agents",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "extending-claude-capabilities-with-skills-mcp-servers",
@@ -4509,11 +5413,16 @@
           "Agents"
         ],
         "product": [
-          "Claude apps",
-          "Claude Platform"
+          "Claude Platform",
+          "Claude apps"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "Learn how skills and MCP work together to build agents that follow your workflows and use external systems and platforms effectively.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/agents",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "organization-skills-and-directory",
@@ -4529,8 +5438,8 @@
       "fetchedAt": "2026-09-02T03:50:17.788Z",
       "translated": true,
       "translatedTitle": "面向组织、合作伙伴与生态的 Skills",
-      "translatedAt": "2026-09-02T04:54:25.809Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T11:00:00.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Product announcements",
@@ -4538,15 +5447,20 @@
           "Agents"
         ],
         "product": [
-          "Claude apps",
-          "Claude Enterprise"
+          "Claude Enterprise",
+          "Claude apps"
         ],
         "usecase": [
           "Agents",
           "Business",
           "Work"
         ]
-      }
+      },
+      "subtitle": "In October, we introduced skills—a way to teach Claude repeatable workflows tailored to how you work. Today we're making skills easier to deploy, discover, and build: organization-wide management for admins; a directory of partner-built skills from Notion, Canva, Figma, Atlassian, and others; and an open standard so skills work across AI platforms.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/solutions/enterprise"
     },
     {
       "slug": "making-claude-a-better-electrical-engineer",
@@ -4572,7 +5486,12 @@
           "Claude Enterprise"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "How collaboration with domain experts, like custom circuit board manufacturers, helps us train Claude to handle specialized tasks more effectively.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/solutions/enterprise"
     },
     {
       "slug": "how-to-configure-hooks",
@@ -4598,7 +5517,12 @@
           "Claude Code"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "Learn how to configure Claude Code hooks to automate repetitive tasks, enforce project rules, and inject dynamic context into your coding sessions.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "how-enterprises-are-building-ai-agents-in-2026",
@@ -4622,7 +5546,12 @@
         ],
         "product": [],
         "usecase": []
-      }
+      },
+      "subtitle": "How are organizations deploying AI agents today—and what's in store for tomorrow? We surveyed over 500 technical leaders across industries to find out.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": ""
     },
     {
       "slug": "how-anthropic-uses-claude-legal",
@@ -4648,7 +5577,12 @@
           "Claude Enterprise"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "Mark Pike, Associate General Counsel, shares how our legal team uses Claude to build workflows that automate repetitive tasks like reviewing marketing content and redlining contracts—no coding required.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/solutions/enterprise"
     },
     {
       "slug": "claude-code-and-slack",
@@ -4676,7 +5610,12 @@
         "usecase": [
           "Coding"
         ]
-      }
+      },
+      "subtitle": "Now you can tag @Claude in Slack to spin up Claude Code sessions automatically. Turn bug reports and feature requests into code fixes, get status updates in your thread, and open pull requests—all without leaving Slack.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "key-benefits-transitioning-agentic-coding",
@@ -4692,8 +5631,8 @@
       "fetchedAt": "2026-09-02T03:50:17.789Z",
       "translated": true,
       "translatedTitle": "转向智能体编程进行软件开发的关键收益是什么？",
-      "translatedAt": "2026-09-02T04:54:25.809Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T10:56:00.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Claude Code"
@@ -4705,7 +5644,12 @@
           "Agents",
           "Coding"
         ]
-      }
+      },
+      "subtitle": "Agentic coding transforms how developers work—instead of suggesting code snippets, AI agents like Claude Code execute entire tasks autonomously. Discover the key benefits driving this shift and how to get started using Claude Code.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "using-claude-md-files",
@@ -4731,7 +5675,12 @@
           "Claude Code"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "A practical guide for using CLAUDE.md files to optimize your use of Claude Code.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "your-thinking-partner",
@@ -4760,7 +5709,12 @@
           "Work",
           "Productivity"
         ]
-      }
+      },
+      "subtitle": "Over the past several weeks, we've released features that help Claude transform your most creative ideas into finished work. Here's how.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": ""
     },
     {
       "slug": "how-to-create-skills-key-steps-limitations-and-examples",
@@ -4787,7 +5741,12 @@
           "Claude apps"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "Learn how to write tailored skills that deliver stronger, more effective outputs from Claude.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": ""
     },
     {
       "slug": "building-companies-with-claude-code",
@@ -4803,8 +5762,8 @@
       "fetchedAt": "2026-09-02T03:50:17.789Z",
       "translated": true,
       "translatedTitle": "三家 YC 初创公司如何用 Claude Code 构建公司",
-      "translatedAt": "2026-09-02T04:54:25.809Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T11:00:00.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Claude Code",
@@ -4814,7 +5773,13 @@
           "Claude Code"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "From non-technical founders winning government contracts to solo devs building at scale, here’s how agentic coding is re-writing the startup playbook.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code",
+      "translatedSubtitle": "从拿下政府合同的非技术创始人，到独自规模化构建的开发者，智能体式编码正在改写创业手册。"
     },
     {
       "slug": "structured-outputs-on-the-claude-developer-platform",
@@ -4840,7 +5805,12 @@
           "Claude Platform"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "Guarantee responses match your JSON schemas and tool definitions with structured outputs.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "improving-frontend-design-through-skills",
@@ -4866,7 +5836,12 @@
           "Claude apps"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "Best practices for building richer, more customized frontend design with Claude and Skills.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": ""
     },
     {
       "slug": "best-practices-for-prompt-engineering",
@@ -4895,7 +5870,12 @@
           "Productivity",
           "Agents"
         ]
-      }
+      },
+      "subtitle": "Get better AI results with prompt engineering techniques from the team behind Claude.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/agents",
+      "productUrl": ""
     },
     {
       "slug": "building-ai-agents-for-startups",
@@ -4923,7 +5903,12 @@
         "usecase": [
           "Agents"
         ]
-      }
+      },
+      "subtitle": "For resource-constrained startups, AI agents autonomously handle complex processes, reclaiming founder time, providing expert-level capabilities, and maintaining quality while moving fast.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "what-is-model-context-protocol",
@@ -4939,8 +5924,8 @@
       "fetchedAt": "2026-09-02T03:50:17.789Z",
       "translated": true,
       "translatedTitle": "什么是 Model Context Protocol？将 AI 连接到你的世界",
-      "translatedAt": "2026-09-02T04:49:55.000Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T10:59:38.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Agents"
@@ -4951,7 +5936,12 @@
         "usecase": [
           "Productivity"
         ]
-      }
+      },
+      "subtitle": "Connect AI assistants to your tools without custom integrations using Model Context Protocol.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/agents",
+      "productUrl": ""
     },
     {
       "slug": "introduction-to-agentic-coding",
@@ -4967,8 +5957,8 @@
       "fetchedAt": "2026-09-02T03:50:17.789Z",
       "translated": true,
       "translatedTitle": "智能体式编码入门",
-      "translatedAt": "2026-09-02T04:51:05.000Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T10:56:00.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Claude Code"
@@ -4979,7 +5969,12 @@
         "usecase": [
           "Coding"
         ]
-      }
+      },
+      "subtitle": "Move from fragmented AI code snippets to deploying integrated features with agentic coding that understands your entire codebase.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "building-ai-agents-in-healthcare-and-life-sciences",
@@ -5008,7 +6003,12 @@
         "usecase": [
           "Health care and life sciences"
         ]
-      }
+      },
+      "subtitle": "AI agents are delivering measurable results in healthcare and life sciences while navigating the industry's unique regulatory complexity and safety standards. Here's how.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/agents",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "building-ai-agents-in-financial-services",
@@ -5037,7 +6037,12 @@
         "usecase": [
           "Financial services"
         ]
-      }
+      },
+      "subtitle": "Financial institutions are deploying autonomous AI systems to improve operations while navigating regulatory complexity and risk. Here's how.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/agents",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "how-brex-improves-code-quality-and-productivity-with-claude-code",
@@ -5066,7 +6071,12 @@
           "Coding",
           "Productivity"
         ]
-      }
+      },
+      "subtitle": "Learn how Claude Code breaks down barriers between technical and non-technical teams by making programming easier and more accessible.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "fix-software-bugs-faster-with-claude",
@@ -5095,7 +6105,12 @@
           "Coding",
           "Productivity"
         ]
-      }
+      },
+      "subtitle": "Turn debugging from detective work into systematic problem-solving. Analyze errors, trace root causes, and implement fixes faster.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "integrate-apis-seamlessly",
@@ -5111,8 +6126,8 @@
       "fetchedAt": "2026-09-02T03:50:17.792Z",
       "translated": true,
       "translatedTitle": "如何无缝集成 API",
-      "translatedAt": "2026-09-02T04:42:42.000Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T10:56:00.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Claude Code"
@@ -5124,7 +6139,12 @@
           "Coding",
           "Productivity"
         ]
-      }
+      },
+      "subtitle": "Build resilient API integrations from the start. Handle authentication, rate limits, and edge cases before they break production.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "claude-code-on-the-web",
@@ -5152,7 +6172,12 @@
         "usecase": [
           "Coding"
         ]
-      }
+      },
+      "subtitle": "Today, we're introducing Claude Code on the web, a new way to delegate coding tasks directly from your browser. Now in beta as a research preview, you can assign multiple coding tasks to Claude that run on Anthropic-managed cloud infrastructure, perfect for tackling bug backlogs, routine fixes, or...",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "productivity-platforms",
@@ -5180,7 +6205,12 @@
         "usecase": [
           "Productivity"
         ]
-      }
+      },
+      "subtitle": "Claude now integrates with Microsoft 365 and offers enterprise search across your connected tools. Claude works with the productivity tools you use every day, bringing context from your documents, emails, and calendar directly into your conversations.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/solutions/enterprise"
     },
     {
       "slug": "skills",
@@ -5196,8 +6226,8 @@
       "fetchedAt": "2026-09-02T03:50:17.792Z",
       "translated": true,
       "translatedTitle": "Agent Skills 介绍",
-      "translatedAt": "2026-09-02T04:40:02.000Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T11:00:00.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Product announcements"
@@ -5208,7 +6238,12 @@
         "usecase": [
           "Agents"
         ]
-      }
+      },
+      "subtitle": "Claude can now use Skills to improve how it performs specific tasks. Skills are folders that include instructions, scripts, and resources that Claude can load when needed. Claude will only access a skill when it's relevant to the task at hand.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "scaling-agentic-coding",
@@ -5224,8 +6259,8 @@
       "fetchedAt": "2026-09-02T03:50:17.792Z",
       "translated": true,
       "translatedTitle": "如何在工程组织中规模化推广智能体式编码",
-      "translatedAt": "2026-09-02T04:56:38.000Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T11:00:00.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Claude Code"
@@ -5236,7 +6271,13 @@
         "usecase": [
           "Coding"
         ]
-      }
+      },
+      "subtitle": "As Agentic coding tools mature, technical leaders are wrestling with a practical challenge: moving beyond isolated experiments to organization-wide adoption.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code",
+      "translatedSubtitle": "随着智能体式编码工具走向成熟，技术负责人面临的实际问题是：如何从零散试验走向全组织采用。"
     },
     {
       "slug": "build-responsive-web-layouts",
@@ -5252,20 +6293,25 @@
       "fetchedAt": "2026-09-02T03:50:17.792Z",
       "translated": true,
       "translatedTitle": "构建响应式 Web 布局",
-      "translatedAt": "2026-09-02T05:00:59.000Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T10:56:00.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Claude Code"
         ],
         "product": [
-          "Claude apps",
-          "Claude Code"
+          "Claude Code",
+          "Claude apps"
         ],
         "usecase": [
           "Coding"
         ]
-      }
+      },
+      "subtitle": "Generate responsive designs that work across all devices, without the trial and error.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "claude-code-plugins",
@@ -5293,7 +6339,12 @@
         "usecase": [
           "Coding"
         ]
-      }
+      },
+      "subtitle": "Claude Code now supports plugins: custom collections of slash commands, agents, MCP servers, and hooks that install with a single command.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "beyond-permission-prompts-making-claude-code-more-secure-and-autonomous",
@@ -5309,8 +6360,8 @@
       "fetchedAt": "2026-09-02T03:50:17.792Z",
       "translated": true,
       "translatedTitle": "超越权限提示：让 Claude Code 更安全、更自主",
-      "translatedAt": "2026-09-02T12:10:00.000Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T11:00:00.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Claude Code"
@@ -5321,7 +6372,12 @@
         "usecase": [
           "Coding"
         ]
-      }
+      },
+      "subtitle": "In Claude Code, Claude writes, tests, and debugs code alongside you, navigating your codebase, editing multiple files, and running commands to verify its work. Giving Claude this much access to your codebase and files can introduce risks, especially in the case of prompt injection, such as Claude deleting files you didn't intend.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "optimize-code-performance-quickly",
@@ -5337,8 +6393,8 @@
       "fetchedAt": "2026-09-02T03:50:17.793Z",
       "translated": true,
       "translatedTitle": "快速优化代码性能",
-      "translatedAt": "2026-09-02T12:12:00.000Z",
-      "translateLang": "zh-CN",
+      "translatedAt": "2026-09-03T10:56:00.000Z",
+      "translateLang": "zh",
       "facets": {
         "category": [
           "Claude Code"
@@ -5350,7 +6406,12 @@
           "Coding",
           "Productivity"
         ]
-      }
+      },
+      "subtitle": "Go from reactive profiling to proactive optimization. Find and fix bottlenecks in your codebase before they slow down production.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "driving-ai-transformation-with-claude",
@@ -5380,7 +6441,12 @@
           "Health care and life sciences",
           "Work"
         ]
-      }
+      },
+      "subtitle": "As the leader in enterprise AI, Anthropic builds state-of-the-art models specializing in industries where precision matters, from coding and cybersecurity to financial services. Claude Sonnet 4.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/solutions/enterprise"
     },
     {
       "slug": "claude-and-slack",
@@ -5409,7 +6475,12 @@
           "Business",
           "Productivity"
         ]
-      }
+      },
+      "subtitle": "Access Claude directly into Slack so you can get help in channels and threads, or connect your Slack workspace to Claude for searching conversations and pulling context when you need it.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/solutions/enterprise"
     },
     {
       "slug": "building-agents-with-the-claude-agent-sdk",
@@ -5440,7 +6511,12 @@
           "Agents",
           "Coding"
         ]
-      }
+      },
+      "subtitle": "The Claude Agent SDK is a collection of tools that helps developers build powerful agents on top of Claude Code. In this article, we walk through how to get started and share our best practices.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "context-management",
@@ -5469,7 +6545,12 @@
           "Agents",
           "Business"
         ]
-      }
+      },
+      "subtitle": "Introducing context editing and the memory tool to help developers build more effective agents that handle long-running tasks.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "claude-now-available-in-microsoft-365-copilot",
@@ -5498,7 +6579,12 @@
           "Business",
           "Work"
         ]
-      }
+      },
+      "subtitle": "Today, Microsoft announced that Claude models are now available in Microsoft 365 Copilot, bringing Claude to millions of enterprise users through Microsoft's productivity platform.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": ""
     },
     {
       "slug": "memory",
@@ -5527,7 +6613,12 @@
         "usecase": [
           "Agents"
         ]
-      }
+      },
+      "subtitle": "Today, we’re introducing memory to the Claude app, where Claude remembers you and your team’s projects and preferences, eliminating the need to re-explain context and keeping complex work moving forward.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/solutions/enterprise"
     },
     {
       "slug": "create-files",
@@ -5550,11 +6641,16 @@
           "Product announcements"
         ],
         "product": [
-          "Claude apps",
-          "Claude Enterprise"
+          "Claude Enterprise",
+          "Claude apps"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "Describe what you need and get back ready-to-use spreadsheets, documents, presentations, and PDFs instead of just text responses.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/solutions/enterprise"
     },
     {
       "slug": "claude-for-chrome",
@@ -5582,7 +6678,12 @@
         "usecase": [
           "Business"
         ]
-      }
+      },
+      "subtitle": "We're piloting Claude in Chrome to test browser-based AI capabilities while addressing prompt injection risks and building the safety measures needed before wider release.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": ""
     },
     {
       "slug": "claude-code-and-new-admin-controls-for-business-plans",
@@ -5611,7 +6712,12 @@
           "Coding",
           "Agents"
         ]
-      }
+      },
+      "subtitle": "Claude brings its conversational AI and powerful coding agent together in one enterprise subscription.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "prompt-caching",
@@ -5639,7 +6745,12 @@
         "usecase": [
           "Coding"
         ]
-      }
+      },
+      "subtitle": "Claude caches frequently used context between API calls, reducing costs and latency for long prompts.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "1m-context",
@@ -5667,7 +6778,12 @@
         "usecase": [
           "Agents"
         ]
-      }
+      },
+      "subtitle": "Claude Sonnet 4 now supports up to 1 million tokens of context—a 5x increase that lets you process entire codebases, synthesize extensive document sets, and build agents that maintain coherence across hundreds of tool calls.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": ""
     },
     {
       "slug": "automate-security-reviews-with-claude-code",
@@ -5693,7 +6809,12 @@
           "Claude Code"
         ],
         "usecase": []
-      }
+      },
+      "subtitle": "Meta Description (238 characters): \"Introducing automated security reviews in Claude Code. Use the new /security-review command and GitHub Actions integration to identify and fix vulnerabilities before they reach production. Catch SQL injection, XSS, and authentication flaws automatically.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "claude-powered-artifacts",
@@ -5721,7 +6842,12 @@
         "usecase": [
           "Work"
         ]
-      }
+      },
+      "subtitle": "Build and share AI-powered apps directly in Claude.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": ""
     },
     {
       "slug": "how-anthropic-teams-use-claude-code",
@@ -5752,7 +6878,12 @@
           "Productivity",
           "Work"
         ]
-      }
+      },
+      "subtitle": "Teams across Anthropic use Claude Code for everything from debugging production issues and navigating unfamiliar codebases to building custom automation tools. Here's how.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/product/claude-code"
     },
     {
       "slug": "connectors-directory",
@@ -5781,7 +6912,12 @@
           "Content Creation",
           "Work"
         ]
-      }
+      },
+      "subtitle": "Browse and connect Claude to your favorite apps and tools with one-click.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": ""
     },
     {
       "slug": "build-artifacts",
@@ -5810,7 +6946,12 @@
           "Productivity",
           "Content Creation"
         ]
-      }
+      },
+      "subtitle": "Turn ideas into interactive AI-powered apps through conversation—no coding required—with artifacts.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": ""
     },
     {
       "slug": "introducing-citations-api",
@@ -5839,7 +6980,12 @@
           "Learning",
           "Productivity"
         ]
-      }
+      },
+      "subtitle": "Claude can now cite specific passages from your documents, delivering verifiable responses with built-in source tracking.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": ""
     },
     {
       "slug": "claude-code-remote-mcp",
@@ -5867,7 +7013,12 @@
         "usecase": [
           "Coding"
         ]
-      }
+      },
+      "subtitle": "Connect your favorite development tools and data sources securely to Claude Code through remote MCP servers.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "agent-capabilities-api",
@@ -5895,7 +7046,12 @@
         "usecase": [
           "Agents"
         ]
-      }
+      },
+      "subtitle": "Claude now offers code execution, MCP server connections, file storage, and extended prompt caching through the API—giving developers powerful tools to build agents that analyze data, connect to external systems, and maintain context for longer periods of time.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "web-search-api",
@@ -5923,7 +7079,12 @@
         "usecase": [
           "Coding"
         ]
-      }
+      },
+      "subtitle": "Claude can now search the web through the API, giving users access to real-time information with citations for building up-to-date AI applications.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "integrations",
@@ -5952,7 +7113,12 @@
           "Learning",
           "Productivity"
         ]
-      }
+      },
+      "subtitle": "Claude can now connect to your apps and tools through Integrations, while advanced Research searches across the web, Google Workspace, and connected services to quickly deliver comprehensive reports.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": ""
     },
     {
       "slug": "research",
@@ -5981,7 +7147,12 @@
           "Work",
           "Productivity"
         ]
-      }
+      },
+      "subtitle": "Claude can now conduct in-depth Research by searching across the web and your Google Workspace to deliver comprehensive answers in minutes.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": ""
     },
     {
       "slug": "claude-on-google-cloud-fedramp-high",
@@ -6009,7 +7180,12 @@
         "usecase": [
           "Government"
         ]
-      }
+      },
+      "subtitle": "Claude is now authorized for FedRAMP High and IL2 workloads on Google Cloud's Vertex AI, enabling federal agencies and defense organizations to use our models while meeting strict compliance requirements.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "web-search",
@@ -6038,7 +7214,12 @@
           "Business",
           "Productivity"
         ]
-      }
+      },
+      "subtitle": "Claude can now search the web to deliver up-to-date, cited information in conversational responses across all plans.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "token-saving-updates",
@@ -6066,7 +7247,12 @@
         "usecase": [
           "Coding"
         ]
-      }
+      },
+      "subtitle": "Claude now offers cache-aware rate limits, simplified prompt caching, and token-efficient tool use to help developers increase throughput and cut costs.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "upgraded-anthropic-console",
@@ -6088,7 +7274,12 @@
         "category": [],
         "product": [],
         "usecase": []
-      }
+      },
+      "subtitle": "We've redesigned the Anthropic Console to serve as one place to build, test, and iterate on your AI deployment with Claude and your teammates. Developers can now share prompts to collaborate with teammates directly in the Anthropic Console . We've also added support for our latest model, Claude 3.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "",
+      "productUrl": ""
     },
     {
       "slug": "trainium2-and-distillation",
@@ -6116,7 +7307,12 @@
         "usecase": [
           "Business"
         ]
-      }
+      },
+      "subtitle": "We're bringing faster inference to Claude 3.5 Haiku through AWS Trainium2 optimization and enabling model distillation in Amazon Bedrock to help you achieve frontier-level performance at lower costs.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/solutions/enterprise"
     },
     {
       "slug": "analysis-tool",
@@ -6145,7 +7341,12 @@
           "Work",
           "Business"
         ]
-      }
+      },
+      "subtitle": "Claude can now write and run JavaScript code directly in Claude.ai through the analysis tool, enabling precise data analysis and real-time insights with mathematically accurate results.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": ""
     },
     {
       "slug": "prompt-improver",
@@ -6173,7 +7374,12 @@
         "usecase": [
           "Coding"
         ]
-      }
+      },
+      "subtitle": "Claude can now automatically refine prompts in the developer console using techniques like chain-of-thought reasoning and example enrichment.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "message-batches-api",
@@ -6202,7 +7408,12 @@
           "Agents",
           "Coding"
         ]
-      }
+      },
+      "subtitle": "Claude now offers a Message Batches API that processes up to large volumes of queries asynchronously at lower cost.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "claude-for-enterprise",
@@ -6230,7 +7441,12 @@
         "usecase": [
           "Work"
         ]
-      }
+      },
+      "subtitle": "The Claude for Enterprise plan helps organizations drive cross-functional collaboration with AI at scale.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/solutions/enterprise"
     },
     {
       "slug": "workspaces",
@@ -6260,7 +7476,12 @@
           "Coding",
           "Work"
         ]
-      }
+      },
+      "subtitle": "Workspaces make it easier for developers to manage multiple Claude deployments at once.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "android-app",
@@ -6288,7 +7509,12 @@
         "usecase": [
           "Work"
         ]
-      }
+      },
+      "subtitle": "Claude is now available on Android with full vision, multilingual, and reasoning capabilities across web, iOS, and Android platforms.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": ""
     },
     {
       "slug": "fine-tune-claude-3-haiku",
@@ -6316,7 +7542,12 @@
         "usecase": [
           "Business"
         ]
-      }
+      },
+      "subtitle": "Claude 3 Haiku can now be fine-tuned in Amazon Bedrock with custom training data, enabling faster, more accurate performance at lower cost.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "evaluate-prompts",
@@ -6344,7 +7575,12 @@
         "usecase": [
           "Coding"
         ]
-      }
+      },
+      "subtitle": "Generate, test, and evaluate prompts directly in the Anthropic Console with automatic test case generation and side-by-side output comparison.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "tool-use-ga",
@@ -6373,7 +7609,12 @@
           "Business",
           "Agents"
         ]
-      }
+      },
+      "subtitle": "Claude now connects with external tools and APIs to perform tasks, manipulate data, and deliver more accurate responses.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "prompt-generator",
@@ -6402,7 +7643,12 @@
           "Work",
           "Business"
         ]
-      }
+      },
+      "subtitle": "Claude now generates production-ready prompt templates, helping developers create effective prompts faster.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "team-plan-and-ios",
@@ -6431,7 +7677,12 @@
           "Work",
           "Business"
         ]
-      }
+      },
+      "subtitle": "Claude now offers a Team plan with increased usage and a free iOS app.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": ""
     },
     {
       "slug": "claude-2-1-prompting",
@@ -6459,7 +7710,12 @@
         "usecase": [
           "Work"
         ]
-      }
+      },
+      "subtitle": "Claude 2.1 excels at retrieving information across its 200K context window, with a simple prompt adjustment improving accuracy from 27% to 98%.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": ""
     },
     {
       "slug": "amazon-bedrock-general-availability",
@@ -6487,7 +7743,12 @@
         "usecase": [
           "Business"
         ]
-      }
+      },
+      "subtitle": "Claude is now generally available on Amazon Bedrock.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/platform/api"
     },
     {
       "slug": "claude-2-amazon-bedrock",
@@ -6515,8 +7776,13 @@
         "usecase": [
           "Business"
         ]
-      }
+      },
+      "subtitle": "Claude 2 is now available on Amazon Bedrock, helping enterprises like LexisNexis, Lonely Planet, and Ricoh USA build secure, scalable AI applications.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/platform/api"
     }
   ],
-  "lastFetched": "2026-09-02T22:04:58.439Z"
+  "lastFetched": "2026-09-03T22:05:03.063Z"
 }

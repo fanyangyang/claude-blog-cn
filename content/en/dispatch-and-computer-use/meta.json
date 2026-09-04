@@ -13,5 +13,23 @@
   "translatedTitle": "让 Claude 在你的电脑上干活",
   "translated": true,
   "translatedAt": "2026-09-02T04:08:47.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Code",
+      "Claude apps"
+    ],
+    "usecase": [
+      "Coding",
+      "Productivity"
+    ]
+  },
+  "subtitle": "In Claude Cowork and Claude Code, Claude can use your computer to point, click, and complete tasks. Dispatch lets you assign them from your phone.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/product/claude-code"
 }

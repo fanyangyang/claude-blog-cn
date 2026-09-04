@@ -13,5 +13,23 @@
   "heroIndex": -1,
   "inGrid": true,
   "illustration": "assets/illustrations/how-monday-com-transformed-its-platform-into-an-agent-first-product-where-humans-and-agents-collaborate.svg",
-  "illustrationBg": "Mineral"
+  "illustrationBg": "Mineral",
+  "facets": {
+    "category": [
+      "Agents"
+    ],
+    "product": [
+      "Claude Enterprise"
+    ],
+    "usecase": [
+      "Business"
+    ]
+  },
+  "subtitle": "After it hit a ceiling with add-on AI features, monday rebuilt its platform around Claude. Two months and five million agent interactions later, its team shares five lessons from the transition to an agent-first product.",
+  "authors": [
+    "Aleksandra Todorova"
+  ],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/agents",
+  "productUrl": "https://claude.com/solutions/enterprise"
 }

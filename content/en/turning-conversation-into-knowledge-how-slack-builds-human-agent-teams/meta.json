@@ -13,5 +13,17 @@
   "illustrationBg": "Olive",
   "translatedTitle": "把对话变成知识：Slack 如何构建人机协作团队",
   "translatedAt": "2026-09-02T05:14:34.865Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [],
+    "usecase": []
+  },
+  "subtitle": "A conversation with Jaime DeLanghe, Chief Product Officer at Slack.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": ""
 }

@@ -13,5 +13,21 @@
   "translatedTitle": "Anthropic 营销运营团队如何用 Claude Cowork 自动化报表与活动搭建",
   "translated": true,
   "translatedAt": "2026-09-02T04:20:00.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Cowork"
+    ],
+    "usecase": [
+      "Business"
+    ]
+  },
+  "subtitle": "Ian Chan and Annabel Custer, in marketing operations at Anthropic, share how they automate work their team used to do by hand across multiple platforms.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/product/cowork"
 }

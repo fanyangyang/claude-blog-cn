@@ -13,5 +13,23 @@
   "translatedTitle": "将 Claude Code 和 Claude Cowork 带给政府",
   "translated": true,
   "translatedAt": "2026-09-02T04:25:00.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements",
+      "Claude Code"
+    ],
+    "product": [
+      "Claude Code",
+      "Claude Cowork"
+    ],
+    "usecase": [
+      "Government"
+    ]
+  },
+  "subtitle": "Claude Code and Claude Cowork from Anthropic are now available in public beta in Claude for Government Desktop",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/product/claude-code"
 }

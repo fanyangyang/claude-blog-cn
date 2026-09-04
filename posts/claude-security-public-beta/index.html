@@ -4,54 +4,225 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Claude Security 现已开启公开测试 — Claude Blog 中文翻译</title>
-  <meta name="description" content="Claude Security 现已开启公开测试">
+  <meta name="description" content="Claude Security is now in public beta for Claude Enterprise customers. Scan code for vulnerabilities and generate proposed fixes with Opus 4.7, on the Claude Platform, or through technology and services partners building with Claude.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/claude-security-public-beta" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>Claude Security 现已开启公开测试</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/claude-security-public-beta" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/claude-security-public-beta/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># Claude Security 现已开启公开测试
+
+Claude Security is now in public beta for Claude Enterprise customers. Scan code for vulnerabilities and generate proposed fixes with Opus 4.7, on the Claude Platform, or through technology and services partners building with Claude.
+
+Claude Security 现已面向 Claude Enterprise 客户开启公开测试。
+
+AI 的网络安全能力正在快速进步。当今的模型已经非常擅长发现软件代码中的缺陷；下一代模型的能力还会更强，尤其擅长自主*利用*这些缺陷。现在正是各组织采取行动提升安全水平的时机，为&quot;可用的软件漏洞利用变得更容易被发现&quot;的世界做好准备。 
+
+近期，我们通过 [Project Glasswing](https://www.anthropic.com/glasswing) 向多家合作伙伴开放了 Claude Mythos Preview——它在发现和利用软件漏洞两方面都能比肩甚至超越顶级人类专家。 
+
+但我们的网络安全工作不止于 Glasswing：借助 Claude Security，更多组织可以让最强大的通用模型 Claude Opus 4.7 在他们的代码库中大显身手。在发现和修补软件漏洞、以及挖掘那些容易被遗漏的复杂上下文依赖问题方面，Opus 4.7 位居最强模型之列。
+
+Claude Security（前身为 Claude Code Security）在有限的研究预览阶段已被数百家各种规模的组织试用，帮助团队扫描代码库中的漏洞并生成针对性补丁。他们的反馈塑造了今天的正式版本：Claude Security 现已向所有 Enterprise 客户开放，并带来了定时扫描和定向扫描、更便捷的审计系统集成，以及更完善的分级结果跟踪。无需 API 集成，也无需自建智能体：只要你的组织在用 Claude，今天就可以开始扫描。
+
+Opus 4.7 的能力也正通过 Claude 与众多企业既有软件工具的集成，传递给网络防御者。我们的技术合作伙伴，包括 [CrowdStrike](https://www.crowdstrike.com/en-us/press-releases/crowdstrike-puts-claude-opus-4-7-to-work-across-falcon-platform-project-quiltworks/)、Microsoft Security、[Palo Alto Networks](https://www.paloaltonetworks.com/blog/2026/04/ai-driven-defense-anthropics-claude-opus/)、[SentinelOne](https://www.sentinelone.com/press/sentinelone-unveils-wayfinder-ai/)、[TrendAI](https://newsroom.trendmicro.com/2026-04-30-TrendAI-TM-and-Anthropic-Advance-AI-Powered-Vulnerability-Detection-and-Risk-Mitigation-with-Claude-Opus-4-7) 和 [Wiz](https://www.wiz.io/blog/red-agent-claude-opus)，正在把 Opus 4.7 嵌入他们的工具；此外，Accenture、BCG、Deloitte、Infosys 和 PwC 等服务合作伙伴也在帮助各组织部署集成了 Claude 的安全解决方案。
+
+我们正进入网络安全的关键时期。AI 正在压缩从发现漏洞到利用漏洞之间的时间窗口。我们认为正确的应对之道，是确保防御者能以对他们来说最容易获取的方式用上前沿能力——直接通过 Claude，或通过我们的合作伙伴。
+
+## **Claude Security 的工作方式**
+
+[Claude Security](https://youtu.be/0SgCiUfoYo8) 可以直接从 Claude.ai 侧边栏进入，或访问[ claude.ai/security](http://claude.ai/security)。开始时，选择你的一个代码仓库（也可以限定到特定目录或分支），然后启动扫描。 
+
+扫描过程中，Claude 对代码的推理方式很像一位安全研究员。它不是通过检索已知模式来查找漏洞，而是努力理解各个组件如何跨文件和模块交互，追踪数据流，并阅读源代码。 
+
+扫描完成后，Claude 会对每个发现给出详细解释，包括它对该漏洞真实存在的置信度、严重程度、可能的影响，以及如何复现。它还会生成针对性补丁的说明，用户可以在 Claude Code on the Web 中打开，结合上下文完成修复。
+
+## **初次预览以来我们学到的事**
+
+过去两个月里，我们根据数百家企业在生产环境中的使用反馈，对 Claude Security 进行了打磨。具体来说，我们发现：
+
+**检测质量高于一切。**团队告诉我们，高置信度的发现才真正能加速安全工作。Claude Security 的多阶段验证流水线会在每条结果送抵分析师之前独立核查，从而压低误报率，而且 Claude 会为每个结果附上置信度评级。这意味着到达团队手中的信号是值得行动的。
+
+**从扫描到修复的时间才是关键指标。**早期用户反复强调这一点，好几个团队已经可以一次性完成从扫描到打补丁，而不用在安全团队和工程团队之间来回拉锯好几天。
+
+**团队要的是持续覆盖，而不是一次性审计。**我们新增了定时扫描选项，团队可以围绕审查和处理发现建立固定节奏。
+
+在这次发布中，我们还加入了以下能力：针对仓库内特定目录进行定向扫描；以书面理由驳回发现（让后续审查者可以信任之前的分级决策）；将发现导出为 CSV 或 Markdown，对接现有的跟踪和审计系统；以及通过 webhook 把扫描结果发送到 Slack、Jira 等工具。
+
+下面是使用过 Claude Security 的组织的亲身讲述：
+
+“我们正通过与 Anthropic 的合作调整主动安全工作。Claude Security 帮助我们以 DoorDash 的规模和速度加速生成并保护新代码——它能准确浮现深层漏洞，并把发现直接接入我们的工作流，让工程师可以结合上下文采取行动。”
+
+Suha Can, Vice President and Chief Security Officer“在研究预览的早期测试中，Claude Security 浮现出新颖、高质量的发现，帮助我们在潜在安全问题影响环境或客户之前识别并处理它们。随着我们扩大使用范围，我们看到了很大的潜力。”
+
+Krzysztof Katowicz-Kowalewski, Staff Product Security Engineer“Claude Security 能把握我们代码背后真实的业务逻辑。我们的安全团队现在可以在可信的工具内，只需几次点击就从扫描走到修复。”
+
+Greg Janowiak, Information Security Officer“扫描质量是我们要把 Claude Security 直接接入漏洞管理流程的原因——这样真正的问题能更快到达工程侧，中间的分级开销也更少。”
+
+Chiara La Valle, Head of Security“鉴于漏洞发现的节奏越来越快，对我们来说最强的信号是一条发现能多快变成可以真正合并的 PR，而不是一张工单。我们用 Claude Security 生成的补丁，在几分钟而不是几天内关闭了真实漏洞。”
+
+Matt Aromatorio, Head of Security我们仍处于 AI 驱动安全的早期。随着模型能力提升，以及我们从在生产环境中使用 Claude Security 的团队那里学到更多，我们将继续扩展这些工具能做的事。
+
+## **在防御者工作的地方与他们会合**
+
+Claude Security 是我们把前沿能力交到防御者手中这一更大努力的一部分。它的覆盖面很大程度上来自团队今天已经在用的平台和服务合作伙伴。 
+
+[CrowdStrike](https://www.crowdstrike.com/en-us/press-releases/crowdstrike-puts-claude-opus-4-7-to-work-across-falcon-platform-project-quiltworks/)、Microsoft Security、[Palo Alto Networks](https://www.paloaltonetworks.com/blog/2026/04/ai-driven-defense-anthropics-claude-opus/)、[SentinelOne](https://www.sentinelone.com/press/sentinelone-unveils-wayfinder-ai/)、[TrendAI](https://newsroom.trendmicro.com/2026-04-30-TrendAI-TM-and-Anthropic-Advance-AI-Powered-Vulnerability-Detection-and-Risk-Mitigation-with-Claude-Opus-4-7) 和 [Wiz](https://www.wiz.io/blog/red-agent-claude-opus) 正在把 Opus 4.7 的能力集成进企业今天已经在运行的安全平台。
+Accenture、BCG、Deloitte、Infosys 和 PwC 正在与企业安全组织合作，部署集成了 Claude 的安全解决方案，覆盖漏洞管理、安全代码审查和事件响应项目。
+
+合在一起，这意味着组织可以通过最符合现有运作方式的路径采用这些能力：直接使用 Claude Security，嵌入他们信任的平台，或由服务团队指导落地。
+
+## **开始使用**
+
+Claude Security 即日起面向 Claude Enterprise 客户开启公开测试。面向 Claude Team 和 Max 客户的访问即将推出。
+
+管理员可以在 [管理控制台](http://claude.ai/admin-settings/claude-code) 中启用 Claude Security。完整操作说明请见我们的 [入门指南](https://claude.com/resources/tutorials/getting-started-with-claude-security)。 
+
+¹Claude Opus 4.7 采用了新的网络防护措施，会自动检测并拦截暗示禁止或高风险网络安全用途的请求。不过，开展可能触发这些防护的工作的组织可以加入我们的 [Cyber Verification Program](https://support.claude.com/en/articles/14604842-real-time-cyber-safeguards-on-claude)，这是我们努力把前沿能力交给防御者、同时不让它们落入错误之手的一部分。</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Product announcements</span>
-            <span class="article-date">April 30, 2026</span>
-            
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-clay);">
+            <img class="hero-illo-img" src="/assets/illustrations/claude-security-public-beta.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">Claude Security 现已开启公开测试</h1>
-          <a href="/posts/claude-security-public-beta/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>Claude Security 现已面向 Claude Enterprise 客户开启公开测试。</p><p>AI 的网络安全能力正在快速进步。当今的模型已经非常擅长发现软件代码中的缺陷；下一代模型的能力还会更强，尤其擅长自主<em>利用</em>这些缺陷。现在正是各组织采取行动提升安全水平的时机，为"可用的软件漏洞利用变得更容易被发现"的世界做好准备。&nbsp;</p><p>近期，我们通过 <a href="https://www.anthropic.com/glasswing" target="_blank">Project Glasswing</a> 向多家合作伙伴开放了 Claude Mythos Preview——它在发现和利用软件漏洞两方面都能比肩甚至超越顶级人类专家。&nbsp;</p><p>但我们的网络安全工作不止于 Glasswing：借助 Claude Security，更多组织可以让最强大的通用模型 Claude Opus 4.7 在他们的代码库中大显身手。在发现和修补软件漏洞、以及挖掘那些容易被遗漏的复杂上下文依赖问题方面，Opus 4.7 位居最强模型之列。</p><p>Claude Security（前身为 Claude Code Security）在有限的研究预览阶段已被数百家各种规模的组织试用，帮助团队扫描代码库中的漏洞并生成针对性补丁。他们的反馈塑造了今天的正式版本：Claude Security 现已向所有 Enterprise 客户开放，并带来了定时扫描和定向扫描、更便捷的审计系统集成，以及更完善的分级结果跟踪。无需 API 集成，也无需自建智能体：只要你的组织在用 Claude，今天就可以开始扫描。</p><p>Opus 4.7 的能力也正通过 Claude 与众多企业既有软件工具的集成，传递给网络防御者。我们的技术合作伙伴，包括 <a href="https://www.crowdstrike.com/en-us/press-releases/crowdstrike-puts-claude-opus-4-7-to-work-across-falcon-platform-project-quiltworks/" target="_blank">CrowdStrike</a>、Microsoft Security、<a href="https://www.paloaltonetworks.com/blog/2026/04/ai-driven-defense-anthropics-claude-opus/" target="_blank">Palo Alto Networks</a>、<a href="https://www.sentinelone.com/press/sentinelone-unveils-wayfinder-ai/" target="_blank">SentinelOne</a>、<a href="https://newsroom.trendmicro.com/2026-04-30-TrendAI-TM-and-Anthropic-Advance-AI-Powered-Vulnerability-Detection-and-Risk-Mitigation-with-Claude-Opus-4-7" target="_blank">TrendAI</a> 和 <a href="https://www.wiz.io/blog/red-agent-claude-opus" target="_blank">Wiz</a>，正在把 Opus 4.7 嵌入他们的工具；此外，Accenture、BCG、Deloitte、Infosys 和 PwC 等服务合作伙伴也在帮助各组织部署集成了 Claude 的安全解决方案。</p><p>我们正进入网络安全的关键时期。AI 正在压缩从发现漏洞到利用漏洞之间的时间窗口。我们认为正确的应对之道，是确保防御者能以对他们来说最容易获取的方式用上前沿能力——直接通过 Claude，或通过我们的合作伙伴。</p><h2><strong>Claude Security 的工作方式</strong></h2><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/0SgCiUfoYo8" title="Find and fix security vulnerabilities with Claude" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><p><a href="https://youtu.be/0SgCiUfoYo8" target="_blank">Claude Security</a> 可以直接从 Claude.ai 侧边栏进入，或访问<a href="http://claude.ai/security"> claude.ai/security</a>。开始时，选择你的一个代码仓库（也可以限定到特定目录或分支），然后启动扫描。&nbsp;</p><p>扫描过程中，Claude 对代码的推理方式很像一位安全研究员。它不是通过检索已知模式来查找漏洞，而是努力理解各个组件如何跨文件和模块交互，追踪数据流，并阅读源代码。&nbsp;</p><p>扫描完成后，Claude 会对每个发现给出详细解释，包括它对该漏洞真实存在的置信度、严重程度、可能的影响，以及如何复现。它还会生成针对性补丁的说明，用户可以在 Claude Code on the Web 中打开，结合上下文完成修复。</p><h2><strong>初次预览以来我们学到的事</strong></h2><p>过去两个月里，我们根据数百家企业在生产环境中的使用反馈，对 Claude Security 进行了打磨。具体来说，我们发现：</p><p><strong>检测质量高于一切。</strong>团队告诉我们，高置信度的发现才真正能加速安全工作。Claude Security 的多阶段验证流水线会在每条结果送抵分析师之前独立核查，从而压低误报率，而且 Claude 会为每个结果附上置信度评级。这意味着到达团队手中的信号是值得行动的。</p><p><strong>从扫描到修复的时间才是关键指标。</strong>早期用户反复强调这一点，好几个团队已经可以一次性完成从扫描到打补丁，而不用在安全团队和工程团队之间来回拉锯好几天。</p><p><strong>团队要的是持续覆盖，而不是一次性审计。</strong>我们新增了定时扫描选项，团队可以围绕审查和处理发现建立固定节奏。</p><p>在这次发布中，我们还加入了以下能力：针对仓库内特定目录进行定向扫描；以书面理由驳回发现（让后续审查者可以信任之前的分级决策）；将发现导出为 CSV 或 Markdown，对接现有的跟踪和审计系统；以及通过 webhook 把扫描结果发送到 Slack、Jira 等工具。</p><p>下面是使用过 Claude Security 的组织的亲身讲述：</p></div>
+            <h1 class="article-title u-text-style-h1">Claude Security 现已开启公开测试</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>Claude Security is now in public beta for Claude Enterprise customers. Scan code for vulnerabilities and generate proposed fixes with Opus 4.7, on the Claude Platform, or through technology and services partners building with Claude.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/announcements" target="_blank" rel="noopener noreferrer">Product announcements</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/product/claude-security" target="_blank" rel="noopener noreferrer">Claude Security</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">April 30, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/claude-security-public-beta/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/claude-security-public-beta" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>Claude Security 现已面向 Claude Enterprise 客户开启公开测试。</p><p>AI 的网络安全能力正在快速进步。当今的模型已经非常擅长发现软件代码中的缺陷；下一代模型的能力还会更强，尤其擅长自主<em>利用</em>这些缺陷。现在正是各组织采取行动提升安全水平的时机，为"可用的软件漏洞利用变得更容易被发现"的世界做好准备。&nbsp;</p><p>近期，我们通过 <a href="https://www.anthropic.com/glasswing" target="_blank">Project Glasswing</a> 向多家合作伙伴开放了 Claude Mythos Preview——它在发现和利用软件漏洞两方面都能比肩甚至超越顶级人类专家。&nbsp;</p><p>但我们的网络安全工作不止于 Glasswing：借助 Claude Security，更多组织可以让最强大的通用模型 Claude Opus 4.7 在他们的代码库中大显身手。在发现和修补软件漏洞、以及挖掘那些容易被遗漏的复杂上下文依赖问题方面，Opus 4.7 位居最强模型之列。</p><p>Claude Security（前身为 Claude Code Security）在有限的研究预览阶段已被数百家各种规模的组织试用，帮助团队扫描代码库中的漏洞并生成针对性补丁。他们的反馈塑造了今天的正式版本：Claude Security 现已向所有 Enterprise 客户开放，并带来了定时扫描和定向扫描、更便捷的审计系统集成，以及更完善的分级结果跟踪。无需 API 集成，也无需自建智能体：只要你的组织在用 Claude，今天就可以开始扫描。</p><p>Opus 4.7 的能力也正通过 Claude 与众多企业既有软件工具的集成，传递给网络防御者。我们的技术合作伙伴，包括 <a href="https://www.crowdstrike.com/en-us/press-releases/crowdstrike-puts-claude-opus-4-7-to-work-across-falcon-platform-project-quiltworks/" target="_blank">CrowdStrike</a>、Microsoft Security、<a href="https://www.paloaltonetworks.com/blog/2026/04/ai-driven-defense-anthropics-claude-opus/" target="_blank">Palo Alto Networks</a>、<a href="https://www.sentinelone.com/press/sentinelone-unveils-wayfinder-ai/" target="_blank">SentinelOne</a>、<a href="https://newsroom.trendmicro.com/2026-04-30-TrendAI-TM-and-Anthropic-Advance-AI-Powered-Vulnerability-Detection-and-Risk-Mitigation-with-Claude-Opus-4-7" target="_blank">TrendAI</a> 和 <a href="https://www.wiz.io/blog/red-agent-claude-opus" target="_blank">Wiz</a>，正在把 Opus 4.7 嵌入他们的工具；此外，Accenture、BCG、Deloitte、Infosys 和 PwC 等服务合作伙伴也在帮助各组织部署集成了 Claude 的安全解决方案。</p><p>我们正进入网络安全的关键时期。AI 正在压缩从发现漏洞到利用漏洞之间的时间窗口。我们认为正确的应对之道，是确保防御者能以对他们来说最容易获取的方式用上前沿能力——直接通过 Claude，或通过我们的合作伙伴。</p><h2><strong>Claude Security 的工作方式</strong></h2><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/0SgCiUfoYo8" title="Find and fix security vulnerabilities with Claude" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><p><a href="https://youtu.be/0SgCiUfoYo8" target="_blank">Claude Security</a> 可以直接从 Claude.ai 侧边栏进入，或访问<a href="http://claude.ai/security"> claude.ai/security</a>。开始时，选择你的一个代码仓库（也可以限定到特定目录或分支），然后启动扫描。&nbsp;</p><p>扫描过程中，Claude 对代码的推理方式很像一位安全研究员。它不是通过检索已知模式来查找漏洞，而是努力理解各个组件如何跨文件和模块交互，追踪数据流，并阅读源代码。&nbsp;</p><p>扫描完成后，Claude 会对每个发现给出详细解释，包括它对该漏洞真实存在的置信度、严重程度、可能的影响，以及如何复现。它还会生成针对性补丁的说明，用户可以在 Claude Code on the Web 中打开，结合上下文完成修复。</p><h2><strong>初次预览以来我们学到的事</strong></h2><p>过去两个月里，我们根据数百家企业在生产环境中的使用反馈，对 Claude Security 进行了打磨。具体来说，我们发现：</p><p><strong>检测质量高于一切。</strong>团队告诉我们，高置信度的发现才真正能加速安全工作。Claude Security 的多阶段验证流水线会在每条结果送抵分析师之前独立核查，从而压低误报率，而且 Claude 会为每个结果附上置信度评级。这意味着到达团队手中的信号是值得行动的。</p><p><strong>从扫描到修复的时间才是关键指标。</strong>早期用户反复强调这一点，好几个团队已经可以一次性完成从扫描到打补丁，而不用在安全团队和工程团队之间来回拉锯好几天。</p><p><strong>团队要的是持续覆盖，而不是一次性审计。</strong>我们新增了定时扫描选项，团队可以围绕审查和处理发现建立固定节奏。</p><p>在这次发布中，我们还加入了以下能力：针对仓库内特定目录进行定向扫描；以书面理由驳回发现（让后续审查者可以信任之前的分级决策）；将发现导出为 CSV 或 Markdown，对接现有的跟踪和审计系统；以及通过 webhook 把扫描结果发送到 Slack、Jira 等工具。</p><p>下面是使用过 Claude Security 的组织的亲身讲述：</p><div class="article-testimonials" role="list"><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68b5aa585b66f744445eaec7_Doordash_light.svg" alt="68b5aa585b66f744445eaec7 Doordash" loading="lazy"><blockquote><p>“我们正通过与 Anthropic 的合作调整主动安全工作。Claude Security 帮助我们以 DoorDash 的规模和速度加速生成并保护新代码——它能准确浮现深层漏洞，并把发现直接接入我们的工作流，让工程师可以结合上下文采取行动。”</p></blockquote><figcaption class="article-testimonial-caption">Suha Can, Vice President and Chief Security Officer</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68b5ada683bb0532fc4582a3_Snowflake_light.svg" alt="68b5ada683bb0532fc4582a3 Snowflake" loading="lazy"><blockquote><p>“在研究预览的早期测试中，Claude Security 浮现出新颖、高质量的发现，帮助我们在潜在安全问题影响环境或客户之前识别并处理它们。随着我们扩大使用范围，我们看到了很大的潜力。”</p></blockquote><figcaption class="article-testimonial-caption">Krzysztof Katowicz-Kowalewski, Staff Product Security Engineer</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69f37e9aa5aaf2be13e1fc87_column-logo-black.png" alt="69f37e9aa5aaf2be13e1fc87 column" loading="lazy"><blockquote><p>“Claude Security 能把握我们代码背后真实的业务逻辑。我们的安全团队现在可以在可信的工具内，只需几次点击就从扫描走到修复。”</p></blockquote><figcaption class="article-testimonial-caption">Greg Janowiak, Information Security Officer</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69f3877190da77141c92e1e5_684b70d717a5356f5a6f8793_yuno_wordmark_dark.svg" alt="69f3877190da77141c92e1e5 684b70d717a5356f5a6f8793 yuno wordmark" loading="lazy"><blockquote><p>“扫描质量是我们要把 Claude Security 直接接入漏洞管理流程的原因——这样真正的问题能更快到达工程侧，中间的分级开销也更少。”</p></blockquote><figcaption class="article-testimonial-caption">Chiara La Valle, Head of Security</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68bb5f3a87453ecfe9d53a39_Hebbia-light-theme.svg" alt="68bb5f3a87453ecfe9d53a39 Hebbia theme" loading="lazy"><blockquote><p>“鉴于漏洞发现的节奏越来越快，对我们来说最强的信号是一条发现能多快变成可以真正合并的 PR，而不是一张工单。我们用 Claude Security 生成的补丁，在几分钟而不是几天内关闭了真实漏洞。”</p></blockquote><figcaption class="article-testimonial-caption">Matt Aromatorio, Head of Security</figcaption></figure></div><p>我们仍处于 AI 驱动安全的早期。随着模型能力提升，以及我们从在生产环境中使用 Claude Security 的团队那里学到更多，我们将继续扩展这些工具能做的事。</p><h2><strong>在防御者工作的地方与他们会合</strong></h2><p>Claude Security 是我们把前沿能力交到防御者手中这一更大努力的一部分。它的覆盖面很大程度上来自团队今天已经在用的平台和服务合作伙伴。&nbsp;</p><p><a href="https://www.crowdstrike.com/en-us/press-releases/crowdstrike-puts-claude-opus-4-7-to-work-across-falcon-platform-project-quiltworks/" target="_blank">CrowdStrike</a>、Microsoft Security、<a href="https://www.paloaltonetworks.com/blog/2026/04/ai-driven-defense-anthropics-claude-opus/" target="_blank">Palo Alto Networks</a>、<a href="https://www.sentinelone.com/press/sentinelone-unveils-wayfinder-ai/" target="_blank">SentinelOne</a>、<a href="https://newsroom.trendmicro.com/2026-04-30-TrendAI-TM-and-Anthropic-Advance-AI-Powered-Vulnerability-Detection-and-Risk-Mitigation-with-Claude-Opus-4-7" target="_blank">TrendAI</a> 和 <a href="https://www.wiz.io/blog/red-agent-claude-opus" target="_blank">Wiz</a> 正在把 Opus 4.7 的能力集成进企业今天已经在运行的安全平台。<br>Accenture、BCG、Deloitte、Infosys 和 PwC 正在与企业安全组织合作，部署集成了 Claude 的安全解决方案，覆盖漏洞管理、安全代码审查和事件响应项目。</p><p>合在一起，这意味着组织可以通过最符合现有运作方式的路径采用这些能力：直接使用 Claude Security，嵌入他们信任的平台，或由服务团队指导落地。</p><figure style="max-width:3840pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69f3a816d134a8a70584f711_Security-Logo-Slide_v3%20(1).png" loading="lazy"></div></figure><h2><strong>开始使用</strong></h2><p>Claude Security 即日起面向 Claude Enterprise 客户开启公开测试。面向 Claude Team 和 Max 客户的访问即将推出。</p><p>管理员可以在 <a href="http://claude.ai/admin-settings/claude-code">管理控制台</a> 中启用 Claude Security。完整操作说明请见我们的 <a href="https://claude.com/resources/tutorials/getting-started-with-claude-security" target="_blank">入门指南</a>。&nbsp;</p><p>¹<sub>Claude Opus 4.7 采用了新的网络防护措施，会自动检测并拦截暗示禁止或高风险网络安全用途的请求。不过，开展可能触发这些防护的工作的组织可以加入我们的 </sub><a href="https://support.claude.com/en/articles/14604842-real-time-cyber-safeguards-on-claude" target="_blank"><sub>Cyber Verification Program</sub></a><sub>，这是我们努力把前沿能力交给防御者、同时不让它们落入错误之手的一部分。</sub></p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/claude-security-public-beta" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

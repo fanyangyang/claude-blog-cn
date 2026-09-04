@@ -13,5 +13,21 @@
   "translatedTitle": "初创公司如何构建 AI 智能体",
   "translated": true,
   "translatedAt": "2026-09-02T04:48:40.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Platform"
+    ],
+    "usecase": [
+      "Agents"
+    ]
+  },
+  "subtitle": "For resource-constrained startups, AI agents autonomously handle complex processes, reclaiming founder time, providing expert-level capabilities, and maintaining quality while moving fast.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/platform/api"
 }

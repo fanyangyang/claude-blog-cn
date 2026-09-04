@@ -13,5 +13,26 @@
   "translatedTitle": "Outtake 如何在 Claude 上构建网络犯罪调查员",
   "translated": true,
   "translatedAt": "2026-09-02T04:14:34.101Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Agents",
+      "Claude Code"
+    ],
+    "product": [
+      "Claude Code",
+      "Claude Platform"
+    ],
+    "usecase": [
+      "Agents",
+      "Startups"
+    ]
+  },
+  "subtitle": "How Outtake ensures multi-hour agent sessions stay on track to uncover attack network operations",
+  "authors": [
+    "Michael Segner"
+  ],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/agents",
+  "productUrl": "https://claude.com/product/claude-code"
 }

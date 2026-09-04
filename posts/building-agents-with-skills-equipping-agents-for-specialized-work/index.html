@@ -4,39 +4,267 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>用 Skills 构建智能体：为专业工作武装智能体 — Claude Blog 中文翻译</title>
-  <meta name="description" content="用 Skills 构建智能体：为专业工作武装智能体">
+  <meta name="description" content="Skills package domain expertise in files agents can access and apply—turning general-purpose agents into knowledgeable specialists for real work.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/building-agents-with-skills-equipping-agents-for-specialized-work" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>用 Skills 构建智能体：为专业工作武装智能体</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/building-agents-with-skills-equipping-agents-for-specialized-work" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/building-agents-with-skills-equipping-agents-for-specialized-work/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># 用 Skills 构建智能体：为专业工作武装智能体
+
+Skills package domain expertise in files agents can access and apply—turning general-purpose agents into knowledgeable specialists for real work.
+
+过去一年发生了很多变化。MCP 成为智能体连接的事实标准，被行业领袖和开发者社区迅速采用。[Claude Code 发布](https://www.anthropic.com/news/claude-3-7-sonnet)，成为通用编程智能体。我们还发布了 [Claude Agent SDK](https://www.anthropic.com/engineering/building-agents-with-the-claude-agent-sdk)，如今它开箱即用地提供一个生产可用的智能体。
+
+但随着我们构建和部署这些智能体，总是撞上同一个缺口：智能体拥有智力和能力，却未必拥有有效完成真实工作所需的专业知识。这促使我们[创建了 Agent Skills](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills)。技能是有组织的文件集合，把领域专业知识——工作流、最佳实践、脚本——打包成智能体可以访问和运用的格式。它能把一个能力不错的通才，变成知识渊博的专家。
+
+在这篇文章中，我们将解释为什么我们不再构建专门化的智能体、转而构建技能，以及这一转变如何改变了我们对扩展智能体能力的思考方式。
+
+## **新范式：代码即所需**
+
+我们曾经以为不同领域的智能体会长得非常不一样。编程智能体、研究智能体、财务智能体、营销智能体——每一个似乎都需要自己的工具和脚手架。业界最初也拥抱了这种领域专属智能体的模式。但随着模型智能水平和智能体能力的提升，我们逐渐收敛到了另一条路线上。
+
+我们逐渐意识到，代码不只是众多用例之一，而是一种接口，智能体可以借助它完成几乎任何数字化工作。Claude Code 是一个编程智能体，但也是一个恰好通过代码来工作的通用智能体。
+
+设想让 Claude Code 生成一份财务报告。它可以调用 API 做研究、把数据存进文件系统、用 Python 做分析，再综合出洞察。这一切都通过代码完成。脚手架简化到了 bash 和一个文件系统的程度。
+
+但通用能力并不等于专业知识。当我们开始用 Claude Code 处理真实工作时，一个缺口显现出来。
+
+## **缺失的一环：领域专业知识**
+
+如果有人替你报税，你会选谁：一位从第一性原理出发推导的数学天才，还是一位申报过几千份报税单的资深税务师？大多数人会选税务师。不是因为他更聪明，而是因为他拥有正确的专业知识。
+
+如今的智能体就像那位数学天才：面对全新情境时推理能力惊人，却常常缺少资深专业人士积累下来的经验。在恰当的引导下，它们能做出很棒的东西。但它们往往缺少重要的背景信息，无法轻易吸收你组织的专业知识，也不会自动从重复任务中学习。
+
+技能正是为了弥合这一缺口：把领域专业知识打包成智能体可以按需逐步访问和运用的格式。
+
+## **什么是 Agent Skills？**
+
+技能为智能体打包领域专业知识和程序性知识。 
+
+`anthropic_brand/
+├── SKILL.md
+├── docs.md
+├── slide-decks.md
+└── apply_template.py`技能的简单是刻意为之。文件是一种普适的基础原语，与你已有的一切都能配合。你可以用 Git 做版本管理、存到 Google Drive、分享给团队。这种简单也意味着创建技能不是工程师的专利。产品经理、分析师和领域专家已经在构建技能，把自己的工作流沉淀成规范。
+
+## **渐进式披露**
+
+技能可能包含大量信息。为了保护上下文窗口并让技能可以组合，它们采用渐进式披露：运行时，只有元数据（YAML frontmatter 中的名称和描述）会展示给模型。
+
+`---
+name: Anthropic Brand Style Guidelines
+description: Anthropic's official brand colors and typography…
+---
+`如果 Claude 判断需要某个技能，它会读取完整的 SKILL.md 文件。若需要更多细节，技能还可以包含一个 references/ 目录，存放仅在需要时才加载的支撑文档。
+
+这种三层结构意味着你可以为一个智能体配备数百个技能，而不必撑爆它的上下文窗口——元数据约占 50 个 token，完整 SKILL.md 约 500 个 token，参考文件 2000 个 token 以上且仅在确实需要时加载。
+
+## **技能可以把脚本作为工具**
+
+传统工具存在一些问题：有的说明书写得糟糕，模型无法修改或扩展它们，而且它们常常撑大上下文窗口。代码则相反：自带说明、可修改，而且不必一直待在上下文里。
+
+举一个真实的例子：我们反复看到 Claude 编写同样的脚本来为幻灯片应用 Anthropic 样式。于是我们让 Claude 把它保存为自己的一个工具：
+
+`# anthropic/brand_styling/apply_template.py
+import sys
+from pptx import Presentation
+
+if len(sys.argv) != 2:
+    print(&quot;USAGE: apply_template.py &lt;pptx&gt;&quot;)
+    sys.exit(1)
+
+prs = Presentation(sys.argv[1])
+for slide in prs.slides:
+    ...`slide-decks.md 中对应的文档只是简单地引用这个脚本：
+
+`## Anthropic Slide Decks
+- Intro/outro slides
+  - background color: `#141413`
+  - foreground color: oat
+- Section slides:
+  - background color: `#da7857`
+  - foreground color: `#141413`
+
+Use the `./apply_template.py` script to update a pptx file in-place.`
+## **技能生态**
+
+技能生态发展非常快，到目前为止我们看到三类主要的技能：
+
+### **基础技能**
+
+它们提供人人都需要的核心能力：处理文档、电子表格、演示文稿等，把文档生成与操作的最佳实践固化下来。你可以浏览[我们公开仓库中的基础技能](https://github.com/anthropics/skills/tree/main/skills/public)，看看它们在实践中长什么样。
+
+### **合作伙伴技能**
+
+随着技能把智能体与专业能力的交互方式标准化，各公司纷纷构建技能，让自己的服务可以被智能体访问。[K-Dense](https://github.com/K-Dense-AI/claude-scientific-skills)、[Browserbase](https://github.com/browserbase/agent-browse)、[Notion](https://www.notion.so/notiondevs/Notion-Skills-for-Claude-28da4445d27180c7af1df7d8615723d0) 以及[许多其他公司](https://claude.com/blog/organization-skills-and-directory)都在创建直接集成自家服务的技能，在特定领域扩展 Claude 的能力，同时保持技能格式的简洁。
+
+### **企业技能**
+
+组织会构建专有技能，把内部流程和领域专业知识沉淀其中。技能帮助沉淀那些让智能体在企业工作中真正有用的特定工作流、合规要求和机构知识。
+
+## **我们看到的趋势**
+
+随着技能的采用不断增长，一些模式正在浮现，指向这一范式可能的走向。这些趋势影响着我们对技能设计的思考，以及我们为支持技能开发者而构建的工具。
+
+### **复杂度不断提升**
+
+早期的技能只是简单的文档参考。现在我们看到的是精巧的多步骤工作流，协调数据检索、复杂计算，以及跨多个工具的格式化输出。
+
+- **简单**：“状态报告撰写器”（约 100 行）——模板与格式化
+- **中等**：“财务模型构建器”（约 800 行）——数据检索、用 Python 做 Excel 建模
+- **复杂**：“RNA 测序流水线”（2500 行以上）——协调 HISAT2、StringTie、DESeq2 分析
+
+### **技能与 MCP**
+
+[技能与 MCP 服务器天然互补](https://claude.com/blog/extending-claude-capabilities-with-skills-mcp-servers)。一个竞争分析技能可以协调网页搜索、经 MCP 访问的内部数据库、Slack 消息历史和 Notion 页面，最终综合出一份全面的报告。
+
+### **非开发者的加入**
+
+技能创建正在从工程师扩展到各学科的产品经理、分析师和领域专家。借助 skill-creator 工具的交互式引导，他们可以在 30 分钟内创建并测试第一个技能。我们正在努力让技能创建更加平易近人，提供改进的工具和模板，让任何人都能沉淀并分享专业知识。
+
+## **完整的架构**
+
+把这一切拼起来，浮现中的智能体架构由以下部分组合而成：
+
+- **智能体循环（Agent loop）**：决定下一步做什么的核心推理系统
+- **智能体运行时（Agent runtime）**：执行环境（代码、文件系统）
+- **MCP 服务器**：连接外部工具和数据源
+- **技能库**：领域专业知识与程序性知识
+
+每一层都有清晰的职责：循环负责推理，运行时负责执行，MCP 负责连接，技能负责指引。这种分离让整个系统可理解，也让每个部分可以独立演进。
+
+想想在这个架构上增加一个技能会发生什么。[前端设计技能](https://github.com/anthropics/claude-code/tree/main/plugins/frontend-design)能瞬间改变 Claude 的前端能力。它提供关于排版、色彩理论和动画的专门指导，只在构建 Web 界面时激活。渐进式披露保证了它只在相关时加载。增加新能力就这么简单。
+
+## **把技能部署到新的垂直领域**
+
+这种“通用智能体 + MCP 服务器 + 技能”的新模式，已经在帮助我们向新的垂直领域部署 Claude。
+
+### **金融服务**
+
+技能发布后不久，我们为[金融服务行业的 Claude](https://www.anthropic.com/news/claude-for-financial-services) 增加了一批技能，让 Claude 对金融从业者更加有用：
+
+- **DCF 模型构建器**：构建含规范 WACC 计算和敏感性分析的现金流折现模型
+- **可比公司分析**：生成含相关估值倍数和基准对比的可比公司表
+- **财报分析**：处理季度业绩并生成投资动态报告
+- **首次覆盖报告**：构建包含财务模型的全面研究报告
+- **尽职调查**：用标准化框架组织并购分析
+- **路演材料**：按行业标准制作面向客户的演示文稿
+
+### **医疗健康与生命科学**
+
+我们也为[医疗健康与生命科学产品](https://www.anthropic.com/news/healthcare-life-sciences)增加了技能，让 Claude 对研究人员、临床医生和医疗开发者更加有用：
+
+- **生物信息学套件**：面向 scVI-tools 和 Nextflow 部署的技能，是管理基因组流水线和单细胞 RNA 测序的关键
+- **临床试验方案生成**：加速临床研究的方案制定
+- **科学问题遴选**：帮助研究者识别并构建有影响力的研究问题
+- **FHIR 开发**：帮助开发者编写更准确的健康数据互操作代码，更快地打通医疗系统、减少错误
+- **预授权审查**：交叉比对承保要求、临床指南和患者记录，减轻行政负担，加快患者获得所需诊疗
+
+## **Agent Skills 标准化**
+
+为了让这一愿景落地，我们将 [Agent Skills](https://agentskills.io) 作为开放标准发布。和 MCP 一样，我们相信技能应当可以跨工具、跨平台移植。同一个技能，无论你在用 Claude 还是其他 AI 平台，都应该能正常工作。我们一直在与生态中的成员协作制定这一标准，也很高兴看到早期的采用。
+
+当某人第一次使用 AI 智能体时，它应该已经了解你和你的团队关心什么——因为技能捕捉并传递了这些专业知识。随着生态的成长，社区里其他人构建的技能可以让你的智能体更有用、更可靠、更强大——无论他们用的是哪个 AI 平台。
+
+## **开始使用**
+
+我们正在收敛出一种通用智能体的架构，而技能提供了发布和分享新能力的范式。真正的价值来自我们共同构建的知识库：沉淀专业知识、跨团队传递，让每一个智能体都比上一个更强大。
+
+**资源：**
+
+- [Don't Build Agents, Build Skills Instead](https://youtu.be/CEvIs9y1uog?si=yhYQH-ZTX0DfNdtm)（YouTube 视频）
+- [技能文档](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview)
+- [GitHub 仓库](https://github.com/anthropics/skills)
+- [技能 cookbook](https://platform.claude.com/cookbook/skills-notebooks-01-skills-introduction)
+- [在 Claude 中使用技能](https://support.claude.com/en/articles/12512180-using-skills-in-claude)
+- [Skills API 快速入门](https://platform.claude.com/docs/en/build-with-claude/skills-guide)
+- [技能最佳实践文档](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices)
+
+### **致谢：**
+
+Barry Zhang、Mahesh Murag、Keith Lazuka、Ryan Whitehead</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Agents</span>
-            <span class="article-date">January 22, 2026</span>
-            
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-olive);">
+            <img class="hero-illo-img" src="/assets/illustrations/building-agents-with-skills-equipping-agents-for-specialized-work.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">用 Skills 构建智能体：为专业工作武装智能体</h1>
-          <a href="/posts/building-agents-with-skills-equipping-agents-for-specialized-work/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>过去一年发生了很多变化。MCP 成为智能体连接的事实标准，被行业领袖和开发者社区迅速采用。<a href="https://www.anthropic.com/news/claude-3-7-sonnet" target="_blank">Claude Code 发布</a>，成为通用编程智能体。我们还发布了 <a href="https://www.anthropic.com/engineering/building-agents-with-the-claude-agent-sdk" target="_blank">Claude Agent SDK</a>，如今它开箱即用地提供一个生产可用的智能体。</p><p>但随着我们构建和部署这些智能体，总是撞上同一个缺口：智能体拥有智力和能力，却未必拥有有效完成真实工作所需的专业知识。这促使我们<a href="https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills" target="_blank">创建了 Agent Skills</a>。技能是有组织的文件集合，把领域专业知识——工作流、最佳实践、脚本——打包成智能体可以访问和运用的格式。它能把一个能力不错的通才，变成知识渊博的专家。</p><p>在这篇文章中，我们将解释为什么我们不再构建专门化的智能体、转而构建技能，以及这一转变如何改变了我们对扩展智能体能力的思考方式。</p><h2><strong>新范式：代码即所需</strong></h2><p>我们曾经以为不同领域的智能体会长得非常不一样。编程智能体、研究智能体、财务智能体、营销智能体——每一个似乎都需要自己的工具和脚手架。业界最初也拥抱了这种领域专属智能体的模式。但随着模型智能水平和智能体能力的提升，我们逐渐收敛到了另一条路线上。</p><figure style="max-width:2880pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6972a852db1883d8c862151f_building-agents-with-skills-fig1-v3%402x.png" loading="lazy"></div></figure><p>我们逐渐意识到，代码不只是众多用例之一，而是一种接口，智能体可以借助它完成几乎任何数字化工作。Claude Code 是一个编程智能体，但也是一个恰好通过代码来工作的通用智能体。</p><figure style="max-width:2880pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6972a8b8cb336e177c409445_building-agents-with-skills-fig2-v4%402x.png" loading="lazy"></div></figure><p>设想让 Claude Code 生成一份财务报告。它可以调用 API 做研究、把数据存进文件系统、用 Python 做分析，再综合出洞察。这一切都通过代码完成。脚手架简化到了 bash 和一个文件系统的程度。</p><p>但通用能力并不等于专业知识。当我们开始用 Claude Code 处理真实工作时，一个缺口显现出来。</p><h2><strong>缺失的一环：领域专业知识</strong></h2><p>如果有人替你报税，你会选谁：一位从第一性原理出发推导的数学天才，还是一位申报过几千份报税单的资深税务师？大多数人会选税务师。不是因为他更聪明，而是因为他拥有正确的专业知识。</p><p>如今的智能体就像那位数学天才：面对全新情境时推理能力惊人，却常常缺少资深专业人士积累下来的经验。在恰当的引导下，它们能做出很棒的东西。但它们往往缺少重要的背景信息，无法轻易吸收你组织的专业知识，也不会自动从重复任务中学习。</p><p>技能正是为了弥合这一缺口：把领域专业知识打包成智能体可以按需逐步访问和运用的格式。</p><h2><strong>什么是 Agent Skills？</strong></h2><p>技能为智能体打包领域专业知识和程序性知识。&nbsp;</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-javascript" style="white-space:pre-wrap"><span><span>anthropic_brand/
+            <h1 class="article-title u-text-style-h1">用 Skills 构建智能体：为专业工作武装智能体</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>Skills package domain expertise in files agents can access and apply—turning general-purpose agents into knowledgeable specialists for real work.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <div class="hero-detail-value-stack"><a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/agents" target="_blank" rel="noopener noreferrer">Agents</a><div class="hero-detail-value u-text-style-body-3">Claude Code</div></div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/product/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">January 22, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/building-agents-with-skills-equipping-agents-for-specialized-work/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>过去一年发生了很多变化。MCP 成为智能体连接的事实标准，被行业领袖和开发者社区迅速采用。<a href="https://www.anthropic.com/news/claude-3-7-sonnet" target="_blank">Claude Code 发布</a>，成为通用编程智能体。我们还发布了 <a href="https://www.anthropic.com/engineering/building-agents-with-the-claude-agent-sdk" target="_blank">Claude Agent SDK</a>，如今它开箱即用地提供一个生产可用的智能体。</p><p>但随着我们构建和部署这些智能体，总是撞上同一个缺口：智能体拥有智力和能力，却未必拥有有效完成真实工作所需的专业知识。这促使我们<a href="https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills" target="_blank">创建了 Agent Skills</a>。技能是有组织的文件集合，把领域专业知识——工作流、最佳实践、脚本——打包成智能体可以访问和运用的格式。它能把一个能力不错的通才，变成知识渊博的专家。</p><p>在这篇文章中，我们将解释为什么我们不再构建专门化的智能体、转而构建技能，以及这一转变如何改变了我们对扩展智能体能力的思考方式。</p><h2><strong>新范式：代码即所需</strong></h2><p>我们曾经以为不同领域的智能体会长得非常不一样。编程智能体、研究智能体、财务智能体、营销智能体——每一个似乎都需要自己的工具和脚手架。业界最初也拥抱了这种领域专属智能体的模式。但随着模型智能水平和智能体能力的提升，我们逐渐收敛到了另一条路线上。</p><figure style="max-width:2880pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6972a852db1883d8c862151f_building-agents-with-skills-fig1-v3%402x.png" loading="lazy"></div></figure><p>我们逐渐意识到，代码不只是众多用例之一，而是一种接口，智能体可以借助它完成几乎任何数字化工作。Claude Code 是一个编程智能体，但也是一个恰好通过代码来工作的通用智能体。</p><figure style="max-width:2880pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6972a8b8cb336e177c409445_building-agents-with-skills-fig2-v4%402x.png" loading="lazy"></div></figure><p>设想让 Claude Code 生成一份财务报告。它可以调用 API 做研究、把数据存进文件系统、用 Python 做分析，再综合出洞察。这一切都通过代码完成。脚手架简化到了 bash 和一个文件系统的程度。</p><p>但通用能力并不等于专业知识。当我们开始用 Claude Code 处理真实工作时，一个缺口显现出来。</p><h2><strong>缺失的一环：领域专业知识</strong></h2><p>如果有人替你报税，你会选谁：一位从第一性原理出发推导的数学天才，还是一位申报过几千份报税单的资深税务师？大多数人会选税务师。不是因为他更聪明，而是因为他拥有正确的专业知识。</p><p>如今的智能体就像那位数学天才：面对全新情境时推理能力惊人，却常常缺少资深专业人士积累下来的经验。在恰当的引导下，它们能做出很棒的东西。但它们往往缺少重要的背景信息，无法轻易吸收你组织的专业知识，也不会自动从重复任务中学习。</p><p>技能正是为了弥合这一缺口：把领域专业知识打包成智能体可以按需逐步访问和运用的格式。</p><h2><strong>什么是 Agent Skills？</strong></h2><p>技能为智能体打包领域专业知识和程序性知识。&nbsp;</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-javascript" style="white-space:pre-wrap"><span><span>anthropic_brand/
 </span></span><span>├── SKILL.md
 </span><span>├── docs.md
 </span><span>├── slide-decks.md
@@ -63,21 +291,70 @@
 </span></span><span><span>  - foreground color: </span><span style="color:#abe338">`#141413`</span><span>
 </span></span><span>
 </span><span><span>Use the </span><span style="color:#abe338">`./apply_template.py`</span><span> script to update a pptx file </span><span style="color:#dcc6e0">in</span><span>-place.</span></span></code></pre><h2><strong>技能生态</strong></h2><p>技能生态发展非常快，到目前为止我们看到三类主要的技能：</p><h3><strong>基础技能</strong></h3><p>它们提供人人都需要的核心能力：处理文档、电子表格、演示文稿等，把文档生成与操作的最佳实践固化下来。你可以浏览<a href="https://github.com/anthropics/skills/tree/main/skills/public" target="_blank">我们公开仓库中的基础技能</a>，看看它们在实践中长什么样。</p><h3><strong>合作伙伴技能</strong></h3><p>随着技能把智能体与专业能力的交互方式标准化，各公司纷纷构建技能，让自己的服务可以被智能体访问。<a href="https://github.com/K-Dense-AI/claude-scientific-skills" target="_blank">K-Dense</a>、<a href="https://github.com/browserbase/agent-browse" target="_blank">Browserbase</a>、<a href="https://www.notion.so/notiondevs/Notion-Skills-for-Claude-28da4445d27180c7af1df7d8615723d0" target="_blank">Notion</a> 以及<a href="https://claude.com/blog/organization-skills-and-directory" target="_blank">许多其他公司</a>都在创建直接集成自家服务的技能，在特定领域扩展 Claude 的能力，同时保持技能格式的简洁。</p><h3><strong>企业技能</strong></h3><p>组织会构建专有技能，把内部流程和领域专业知识沉淀其中。技能帮助沉淀那些让智能体在企业工作中真正有用的特定工作流、合规要求和机构知识。</p><h2><strong>我们看到的趋势</strong></h2><p>随着技能的采用不断增长，一些模式正在浮现，指向这一范式可能的走向。这些趋势影响着我们对技能设计的思考，以及我们为支持技能开发者而构建的工具。</p><h3><strong>复杂度不断提升</strong></h3><p>早期的技能只是简单的文档参考。现在我们看到的是精巧的多步骤工作流，协调数据检索、复杂计算，以及跨多个工具的格式化输出。</p><ul role="list"><li><strong>简单</strong>：“状态报告撰写器”（约 100 行）——模板与格式化</li><li><strong>中等</strong>：“财务模型构建器”（约 800 行）——数据检索、用 Python 做 Excel 建模</li><li><strong>复杂</strong>：“RNA 测序流水线”（2500 行以上）——协调 HISAT2、StringTie、DESeq2 分析</li></ul><h3><strong>技能与 MCP</strong></h3><p><a href="https://claude.com/blog/extending-claude-capabilities-with-skills-mcp-servers" target="_blank">技能与 MCP 服务器天然互补</a>。一个竞争分析技能可以协调网页搜索、经 MCP 访问的内部数据库、Slack 消息历史和 Notion 页面，最终综合出一份全面的报告。</p><h3><strong>非开发者的加入</strong></h3><p>技能创建正在从工程师扩展到各学科的产品经理、分析师和领域专家。借助 skill-creator 工具的交互式引导，他们可以在 30 分钟内创建并测试第一个技能。我们正在努力让技能创建更加平易近人，提供改进的工具和模板，让任何人都能沉淀并分享专业知识。</p><h2><strong>完整的架构</strong></h2><p>把这一切拼起来，浮现中的智能体架构由以下部分组合而成：</p><ol role="list"><li><strong>智能体循环（Agent loop）</strong>：决定下一步做什么的核心推理系统</li><li><strong>智能体运行时（Agent runtime）</strong>：执行环境（代码、文件系统）</li><li><strong>MCP 服务器</strong>：连接外部工具和数据源</li><li><strong>技能库</strong>：领域专业知识与程序性知识</li></ol><figure style="max-width:2880pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6972ab24ac6df74ad6704f37_building-agents-with-skills-fig3-v2%402x.png" loading="lazy"></div></figure><p>每一层都有清晰的职责：循环负责推理，运行时负责执行，MCP 负责连接，技能负责指引。这种分离让整个系统可理解，也让每个部分可以独立演进。</p><p>想想在这个架构上增加一个技能会发生什么。<a href="https://github.com/anthropics/claude-code/tree/main/plugins/frontend-design" target="_blank">前端设计技能</a>能瞬间改变 Claude 的前端能力。它提供关于排版、色彩理论和动画的专门指导，只在构建 Web 界面时激活。渐进式披露保证了它只在相关时加载。增加新能力就这么简单。</p><h2><strong>把技能部署到新的垂直领域</strong></h2><p>这种“通用智能体 + MCP 服务器 + 技能”的新模式，已经在帮助我们向新的垂直领域部署 Claude。</p><h3><strong>金融服务</strong></h3><p>技能发布后不久，我们为<a href="https://www.anthropic.com/news/claude-for-financial-services" target="_blank">金融服务行业的 Claude</a> 增加了一批技能，让 Claude 对金融从业者更加有用：</p><ul role="list"><li><strong>DCF 模型构建器</strong>：构建含规范 WACC 计算和敏感性分析的现金流折现模型</li><li><strong>可比公司分析</strong>：生成含相关估值倍数和基准对比的可比公司表</li><li><strong>财报分析</strong>：处理季度业绩并生成投资动态报告</li><li><strong>首次覆盖报告</strong>：构建包含财务模型的全面研究报告</li><li><strong>尽职调查</strong>：用标准化框架组织并购分析</li><li><strong>路演材料</strong>：按行业标准制作面向客户的演示文稿</li></ul><h3><strong>医疗健康与生命科学</strong></h3><p>我们也为<a href="https://www.anthropic.com/news/healthcare-life-sciences">医疗健康与生命科学产品</a>增加了技能，让 Claude 对研究人员、临床医生和医疗开发者更加有用：</p><ul role="list"><li><strong>生物信息学套件</strong>：面向 scVI-tools 和 Nextflow 部署的技能，是管理基因组流水线和单细胞 RNA 测序的关键</li><li><strong>临床试验方案生成</strong>：加速临床研究的方案制定</li><li><strong>科学问题遴选</strong>：帮助研究者识别并构建有影响力的研究问题</li><li><strong>FHIR 开发</strong>：帮助开发者编写更准确的健康数据互操作代码，更快地打通医疗系统、减少错误</li><li><strong>预授权审查</strong>：交叉比对承保要求、临床指南和患者记录，减轻行政负担，加快患者获得所需诊疗</li></ul><h2><strong>Agent Skills 标准化</strong></h2><p>为了让这一愿景落地，我们将 <a href="https://agentskills.io" target="_blank">Agent Skills</a> 作为开放标准发布。和 MCP 一样，我们相信技能应当可以跨工具、跨平台移植。同一个技能，无论你在用 Claude 还是其他 AI 平台，都应该能正常工作。我们一直在与生态中的成员协作制定这一标准，也很高兴看到早期的采用。</p><p>当某人第一次使用 AI 智能体时，它应该已经了解你和你的团队关心什么——因为技能捕捉并传递了这些专业知识。随着生态的成长，社区里其他人构建的技能可以让你的智能体更有用、更可靠、更强大——无论他们用的是哪个 AI 平台。</p><h2><strong>开始使用</strong></h2><p>我们正在收敛出一种通用智能体的架构，而技能提供了发布和分享新能力的范式。真正的价值来自我们共同构建的知识库：沉淀专业知识、跨团队传递，让每一个智能体都比上一个更强大。</p><p><strong>资源：</strong></p><ul role="list"><li><a href="https://youtu.be/CEvIs9y1uog?si=yhYQH-ZTX0DfNdtm" target="_blank">Don't Build Agents, Build Skills Instead</a>（YouTube 视频）</li><li><a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview" target="_blank">技能文档</a></li><li><a href="https://github.com/anthropics/skills" target="_blank">GitHub 仓库</a></li><li><a href="https://platform.claude.com/cookbook/skills-notebooks-01-skills-introduction" target="_blank">技能 cookbook</a></li><li><a href="https://support.claude.com/en/articles/12512180-using-skills-in-claude" target="_blank">在 Claude 中使用技能</a></li><li><a href="https://platform.claude.com/docs/en/build-with-claude/skills-guide" target="_blank">Skills API 快速入门</a></li><li><a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices" target="_blank">技能最佳实践文档</a></li></ul><h3><strong>致谢：</strong></h3><p>Barry Zhang、Mahesh Murag、Keith Lazuka、Ryan Whitehead</p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/building-agents-with-skills-equipping-agents-for-specialized-work" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/building-agents-with-skills-equipping-agents-for-specialized-work" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

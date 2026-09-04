@@ -13,5 +13,21 @@
   "translatedTitle": "如何以及何时在 Claude Code 中使用 subagent",
   "translated": true,
   "translatedAt": "2026-09-02T04:49:22Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Claude Code"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": [
+      "Coding"
+    ]
+  },
+  "subtitle": "A practical guide to Claude Code subagents: when they help, how to direct them, and the signals that tell you delegation is worth it.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/claude-code",
+  "productUrl": "https://claude.com/product/claude-code"
 }

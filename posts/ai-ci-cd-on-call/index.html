@@ -4,54 +4,289 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Claude 值班：Claude Tag 如何成为 Anthropic CI/CD 故障的第一响应人 — Claude Blog 中文翻译</title>
-  <meta name="description" content="Claude 值班：Claude Tag 如何成为 Anthropic CI/CD 故障的第一响应人">
+  <meta name="description" content="An engineer on our Continuous Integration team walks through the agent he built that powers CI incident response at Anthropic.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/ai-ci-cd-on-call" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>Claude 值班：Claude Tag 如何成为 Anthropic CI/CD 故障的第一响应人</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/ai-ci-cd-on-call" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/ai-ci-cd-on-call/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># Claude 值班：Claude Tag 如何成为 Anthropic CI/CD 故障的第一响应人
+
+An engineer on our Continuous Integration team walks through the agent he built that powers CI incident response at Anthropic.
+
+[*使用我们的配置工具包搭建你自己的 Claude 值班响应*](https://github.com/anthropics/oncall-kit)*。*
+
+## 面向 CI/CD 的 AI 事件响应：Anthropic 的 Claude 值班实践
+
+几周前，我正在值班，晚上 10 点同事在 Slack 上给我发来一条消息：一个新服务上大约有 44 个测试没有运行。
+
+换成过去，我会放下手头的事情，坐到笔记本电脑前，疲惫地叹口气，然后开始长达一个小时排查加修复的过程。但现在，我的工作流程完全不同了：我把 @Claude 拉进来，问它看到了什么。 
+
+在这个案例中，Claude 发现这些测试是在当天早上某个功能开关（feature flag）打开后消失的，并且判断回退该开关是安全的。我请同事回退了这个开关。3 分钟后，Claude 在 Slack 上通知我，确认跳过规则确实已被移除，错误率也回到了基线水平。
+
+为清晰起见，根据真实交流重新整理。过去几个月里，Claude Tag 一直是 Anthropic CI/CD 故障的值班第一响应人。这不仅改善了我们的个人生活，还让每一次 CI 事件都能得到即时的第一响应：在近期所有产出过态势报告的事件中，首份报告都由 Claude 撰写，**通常在 15 分钟内就会发布第一份分析**。
+
+在这篇文章中，我们将介绍我们构建了什么、它是如何运作的，让你也能自己搭建一套，从此不再害怕轮到自己值班。
+
+## **我们的 Claude 值班配置**
+
+在进入事件响应流程的每个阶段之前，我会先对我们的配置做一个整体介绍，让你在了解细节之前先有一个全局图景。
+
+一个值班 agent 需要**记忆**，才能记住已经做过什么；需要**连接与访问权限**，才能调查、理解和行动；需要**日程安排**，才知道何时回到工作岗位；还需要**指令**，才知道该做什么。
+
+[Claude Tag](https://claude.com/product/tag) 是我们值班 agent 的骨架。Claude Tag 在值班 Slack 频道中保持记忆，并提供在事件期间逐轮下发指令的界面。Claude 还会对值班频道及其他频道中的事件实时做出反应。例行任务（routine）的调度——也就是 Claude 定期执行的动作——同样在这个频道中通过自然语言提示完成，比如“每周一上午 9:00（美国东部时间）执行 CI 交接”。
+
+[Claude Tag 拥有自己的服务账号](https://claude.com/blog/agent-identity-access-model)，并可以访问 Anthropic CI 工程师所需的工具，比如 Datadog 或 Grafana。这由管理员为频道一次性配置完成（[配置方法在此](https://claude.com/docs/claude-tag/admins/setup-overview#choose-which-tools-to-connect)）。 
+
+除了值班频道之外，我们还让 Claude 关注其他相关频道（这些频道同样有 Claude Tag 作为成员），以便它获取额外的上下文，比如服务告警、配置变更或 PR 的进展。 
+
+常驻指令以 Skills 的形式存放在 markdown 文件中，提交到 GitHub 仓库里。这样多位团队成员可以共同迭代，我们也能像管理代码一样管理这些指令的变更。其中还包括路由指引、策略，以及作为自我改进循环一部分的经验教训日志等关键信息。 
+
+这套配置只花了我们几个小时，而不是几天。我们在 GitHub 上开源了一个通用的[值班配置工具包](https://github.com/anthropics/oncall-kit)，可以帮助你快速搭建一个类似的 agent。它能把你们团队自己的事件历史转化为分诊 playbook，并最终在你的事件频道里留下一个只读的 Claude，负责诊断、上报和持续学习。[你可以在大约十分钟内看到它针对一个虚构团队的历史运行的全过程](https://github.com/anthropics/oncall-kit/blob/main/test-fixtures/RUNBOOK.md)。
+
+用 TL;DR 的方式总结步骤如下：
+
+- 你需要一份 [Claude Team 或 Claude Enterprise](https://support.claude.com/en/collections/9387370-team-and-enterprise-plans) 计划
+- 组织所有者需要通过 Claude Tag 将 Claude 添加到值班 Slack 频道
+- 组织所有者还需要帮助将值班 Slack 频道中的 Claude 连接到相应的连接器（connector）、GitHub 仓库，并配置 [Claude Code Remote](https://code.claude.com/docs/en/remote-control)。
+- 将 Claude 添加到你的事件频道，并指示它监控事件、立即分诊
+
+接下来，让我们深入看看在事件的每个环节，这一转变具体是什么样子。
+
+## **检测**
+
+Claude 不仅改变了你响应事件的方式，也从根本上改变了你检测事件的方式。以前，事件检测存在两大失效模式。 
+
+人类很难始终具备先见之明，设定出阈值完美、无懈可击的规则。当你没有足够的数据来分析流量模式时，这一点尤其困难。
+
+为了解决这个问题，我们让 Claude 在新服务上线的最初几天分析数据和传入的告警，以建议补充规则，并微调那些过宽或过窄的规则。 
+
+事件检测的第二大失效模式是告警疲劳：逐条检查和甄别每个触发的告警非常枯燥。但 Claude 不会像人类那样感到疲惫。 
+
+Claude 会监控每个告警频道里的所有相关告警，并对照 [根 oncall.md 文件](https://github.com/anthropics/oncall-kit/blob/main/templates/ONCALL.md)中的标准来判断：这件事可以等到早上再处理，还是需要立刻电话通知值班人员。举例来说，经过对数据的分析调优后，文件中的一条规则可以是：“如果错误率超过 2% 且持续 5 分钟以上，并且当前不是已知的部署窗口，则电话通知值班人员；否则将其写入 lessons.md。”
+
+Claude 值班告警流程还有另外两种触发方式：
+
+- CI 团队的成员可以在值班频道中报告问题，就像开头那个 44 个测试缺失的例子一样；或者  
+- 公司里的任何人都可以通过内部页面发起一个事件。如果它被标记为 CI 基础设施事件，系统会为该事件创建一个 Slack 频道，我们的值班 Claude 会自动接手。
+
+这里的要点是：告警流程是确定性（deterministic）的，而值班上报则同时包含确定性和 agent 化（agentic）两条路径。 
+
+## **分诊 **
+
+让 Claude 过滤告警噪音是一回事，真正的节省来自调查环节。Claude 在事件发生后中位数 14 分钟内就会发布第一份有证据支撑的分析，最快的案例中，它在首份报告里 4 分钟内就指出了根本原因。
+
+当告警升级为事件后，Claude 往往已经带着一个有证据支撑的假设出现在我们的 Slack 频道里，供我们审阅。Claude Tag 会启动一个[动态工作流（dynamic workflow）](https://claude.com/blog/a-harness-for-every-task-dynamic-workflows-in-claude-code)，由一个编排 agent 派生出多个执行子 agent（subagent），分别调查每个依赖项和事实来源。 
+
+对我们来说，这些事实来源包括 Grafana、日志存储、PagerDuty、GitHub、Kubernetes 以及 Slack 事件频道——全部通过 [MCP Connectors](https://code.claude.com/docs/en/mcp) 接入。Claude 可以并行追踪多条线索，帮助缩短 MTTR（平均解决时间）。
+
+执行 agent 将调查结果回报给编排 agent，由后者进行综合，并以一份条理清晰的 SITREP（态势报告）呈现出来。 
+
+编排 agent 和执行 agent 并不是在盲目搜索。它们由一个调查 skill 引导，其中包含[针对每类 bug 的更详细的参考 markdown 文件](https://github.com/anthropics/oncall-kit/tree/main/skills/triage)。 
+
+举例来说，一个针对影子分叉（shadow divergence）bug 的 617 行调查 skill，完整记录了我在一次典型调查中的每一步操作。我是在某次事件中与 Claude 逐轮协作排查后，让它根据那段经历生成这个文件的。
+
+lessons.md 也会指导 Claude 的排查。这个 markdown 文件是我们已解决的每个事件的滚动日志：发生了什么、根本原因是什么、如何修复的，以及值得记住的坑。Claude 会自动向其中追加内容。每次新的调查都从阅读这个文件开始，因此 Claude 的第一个假设总是从近期发生过的事情出发。 
+
+如果同一个模式出现足够多次，我们就会把它沉淀进调查 skill 本身。我最喜欢的一条是 Claude 写关于我的记录。我当时没先看指标就直接根据配置文件做了假设，现在 lessons.md 里写着：“先查数据，再做推论。配置告诉你什么可能出问题；指标告诉你什么确实出了问题。”
+
+即便有这些工具和上下文，Claude 也不总是一次就能做对。人类的直觉和经验依然重要。Claude Tag 让团队可以以多人协作模式排查事件：我们中的任何人都可以实时介入调整调查方向或补充假设，并肩作战。
+
+为清晰起见，根据真实对话重新整理。
+## **解决**
+
+既然 Claude 能够上报并排查告警，它也能修复问题吗？这个问题的答案因团队而异，下面是我们的做法。
+
+我们团队的大多数部署都在功能开关的保护下进行。我在 Claude Code 中创建了一个单独的 agent，它持有我的权限，能够在每个功能开关后执行渐进式部署。 
+
+我们发布流程的第一阶段通常由 Claude 负责管理灰度（canary）流量、监控问题，并自动对特定功能开关进行放量或缩量。这部分内容完全可以单独写一篇文章，所以这里不再展开。
+
+Claude Tag 帮我团队处理的其他解决路径包括：
+
+- 告知我们是否需要对 Kubernetes 集群的某些节点执行排空（drain）或隔离（cordon）；
+- 在需求激增时给出如何扩容部分基础设施的指引（这种情况很少见，但当 Claude 给出确切的缓解方案时非常有用）；以及最常见的，
+- 以 PR 的形式给出修复，值班人员可以审阅、合并并部署，从而快速解决问题。
+
+## **验证、沟通与交接**
+
+Claude 使用与调查时相同的一批 MCP Connectors 和工具来验证修复是否达到预期效果。按照 oncall.md 中的常驻指令，它会将一份事后复盘（post-mortem）写入 lessons.md，并生成交接用的 SITREP。
+
+为了在多个事件之间传达全貌，我们创建了一个名为 ci-weather 的 agent。它会汇总来自各个事件 Slack 频道的信息、构建指标、合并队列统计和部署延迟，然后以新闻播报的风格把报告发布到一个公司里任何人都能阅读的公开频道。现在，当工程师们想判断是否应该暂缓合并，或者想弄清“CI 到底怎么了”的时候，直接查阅那个频道即可，不用再来找我们。
+
+坦白说一句：这份报告的格式我们迭代了好几轮。Claude 可以一次性写出一个生成状态报告的 skill，但真正让它可读的是团队特有的品味。这是人与人之间的沟通问题，不是管道工程。
+
+最后，虽然 Claude 会在 lessons.md 中为自己的保留一份日志，我们每周一也希望为人类生成交接报告。Claude 会产出每日和每周摘要，让团队的一名成员能够无缝接续另一名成员的工作。
+
+## **从监控事件，到监控事件响应系统**
+
+我们的软件工程师平均每季度的[代码产出量是 2021 至 2025 年期间的 8 倍](https://www.anthropic.com/institute/recursive-self-improvement)。虽然我们始终保持很高的质量标准（每个 PR 都有明确的负责人、每次变更都需要审批才能合并、每次变更都经过同一套 CI 关卡），但跟上 agent 化编程节奏的唯一办法，就是 agent 化的 CI。
+
+Claude 吸收了我工作中枯燥的部分——深夜被打断的骚扰和事件沟通——让我得以专注于那些真正能提升系统可靠性的中长期架构改进。 
+
+我们构建的这套体系最棒的地方在于，它并不显得零散。我们的值班流程仍然在 Slack 里，只是现在 Claude 也加入了频道。
+
+如何开始：
+
+- 你需要一份 [Claude Team 或 Claude Enterprise](https://support.claude.com/en/collections/9387370-team-and-enterprise-plans) 计划
+- 组织所有者需要通过 Claude Tag 将 Claude 添加到值班 Slack 频道
+- 组织所有者还需要帮助将值班 Slack 频道中的 Claude 连接到相应的连接器、GitHub 仓库，并配置 [Claude Code Remote](https://code.claude.com/docs/en/remote-control)。
+- 将 Claude 添加到你的事件频道，并指示它监控事件、立即分诊
+
+[*使用我们的配置工具包搭建你自己的 Claude 值班响应*](https://github.com/anthropics/oncall-kit)*。*
+
+*本文由 Anthropic 技术团队成员 Sachin Malhotra 撰写，Anthropic 员工 Michael Segner 亦有贡献。*</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Enterprise AI</span>
-            <span class="article-date">August 18, 2026</span>
-            
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-heather);">
+            <img class="hero-illo-img" src="/assets/illustrations/ai-ci-cd-on-call.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">Claude 值班：Claude Tag 如何成为 Anthropic CI/CD 故障的第一响应人</h1>
-          <a href="/posts/ai-ci-cd-on-call/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p><a href="https://github.com/anthropics/oncall-kit"><em>使用我们的配置工具包搭建你自己的 Claude 值班响应</em></a><em>。</em></p><h2>面向 CI/CD 的 AI 事件响应：Anthropic 的 Claude 值班实践</h2><p>几周前，我正在值班，晚上 10 点同事在 Slack 上给我发来一条消息：一个新服务上大约有 44 个测试没有运行。</p><p>换成过去，我会放下手头的事情，坐到笔记本电脑前，疲惫地叹口气，然后开始长达一个小时排查加修复的过程。但现在，我的工作流程完全不同了：我把 @Claude 拉进来，问它看到了什么。&nbsp;</p><p>在这个案例中，Claude 发现这些测试是在当天早上某个功能开关（feature flag）打开后消失的，并且判断回退该开关是安全的。我请同事回退了这个开关。3 分钟后，Claude 在 Slack 上通知我，确认跳过规则确实已被移除，错误率也回到了基线水平。</p><figure style="max-width:1600pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a85deb08541b5a210e00ef5_cb834739.png" loading="lazy"></div><figcaption>为清晰起见，根据真实交流重新整理。</figcaption></figure><p>过去几个月里，Claude Tag 一直是 Anthropic CI/CD 故障的值班第一响应人。这不仅改善了我们的个人生活，还让每一次 CI 事件都能得到即时的第一响应：在近期所有产出过态势报告的事件中，首份报告都由 Claude 撰写，<strong>通常在 15 分钟内就会发布第一份分析</strong>。</p><p>在这篇文章中，我们将介绍我们构建了什么、它是如何运作的，让你也能自己搭建一套，从此不再害怕轮到自己值班。</p><h2><strong>我们的 Claude 值班配置</strong></h2><p>在进入事件响应流程的每个阶段之前，我会先对我们的配置做一个整体介绍，让你在了解细节之前先有一个全局图景。</p><p>一个值班 agent 需要<strong>记忆</strong>，才能记住已经做过什么；需要<strong>连接与访问权限</strong>，才能调查、理解和行动；需要<strong>日程安排</strong>，才知道何时回到工作岗位；还需要<strong>指令</strong>，才知道该做什么。</p><p><a href="https://claude.com/product/tag">Claude Tag</a> 是我们值班 agent 的骨架。Claude Tag 在值班 Slack 频道中保持记忆，并提供在事件期间逐轮下发指令的界面。Claude 还会对值班频道及其他频道中的事件实时做出反应。例行任务（routine）的调度——也就是 Claude 定期执行的动作——同样在这个频道中通过自然语言提示完成，比如“每周一上午 9:00（美国东部时间）执行 CI 交接”。</p><p><a href="https://claude.com/blog/agent-identity-access-model">Claude Tag 拥有自己的服务账号</a>，并可以访问 Anthropic CI 工程师所需的工具，比如 Datadog 或 Grafana。这由管理员为频道一次性配置完成（<a href="https://claude.com/docs/claude-tag/admins/setup-overview#choose-which-tools-to-connect">配置方法在此</a>）。&nbsp;</p><p>除了值班频道之外，我们还让 Claude 关注其他相关频道（这些频道同样有 Claude Tag 作为成员），以便它获取额外的上下文，比如服务告警、配置变更或 PR 的进展。&nbsp;</p><p>常驻指令以 Skills 的形式存放在 markdown 文件中，提交到 GitHub 仓库里。这样多位团队成员可以共同迭代，我们也能像管理代码一样管理这些指令的变更。其中还包括路由指引、策略，以及作为自我改进循环一部分的经验教训日志等关键信息。&nbsp;</p><p>这套配置只花了我们几个小时，而不是几天。我们在 GitHub 上开源了一个通用的<a href="https://github.com/anthropics/oncall-kit">值班配置工具包</a>，可以帮助你快速搭建一个类似的 agent。它能把你们团队自己的事件历史转化为分诊 playbook，并最终在你的事件频道里留下一个只读的 Claude，负责诊断、上报和持续学习。<a href="https://github.com/anthropics/oncall-kit/blob/main/test-fixtures/RUNBOOK.md">你可以在大约十分钟内看到它针对一个虚构团队的历史运行的全过程</a>。</p><p>用 TL;DR 的方式总结步骤如下：</p><ul role="list"><li>你需要一份 <a href="https://support.claude.com/en/collections/9387370-team-and-enterprise-plans">Claude Team 或 Claude Enterprise</a> 计划</li><li>组织所有者需要通过 Claude Tag 将 Claude 添加到值班 Slack 频道</li><li>组织所有者还需要帮助将值班 Slack 频道中的 Claude 连接到相应的连接器（connector）、GitHub 仓库，并配置 <a href="https://code.claude.com/docs/en/remote-control">Claude Code Remote</a>。</li><li>将 Claude 添加到你的事件频道，并指示它监控事件、立即分诊</li></ul><p>接下来，让我们深入看看在事件的每个环节，这一转变具体是什么样子。</p><h2><strong>检测</strong></h2><p>Claude 不仅改变了你响应事件的方式，也从根本上改变了你检测事件的方式。以前，事件检测存在两大失效模式。&nbsp;</p><p>人类很难始终具备先见之明，设定出阈值完美、无懈可击的规则。当你没有足够的数据来分析流量模式时，这一点尤其困难。</p><p>为了解决这个问题，我们让 Claude 在新服务上线的最初几天分析数据和传入的告警，以建议补充规则，并微调那些过宽或过窄的规则。&nbsp;</p><p>事件检测的第二大失效模式是告警疲劳：逐条检查和甄别每个触发的告警非常枯燥。但 Claude 不会像人类那样感到疲惫。&nbsp;</p><p>Claude 会监控每个告警频道里的所有相关告警，并对照 <a href="https://github.com/anthropics/oncall-kit/blob/main/templates/ONCALL.md">根 oncall.md 文件</a>中的标准来判断：这件事可以等到早上再处理，还是需要立刻电话通知值班人员。举例来说，经过对数据的分析调优后，文件中的一条规则可以是：“如果错误率超过 2% 且持续 5 分钟以上，并且当前不是已知的部署窗口，则电话通知值班人员；否则将其写入 lessons.md。”</p><p>Claude 值班告警流程还有另外两种触发方式：</p><ul role="list"><li>CI 团队的成员可以在值班频道中报告问题，就像开头那个 44 个测试缺失的例子一样；或者&nbsp;&nbsp;</li><li>公司里的任何人都可以通过内部页面发起一个事件。如果它被标记为 CI 基础设施事件，系统会为该事件创建一个 Slack 频道，我们的值班 Claude 会自动接手。</li></ul><figure style="max-width:2048pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a84a163e2030bce8127dd8e_a5e36b9a.png" loading="lazy"></div></figure><p>这里的要点是：告警流程是确定性（deterministic）的，而值班上报则同时包含确定性和 agent 化（agentic）两条路径。&nbsp;</p><h2><strong>分诊&nbsp;</strong></h2><p>让 Claude 过滤告警噪音是一回事，真正的节省来自调查环节。Claude 在事件发生后中位数 14 分钟内就会发布第一份有证据支撑的分析，最快的案例中，它在首份报告里 4 分钟内就指出了根本原因。</p><p>当告警升级为事件后，Claude 往往已经带着一个有证据支撑的假设出现在我们的 Slack 频道里，供我们审阅。Claude Tag 会启动一个<a href="https://claude.com/blog/a-harness-for-every-task-dynamic-workflows-in-claude-code">动态工作流（dynamic workflow）</a>，由一个编排 agent 派生出多个执行子 agent（subagent），分别调查每个依赖项和事实来源。&nbsp;</p><p>对我们来说，这些事实来源包括 Grafana、日志存储、PagerDuty、GitHub、Kubernetes 以及 Slack 事件频道——全部通过 <a href="https://code.claude.com/docs/en/mcp">MCP Connectors</a> 接入。Claude 可以并行追踪多条线索，帮助缩短 MTTR（平均解决时间）。</p><p>执行 agent 将调查结果回报给编排 agent，由后者进行综合，并以一份条理清晰的 SITREP（态势报告）呈现出来。&nbsp;</p><figure style="max-width:1692pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a84a163e2030bce8127ddb7_faae8c5a.png" loading="lazy"></div></figure><p>编排 agent 和执行 agent 并不是在盲目搜索。它们由一个调查 skill 引导，其中包含<a href="https://github.com/anthropics/oncall-kit/tree/main/skills/triage">针对每类 bug 的更详细的参考 markdown 文件</a>。&nbsp;</p><p>举例来说，一个针对影子分叉（shadow divergence）bug 的 617 行调查 skill，完整记录了我在一次典型调查中的每一步操作。我是在某次事件中与 Claude 逐轮协作排查后，让它根据那段经历生成这个文件的。</p><p>lessons.md 也会指导 Claude 的排查。这个 markdown 文件是我们已解决的每个事件的滚动日志：发生了什么、根本原因是什么、如何修复的，以及值得记住的坑。Claude 会自动向其中追加内容。每次新的调查都从阅读这个文件开始，因此 Claude 的第一个假设总是从近期发生过的事情出发。&nbsp;</p><p>如果同一个模式出现足够多次，我们就会把它沉淀进调查 skill 本身。我最喜欢的一条是 Claude 写关于我的记录。我当时没先看指标就直接根据配置文件做了假设，现在 lessons.md 里写着：“先查数据，再做推论。配置告诉你什么可能出问题；指标告诉你什么确实出了问题。”</p><p>即便有这些工具和上下文，Claude 也不总是一次就能做对。人类的直觉和经验依然重要。Claude Tag 让团队可以以多人协作模式排查事件：我们中的任何人都可以实时介入调整调查方向或补充假设，并肩作战。</p><figure style="max-width:1600pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a85df2d22740fdbccb17112_24270a8f.png" loading="lazy"></div><figcaption>为清晰起见，根据真实对话重新整理。</figcaption></figure><h2><strong>解决</strong></h2><p>既然 Claude 能够上报并排查告警，它也能修复问题吗？这个问题的答案因团队而异，下面是我们的做法。</p><p>我们团队的大多数部署都在功能开关的保护下进行。我在 Claude Code 中创建了一个单独的 agent，它持有我的权限，能够在每个功能开关后执行渐进式部署。&nbsp;</p><p>我们发布流程的第一阶段通常由 Claude 负责管理灰度（canary）流量、监控问题，并自动对特定功能开关进行放量或缩量。这部分内容完全可以单独写一篇文章，所以这里不再展开。</p><p>Claude Tag 帮我团队处理的其他解决路径包括：</p><ul role="list"><li>告知我们是否需要对 Kubernetes 集群的某些节点执行排空（drain）或隔离（cordon）；</li><li>在需求激增时给出如何扩容部分基础设施的指引（这种情况很少见，但当 Claude 给出确切的缓解方案时非常有用）；以及最常见的，</li><li>以 PR 的形式给出修复，值班人员可以审阅、合并并部署，从而快速解决问题。</li></ul><h2><strong>验证、沟通与交接</strong></h2><p>Claude 使用与调查时相同的一批 MCP Connectors 和工具来验证修复是否达到预期效果。按照 oncall.md 中的常驻指令，它会将一份事后复盘（post-mortem）写入 lessons.md，并生成交接用的 SITREP。</p><p>为了在多个事件之间传达全貌，我们创建了一个名为 ci-weather 的 agent。它会汇总来自各个事件 Slack 频道的信息、构建指标、合并队列统计和部署延迟，然后以新闻播报的风格把报告发布到一个公司里任何人都能阅读的公开频道。现在，当工程师们想判断是否应该暂缓合并，或者想弄清“CI 到底怎么了”的时候，直接查阅那个频道即可，不用再来找我们。</p><p>坦白说一句：这份报告的格式我们迭代了好几轮。Claude 可以一次性写出一个生成状态报告的 skill，但真正让它可读的是团队特有的品味。这是人与人之间的沟通问题，不是管道工程。</p><figure style="max-width:848pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a84a163e2030bce8127ddb1_c00ab792.png" loading="lazy"></div></figure><p>最后，虽然 Claude 会在 lessons.md 中为自己的保留一份日志，我们每周一也希望为人类生成交接报告。Claude 会产出每日和每周摘要，让团队的一名成员能够无缝接续另一名成员的工作。</p><h2><strong>从监控事件，到监控事件响应系统</strong></h2><p>我们的软件工程师平均每季度的<a href="https://www.anthropic.com/institute/recursive-self-improvement">代码产出量是 2021 至 2025 年期间的 8 倍</a>。虽然我们始终保持很高的质量标准（每个 PR 都有明确的负责人、每次变更都需要审批才能合并、每次变更都经过同一套 CI 关卡），但跟上 agent 化编程节奏的唯一办法，就是 agent 化的 CI。</p><p>Claude 吸收了我工作中枯燥的部分——深夜被打断的骚扰和事件沟通——让我得以专注于那些真正能提升系统可靠性的中长期架构改进。&nbsp;</p><p>我们构建的这套体系最棒的地方在于，它并不显得零散。我们的值班流程仍然在 Slack 里，只是现在 Claude 也加入了频道。</p><p>如何开始：</p><ul role="list"><li>你需要一份 <a href="https://support.claude.com/en/collections/9387370-team-and-enterprise-plans">Claude Team 或 Claude Enterprise</a> 计划</li><li>组织所有者需要通过 Claude Tag 将 Claude 添加到值班 Slack 频道</li><li>组织所有者还需要帮助将值班 Slack 频道中的 Claude 连接到相应的连接器、GitHub 仓库，并配置 <a href="https://code.claude.com/docs/en/remote-control">Claude Code Remote</a>。</li><li>将 Claude 添加到你的事件频道，并指示它监控事件、立即分诊</li></ul><p><a href="https://github.com/anthropics/oncall-kit"><em>使用我们的配置工具包搭建你自己的 Claude 值班响应</em></a><em>。</em></p><p><em>本文由 Anthropic 技术团队成员 Sachin Malhotra 撰写，Anthropic 员工 Michael Segner 亦有贡献。</em></p></div>
+            <h1 class="article-title u-text-style-h1">Claude 值班：Claude Tag 如何成为 Anthropic CI/CD 故障的第一响应人</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>An engineer on our Continuous Integration team walks through the agent he built that powers CI incident response at Anthropic.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <div class="hero-detail-value-stack"><a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/enterprise-ai" target="_blank" rel="noopener noreferrer">Enterprise AI</a><div class="hero-detail-value u-text-style-body-3">Agents</div><div class="hero-detail-value u-text-style-body-3">Claude Code</div></div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/product/tag" target="_blank" rel="noopener noreferrer">Claude Tag</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">August 18, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/ai-ci-cd-on-call/">Copy link</button>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M15.5117 1.99707C15.9213 2.0091 16.3438 2.13396 16.6768 2.46679C17.0278 2.81814 17.1209 3.26428 17.0801 3.68261C17.0404 4.08745 16.8765 4.49344 16.6787 4.85058C16.3934 5.36546 15.9941 5.85569 15.6348 6.20898C15.7682 6.41421 15.8912 6.66414 15.9551 6.9453C16.0804 7.4977 15.9714 8.13389 15.4043 8.70116C14.8566 9.24884 13.974 9.54823 13.1943 9.71679C12.7628 9.81003 12.3303 9.86698 11.9473 9.90233C12.0596 10.2558 12.0902 10.7051 11.8779 11.2012L11.8223 11.3203C11.5396 11.8854 11.0275 12.2035 10.4785 12.3965C9.93492 12.5875 9.29028 12.6792 8.65332 12.75C7.99579 12.8231 7.34376 12.8744 6.70117 12.9775C6.14371 13.067 5.63021 13.1903 5.18652 13.3818L5.00585 13.4658C4.53515 14.2245 4.13745 14.9658 3.80957 15.6465C4.43885 15.2764 5.1935 15 5.99999 15C6.27614 15 6.49999 15.2238 6.49999 15.5C6.49999 15.7761 6.27613 16 5.99999 16C5.35538 16 4.71132 16.2477 4.15039 16.6103C3.58861 16.9736 3.14957 17.427 2.91601 17.7773C2.91191 17.7835 2.90568 17.788 2.90136 17.7939C2.88821 17.8119 2.8746 17.8289 2.85937 17.8447C2.85117 17.8533 2.84268 17.8612 2.83398 17.8691C2.81803 17.8835 2.80174 17.897 2.78417 17.9092C2.774 17.9162 2.76353 17.9225 2.75292 17.9287C2.73854 17.9372 2.72412 17.9451 2.70898 17.9521C2.69079 17.9605 2.6723 17.9675 2.65332 17.9736C2.6417 17.9774 2.63005 17.9805 2.61816 17.9834C2.60263 17.9872 2.5871 17.9899 2.57128 17.9922C2.55312 17.9948 2.53511 17.9974 2.5166 17.998C2.50387 17.9985 2.49127 17.9976 2.47851 17.9971C2.45899 17.9962 2.43952 17.9954 2.41992 17.9922C2.40511 17.9898 2.39062 17.9862 2.37597 17.9824C2.36477 17.9795 2.35294 17.9783 2.34179 17.9746C2.33697 17.973 2.33286 17.9695 2.32812 17.9678C2.31042 17.9612 2.29351 17.953 2.27636 17.9443C2.26332 17.9378 2.25053 17.9314 2.23828 17.9238C2.23339 17.9208 2.22747 17.9192 2.22265 17.916C2.21414 17.9103 2.20726 17.9026 2.19921 17.8965C2.18396 17.8849 2.16896 17.8735 2.15527 17.8603C2.14518 17.8507 2.13609 17.8404 2.12695 17.8301C2.11463 17.8161 2.10244 17.8023 2.09179 17.7871C2.08368 17.7756 2.07736 17.7631 2.07031 17.751C2.06168 17.7362 2.05297 17.7216 2.04589 17.706C2.03868 17.6901 2.03283 17.6738 2.02734 17.6572C2.0228 17.6436 2.01801 17.6302 2.01464 17.6162C2.01117 17.6017 2.009 17.587 2.00683 17.5722C2.00411 17.5538 2.00161 17.5354 2.00097 17.5166C2.00054 17.5039 2.00141 17.4912 2.00195 17.4785C2.00279 17.459 2.00364 17.4395 2.00683 17.4199C2.00902 17.4064 2.01327 17.3933 2.0166 17.3799C2.01973 17.3673 2.02123 17.3543 2.02539 17.3418C2.41772 16.1648 3.18163 14.466 4.30468 12.7012C4.31908 12.5557 4.34007 12.3582 4.36914 12.1201C4.43379 11.5907 4.53836 10.8564 4.69921 10.0381C5.0174 8.41955 5.56814 6.39783 6.50585 4.9912L6.73242 4.66894C7.27701 3.93277 7.93079 3.30953 8.61035 2.85156C9.3797 2.33311 10.2221 2 11.001 2C11.7951 2.00025 12.3531 2.35795 12.7012 2.70605C12.7723 2.77723 12.8348 2.84998 12.8896 2.91796C13.2829 2.66884 13.7917 2.39502 14.3174 2.21191C14.6946 2.08056 15.1094 1.98537 15.5117 1.99707ZM17.04 15.5537C17.1486 15.3 17.4425 15.1818 17.6963 15.29C17.95 15.3986 18.0683 15.6925 17.96 15.9463C17.4827 17.0612 16.692 18 15.5 18C14.6309 17.9999 13.9764 17.5003 13.5 16.7978C13.0236 17.5003 12.3691 18 11.5 18C10.6309 17.9999 9.97639 17.5003 9.49999 16.7978C9.02359 17.5003 8.36911 18 7.49999 18C7.22391 17.9999 7 17.7761 6.99999 17.5C6.99999 17.2239 7.22391 17 7.49999 17C8.07039 17 8.6095 16.5593 9.04003 15.5537L9.07421 15.4873C9.16428 15.3412 9.32494 15.25 9.49999 15.25C9.70008 15.25 9.88121 15.3698 9.95996 15.5537L10.042 15.7353C10.4581 16.6125 10.9652 16.9999 11.5 17C12.0704 17 12.6095 16.5593 13.04 15.5537L13.0742 15.4873C13.1643 15.3412 13.3249 15.25 13.5 15.25C13.7001 15.25 13.8812 15.3698 13.96 15.5537L14.042 15.7353C14.4581 16.6125 14.9652 16.9999 15.5 17C16.0704 17 16.6095 16.5593 17.04 15.5537ZM15.4824 2.99707C15.247 2.99022 14.9608 3.04682 14.6465 3.15624C14.0173 3.37541 13.389 3.76516 13.0498 4.01953C12.9277 4.11112 12.7697 4.14131 12.6221 4.10253C12.4745 4.06357 12.3522 3.9591 12.291 3.81933V3.81835C12.2892 3.81468 12.2861 3.80833 12.2822 3.80078C12.272 3.78092 12.2541 3.7485 12.2295 3.70898C12.1794 3.62874 12.1011 3.52019 11.9941 3.41308C11.7831 3.2021 11.4662 3.00024 11.001 2.99999C10.4904 2.99999 9.84173 3.22729 9.16894 3.68066C8.58685 4.07297 8.01568 4.61599 7.5371 5.26269L7.33789 5.54589C6.51634 6.77827 5.99475 8.63369 5.68066 10.2314C5.63363 10.4707 5.5913 10.7025 5.55371 10.9238C7.03031 9.01824 8.94157 7.19047 11.2812 6.05077C11.5295 5.92989 11.8283 6.03301 11.9492 6.28124C12.0701 6.52949 11.967 6.82829 11.7187 6.94921C9.33153 8.11208 7.38648 10.0746 5.91406 12.1103C6.12313 12.0632 6.33385 12.0238 6.54296 11.9902C7.21709 11.8821 7.92723 11.8243 8.54296 11.7558C9.17886 11.6852 9.72123 11.6025 10.1465 11.4531C10.5662 11.3056 10.8063 11.1158 10.9277 10.873L10.9795 10.7549C11.0776 10.487 11.0316 10.2723 10.9609 10.1123C10.918 10.0155 10.8636 9.93595 10.8203 9.88183C10.7996 9.85598 10.7822 9.83638 10.7715 9.82518L10.7607 9.81542L10.7627 9.8164L10.7646 9.81835C10.6114 9.67972 10.5597 9.46044 10.6338 9.26757C10.7082 9.07475 10.8939 8.94726 11.1006 8.94726C11.5282 8.94719 12.26 8.8956 12.9834 8.73925C13.7297 8.5779 14.3654 8.32602 14.6973 7.99413C15.0087 7.68254 15.0327 7.40213 14.9795 7.16698C14.9332 6.96327 14.8204 6.77099 14.707 6.62792L14.5957 6.50195C14.4933 6.39957 14.4401 6.25769 14.4502 6.11327C14.4605 5.96888 14.5327 5.83599 14.6484 5.74902C14.9558 5.51849 15.4742 4.96086 15.8037 4.3662C15.9675 4.07048 16.0637 3.80137 16.085 3.58593C16.1047 3.38427 16.0578 3.26213 15.9697 3.17382C15.8631 3.06726 15.7102 3.00377 15.4824 2.99707Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Author(s)</div>
+                  <div class="hero-detail-value u-text-style-body-3">Sachin Malhotra</div>
+                </div>
+              </li>
+            </ul>
+          </aside>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/ai-ci-cd-on-call" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p><a href="https://github.com/anthropics/oncall-kit"><em>使用我们的配置工具包搭建你自己的 Claude 值班响应</em></a><em>。</em></p><h2>面向 CI/CD 的 AI 事件响应：Anthropic 的 Claude 值班实践</h2><p>几周前，我正在值班，晚上 10 点同事在 Slack 上给我发来一条消息：一个新服务上大约有 44 个测试没有运行。</p><p>换成过去，我会放下手头的事情，坐到笔记本电脑前，疲惫地叹口气，然后开始长达一个小时排查加修复的过程。但现在，我的工作流程完全不同了：我把 @Claude 拉进来，问它看到了什么。&nbsp;</p><p>在这个案例中，Claude 发现这些测试是在当天早上某个功能开关（feature flag）打开后消失的，并且判断回退该开关是安全的。我请同事回退了这个开关。3 分钟后，Claude 在 Slack 上通知我，确认跳过规则确实已被移除，错误率也回到了基线水平。</p><figure style="max-width:1600pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a85deb08541b5a210e00ef5_cb834739.png" loading="lazy"></div><figcaption>为清晰起见，根据真实交流重新整理。</figcaption></figure><p>过去几个月里，Claude Tag 一直是 Anthropic CI/CD 故障的值班第一响应人。这不仅改善了我们的个人生活，还让每一次 CI 事件都能得到即时的第一响应：在近期所有产出过态势报告的事件中，首份报告都由 Claude 撰写，<strong>通常在 15 分钟内就会发布第一份分析</strong>。</p><p>在这篇文章中，我们将介绍我们构建了什么、它是如何运作的，让你也能自己搭建一套，从此不再害怕轮到自己值班。</p><h2><strong>我们的 Claude 值班配置</strong></h2><p>在进入事件响应流程的每个阶段之前，我会先对我们的配置做一个整体介绍，让你在了解细节之前先有一个全局图景。</p><p>一个值班 agent 需要<strong>记忆</strong>，才能记住已经做过什么；需要<strong>连接与访问权限</strong>，才能调查、理解和行动；需要<strong>日程安排</strong>，才知道何时回到工作岗位；还需要<strong>指令</strong>，才知道该做什么。</p><p><a href="https://claude.com/product/tag">Claude Tag</a> 是我们值班 agent 的骨架。Claude Tag 在值班 Slack 频道中保持记忆，并提供在事件期间逐轮下发指令的界面。Claude 还会对值班频道及其他频道中的事件实时做出反应。例行任务（routine）的调度——也就是 Claude 定期执行的动作——同样在这个频道中通过自然语言提示完成，比如“每周一上午 9:00（美国东部时间）执行 CI 交接”。</p><p><a href="https://claude.com/blog/agent-identity-access-model">Claude Tag 拥有自己的服务账号</a>，并可以访问 Anthropic CI 工程师所需的工具，比如 Datadog 或 Grafana。这由管理员为频道一次性配置完成（<a href="https://claude.com/docs/claude-tag/admins/setup-overview#choose-which-tools-to-connect">配置方法在此</a>）。&nbsp;</p><p>除了值班频道之外，我们还让 Claude 关注其他相关频道（这些频道同样有 Claude Tag 作为成员），以便它获取额外的上下文，比如服务告警、配置变更或 PR 的进展。&nbsp;</p><p>常驻指令以 Skills 的形式存放在 markdown 文件中，提交到 GitHub 仓库里。这样多位团队成员可以共同迭代，我们也能像管理代码一样管理这些指令的变更。其中还包括路由指引、策略，以及作为自我改进循环一部分的经验教训日志等关键信息。&nbsp;</p><p>这套配置只花了我们几个小时，而不是几天。我们在 GitHub 上开源了一个通用的<a href="https://github.com/anthropics/oncall-kit">值班配置工具包</a>，可以帮助你快速搭建一个类似的 agent。它能把你们团队自己的事件历史转化为分诊 playbook，并最终在你的事件频道里留下一个只读的 Claude，负责诊断、上报和持续学习。<a href="https://github.com/anthropics/oncall-kit/blob/main/test-fixtures/RUNBOOK.md">你可以在大约十分钟内看到它针对一个虚构团队的历史运行的全过程</a>。</p><p>用 TL;DR 的方式总结步骤如下：</p><ul role="list"><li>你需要一份 <a href="https://support.claude.com/en/collections/9387370-team-and-enterprise-plans">Claude Team 或 Claude Enterprise</a> 计划</li><li>组织所有者需要通过 Claude Tag 将 Claude 添加到值班 Slack 频道</li><li>组织所有者还需要帮助将值班 Slack 频道中的 Claude 连接到相应的连接器（connector）、GitHub 仓库，并配置 <a href="https://code.claude.com/docs/en/remote-control">Claude Code Remote</a>。</li><li>将 Claude 添加到你的事件频道，并指示它监控事件、立即分诊</li></ul><p>接下来，让我们深入看看在事件的每个环节，这一转变具体是什么样子。</p><h2><strong>检测</strong></h2><p>Claude 不仅改变了你响应事件的方式，也从根本上改变了你检测事件的方式。以前，事件检测存在两大失效模式。&nbsp;</p><p>人类很难始终具备先见之明，设定出阈值完美、无懈可击的规则。当你没有足够的数据来分析流量模式时，这一点尤其困难。</p><p>为了解决这个问题，我们让 Claude 在新服务上线的最初几天分析数据和传入的告警，以建议补充规则，并微调那些过宽或过窄的规则。&nbsp;</p><p>事件检测的第二大失效模式是告警疲劳：逐条检查和甄别每个触发的告警非常枯燥。但 Claude 不会像人类那样感到疲惫。&nbsp;</p><p>Claude 会监控每个告警频道里的所有相关告警，并对照 <a href="https://github.com/anthropics/oncall-kit/blob/main/templates/ONCALL.md">根 oncall.md 文件</a>中的标准来判断：这件事可以等到早上再处理，还是需要立刻电话通知值班人员。举例来说，经过对数据的分析调优后，文件中的一条规则可以是：“如果错误率超过 2% 且持续 5 分钟以上，并且当前不是已知的部署窗口，则电话通知值班人员；否则将其写入 lessons.md。”</p><p>Claude 值班告警流程还有另外两种触发方式：</p><ul role="list"><li>CI 团队的成员可以在值班频道中报告问题，就像开头那个 44 个测试缺失的例子一样；或者&nbsp;&nbsp;</li><li>公司里的任何人都可以通过内部页面发起一个事件。如果它被标记为 CI 基础设施事件，系统会为该事件创建一个 Slack 频道，我们的值班 Claude 会自动接手。</li></ul><figure style="max-width:2048pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a84a163e2030bce8127dd8e_a5e36b9a.png" loading="lazy"></div></figure><p>这里的要点是：告警流程是确定性（deterministic）的，而值班上报则同时包含确定性和 agent 化（agentic）两条路径。&nbsp;</p><h2><strong>分诊&nbsp;</strong></h2><p>让 Claude 过滤告警噪音是一回事，真正的节省来自调查环节。Claude 在事件发生后中位数 14 分钟内就会发布第一份有证据支撑的分析，最快的案例中，它在首份报告里 4 分钟内就指出了根本原因。</p><p>当告警升级为事件后，Claude 往往已经带着一个有证据支撑的假设出现在我们的 Slack 频道里，供我们审阅。Claude Tag 会启动一个<a href="https://claude.com/blog/a-harness-for-every-task-dynamic-workflows-in-claude-code">动态工作流（dynamic workflow）</a>，由一个编排 agent 派生出多个执行子 agent（subagent），分别调查每个依赖项和事实来源。&nbsp;</p><p>对我们来说，这些事实来源包括 Grafana、日志存储、PagerDuty、GitHub、Kubernetes 以及 Slack 事件频道——全部通过 <a href="https://code.claude.com/docs/en/mcp">MCP Connectors</a> 接入。Claude 可以并行追踪多条线索，帮助缩短 MTTR（平均解决时间）。</p><p>执行 agent 将调查结果回报给编排 agent，由后者进行综合，并以一份条理清晰的 SITREP（态势报告）呈现出来。&nbsp;</p><figure style="max-width:1692pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a84a163e2030bce8127ddb7_faae8c5a.png" loading="lazy"></div></figure><p>编排 agent 和执行 agent 并不是在盲目搜索。它们由一个调查 skill 引导，其中包含<a href="https://github.com/anthropics/oncall-kit/tree/main/skills/triage">针对每类 bug 的更详细的参考 markdown 文件</a>。&nbsp;</p><p>举例来说，一个针对影子分叉（shadow divergence）bug 的 617 行调查 skill，完整记录了我在一次典型调查中的每一步操作。我是在某次事件中与 Claude 逐轮协作排查后，让它根据那段经历生成这个文件的。</p><p>lessons.md 也会指导 Claude 的排查。这个 markdown 文件是我们已解决的每个事件的滚动日志：发生了什么、根本原因是什么、如何修复的，以及值得记住的坑。Claude 会自动向其中追加内容。每次新的调查都从阅读这个文件开始，因此 Claude 的第一个假设总是从近期发生过的事情出发。&nbsp;</p><p>如果同一个模式出现足够多次，我们就会把它沉淀进调查 skill 本身。我最喜欢的一条是 Claude 写关于我的记录。我当时没先看指标就直接根据配置文件做了假设，现在 lessons.md 里写着：“先查数据，再做推论。配置告诉你什么可能出问题；指标告诉你什么确实出了问题。”</p><p>即便有这些工具和上下文，Claude 也不总是一次就能做对。人类的直觉和经验依然重要。Claude Tag 让团队可以以多人协作模式排查事件：我们中的任何人都可以实时介入调整调查方向或补充假设，并肩作战。</p><figure style="max-width:1600pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a85df2d22740fdbccb17112_24270a8f.png" loading="lazy"></div><figcaption>为清晰起见，根据真实对话重新整理。</figcaption></figure><h2><strong>解决</strong></h2><p>既然 Claude 能够上报并排查告警，它也能修复问题吗？这个问题的答案因团队而异，下面是我们的做法。</p><p>我们团队的大多数部署都在功能开关的保护下进行。我在 Claude Code 中创建了一个单独的 agent，它持有我的权限，能够在每个功能开关后执行渐进式部署。&nbsp;</p><p>我们发布流程的第一阶段通常由 Claude 负责管理灰度（canary）流量、监控问题，并自动对特定功能开关进行放量或缩量。这部分内容完全可以单独写一篇文章，所以这里不再展开。</p><p>Claude Tag 帮我团队处理的其他解决路径包括：</p><ul role="list"><li>告知我们是否需要对 Kubernetes 集群的某些节点执行排空（drain）或隔离（cordon）；</li><li>在需求激增时给出如何扩容部分基础设施的指引（这种情况很少见，但当 Claude 给出确切的缓解方案时非常有用）；以及最常见的，</li><li>以 PR 的形式给出修复，值班人员可以审阅、合并并部署，从而快速解决问题。</li></ul><h2><strong>验证、沟通与交接</strong></h2><p>Claude 使用与调查时相同的一批 MCP Connectors 和工具来验证修复是否达到预期效果。按照 oncall.md 中的常驻指令，它会将一份事后复盘（post-mortem）写入 lessons.md，并生成交接用的 SITREP。</p><p>为了在多个事件之间传达全貌，我们创建了一个名为 ci-weather 的 agent。它会汇总来自各个事件 Slack 频道的信息、构建指标、合并队列统计和部署延迟，然后以新闻播报的风格把报告发布到一个公司里任何人都能阅读的公开频道。现在，当工程师们想判断是否应该暂缓合并，或者想弄清“CI 到底怎么了”的时候，直接查阅那个频道即可，不用再来找我们。</p><p>坦白说一句：这份报告的格式我们迭代了好几轮。Claude 可以一次性写出一个生成状态报告的 skill，但真正让它可读的是团队特有的品味。这是人与人之间的沟通问题，不是管道工程。</p><figure style="max-width:848pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a84a163e2030bce8127ddb1_c00ab792.png" loading="lazy"></div></figure><p>最后，虽然 Claude 会在 lessons.md 中为自己的保留一份日志，我们每周一也希望为人类生成交接报告。Claude 会产出每日和每周摘要，让团队的一名成员能够无缝接续另一名成员的工作。</p><h2><strong>从监控事件，到监控事件响应系统</strong></h2><p>我们的软件工程师平均每季度的<a href="https://www.anthropic.com/institute/recursive-self-improvement">代码产出量是 2021 至 2025 年期间的 8 倍</a>。虽然我们始终保持很高的质量标准（每个 PR 都有明确的负责人、每次变更都需要审批才能合并、每次变更都经过同一套 CI 关卡），但跟上 agent 化编程节奏的唯一办法，就是 agent 化的 CI。</p><p>Claude 吸收了我工作中枯燥的部分——深夜被打断的骚扰和事件沟通——让我得以专注于那些真正能提升系统可靠性的中长期架构改进。&nbsp;</p><p>我们构建的这套体系最棒的地方在于，它并不显得零散。我们的值班流程仍然在 Slack 里，只是现在 Claude 也加入了频道。</p><p>如何开始：</p><ul role="list"><li>你需要一份 <a href="https://support.claude.com/en/collections/9387370-team-and-enterprise-plans">Claude Team 或 Claude Enterprise</a> 计划</li><li>组织所有者需要通过 Claude Tag 将 Claude 添加到值班 Slack 频道</li><li>组织所有者还需要帮助将值班 Slack 频道中的 Claude 连接到相应的连接器、GitHub 仓库，并配置 <a href="https://code.claude.com/docs/en/remote-control">Claude Code Remote</a>。</li><li>将 Claude 添加到你的事件频道，并指示它监控事件、立即分诊</li></ul><p><a href="https://github.com/anthropics/oncall-kit"><em>使用我们的配置工具包搭建你自己的 Claude 值班响应</em></a><em>。</em></p><p><em>本文由 Anthropic 技术团队成员 Sachin Malhotra 撰写，Anthropic 员工 Michael Segner 亦有贡献。</em></p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/ai-ci-cd-on-call" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

@@ -4,54 +4,313 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>三家 YC 初创公司如何用 Claude Code 构建公司 — Claude Blog 中文翻译</title>
-  <meta name="description" content="三家 YC 初创公司如何用 Claude Code 构建公司">
+  <meta name="description" content="从拿下政府合同的非技术创始人，到独自规模化构建的开发者，智能体式编码正在改写创业手册。">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/building-companies-with-claude-code" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>三家 YC 初创公司如何用 Claude Code 构建公司</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/building-companies-with-claude-code" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/building-companies-with-claude-code/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># 三家 YC 初创公司如何用 Claude Code 构建公司
+
+从拿下政府合同的非技术创始人，到独自规模化构建的开发者，智能体式编码正在改写创业手册。
+
+创业加速器 [Y Combinator](https://www.ycombinator.com/) 自 2005 年以来已孵化超过 5,000 家公司，合计估值超过 8000 亿美元，其中包括 Airbnb、Stripe 和 DoorDash 这些家喻户晓的名字。
+
+如今，[Claude Code](https://www.claude.com/product/claude-code) 这类智能体编程工具正在从根本上改变 YC 初创公司构建和扩张的方式。创始人现在可以直接从终端交付产品，把开发周期从数周压缩到数小时，甚至让非技术背景的创始人从第一天起就能与成熟玩家同台竞技。
+
+我们与三家 YC 初创公司进行了对话，它们正是这场变革的生动注脚： 
+
+- [HumanLayer](https://www.humanlayer.dev/)（F24 批次）用 Claude Code 构建了整个平台，并开创了上下文工程（context engineering）实践
+- [Ambral](https://www.ambral.com/)（W25 批次）正借助用 Claude Code 和 Claude Agents SDK 构建的精密子智能体工作流，规模化其 AI 驱动的客户管理
+- [Vulcan Technologies](https://vulcan-tech.com/)（S25 批次）用 Claude Code 应对政府和行业的监管复杂性
+
+我们开始吧。 
+
+## **HumanLayer：从 SQL 智能体到规模化 AI 优先工程团队**
+
+Dexter Horthy 在构建管理 SQL 数仓的自主 AI 智能体时，注意到了智能体落地面临的一个根本性（但完全可以理解）的挑战：企业不愿意让 AI 应用在无人监督的情况下触碰敏感操作，比如删除数据库表。
+
+### **一切始于那次产品转向**
+
+这个洞见成了 HumanLayer 的核心认知：软件中最有用的功能，往往也是风险最高的，对于非确定性的 LLM 驱动系统尤其如此。
+
+&quot;我们的 MVP 是一个在 Slack 中与人协作的智能体，可以做些基础清理工作，比如删掉任何 90 天以上没被查询过的表，&quot; Horthy 解释道。&quot;我们不放心让 AI 应用在无人监督的情况下跑原生 SQL，所以我们接入了基本的人工审批步骤。&quot;
+
+ 2024 年 8 月，Horthy 做出了一个 MVP，向旧金山湾区的各家初创公司演示，并拿到了第一批付费客户。 
+
+这些进展让 HumanLayer 进入了 YC F24 批次，团队随即全力投入构建一套 API 和 SDK，让 AI 智能体能够通过 Slack、电子邮件、短信等渠道向人类寻求反馈、输入和批准。
+
+整个 2025 年第一季度，HumanLayer 团队做了大量客户调研，与数十个构建 AI 智能体的工程团队交流，发现智能体开发闭环中存在一个他们此前未曾预料到的缺口。 
+
+&quot;每个团队都自己捣鼓了一套智能体架构，&quot; Horthy 解释说。&quot;我们意识到，光做一个更好的 API 是不够的——我们还需要帮助确立让整个生态走向成熟的模式和原则。&quot;
+
+于是 Horthy 把团队的经验总结成了《[12-Factor Agents：可靠 LLM 应用的模式](https://github.com/humanlayer/12-factor-agents)》。这份指南于 2025 年 4 月发布后迅速走红，浓缩了他们构建生产级智能体系统的经验，并为新兴的上下文工程学科提炼了最佳实践。
+
+### **用 Claude Code 构建一切**
+
+带着这些认知，HumanLayer 团队开始探索新的产品方向和转型角度。
+
+当 Anthropic 推出 Claude Code 时，Horthy 和团队早已是 Claude 模型编程能力的坚定拥趸。他们立即开始用它来做这些实验。
+
+&quot;我们所有东西都是用 Claude Code 写的，&quot; Horthy 说。&quot;当 Claude Agent SDK 随 Opus 4 和 Sonnet 4 一起推出、支持无头（headless）智能体执行时，我们就知道这会是件大事。&quot;
+
+在内部打磨 Claude Code 工作流数月之后，Horthy 开始向关系要好的创始人朋友们分享。
+
+&quot;让我下定决心全力投入的，是和 BoundaryML（YC W23）的 Vaibhav 的一整天结对编程，&quot; Horthy 回忆道。&quot;Vaibhav 起先是怀疑的，但当我们花 7 个小时交付了通常需要一到两周的工作量之后，他信了。我意识到这套工作流完全可以复制到其他团队和代码库。&quot;
+
+### **构建 CodeLayer：规模化 AI 优先工程**
+
+如今，HumanLayer 的产品 CodeLayer 帮助团队使用 worktree 和远程云端 worker 并行运行多个 Claude 智能体会话。他们发现了一个关键规律：一旦工程师掌握了 Claude Code，生产力提升如此显著，真正的挑战就变成了组织层面的——如何让这些工作流在整个团队中铺开。
+
+&quot;当团队里有多个人都在交付 AI 写的代码，你面对的就是一类完全不同的问题，&quot; Horthy 解释说。&quot;这是沟通、协作、工具和管理问题。你必须重塑团队构建软件的所有方式。&quot;
+
+自 2025 年第四季度初以来，HumanLayer 已与各种规模的工程团队敲定了多个大型试点，部署这些工具和工作流——而这一切都是用 Claude Code 构建的。
+
+## **Ambral：用子智能体构建生产系统**
+
+Jack Stettner 和 Sam Brickman 创立 Ambral，是为了解决每个 B2B 初创公司创始人和首席营收官都熟悉的难题：随着公司规模化，驱动早期增长的创始人级客户亲密度变得难以维系。
+
+### **用 Claude Agent SDK 改造客户管理**
+
+无论是一路狂飙的早期公司，还是成熟的企业，客户经理通常要同时打理 50 到 100 个客户账户。&quot;你不可能用一个人五十分之一的注意力提供有效的客户管理体验，&quot; Stettner 解释说。曾经装在创始人脑子里的客户上下文，如今散落在系统、日志、Slack 消息、会议纪要和产品使用数据中。
+
+Ambral 把客户活动和互动中的信号合成为每个账户的 AI 驱动模型。系统能指出谁需要关注、为什么需要，自主推动或推荐客户扩展，并捕捉不满的早期信号以防止流失。
+
+&quot;我们想提供的是让每个客户都拥有一对一客户经理的体验，&quot; Stettner 说。
+
+作为这家年轻初创公司的 CTO 兼唯一工程师，Stettner 在开发上重度依赖 Claude Code，产品本身则由 Claude 的 Agent SDK 驱动。其技术架构反映出他对如何从不同 Claude 模型中榨取最大价值的深刻理解。
+
+### **委派式工作流：Opus 负责思考，Sonnet 负责构建，子智能体全面出击**
+
+Stettner 采用了一套精确的工作流，把不同 Claude 模型的强项与子智能体结合起来：
+
+&quot;我用 Opus 4.1 做研究和规划。Sonnet 4.5 在把我用 Markdown 写的规划落地实现这件事上表现极其惊艳，&quot; Stettner 解释道。
+
+他的开发流程分为三个泾渭分明的阶段：
+
+- **研究阶段（Opus 4.1）**：围绕功能实现所需的任何背景做深入研究。&quot;我认为最重要的是先研究再规划，&quot; Stettner 强调。&quot;让 Claude 替你做研究，产出一份大而全的长篇研究文档。&quot;他会用一系列子智能体并行研究代码库的多个区域。
+- **规划阶段（Opus 4.1）**：制定一份分阶段实现功能的计划。&quot;我会让 Opus 制定一个分阶段的计划——明确拆分成离散阶段，讲清楚具体怎么实现——然后我会修订这份计划。也许我会和 Opus 讨论某些细节问题，或者直接手动更新这个 markdown 文件。&quot;
+- **实现阶段（Sonnet 4.5）**：系统化地执行计划的每个阶段。&quot;然后我会用 Sonnet 4.5 去逐个实现每个阶段。&quot;
+
+在他尝试过的所有工作流中，这一套脱颖而出，而且受到了 Horthy 在 Humanlayer 所做工作的影响：&quot;我试遍了所有编程工具，也几乎试遍了所有模型。我只是认为 Anthropic 的模型目前在工具使用上是最强的，而这直接体现在写代码上。&quot;
+
+### **构建稳健的研究引擎 **
+
+产品本身也呼应了这种多智能体思路。Stettner 用 Claude Agent SDK 构建了 Ambral 的核心研究引擎，为每种数据类型配备了专门的子智能体。
+
+&quot;我花了大量时间用 Claude Agent SDK 构建了一个非常稳健的研究引擎，可以处理所有这些数据，&quot; Stettner 解释说。&quot;它围绕 Claude 子智能体构建，每种数据类型我们都有一个专门理解该数据的子智能体专家。&quot;
+
+无论是用户与系统对话，还是 Ambral 为客户构建自动化，一切都由 [Claude Agent SDK](https://docs.claude.com/en/api/agent-sdk/overview) 和一组在使用数据、Slack 消息、会议纪要和产品交互之间检索与推理的子智能体支撑。
+
+架构灵感直接来自 Stettner 的开发体验：&quot;我想正是 Claude Code 子智能体在开发上帮了我的大忙，让我想把同样的子智能体思路用到产品的研究引擎里。&quot;
+
+## **Vulcan Technologies：让非技术创始人也能交付产品**
+
+对 Vulcan 的联合创始人兼 CEO Tanner Jones 来说，Claude Code 的影响远不止生产力——它意味着创业的民主化。创立公司时，Vulcan 团队坚信一定存在一款能让政府为民众做得更好的产品。若没有 Claude Code，这个愿景将无从谈起，因为两位创始人都没有工程背景。
+
+### **没有专职工程师也能交付产品**
+
+Vulcan 处理的是一个积累了数个世纪的问题：[监管法规](https://en.wikipedia.org/wiki/Code_of_Federal_Regulations)的复杂性。弗吉尼亚州的市民议会（House of Burgesses）是世界上最古老的连续运作的民主机构，正是这一挑战的缩影。四百多年的监管累积，造就了全美最细致复杂的法规体系之一。
+
+当 Aleksander Mekhanik 和 Tanner Jones 在 2025 年 4 月共同创立 Vulcan 时，两人都没有传统的工程背景。Mekhanik 在大学学的是机器学习和数学，而 Jones 上一次写代码还是高中的一门 AP JavaScript 课，那时他们还在用纸笔写代码。然而这对搭档在 5 月 1 日前就为弗吉尼亚州州长办公室做出了他们第一款产品的原型——并从老牌咨询公司手中赢得了合同。
+
+&quot;整个原型都是用 Claude 做的，&quot; Jones 解释说。&quot;那还是 Claude Code 之前的时代。我们真的是把脚本复制粘贴到网页应用里，再换掉其中的方法。&quot;做完原型后，他们聘请了曾在 Google 参与 Gemini 和 Waymo 工作的 CTO Christopher Minge。随后，当 Claude Code 在六月上线时，三人组的速度又一次倍增。
+
+Vulcan 的 AI 驱动监管分析通过识别冗余和重复的监管要求，帮助弗吉尼亚州把新房均价降低了 24,000 美元，每年为弗吉尼亚人节省超过十亿美元。弗吉尼亚州州长对 Vulcan 的工作极为满意，甚至[签署了第 51 号行政令](https://www.govtech.com/artificial-intelligence/virginia-to-use-agentic-ai-to-power-review-of-regulations)，要求所有州机构采用“智能体 AI 监管审查”。
+
+### **创业的民主化**
+
+对 Jones 来说，Claude Code 的意义超越了生产力指标。 
+
+&quot;只要你懂语言、懂批判性思维，你就能用好 Claude Code，&quot; 他说。&quot;我甚至觉得学人文的人可能还有点边际优势，因为我们与 AI 沟通的媒介就是语言。如果你对语言的驾驭力很强，擅长组织有序的列表、嵌套的要点和深思熟虑的流程，你的提示词可能执行得更好。&quot; 
+
+Jones 将 Claude Code 视为 Vulcan 成功的关键组成部分：“四个月，三位创始人，其中只有一位是严格意义上的技术背景，我们拿到了州政府和联邦政府的合同，并从顶级风投那里融了 1100 万美元的种子轮。没有 Anthropic 这些难以置信的工具，这一切都不可能发生。” 
+
+拥有“严格技术”背景的 Vulcan CTO Christopher Minge，也经历了自己对工程认知的转变。
+
+&quot;感觉就像我在 Google 有个同事，我把所有的想法和任务都交给他，他会频繁犯错，而我的职责是协调多个 Claude Code 实例，练就一双发现常见错误的火眼金睛，并高效地传达想法，&quot; Minge 解释道。
+
+## **来自 YC 创始人的最佳实践**
+
+这三家初创公司都打磨出了经过实战检验的方法，来最大化 Claude Code 的价值，包括： 
+
+### **1. 把研究、规划和实现拆分到独立会话**
+
+&quot;别让 Claude 一边做研究、一边想规划、一边还忙着实现，&quot; Stettner 建议。&quot;用离散的提示词，把它们变成离散的步骤。&quot;
+
+这种模式可以防止上下文污染，让每个阶段专注于核心目标。为每个主要阶段开启新的 Claude Code 会话，只把提炼后的结论传递下去，而不是拖着整段上下文历史。
+
+### **2.  对上下文管理保持刻意**
+
+Stettner 给其他创始人的建议围绕刻意的上下文管理展开：
+
+&quot;上下文至关重要。当我看到意外或低质量的输出时，通常是因为某处提示词里存在自相矛盾，&quot; 他解释说。&quot;要对你放进系统提示词的信息、以及你选择开启新对话的时机非常刻意，因为你不想污染上下文。提示词里只要有矛盾，你收到的输出质量就会下降。&quot;
+
+### **3. 监控并及时打断思维链**
+
+&quot;试着审视思维链，盯着它在做什么，&quot; Jones 建议。&quot;手随时放在紧急制动上，一旦出现不良行为就打断它。&quot;
+
+在运行多个实例时，这一点尤其重要。在前几次工具调用中就发现错误方向，远比让 Claude Code 跑完一整条歧路节省时间。
+
+## **新建造者的优势**
+
+这三家初创公司展示了公司构建方式的根本转变。HumanLayer 在转型和扩张的同时，把如今被整个 YC 生态采用的上下文工程实践系统化了。Ambral 以精简的创始团队在海量规模上攻克客户成功。Vulcan 以非工程师身份赢得了政府合同。
+
+构建软件的传统壁垒——技术专长、团队规模、开发时间——正在让位于新的竞争优势：清晰的思考、结构化的问题拆解，以及与 AI 高效协作的能力。
+
+**准备好用 Claude Code 构建了吗？**[ 从这里开始。 ](https://www.anthropic.com/claude-code)
+
+“我们正在把琐事自动化。如今 80% 的销售工作是手工、费力的数据活。在 AI 时代，人可以专注于真正属于人的创造性工作，把数据工作交给 AI。”
+
+Matthew Quan, Enterprise Growth Lead“Claude Sonnet 4.5 的智力水平一眼就能感觉到——它能更好地利用 Augment 的代码库上下文，处理更长周期的任务，并打开了我们正在积极探索的新智能体可能性。”
+
+Guy Gur-Ari, Co-founder</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Claude Code</span>
-            <span class="article-date">November 17, 2025</span>
-            
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-mineral);">
+            <img class="hero-illo-img" src="/assets/illustrations/building-companies-with-claude-code.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">三家 YC 初创公司如何用 Claude Code 构建公司</h1>
-          <a href="/posts/building-companies-with-claude-code/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>创业加速器 <a target="_blank" href="https://www.ycombinator.com/">Y Combinator</a> 自 2005 年以来已孵化超过 5,000 家公司，合计估值超过 8000 亿美元，其中包括 Airbnb、Stripe 和 DoorDash 这些家喻户晓的名字。</p><p>如今，<a href="https://www.claude.com/product/claude-code">Claude Code</a> 这类智能体编程工具正在从根本上改变 YC 初创公司构建和扩张的方式。创始人现在可以直接从终端交付产品，把开发周期从数周压缩到数小时，甚至让非技术背景的创始人从第一天起就能与成熟玩家同台竞技。</p><p>我们与三家 YC 初创公司进行了对话，它们正是这场变革的生动注脚：</p><ul role="list"><li><a target="_blank" href="https://www.humanlayer.dev/">HumanLayer</a>（F24 批次）用 Claude Code 构建了整个平台，并开创了上下文工程（context engineering）实践</li><li><a href="https://www.ambral.com/">Ambral</a>（W25 批次）正借助用 Claude Code 和 Claude Agents SDK 构建的精密子智能体工作流，规模化其 AI 驱动的客户管理</li><li><a target="_blank" href="https://vulcan-tech.com/">Vulcan Technologies</a>（S25 批次）用 Claude Code 应对政府和行业的监管复杂性</li></ul><p>我们开始吧。</p><h2><strong>HumanLayer：从 SQL 智能体到规模化 AI 优先工程团队</strong></h2><p>Dexter Horthy 在构建管理 SQL 数仓的自主 AI 智能体时，注意到了智能体落地面临的一个根本性（但完全可以理解）的挑战：企业不愿意让 AI 应用在无人监督的情况下触碰敏感操作，比如删除数据库表。</p><h3><strong>一切始于那次产品转向</strong></h3><p>这个洞见成了 HumanLayer 的核心认知：软件中最有用的功能，往往也是风险最高的，对于非确定性的 LLM 驱动系统尤其如此。</p><p>"我们的 MVP 是一个在 Slack 中与人协作的智能体，可以做些基础清理工作，比如删掉任何 90 天以上没被查询过的表，"Horthy 解释道。"我们不放心让 AI 应用在无人监督的情况下跑原生 SQL，所以我们接入了基本的人工审批步骤。"</p><p> 2024 年 8 月，Horthy 做出了一个 MVP，向旧金山湾区的各家初创公司演示，并拿到了第一批付费客户。</p><p>这些进展让 HumanLayer 进入了 YC F24 批次，团队随即全力投入构建一套 API 和 SDK，让 AI 智能体能够通过 Slack、电子邮件、短信等渠道向人类寻求反馈、输入和批准。</p><p>整个 2025 年第一季度，HumanLayer 团队做了大量客户调研，与数十个构建 AI 智能体的工程团队交流，发现智能体开发闭环中存在一个他们此前未曾预料到的缺口。</p><p>"每个团队都自己捣鼓了一套智能体架构，"Horthy 解释说。"我们意识到，光做一个更好的 API 是不够的——我们还需要帮助确立让整个生态走向成熟的模式和原则。"</p><p>于是 Horthy 把团队的经验总结成了《<a href="https://github.com/humanlayer/12-factor-agents">12-Factor Agents：可靠 LLM 应用的模式</a>》。这份指南于 2025 年 4 月发布后迅速走红，浓缩了他们构建生产级智能体系统的经验，并为新兴的上下文工程学科提炼了最佳实践。</p><h3><strong>用 Claude Code 构建一切</strong></h3><p>带着这些认知，HumanLayer 团队开始探索新的产品方向和转型角度。</p><p>当 Anthropic 推出 Claude Code 时，Horthy 和团队早已是 Claude 模型编程能力的坚定拥趸。他们立即开始用它来做这些实验。</p><p>"我们所有东西都是用 Claude Code 写的，"Horthy 说。"当 Claude Agent SDK 随 Opus 4 和 Sonnet 4 一起推出、支持无头（headless）智能体执行时，我们就知道这会是件大事。"</p><p>在内部打磨 Claude Code 工作流数月之后，Horthy 开始向关系要好的创始人朋友们分享。</p><p>"让我下定决心全力投入的，是和 BoundaryML（YC W23）的 Vaibhav 的一整天结对编程，"Horthy 回忆道。"Vaibhav 起先是怀疑的，但当我们花 7 个小时交付了通常需要一到两周的工作量之后，他信了。我意识到这套工作流完全可以复制到其他团队和代码库。"</p><h3><strong>构建 CodeLayer：规模化 AI 优先工程</strong></h3><p>如今，HumanLayer 的产品 CodeLayer 帮助团队使用 worktree 和远程云端 worker 并行运行多个 Claude 智能体会话。他们发现了一个关键规律：一旦工程师掌握了 Claude Code，生产力提升如此显著，真正的挑战就变成了组织层面的——如何让这些工作流在整个团队中铺开。</p><p>"当团队里有多个人都在交付 AI 写的代码，你面对的就是一类完全不同的问题，"Horthy 解释说。"这是沟通、协作、工具和管理问题。你必须重塑团队构建软件的所有方式。"</p><p>自 2025 年第四季度初以来，HumanLayer 已与各种规模的工程团队敲定了多个大型试点，部署这些工具和工作流——而这一切都是用 Claude Code 构建的。</p><h2><strong>Ambral：用子智能体构建生产系统</strong></h2><p>Jack Stettner 和 Sam Brickman 创立 Ambral，是为了解决每个 B2B 初创公司创始人和首席营收官都熟悉的难题：随着公司规模化，驱动早期增长的创始人级客户亲密度变得难以维系。</p><h3><strong>用 Claude Agent SDK 改造客户管理</strong></h3><p>无论是一路狂飙的早期公司，还是成熟的企业，客户经理通常要同时打理 50 到 100 个客户账户。"你不可能用一个人五十分之一的注意力提供有效的客户管理体验，"Stettner 解释说。曾经装在创始人脑子里的客户上下文，如今散落在系统、日志、Slack 消息、会议纪要和产品使用数据中。</p><p>Ambral 把客户活动和互动中的信号合成为每个账户的 AI 驱动模型。系统能指出谁需要关注、为什么需要，自主推动或推荐客户扩展，并捕捉不满的早期信号以防止流失。</p><p>"我们想提供的是让每个客户都拥有一对一客户经理的体验，"Stettner 说。</p><p>作为这家年轻初创公司的 CTO 兼唯一工程师，Stettner 在开发上重度依赖 Claude Code，产品本身则由 Claude 的 Agent SDK 驱动。其技术架构反映出他对如何从不同 Claude 模型中榨取最大价值的深刻理解。</p><h3><strong>委派式工作流：Opus 负责思考，Sonnet 负责构建，子智能体全面出击</strong></h3><p>Stettner 采用了一套精确的工作流，把不同 Claude 模型的强项与子智能体结合起来：</p><p>"我用 Opus 4.1 做研究和规划。Sonnet 4.5 在把我用 Markdown 写的规划落地实现这件事上表现极其惊艳，"Stettner 解释道。</p><p>他的开发流程分为三个泾渭分明的阶段：</p><ol role="list"><li><strong>研究阶段（Opus 4.1）</strong>：围绕功能实现所需的任何背景做深入研究。"我认为最重要的是先研究再规划，"Stettner 强调。"让 Claude 替你做研究，产出一份大而全的长篇研究文档。"他会用一系列子智能体并行研究代码库的多个区域。</li><li><strong>规划阶段（Opus 4.1）</strong>：制定一份分阶段实现功能的计划。"我会让 Opus 制定一个分阶段的计划——明确拆分成离散阶段，讲清楚具体怎么实现——然后我会修订这份计划。也许我会和 Opus 讨论某些细节问题，或者直接手动更新这个 markdown 文件。"</li><li><strong>实现阶段（Sonnet 4.5）</strong>：系统化地执行计划的每个阶段。"然后我会用 Sonnet 4.5 去逐个实现每个阶段。"</li></ol><p>在他尝试过的所有工作流中，这一套脱颖而出，而且受到了 Horthy 在 HumanLayer 所做工作的影响："我试遍了所有编程工具，也几乎试遍了所有模型。我只是认为 Anthropic 的模型目前在工具使用上是最强的，而这直接体现在写代码上。"</p><h3><strong>构建稳健的研究引擎</strong></h3><p>产品本身也呼应了这种多智能体思路。Stettner 用 Claude Agent SDK 构建了 Ambral 的核心研究引擎，为每种数据类型配备了专门的子智能体。</p><p>"我花了大量时间用 Claude Agent SDK 构建了一个非常稳健的研究引擎，可以处理所有这些数据，"Stettner 解释说。"它围绕 Claude 子智能体构建，每种数据类型我们都有一个专门理解该数据的子智能体专家。"</p><p>无论是用户与系统对话，还是 Ambral 为客户构建自动化，一切都由 <a target="_blank" href="https://docs.claude.com/en/api/agent-sdk/overview">Claude Agent SDK</a> 和一组在使用数据、Slack 消息、会议纪要和产品交互之间检索与推理的子智能体支撑。</p><p>架构灵感直接来自 Stettner 的开发体验："我想正是 Claude Code 子智能体在开发上帮了我的大忙，让我想把同样的子智能体思路用到产品的研究引擎里。"</p><h2><strong>Vulcan Technologies：让非技术创始人也能交付产品</strong></h2><p>对 Vulcan 的联合创始人兼 CEO Tanner Jones 来说，Claude Code 的影响远不止生产力——它意味着创业的民主化。创立公司时，Vulcan 团队坚信一定存在一款能让政府为民众做得更好的产品。若没有 Claude Code，这个愿景将无从谈起，因为两位创始人都没有工程背景。</p><h3><strong>没有专职工程师也能交付产品</strong></h3><p>Vulcan 处理的是一个积累了数个世纪的问题：<a target="_blank" href="https://en.wikipedia.org/wiki/Code_of_Federal_Regulations">监管法规</a>的复杂性。弗吉尼亚州的市民议会（House of Burgesses）是世界上最古老的连续运作的民主机构，正是这一挑战的缩影。四百多年的监管累积，造就了全美最细致复杂的法规体系之一。</p><p>当 Aleksander Mekhanik 和 Tanner Jones 在 2025 年 4 月共同创立 Vulcan 时，两人都没有传统的工程背景。Mekhanik 在大学学的是机器学习和数学，而 Jones 上一次写代码还是高中的一门 AP JavaScript 课，那时他们还在用纸笔写代码。然而这对搭档在 5 月 1 日前就为弗吉尼亚州州长办公室做出了他们第一款产品的原型——并从老牌咨询公司手中赢得了合同。</p><p>"整个原型都是用 Claude 做的，"Jones 解释说。"那还是 Claude Code 之前的时代。我们真的是把脚本复制粘贴到网页应用里，再换掉其中的方法。"做完原型后，他们聘请了曾在 Google 参与 Gemini 和 Waymo 工作的 CTO Christopher Minge。随后，当 Claude Code 在六月上线时，三人组的速度又一次倍增。</p><p>Vulcan 的 AI 驱动监管分析通过识别冗余和重复的监管要求，帮助弗吉尼亚州把新房均价降低了 24,000 美元，每年为弗吉尼亚人节省超过十亿美元。弗吉尼亚州州长对 Vulcan 的工作极为满意，甚至<a target="_blank" href="https://www.govtech.com/artificial-intelligence/virginia-to-use-agentic-ai-to-power-review-of-regulations">签署了第 51 号行政令</a>，要求所有州机构采用"智能体 AI 监管审查"。</p><h3><strong>创业的民主化</strong></h3><p>对 Jones 来说，Claude Code 的意义超越了生产力指标。</p><p>"只要你懂语言、懂批判性思维，你就能用好 Claude Code，"他说。"我甚至觉得学人文的人可能还有点边际优势，因为我们与 AI 沟通的媒介就是语言。如果你对语言的驾驭力很强，擅长组织有序的列表、嵌套的要点和深思熟虑的流程，你的提示词可能执行得更好。"</p><p>Jones 将 Claude Code 视为 Vulcan 成功的关键组成部分："四个月，三位创始人，其中只有一位是严格意义上的技术背景，我们拿到了州政府和联邦政府的合同，并从顶级风投那里融了 1100 万美元的种子轮。没有 Anthropic 这些难以置信的工具，这一切都不可能发生。"</p><p>拥有"严格技术"背景的 Vulcan CTO Christopher Minge，也经历了自己对工程认知的转变。</p><p>"感觉就像我在 Google 有个同事，我把所有的想法和任务都交给他，他会频繁犯错，而我的职责是协调多个 Claude Code 实例，练就一双发现常见错误的火眼金睛，并高效地传达想法，"Minge 解释道。</p><h2><strong>来自 YC 创始人的最佳实践</strong></h2><p>这三家初创公司都打磨出了经过实战检验的方法，来最大化 Claude Code 的价值，包括：</p><h3><strong>1. 把研究、规划和实现拆分到独立会话</strong></h3><p>"别让 Claude 一边做研究、一边想规划、一边还忙着实现，"Stettner 建议。"用离散的提示词，把它们变成离散的步骤。"</p><p>这种模式可以防止上下文污染，让每个阶段专注于核心目标。为每个主要阶段开启新的 Claude Code 会话，只把提炼后的结论传递下去，而不是拖着整段上下文历史。</p><h3><strong>2. 对上下文管理保持刻意</strong></h3><p>Stettner 给其他创始人的建议围绕刻意的上下文管理展开：</p><p>"上下文至关重要。当我看到意外或低质量的输出时，通常是因为某处提示词里存在自相矛盾，"他解释说。"要对你放进系统提示词的信息、以及你选择开启新对话的时机非常刻意，因为你不想污染上下文。提示词里只要有矛盾，你收到的输出质量就会下降。"</p><h3><strong>3. 监控并及时打断思维链</strong></h3><p>"试着审视思维链，盯着它在做什么，"Jones 建议。"手随时放在'紧急制动'上，一旦出现不良行为就打断它。"</p><p>在运行多个实例时，这一点尤其重要。在前几次工具调用中就发现错误方向，远比让 Claude Code 跑完一整条歧路节省时间。</p><h2><strong>新建造者的优势</strong></h2><p>这三家初创公司展示了公司构建方式的根本转变。HumanLayer 在转型和扩张的同时，把如今被整个 YC 生态采用的上下文工程实践系统化了。Ambral 以精简的创始团队在海量规模上攻克客户成功。Vulcan 以非工程师身份赢得了政府合同。</p><p>构建软件的传统壁垒——技术专长、团队规模、开发时间——正在让位于新的竞争优势：清晰的思考、结构化的问题拆解，以及与 AI 高效协作的能力。</p><p><strong>准备好用 Claude Code 构建了吗？</strong><a href="https://www.anthropic.com/claude-code">从这里开始。</a></p></div>
+            <h1 class="article-title u-text-style-h1">三家 YC 初创公司如何用 Claude Code 构建公司</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>从拿下政府合同的非技术创始人，到独自规模化构建的开发者，智能体式编码正在改写创业手册。</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <div class="hero-detail-value-stack"><a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a><div class="hero-detail-value u-text-style-body-3">Enterprise AI</div></div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/product/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">November 17, 2025</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/building-companies-with-claude-code/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/building-companies-with-claude-code" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>创业加速器 <a target="_blank" href="https://www.ycombinator.com/">Y Combinator</a> 自 2005 年以来已孵化超过 5,000 家公司，合计估值超过 8000 亿美元，其中包括 Airbnb、Stripe 和 DoorDash 这些家喻户晓的名字。</p><p>如今，<a href="https://www.claude.com/product/claude-code">Claude Code</a> 这类智能体编程工具正在从根本上改变 YC 初创公司构建和扩张的方式。创始人现在可以直接从终端交付产品，把开发周期从数周压缩到数小时，甚至让非技术背景的创始人从第一天起就能与成熟玩家同台竞技。</p><p>我们与三家 YC 初创公司进行了对话，它们正是这场变革的生动注脚：&nbsp;</p><ul role="list"><li><a target="_blank" href="https://www.humanlayer.dev/">HumanLayer</a>（F24 批次）用 Claude Code 构建了整个平台，并开创了上下文工程（context engineering）实践</li><li><a href="https://www.ambral.com/">Ambral</a>（W25 批次）正借助用 Claude Code 和 Claude Agents SDK 构建的精密子智能体工作流，规模化其 AI 驱动的客户管理</li><li><a target="_blank" href="https://vulcan-tech.com/">Vulcan Technologies</a>（S25 批次）用 Claude Code 应对政府和行业的监管复杂性</li></ul><p>我们开始吧。&nbsp;</p><h2><strong>HumanLayer：从 SQL 智能体到规模化 AI 优先工程团队</strong></h2><p>Dexter Horthy 在构建管理 SQL 数仓的自主 AI 智能体时，注意到了智能体落地面临的一个根本性（但完全可以理解）的挑战：企业不愿意让 AI 应用在无人监督的情况下触碰敏感操作，比如删除数据库表。</p><h3><strong>一切始于那次产品转向</strong></h3><p>这个洞见成了 HumanLayer 的核心认知：软件中最有用的功能，往往也是风险最高的，对于非确定性的 LLM 驱动系统尤其如此。</p><p>"我们的 MVP 是一个在 Slack 中与人协作的智能体，可以做些基础清理工作，比如删掉任何 90 天以上没被查询过的表，" Horthy 解释道。"我们不放心让 AI 应用在无人监督的情况下跑原生 SQL，所以我们接入了基本的人工审批步骤。"</p><p>&nbsp;2024 年 8 月，Horthy 做出了一个 MVP，向旧金山湾区的各家初创公司演示，并拿到了第一批付费客户。&nbsp;</p><p>这些进展让 HumanLayer 进入了 YC F24 批次，团队随即全力投入构建一套 API 和 SDK，让 AI 智能体能够通过 Slack、电子邮件、短信等渠道向人类寻求反馈、输入和批准。</p><p>整个 2025 年第一季度，HumanLayer 团队做了大量客户调研，与数十个构建 AI 智能体的工程团队交流，发现智能体开发闭环中存在一个他们此前未曾预料到的缺口。&nbsp;</p><p>"每个团队都自己捣鼓了一套智能体架构，" Horthy 解释说。"我们意识到，光做一个更好的 API 是不够的——我们还需要帮助确立让整个生态走向成熟的模式和原则。"</p><p>于是 Horthy 把团队的经验总结成了《<a href="https://github.com/humanlayer/12-factor-agents">12-Factor Agents：可靠 LLM 应用的模式</a>》。这份指南于 2025 年 4 月发布后迅速走红，浓缩了他们构建生产级智能体系统的经验，并为新兴的上下文工程学科提炼了最佳实践。</p><h3><strong>用 Claude Code 构建一切</strong></h3><p>带着这些认知，HumanLayer 团队开始探索新的产品方向和转型角度。</p><p>当 Anthropic 推出 Claude Code 时，Horthy 和团队早已是 Claude 模型编程能力的坚定拥趸。他们立即开始用它来做这些实验。</p><p>"我们所有东西都是用 Claude Code 写的，" Horthy 说。"当 Claude Agent SDK 随 Opus 4 和 Sonnet 4 一起推出、支持无头（headless）智能体执行时，我们就知道这会是件大事。"</p><p>在内部打磨 Claude Code 工作流数月之后，Horthy 开始向关系要好的创始人朋友们分享。</p><p>"让我下定决心全力投入的，是和 BoundaryML（YC W23）的 Vaibhav 的一整天结对编程，" Horthy 回忆道。"Vaibhav 起先是怀疑的，但当我们花 7 个小时交付了通常需要一到两周的工作量之后，他信了。我意识到这套工作流完全可以复制到其他团队和代码库。"</p><h3><strong>构建 CodeLayer：规模化 AI 优先工程</strong></h3><p>如今，HumanLayer 的产品 CodeLayer 帮助团队使用 worktree 和远程云端 worker 并行运行多个 Claude 智能体会话。他们发现了一个关键规律：一旦工程师掌握了 Claude Code，生产力提升如此显著，真正的挑战就变成了组织层面的——如何让这些工作流在整个团队中铺开。</p><p>"当团队里有多个人都在交付 AI 写的代码，你面对的就是一类完全不同的问题，" Horthy 解释说。"这是沟通、协作、工具和管理问题。你必须重塑团队构建软件的所有方式。"</p><p>自 2025 年第四季度初以来，HumanLayer 已与各种规模的工程团队敲定了多个大型试点，部署这些工具和工作流——而这一切都是用 Claude Code 构建的。</p><h2><strong>Ambral：用子智能体构建生产系统</strong></h2><p>Jack Stettner 和 Sam Brickman 创立 Ambral，是为了解决每个 B2B 初创公司创始人和首席营收官都熟悉的难题：随着公司规模化，驱动早期增长的创始人级客户亲密度变得难以维系。</p><h3><strong>用 Claude Agent SDK 改造客户管理</strong></h3><p>无论是一路狂飙的早期公司，还是成熟的企业，客户经理通常要同时打理 50 到 100 个客户账户。"你不可能用一个人五十分之一的注意力提供有效的客户管理体验，" Stettner 解释说。曾经装在创始人脑子里的客户上下文，如今散落在系统、日志、Slack 消息、会议纪要和产品使用数据中。</p><p>Ambral 把客户活动和互动中的信号合成为每个账户的 AI 驱动模型。系统能指出谁需要关注、为什么需要，自主推动或推荐客户扩展，并捕捉不满的早期信号以防止流失。</p><p>"我们想提供的是让每个客户都拥有一对一客户经理的体验，" Stettner 说。</p><p>作为这家年轻初创公司的 CTO 兼唯一工程师，Stettner 在开发上重度依赖 Claude Code，产品本身则由 Claude 的 Agent SDK 驱动。其技术架构反映出他对如何从不同 Claude 模型中榨取最大价值的深刻理解。</p><h3><strong>委派式工作流：Opus 负责思考，Sonnet 负责构建，子智能体全面出击</strong></h3><p>Stettner 采用了一套精确的工作流，把不同 Claude 模型的强项与子智能体结合起来：</p><p>"我用 Opus 4.1 做研究和规划。Sonnet 4.5 在把我用 Markdown 写的规划落地实现这件事上表现极其惊艳，" Stettner 解释道。</p><p>他的开发流程分为三个泾渭分明的阶段：</p><ol role="list"><li><strong>研究阶段（Opus 4.1）</strong>：围绕功能实现所需的任何背景做深入研究。"我认为最重要的是先研究再规划，" Stettner 强调。"让 Claude 替你做研究，产出一份大而全的长篇研究文档。"他会用一系列子智能体并行研究代码库的多个区域。</li><li><strong>规划阶段（Opus 4.1）</strong>：制定一份分阶段实现功能的计划。"我会让 Opus 制定一个分阶段的计划——明确拆分成离散阶段，讲清楚具体怎么实现——然后我会修订这份计划。也许我会和 Opus 讨论某些细节问题，或者直接手动更新这个 markdown 文件。"</li><li><strong>实现阶段（Sonnet 4.5）</strong>：系统化地执行计划的每个阶段。"然后我会用 Sonnet 4.5 去逐个实现每个阶段。"</li></ol><p>在他尝试过的所有工作流中，这一套脱颖而出，而且受到了 Horthy 在 Humanlayer 所做工作的影响："我试遍了所有编程工具，也几乎试遍了所有模型。我只是认为 Anthropic 的模型目前在工具使用上是最强的，而这直接体现在写代码上。"</p><h3><strong>构建稳健的研究引擎&nbsp;</strong></h3><p>产品本身也呼应了这种多智能体思路。Stettner 用 Claude Agent SDK 构建了 Ambral 的核心研究引擎，为每种数据类型配备了专门的子智能体。</p><p>"我花了大量时间用 Claude Agent SDK 构建了一个非常稳健的研究引擎，可以处理所有这些数据，" Stettner 解释说。"它围绕 Claude 子智能体构建，每种数据类型我们都有一个专门理解该数据的子智能体专家。"</p><p>无论是用户与系统对话，还是 Ambral 为客户构建自动化，一切都由 <a target="_blank" href="https://docs.claude.com/en/api/agent-sdk/overview">Claude Agent SDK</a> 和一组在使用数据、Slack 消息、会议纪要和产品交互之间检索与推理的子智能体支撑。</p><p>架构灵感直接来自 Stettner 的开发体验："我想正是 Claude Code 子智能体在开发上帮了我的大忙，让我想把同样的子智能体思路用到产品的研究引擎里。"</p><h2><strong>Vulcan Technologies：让非技术创始人也能交付产品</strong></h2><p>对 Vulcan 的联合创始人兼 CEO Tanner Jones 来说，Claude Code 的影响远不止生产力——它意味着创业的民主化。创立公司时，Vulcan 团队坚信一定存在一款能让政府为民众做得更好的产品。若没有 Claude Code，这个愿景将无从谈起，因为两位创始人都没有工程背景。</p><h3><strong>没有专职工程师也能交付产品</strong></h3><p>Vulcan 处理的是一个积累了数个世纪的问题：<a target="_blank" href="https://en.wikipedia.org/wiki/Code_of_Federal_Regulations">监管法规</a>的复杂性。弗吉尼亚州的市民议会（House of Burgesses）是世界上最古老的连续运作的民主机构，正是这一挑战的缩影。四百多年的监管累积，造就了全美最细致复杂的法规体系之一。</p><p>当 Aleksander Mekhanik 和 Tanner Jones 在 2025 年 4 月共同创立 Vulcan 时，两人都没有传统的工程背景。Mekhanik 在大学学的是机器学习和数学，而 Jones 上一次写代码还是高中的一门 AP JavaScript 课，那时他们还在用纸笔写代码。然而这对搭档在 5 月 1 日前就为弗吉尼亚州州长办公室做出了他们第一款产品的原型——并从老牌咨询公司手中赢得了合同。</p><p>"整个原型都是用 Claude 做的，" Jones 解释说。"那还是 Claude Code 之前的时代。我们真的是把脚本复制粘贴到网页应用里，再换掉其中的方法。"做完原型后，他们聘请了曾在 Google 参与 Gemini 和 Waymo 工作的 CTO Christopher Minge。随后，当 Claude Code 在六月上线时，三人组的速度又一次倍增。</p><p>Vulcan 的 AI 驱动监管分析通过识别冗余和重复的监管要求，帮助弗吉尼亚州把新房均价降低了 24,000 美元，每年为弗吉尼亚人节省超过十亿美元。弗吉尼亚州州长对 Vulcan 的工作极为满意，甚至<a target="_blank" href="https://www.govtech.com/artificial-intelligence/virginia-to-use-agentic-ai-to-power-review-of-regulations">签署了第 51 号行政令</a>，要求所有州机构采用“智能体 AI 监管审查”。</p><h3><strong>创业的民主化</strong></h3><p>对 Jones 来说，Claude Code 的意义超越了生产力指标。&nbsp;</p><p>"只要你懂语言、懂批判性思维，你就能用好 Claude Code，" 他说。"我甚至觉得学人文的人可能还有点边际优势，因为我们与 AI 沟通的媒介就是语言。如果你对语言的驾驭力很强，擅长组织有序的列表、嵌套的要点和深思熟虑的流程，你的提示词可能执行得更好。"&nbsp;</p><p>Jones 将 Claude Code 视为 Vulcan 成功的关键组成部分：“四个月，三位创始人，其中只有一位是严格意义上的技术背景，我们拿到了州政府和联邦政府的合同，并从顶级风投那里融了 1100 万美元的种子轮。没有 Anthropic 这些难以置信的工具，这一切都不可能发生。”&nbsp;</p><p>拥有“严格技术”背景的 Vulcan CTO Christopher Minge，也经历了自己对工程认知的转变。</p><p>"感觉就像我在 Google 有个同事，我把所有的想法和任务都交给他，他会频繁犯错，而我的职责是协调多个 Claude Code 实例，练就一双发现常见错误的火眼金睛，并高效地传达想法，" Minge 解释道。</p><h2><strong>来自 YC 创始人的最佳实践</strong></h2><p>这三家初创公司都打磨出了经过实战检验的方法，来最大化 Claude Code 的价值，包括：&nbsp;</p><h3><strong>1. 把研究、规划和实现拆分到独立会话</strong></h3><p>"别让 Claude 一边做研究、一边想规划、一边还忙着实现，" Stettner 建议。"用离散的提示词，把它们变成离散的步骤。"</p><p>这种模式可以防止上下文污染，让每个阶段专注于核心目标。为每个主要阶段开启新的 Claude Code 会话，只把提炼后的结论传递下去，而不是拖着整段上下文历史。</p><h3><strong>2.&nbsp; 对上下文管理保持刻意</strong></h3><p>Stettner 给其他创始人的建议围绕刻意的上下文管理展开：</p><p>"上下文至关重要。当我看到意外或低质量的输出时，通常是因为某处提示词里存在自相矛盾，" 他解释说。"要对你放进系统提示词的信息、以及你选择开启新对话的时机非常刻意，因为你不想污染上下文。提示词里只要有矛盾，你收到的输出质量就会下降。"</p><h3><strong>3. 监控并及时打断思维链</strong></h3><p>"试着审视思维链，盯着它在做什么，" Jones 建议。"手随时放在紧急制动上，一旦出现不良行为就打断它。"</p><p>在运行多个实例时，这一点尤其重要。在前几次工具调用中就发现错误方向，远比让 Claude Code 跑完一整条歧路节省时间。</p><h2><strong>新建造者的优势</strong></h2><p>这三家初创公司展示了公司构建方式的根本转变。HumanLayer 在转型和扩张的同时，把如今被整个 YC 生态采用的上下文工程实践系统化了。Ambral 以精简的创始团队在海量规模上攻克客户成功。Vulcan 以非工程师身份赢得了政府合同。</p><p>构建软件的传统壁垒——技术专长、团队规模、开发时间——正在让位于新的竞争优势：清晰的思考、结构化的问题拆解，以及与 AI 高效协作的能力。</p><p><strong>准备好用 Claude Code 构建了吗？</strong><a href="https://www.anthropic.com/claude-code"> 从这里开始。 </a></p><div class="article-testimonials" role="list"><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69010941df4d50c5b91b2ba1_Clay-light-theme.svg" alt="69010941df4d50c5b91b2ba1 Clay theme" loading="lazy"><blockquote><p>“我们正在把琐事自动化。如今 80% 的销售工作是手工、费力的数据活。在 AI 时代，人可以专注于真正属于人的创造性工作，把数据工作交给 AI。”</p></blockquote><figcaption class="article-testimonial-caption">Matthew Quan, Enterprise Growth Lead</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68b5a8066e04cba3dd0a8dde_augment%20code_light.svg" alt="68b5a8066e04cba3dd0a8dde augment%20code" loading="lazy"><blockquote><p>“Claude Sonnet 4.5 的智力水平一眼就能感觉到——它能更好地利用 Augment 的代码库上下文，处理更长周期的任务，并打开了我们正在积极探索的新智能体可能性。”</p></blockquote><figcaption class="article-testimonial-caption">Guy Gur-Ari, Co-founder</figcaption></figure></div></div>
+
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/building-companies-with-claude-code" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

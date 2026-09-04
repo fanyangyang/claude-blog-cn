@@ -13,5 +13,21 @@
   "translatedTitle": "Amazon Bedrock 上的 Claude 2",
   "translated": true,
   "translatedAt": "2026-09-02T04:39:32.652Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Platform"
+    ],
+    "usecase": [
+      "Business"
+    ]
+  },
+  "subtitle": "Claude 2 is now available on Amazon Bedrock, helping enterprises like LexisNexis, Lonely Planet, and Ricoh USA build secure, scalable AI applications.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/platform/api"
 }

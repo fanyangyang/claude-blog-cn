@@ -13,5 +13,17 @@
   "illustrationBg": "Clay",
   "translatedTitle": "将 Claude Mythos 5 的网络安全能力带给更多防御者",
   "translatedAt": "2026-09-01T11:19:19.935Z",
-  "translateLang": "zh"
+  "translateLang": "zh",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [],
+    "usecase": []
+  },
+  "subtitle": "We’re sharing an update on our efforts to help more teams leverage frontier capabilities for cyber defense.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": ""
 }

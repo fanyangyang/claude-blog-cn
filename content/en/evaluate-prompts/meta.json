@@ -13,5 +13,21 @@
   "translatedTitle": "在开发者控制台中评估提示词",
   "translated": true,
   "translatedAt": "2026-09-02T04:39:32.652Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Platform"
+    ],
+    "usecase": [
+      "Coding"
+    ]
+  },
+  "subtitle": "Generate, test, and evaluate prompts directly in the Anthropic Console with automatic test case generation and side-by-side output comparison.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/platform/api"
 }

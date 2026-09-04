@@ -13,5 +13,22 @@
   "translatedTitle": "如何无缝集成 API",
   "translated": true,
   "translatedAt": "2026-09-02T04:42:42.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Claude Code"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": [
+      "Coding",
+      "Productivity"
+    ]
+  },
+  "subtitle": "Build resilient API integrations from the start. Handle authentication, rate limits, and edge cases before they break production.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/claude-code",
+  "productUrl": "https://claude.com/product/claude-code"
 }

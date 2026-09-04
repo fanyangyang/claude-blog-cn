@@ -13,5 +13,23 @@
   "translated": true,
   "translatedTitle": "企业如何用 Claude 驱动 AI 转型",
   "translatedAt": "2026-09-02T12:15:00.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Enterprise"
+    ],
+    "usecase": [
+      "Business",
+      "Health care and life sciences",
+      "Work"
+    ]
+  },
+  "subtitle": "As the leader in enterprise AI, Anthropic builds state-of-the-art models specializing in industries where precision matters, from coding and cybersecurity to financial services. Claude Sonnet 4.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/solutions/enterprise"
 }

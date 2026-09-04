@@ -13,5 +13,22 @@
   "translatedTitle": "Claude Code 的 Auto mode（自动模式）",
   "translated": true,
   "translatedAt": "2026-09-02T04:08:08.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Claude Code",
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": [
+      "Coding"
+    ]
+  },
+  "subtitle": "Auto mode provides a safer long-running alternative to --dangerously-skip-permissions.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/claude-code",
+  "productUrl": "https://claude.com/product/claude-code"
 }

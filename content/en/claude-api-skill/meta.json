@@ -13,5 +13,24 @@
   "fetchedAt": "2026-09-02T03:50:17.776Z",
   "translated": true,
   "translatedAt": "2026-09-02T04:32:12.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Agents",
+      "Claude Code"
+    ],
+    "product": [
+      "Claude Enterprise",
+      "Claude Code"
+    ],
+    "usecase": [
+      "Agents",
+      "Coding"
+    ]
+  },
+  "subtitle": "Today, CodeRabbit, JetBrains, Resolve AI, and Warp are bundling the claude-api skill, giving developers production-ready Claude API code wherever they build. First introduced in Claude Code in March, the skill is now in more of the tools developers already use.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/agents",
+  "productUrl": "https://claude.com/solutions/enterprise"
 }

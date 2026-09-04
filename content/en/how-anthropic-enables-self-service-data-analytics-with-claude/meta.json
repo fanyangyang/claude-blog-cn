@@ -13,5 +13,25 @@
   "translatedTitle": "Anthropic 如何用 Claude 实现自助式数据分析",
   "translated": true,
   "translatedAt": "2026-09-02T04:24:57Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": []
+  },
+  "subtitle": "How Anthropic enables self-service data analytics with Claude: the governed data foundations, sources of truth, skills, and validation techniques that make AI-driven analytics trustworthy.",
+  "authors": [
+    "Josh Cherry",
+    "Clement Peng",
+    "Johanne Jiao",
+    "Justin Leder",
+    "Chen Chang"
+  ],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/product/claude-code"
 }

@@ -13,5 +13,20 @@
   "translated": true,
   "translatedTitle": "Claude 现在可以创建和编辑文件",
   "translatedAt": "2026-09-02T12:28:00.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Enterprise",
+      "Claude apps"
+    ],
+    "usecase": []
+  },
+  "subtitle": "Describe what you need and get back ready-to-use spreadsheets, documents, presentations, and PDFs instead of just text responses.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/solutions/enterprise"
 }

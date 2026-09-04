@@ -4,46 +4,354 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>How Anthropic runs large-scale code migrations with Claude Code — Claude Blog CN</title>
-  <meta name="description" content="How Anthropic runs large-scale code migrations with Claude Code">
+  <meta name="description" content="A step-by-step guide to running large code migrations with AI agents — including Bun's million-line Zig-to-Rust port.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="/posts/ai-code-migration/" class="nav-link">中文版 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>How Anthropic runs large-scale code migrations with Claude Code</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/ai-code-migration" target="_blank" rel="noopener noreferrer">Ask questions about this page</a>
+        <button type="button" class="explore-item" data-copy-markdown>Copy as markdown</button>
+        <a class="explore-item" href="/posts/ai-code-migration/">阅读中文翻译 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># How Anthropic runs large-scale code migrations with Claude Code
+
+A step-by-step guide to running large code migrations with AI agents — including Bun's million-line Zig-to-Rust port.
+
+Code migrations, projects that port a production codebase to a new language, were multi-year endeavors until recently.
+
+In the last month, individual developers at Anthropic migrated 10 code packages consisting of tens to hundreds of thousands of lines of code using Claude Fable 5, Claude Opus 4.8, and [dynamic workflows](https://claude.com/blog/introducing-dynamic-workflows-in-claude-code). In this article we’ll cover two examples along with best practices from these projects.
+
+Jarred Sumner, co-founder of Bun and Member of Technical Staff at Anthropic, used Claude Code to [migrate Bun from Zig to Rust](https://bun.com/blog/bun-in-rust). A million lines of code were produced in less than two weeks, with 100% of Bun's existing test suite passing in CI before merge. Nineteen regressions surfaced after merge and have all been fixed. The Rust port was shipped inside Claude Code in June. 
+
+Mike Krieger, co-lead of Anthropic Labs, migrated a Python codebase to 165,000 lines of TypeScript over a weekend. This included hundreds of agents, eight phase gates, three adversarial review rounds, and a final parity check that diffed every command's output against the Python original. 
+
+Claude Code’s new capabilities change the math for these long-deferred projects. Below is the six-step process we now use, drawn from what these migrations taught us.
+
+The core insight is that you don’t fix the code. **You fix the process (loop) that produced the code**.
+
+## What is an AI code migration?
+
+An AI code migration uses AI agents to port a production codebase to a new language or framework. Instead of translating files by hand, engineers write migration rules and verification loops; agents then translate, compile, and test until the new code's behavior matches the original — compressing multi-year projects into weeks.
+
+## **Why and when to migrate languages**
+
+Before going straight into *the how*, it’s worth discussing *the when* and *why* because the assumptions around these projects have evolved. 
+
+Teams launch migrations because of landscape changes between their initial build and current project. Either a known trade-off has become limiting, a better approach has emerged, or the original ecosystem is shrinking. 
+
+For example, Jarred originally chose Zig because it offered C-level performance with radical simplicity, ideal for a solo founder “writing Bun in 1 year in a cramped Oakland apartment pre-LLM.” This simplicity came with known tradeoffs, [which he writes about here](https://bun.com/blog/bun-in-rust#just-be-really-smart-and-don-t-make-mistakes). 
+
+Fast forward to 2026. Bun's CLI is getting over 10 million monthly downloads and is used extensively within Claude Code.  
+
+As recently as last quarter, those tradeoffs wouldn’t have been enough to justify freezing the roadmap and committing resources to a multi-quarter project. Migrating languages can deliver smaller, faster, and safer systems, but no one wants to pay for them.
+
+Software engineers have also had to contend with the career risk inherent in these formerly mega-projects. You could maintain two parallel code bases for quarters or years, and if the end result was 90% parity, you had a bigger headache than when you started.
+
+Now, the worst case scenario is you delete the branch and try again.
+
+There still needs to be a justifiable business case. While million line migrations no longer cost $3 to $4 million in engineering resources over the course of a four year project, they still cost tens to hundreds of thousands of dollars or more to execute. The Bun migration, for example, consumed 5.9 billion uncached input tokens and 690 million output tokens — around $165,000 at API pricing. The main portion of Mike’s port was 27 million tokens.
+
+*Jarred’s million-line PR.***However, the migration case no longer needs to be existential. **A year of memory-bug patches in the changelog, or one chronic bottleneck, can now justify it.
+
+The compile step was the impetus for Mike's project. The internal tool his team works on ships to users as a single binary. Producing that binary with the Python toolchain took roughly eight minutes per platform, totaling a 30-minute wait across the build matrix on every release. After the port, the same compile now takes about two seconds, the binary starts 6x faster, and the team was able to retire a separate deployment pipeline.
+
+## **Why AI changes the code migration math**
+
+Claude Fable 5 is our most capable, generally available model. Fable and Opus 4.8 are particularly good at delegating, directing, and verifying parallel workstreams with subagents while finding multiple paths towards stated goals. 
+
+Large code migrations are a particularly effective use case for these advanced models because:
+
+- **The work is parallel**. Work can be executed across thousands of independent units such as files and crates, so agents can work at the same time rather than have one waiting on the other.
+- **Context is clear and comprehensive. **The old code serves as a great spec for the model. It also serves as a core reference to help build the guide for translation agents to follow.
+- **There is a built-in referee**. Many large codebases will include a test suite that agents can use to verify their work. Agents perform their best when verification is objective, because the model can grind against a ground truth for days without a human arbitrating quality.
+- **The queue writes itself**. When a compiler or test run fails, that becomes the next item for an agent to fix.
+- **They require consistency and edge case handling**: The process is built so drift has nowhere to hide: reviewers cite the rule behind every finding, so a violation becomes a queue item instead of a quiet divergence. And when an agent does hit an edge case, the fix becomes a rule every subsequent agent follows.
+
+As we will see below, both Mike and Jarred used Fable for key steps in their migration process, particularly in **an advisory pattern** that used multiple model classes to optimize token consumption. 
+
+## **Six steps for large code migrations**
+
+*The process below has been generalized to be relevant to multiple languages and scenarios. For additional details, you can read *[*Jarred’s blog*](https://bun.com/blog/bun-in-rust)*. You can also access the*[* Migration starter kit.*](https://github.com/anthropics/code-migration-kit-with-claude-code)* Note: The starter kit is a generalized template of the process above — it's not what these specific ports ran on.*
+
+### **Prerequisites**
+
+A prerequisite before starting on your migration project is to have a strong judge in place, otherwise you won’t have an exit condition or measure of success. 
+
+The judge must be able to evaluate both the original code and the target code on equal terms. Test suites written in the original language will often depend on internal functions that won't exist in the target code. 
+
+To build this judge:
+
+- **Categorize existing tests**. Use Claude to identify which tests are expressible as external calls and which depend on internals that won't port. 
+- **Rewrite for portability.** Convert the external-facing tests into assertions that can run against both the original and the port. Use adversarial agents to verify the rewritten tests don't weaken the assertions.
+- **Validate the judge**. Run it against the original code to confirm it passes. Then run it against deliberately broken code to confirm it fails — a judge that doesn't catch breakage isn't a judge.
+
+Jarred had a large test suite written in a third language (TypeScript), but that will not be the case for most projects. For his Python-to-TypeScript port, Mike created a parity harness of seven real-world scenarios and considered any behavior change a bug to be fixed. 
+
+Before we get into each stage, this graphic may help you follow along. This mostly follows Jarred’s methodology, with reviews and gates at each stage. Mike followed a similar overall structure using similar loop workflows, but he ran the entire migration end to end, revised the rules and the workflow based on the results, and ran it again — discarding the output each time until the third run.
+
+### **Step 1 — Create the rulebook, dependency map, and gap inventory**
+
+In this stage we are creating the foundations of our migration: an inventory of places where code will need to be refactored rather than just translated, a rulebook for how to translate our code, and a dependency map to order our migration implementation workstreams. 
+
+The order matters: the rulebook must come before the gap inventory. The gap inventory is defined by what the rulebook's defaults won't cover, and the two are tested together in a joint audit.
+
+#### **Rulebook**
+
+The exact shape of the [rulebook](https://github.com/anthropics/code-migration-kit-with-claude-code/blob/main/templates/RULEBOOK.md) depends on key architectural decisions you must make at the start. Chief among them, if the new code will follow the same structure, or if it will be completely redesigned. 
+
+If it’s the former (Jarred), the rulebook will primarily be lookup tables that translates types and idioms between languages while pointing to the gap inventory for the harder-to-translate components. If it’s the latter (Mike), it will be a design document. 
+
+Jarred created his rulebook by chatting with Claude, forming a policy for each area of ambiguity. He also used eight subagents specifically designed to review for 8 different categories of common failure modes based on his own intuition.
+
+#### **Dependency map**
+
+You need to understand file dependencies to effectively break up workstreams for a parallel migration so you know which files to migrate first and which files to contain in the same batch. Some languages and codebases have explicit manifests that make this easy, but for legacy codebases and many popular languages like C/C++ and Python, these dependencies need to be discovered and mapped.
+
+Claude Code can deploy agents to create and run a deterministic script to produce this map. The [prompt in the migration kit](https://github.com/anthropics/code-migration-kit-with-claude-code/blob/main/prompts/01-dependency-map.md) uses a workflow to create a review-and-fix loop. *Note: The starter kit is a generalized template of the process laid out in this post — it's not what these specific ports ran on.*
+
+#### **Gap inventory and skeptic reviewers**
+
+The new language has different requirements from the old language that must be met. For Zig to Rust the difference was manual memory management (C and C++ work the same way). For example:
+
+Zig
+
+`fn readConfig(allocator: std.mem.Allocator) ![]u8 {
+    const buf = try allocator.alloc(u8, 1024);
+    // ...fill buf...
+    return buf; // caller must free this — but only the comment says so
+}
+
+// A caller that forgets 'defer allocator.free(buf)' still compiles — the leak only surfaces at runtime.`Rust
+
+`fn read_config() -&gt; Vec&lt;u8&gt; { 
+let buf = vec![0u8; 1024]; 
+// ...fill buf... 
+buf // ownership moves to the caller; memory is freed automatically 
+} 
+// Use it after it's moved? Free it twice? Neither compiles. 
+// Forget to free it? There's no free call to forget — drop is automatic.`For Python to TypeScript the gap was interfaces and contracts. Python doesn’t require a contract declaring what shape of object it will accept or what it returns, but TypeScript does. For example:
+
+Python
+
+`def register(handler):
+    handler.setup()
+    return handler.run({&quot;retries&quot;: 3})
+
+# Any object with .setup() and .run() works here. Which objects actually get passed in? Read the whole codebase to find out.
+`TypeScript
+
+`interface RunResult { ok: boolean } 
+
+interface Handler 
+{ setup(): void; 
+run(opts: { retries: number }): Promise&lt;RunResult&gt;; 
+} 
+
+function register(handler: Handler): Promise&lt;RunResult&gt; { 
+handler.setup(); 
+return handler.run({ retries: 3 }); } 
+
+// The contract must be written down before this compiles`Both Jarred and Mike created gap inventory files capturing this implicit knowledge. Jarred inventoried these gaps up front, which is what we do here, while Mike chose to translate first and then create the gap inventory by auditing afterwards. You may need to do both. 
+
+Check out this sample [Claude Code prompt to create a gap inventory file](https://github.com/anthropics/code-migration-kit-with-claude-code/blob/main/prompts/02-gap-inventory.md).
+
+### **Step 2 — Stress-test the rules **
+
+This step involves a mini-migration that serves as a “shakedown cruise” for the larger migration. 
+
+In this step, Jarred used one agent to translate three files using the rulebook, one agent to translate three files “like a senior Rust engineer,” and one agent to use the diff to create new translation rules. At this stage he caught two critical issues that would have created numerous issues if fanned out across all 1,448 files.
+
+The prompt may look something like [this](https://github.com/anthropics/code-migration-kit-with-claude-code/blob/main/prompts/03-stress-test.md).
+
+This type of stress test **only works for structure-preserving migrations**, where two translations of the same file are comparable line by line.  If your rulebook is a redesign — like Mike's — the equivalent test is attacking the design document directly with adversarial reviewers, then validating it with a disposable end-to-end run.
+
+Regardless, throw out any translated files. The goal is to refine the rules, not make incremental progress.
+
+### **Step 3 — Translate everything **
+
+For the remaining steps, you run the same multi-agent loop architecture: implement, review, and fix. 
+
+You can offload implementer work to smaller models and keep reviewers on larger ones. For example, Mike used Claude Sonnet when he fanned out 12 subagents for the main migration. 
+
+The work queue should be mechanical. A batch script decides what’s done by checking whether the translated file exists on disk, then slices the pending files into batches for the implementer agents. Because the queue is rebuilt from disk every time, the migration is resumable by construction.
+
+At this stage, agents can be overly cautious with how much work they do. The fix can be a blunt, emphatic prompt instruction with context that the compiler will catch mistakes in the next step. 
+
+Anything the translator can’t execute confidently gets flagged with // TODO(port): &lt;reason&gt; to be dealt with in step 4. From here on, the to-do lists write themselves: the compiler enumerates the errors, the smoke tests find the crashes, the suite reports the failures.
+
+Two adversarial reviewers evaluate the work of the implementers using separate contexts and disagreement between reviewers goes to a third agent. When a reviewer keeps catching the same mistake across files, the fix isn't per-file. You add one sentence to the rulebook and regenerate the affected batch. The rulebook keeps growing through this step; the code never gets hand-patched against it.
+
+One important design decision to note in this step is where the compiler sits. Mike ran the TypeScript compiler inside every loop, because it checks a unit in seconds. Jarred banned the compiler from the loop entirely and deferred it to the next step, because cargo takes minutes.
+
+At this step, much of the heavy lifting has been done and [the prompts start to get shorter.](https://github.com/anthropics/code-migration-kit-with-claude-code/blob/main/prompts/04-translation-kickoff.md)
+
+### **Steps 4, 5, 6 — Compile, run, and match behavior**
+
+These three steps share the same loop architecture and need progressively less human judgment, so we cover them together.
+
+**Step 4**, for example, may often dissolve into step 3 depending on the language and size of the migration. 
+
+Depending on the size and difficulty of the compiler step, agents may not run this at all. Jarred executed this with an orchestrator script that invoked the compiler once across the whole workspace. “Fixer agents” then ran through the error list in parallel with adversarial review. The build runs again, rinse and repeat. 
+
+Reviewing the error list is helpful to catch systemic issues that may require adjustments. For example, Jarred ran into thousands of Rust module errors that surfaced after fixing cyclic imports that Zig's lazy compilation tolerated. He fixed the loop by encoding logic to classify which dependence to delete, move, or restructure the boundary. 
+
+**Step 5 **also has a mechanical source of truth similar to the compiler error list: crashes from the smoke test. Again, the loop fix was to group issues into categories, in this case grouping causes by root cause that are reviewed by adversarial subagents. 
+
+**Step 6** and the end of our story is comparing the programs’ behavior across the two codebases.
+
+Our files have now been translated, compiled, and smoke tested. Now it's time to shard them and run the test suite (from the prerequisite stage) against them. Tackle failures with &quot;fixer agents&quot; that review the failed tests against both codebases. Adversarial reviewers check their fixes.
+
+The next stage in this loop is a [build daemon](https://github.com/anthropics/code-migration-kit-with-claude-code/blob/main/scripts/build_daemon.sh), which is the only process allowed to rebuild the binary. Fixers write patches; the daemon batches them, rebuilds once, re-runs the affected tests, and feeds the results back. This serializes the most expensive operation instead of letting multiple agents trigger it independently.
+
+When the same failure repeats across many tests, the fix moves upstream: you amend the rule that produced the bug and regenerate only the files that rule touched.
+
+Mike's approach matters here, because many developers won't have a built-out or ported test suite. Mike had Claude create a small script to run 7 real-world scenarios against both the new port and the original Python codebase, and diffed the results. Each failing scenario got its own fix agent, and the loop ran until all seven passed.
+
+Then he went one step further. Claude designed its own end-to-end test suite and ran it autonomously overnight, fixing what broke and re-running four nights in a row. As a result, it caught the paper cuts no scenario list would have predicted.
+
+The lesson is that a missing test suite doesn't block this step. If you can't inherit a referee, have Claude build one. Your original codebase is the ground truth either way.
+
+## **Code migrations best practices**
+
+Every run taught us something the previous one didn't. It’s a safe bet your next migration will teach you things this guide can't. But a few practices held up across every project:
+
+- **Don't follow this guide blindly.** Each migration is different. Treat this as a starting point, and plan your specific migration with Claude before committing to it.
+- **Don’t focus on individual failures.** Individual failures are the loop's job. Fixer agents burn those down. Your attention belongs on the patterns. 
+- **Make review adversarial and verification mechanical.** Adversarial review allows for longer running tasks and is often worth the token consumption. Let scripts — a compiler, a diff, a test suite — be the referee. 
+- **Don't use the largest model for everything.** Token spend concentrates in your loops, so design them deliberately. Smaller models handle the high-volume implementation fan-out well; save your largest model for reviewers and for anything that writes rules other agents will follow.
+- **Front-load the human hours.** The rulebook and the stress test are the most time-consuming. Everything after is mostly queues burning down. 
+- **Make the work queue mechanical and resumable.** Done should mean &quot;the output file exists on disk.&quot; 
+
+## **Review loop results, not code**
+
+Jarred’s Bun migration is now in production, although every migration has tradeoffs. For example, about 4% of the Rust code sits inside &quot;unsafe&quot; blocks, mostly single-line pointer operations at C/C++ boundaries.
+
+But the new codebase is measurably better. Every memory leak the team's tooling can detect has been fixed: one benchmark of 2,000 repeated builds dropped from 6,745 MB of memory to 609. The binary is 19% smaller on Linux and Windows. And cross-language optimization made it 2–5% faster across HTTP serving and real-world workloads like next build and tsc. 
+
+Consider whether it’s time to re-run the math of your long deferred migration. Pick the codebase you've been tolerating and ask Claude what the migration process looks like for it.
+
+***Related***
+
+- [*Migration starter kit*](https://github.com/anthropics/code-migration-kit-with-claude-code)* Note: The starter kit is a generalized template of the process above — it's not what these specific ports ran on.*
+- [*Code-modernization plugin*](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/code-modernization)* — for legacy modernization and framework upgrades rather than language ports*
+- [*Dynamic workflows in Claude Code*](https://claude.com/blog/introducing-dynamic-workflows-in-claude-code)
+
+‍</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Claude Code</span>
-            <span class="article-date">July 16, 2026</span>
-            <span class="lang-badge-large">EN</span>
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-sky);">
+            <img class="hero-illo-img" src="/assets/illustrations/ai-code-migration.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">How Anthropic runs large-scale code migrations with Claude Code</h1>
-          <a href="/posts/ai-code-migration/" class="lang-toggle">阅读中文翻译 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>Code migrations, projects that port a production codebase to a new language, were multi-year endeavors until recently.</p><p>In the last month, individual developers at Anthropic migrated 10 code packages consisting of tens to hundreds of thousands of lines of code using Claude Fable 5, Claude Opus 4.8, and <a href="https://claude.com/blog/introducing-dynamic-workflows-in-claude-code">dynamic workflows</a>. In this article we’ll cover two examples along with best practices from these projects.</p><p>Jarred Sumner, co-founder of Bun and Member of Technical Staff at Anthropic, used Claude Code to <a href="https://bun.com/blog/bun-in-rust">migrate Bun from Zig to Rust</a>. A million lines of code were produced in less than two weeks, with 100% of Bun's existing test suite passing in CI before merge. Nineteen regressions surfaced after merge and have all been fixed. The Rust port was shipped inside Claude Code in June.&nbsp;</p><p>Mike Krieger, co-lead of Anthropic Labs, migrated a Python codebase to 165,000 lines of TypeScript over a weekend. This included hundreds of agents, eight phase gates, three adversarial review rounds, and a final parity check that diffed every command's output against the Python original.&nbsp;</p><p>Claude Code’s new capabilities change the math for these long-deferred projects. Below is the six-step process we now use, drawn from what these migrations taught us.</p><p>The core insight is that you don’t fix the code. <strong>You fix the process (loop) that produced the code</strong>.</p><h2>What is an AI code migration?</h2><p>An AI code migration uses AI agents to port a production codebase to a new language or framework. Instead of translating files by hand, engineers write migration rules and verification loops; agents then translate, compile, and test until the new code's behavior matches the original — compressing multi-year projects into weeks.</p><h2><strong>Why and when to migrate languages</strong></h2><p>Before going straight into <em>the how</em>, it’s worth discussing <em>the when</em> and <em>why</em> because the assumptions around these projects have evolved.&nbsp;</p><p>Teams launch migrations because of landscape changes between their initial build and current project. Either a known trade-off has become limiting, a better approach has emerged, or the original ecosystem is shrinking.&nbsp;</p><p>For example, Jarred originally chose Zig because it offered C-level performance with radical simplicity, ideal for a solo founder “writing Bun in 1 year in a cramped Oakland apartment pre-LLM.” This simplicity came with known tradeoffs, <a href="https://bun.com/blog/bun-in-rust#just-be-really-smart-and-don-t-make-mistakes">which he writes about here</a>.&nbsp;</p><p>Fast forward to 2026. Bun's CLI is getting over 10 million monthly downloads and is used extensively within Claude Code. &nbsp;</p><p>As recently as last quarter, those tradeoffs wouldn’t have been enough to justify freezing the roadmap and committing resources to a multi-quarter project. Migrating languages can deliver smaller, faster, and safer systems, but no one wants to pay for them.</p><p>Software engineers have also had to contend with the career risk inherent in these formerly mega-projects. You could maintain two parallel code bases for quarters or years, and if the end result was 90% parity, you had a bigger headache than when you started.</p><p>Now, the worst case scenario is you delete the branch and try again.</p><p>There still needs to be a justifiable business case. While million line migrations no longer cost $3 to $4 million in engineering resources over the course of a four year project, they still cost tens to hundreds of thousands of dollars or more to execute. The Bun migration, for example, consumed 5.9 billion uncached input tokens and 690 million output tokens — around $165,000 at API pricing. The main portion of Mike’s port was 27 million tokens.</p><figure style="max-width:875pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a58f8844b99cec5d277a9ee_27e78c5a.png" loading="lazy"></div><figcaption><em>Jarred’s million-line PR.</em></figcaption></figure><p><strong>However, the migration case no longer needs to be existential. </strong>A year of memory-bug patches in the changelog, or one chronic bottleneck, can now justify it.</p><p>The compile step was the impetus for Mike's project. The internal tool his team works on ships to users as a single binary. Producing that binary with the Python toolchain took roughly eight minutes per platform, totaling a 30-minute wait across the build matrix on every release. After the port, the same compile now takes about two seconds, the binary starts 6x faster, and the team was able to retire a separate deployment pipeline.</p><h2><strong>Why AI changes the code migration math</strong></h2><p>Claude Fable 5 is our most capable, generally available model. Fable and Opus 4.8 are particularly good at delegating, directing, and verifying parallel workstreams with subagents while finding multiple paths towards stated goals.&nbsp;</p><p>Large code migrations are a particularly effective use case for these advanced models because:</p><ul role="list"><li><strong>The work is parallel</strong>. Work can be executed across thousands of independent units such as files and crates, so agents can work at the same time rather than have one waiting on the other.</li><li><strong>Context is clear and comprehensive. </strong>The old code serves as a great spec for the model. It also serves as a core reference to help build the guide for translation agents to follow.</li><li><strong>There is a built-in referee</strong>. Many large codebases will include a test suite that agents can use to verify their work. Agents perform their best when verification is objective, because the model can grind against a ground truth for days without a human arbitrating quality.</li><li><strong>The queue writes itself</strong>. When a compiler or test run fails, that becomes the next item for an agent to fix.</li><li><strong>They require consistency and edge case handling</strong>: The process is built so drift has nowhere to hide: reviewers cite the rule behind every finding, so a violation becomes a queue item instead of a quiet divergence. And when an agent does hit an edge case, the fix becomes a rule every subsequent agent follows.</li></ul><p>As we will see below, both Mike and Jarred used Fable for key steps in their migration process, particularly in <strong>an advisory pattern</strong> that used multiple model classes to optimize token consumption. </p></div>
+            <h1 class="article-title u-text-style-h1">How Anthropic runs large-scale code migrations with Claude Code</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>A step-by-step guide to running large code migrations with AI agents — including Bun's million-line Zig-to-Rust port.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <div class="hero-detail-value-stack"><a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a><div class="hero-detail-value u-text-style-body-3">Enterprise AI</div></div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/product/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">July 16, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/ai-code-migration/en.html">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/ai-code-migration" target="_blank">View original</a></p>
-          <p><a href="/">← Back to home</a></p>
-        </footer>
-      </article>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>Code migrations, projects that port a production codebase to a new language, were multi-year endeavors until recently.</p><p>In the last month, individual developers at Anthropic migrated 10 code packages consisting of tens to hundreds of thousands of lines of code using Claude Fable 5, Claude Opus 4.8, and <a href="https://claude.com/blog/introducing-dynamic-workflows-in-claude-code">dynamic workflows</a>. In this article we’ll cover two examples along with best practices from these projects.</p><p>Jarred Sumner, co-founder of Bun and Member of Technical Staff at Anthropic, used Claude Code to <a href="https://bun.com/blog/bun-in-rust">migrate Bun from Zig to Rust</a>. A million lines of code were produced in less than two weeks, with 100% of Bun's existing test suite passing in CI before merge. Nineteen regressions surfaced after merge and have all been fixed. The Rust port was shipped inside Claude Code in June.&nbsp;</p><p>Mike Krieger, co-lead of Anthropic Labs, migrated a Python codebase to 165,000 lines of TypeScript over a weekend. This included hundreds of agents, eight phase gates, three adversarial review rounds, and a final parity check that diffed every command's output against the Python original.&nbsp;</p><p>Claude Code’s new capabilities change the math for these long-deferred projects. Below is the six-step process we now use, drawn from what these migrations taught us.</p><p>The core insight is that you don’t fix the code. <strong>You fix the process (loop) that produced the code</strong>.</p><h2>What is an AI code migration?</h2><p>An AI code migration uses AI agents to port a production codebase to a new language or framework. Instead of translating files by hand, engineers write migration rules and verification loops; agents then translate, compile, and test until the new code's behavior matches the original — compressing multi-year projects into weeks.</p><h2><strong>Why and when to migrate languages</strong></h2><p>Before going straight into <em>the how</em>, it’s worth discussing <em>the when</em> and <em>why</em> because the assumptions around these projects have evolved.&nbsp;</p><p>Teams launch migrations because of landscape changes between their initial build and current project. Either a known trade-off has become limiting, a better approach has emerged, or the original ecosystem is shrinking.&nbsp;</p><p>For example, Jarred originally chose Zig because it offered C-level performance with radical simplicity, ideal for a solo founder “writing Bun in 1 year in a cramped Oakland apartment pre-LLM.” This simplicity came with known tradeoffs, <a href="https://bun.com/blog/bun-in-rust#just-be-really-smart-and-don-t-make-mistakes">which he writes about here</a>.&nbsp;</p><p>Fast forward to 2026. Bun's CLI is getting over 10 million monthly downloads and is used extensively within Claude Code. &nbsp;</p><p>As recently as last quarter, those tradeoffs wouldn’t have been enough to justify freezing the roadmap and committing resources to a multi-quarter project. Migrating languages can deliver smaller, faster, and safer systems, but no one wants to pay for them.</p><p>Software engineers have also had to contend with the career risk inherent in these formerly mega-projects. You could maintain two parallel code bases for quarters or years, and if the end result was 90% parity, you had a bigger headache than when you started.</p><p>Now, the worst case scenario is you delete the branch and try again.</p><p>There still needs to be a justifiable business case. While million line migrations no longer cost $3 to $4 million in engineering resources over the course of a four year project, they still cost tens to hundreds of thousands of dollars or more to execute. The Bun migration, for example, consumed 5.9 billion uncached input tokens and 690 million output tokens — around $165,000 at API pricing. The main portion of Mike’s port was 27 million tokens.</p><figure style="max-width:875pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a58f8844b99cec5d277a9ee_27e78c5a.png" loading="lazy"></div><figcaption><em>Jarred’s million-line PR.</em></figcaption></figure><p><strong>However, the migration case no longer needs to be existential. </strong>A year of memory-bug patches in the changelog, or one chronic bottleneck, can now justify it.</p><p>The compile step was the impetus for Mike's project. The internal tool his team works on ships to users as a single binary. Producing that binary with the Python toolchain took roughly eight minutes per platform, totaling a 30-minute wait across the build matrix on every release. After the port, the same compile now takes about two seconds, the binary starts 6x faster, and the team was able to retire a separate deployment pipeline.</p><h2><strong>Why AI changes the code migration math</strong></h2><p>Claude Fable 5 is our most capable, generally available model. Fable and Opus 4.8 are particularly good at delegating, directing, and verifying parallel workstreams with subagents while finding multiple paths towards stated goals.&nbsp;</p><p>Large code migrations are a particularly effective use case for these advanced models because:</p><ul role="list"><li><strong>The work is parallel</strong>. Work can be executed across thousands of independent units such as files and crates, so agents can work at the same time rather than have one waiting on the other.</li><li><strong>Context is clear and comprehensive. </strong>The old code serves as a great spec for the model. It also serves as a core reference to help build the guide for translation agents to follow.</li><li><strong>There is a built-in referee</strong>. Many large codebases will include a test suite that agents can use to verify their work. Agents perform their best when verification is objective, because the model can grind against a ground truth for days without a human arbitrating quality.</li><li><strong>The queue writes itself</strong>. When a compiler or test run fails, that becomes the next item for an agent to fix.</li><li><strong>They require consistency and edge case handling</strong>: The process is built so drift has nowhere to hide: reviewers cite the rule behind every finding, so a violation becomes a queue item instead of a quiet divergence. And when an agent does hit an edge case, the fix becomes a rule every subsequent agent follows.</li></ul><p>As we will see below, both Mike and Jarred used Fable for key steps in their migration process, particularly in <strong>an advisory pattern</strong> that used multiple model classes to optimize token consumption. </p><h2><strong>Six steps for large code migrations</strong></h2><p><em>The process below has been generalized to be relevant to multiple languages and scenarios. For additional details, you can read </em><a href="https://bun.com/blog/bun-in-rust"><em>Jarred’s blog</em></a><em>. You can also access the</em><a href="https://github.com/anthropics/code-migration-kit-with-claude-code"><em> Migration starter kit.</em></a><em> Note: The starter kit is a generalized template of the process above — it's not what these specific ports ran on.</em></p><h3><strong>Prerequisites</strong></h3><p>A prerequisite before starting on your migration project is to have a strong judge in place, otherwise you won’t have an exit condition or measure of success.&nbsp;</p><p>The judge must be able to evaluate both the original code and the target code on equal terms. Test suites written in the original language will often depend on internal functions that won't exist in the target code.&nbsp;</p><p>To build this judge:</p><ul role="list"><li><strong>Categorize existing tests</strong>. Use Claude to identify which tests are expressible as external calls and which depend on internals that won't port.&nbsp;</li><li><strong>Rewrite for portability.</strong> Convert the external-facing tests into assertions that can run against both the original and the port. Use adversarial agents to verify the rewritten tests don't weaken the assertions.</li><li><strong>Validate the judge</strong>. Run it against the original code to confirm it passes. Then run it against deliberately broken code to confirm it fails — a judge that doesn't catch breakage isn't a judge.</li></ul><p>Jarred had a large test suite written in a third language (TypeScript), but that will not be the case for most projects. For his Python-to-TypeScript port, Mike created a parity harness of seven real-world scenarios and considered any behavior change a bug to be fixed.&nbsp;</p><p>Before we get into each stage, this graphic may help you follow along. This mostly follows Jarred’s methodology, with reviews and gates at each stage. Mike followed a similar overall structure using similar loop workflows, but he ran the entire migration end to end, revised the rules and the workflow based on the results, and ran it again — discarding the output each time until the third run.</p><figure style="max-width:1109pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a58f8854b99cec5d277aa48_e7dd47de.png" loading="lazy"></div></figure><h3><strong>Step 1 — Create the rulebook, dependency map, and gap inventory</strong></h3><figure style="max-width:733pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a58fa78da7794274460319e_Code-migration-step1.jpeg" loading="lazy"></div></figure><p>In this stage we are creating the foundations of our migration: an inventory of places where code will need to be refactored rather than just translated, a rulebook for how to translate our code, and a dependency map to order our migration implementation workstreams.&nbsp;</p><p>The order matters: the rulebook must come before the gap inventory. The gap inventory is defined by what the rulebook's defaults won't cover, and the two are tested together in a joint audit.</p><h4><strong>Rulebook</strong></h4><p>The exact shape of the <a href="https://github.com/anthropics/code-migration-kit-with-claude-code/blob/main/templates/RULEBOOK.md">rulebook</a> depends on key architectural decisions you must make at the start. Chief among them, if the new code will follow the same structure, or if it will be completely redesigned.&nbsp;</p><p>If it’s the former (Jarred), the rulebook will primarily be lookup tables that translates types and idioms between languages while pointing to the gap inventory for the harder-to-translate components. If it’s the latter (Mike), it will be a design document.&nbsp;</p><p>Jarred created his rulebook by chatting with Claude, forming a policy for each area of ambiguity. He also used eight subagents specifically designed to review for 8 different categories of common failure modes based on his own intuition.</p><h4><strong>Dependency map</strong></h4><p>You need to understand file dependencies to effectively break up workstreams for a parallel migration so you know which files to migrate first and which files to contain in the same batch. Some languages and codebases have explicit manifests that make this easy, but for legacy codebases and many popular languages like C/C++ and Python, these dependencies need to be discovered and mapped.</p><p>Claude Code can deploy agents to create and run a deterministic script to produce this map. The <a href="https://github.com/anthropics/code-migration-kit-with-claude-code/blob/main/prompts/01-dependency-map.md">prompt in the migration kit</a> uses a workflow to create a review-and-fix loop.&nbsp;<em>Note: The starter kit is a generalized template of the process laid out in this post — it's not what these specific ports ran on.</em></p><h4><strong>Gap inventory and skeptic reviewers</strong></h4><p>The new language has different requirements from the old language that must be met. For Zig to Rust the difference was manual memory management (C and C++ work the same way). For example:</p><p>Zig</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-plaintext" style="white-space:pre-wrap"><span><span>fn readConfig(allocator: std.mem.Allocator) ![]u8 {
+</span></span><span>    const buf = try allocator.alloc(u8, 1024);
+</span><span>    // ...fill buf...
+</span><span>    return buf; // caller must free this — but only the comment says so
+</span><span>}
+</span><span>
+</span><span>// A caller that forgets 'defer allocator.free(buf)' still compiles — the leak only surfaces at runtime.</span></code></pre><p>Rust</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-rust" style="white-space:pre-wrap"><span><span class="hljs-function" style="color:#dcc6e0">fn</span><span class="hljs-function"> </span><span class="hljs-function" style="color:#00e0e0">read_config</span><span>() -&gt; </span><span style="color:#f5ab35">Vec</span><span>&lt;</span><span style="color:#f5ab35">u8</span><span>&gt; { 
+</span></span><span><span></span><span style="color:#dcc6e0">let</span><span> buf = </span><span style="color:#f5ab35">vec!</span><span>[</span><span style="color:#f5ab35">0u8</span><span>; </span><span style="color:#f5ab35">1024</span><span>]; 
+</span></span><span><span></span><span style="color:#d4d0ab">// ...fill buf... </span><span>
+</span></span><span><span>buf </span><span style="color:#d4d0ab">// ownership moves to the caller; memory is freed automatically </span><span>
+</span></span><span>} 
+</span><span><span></span><span style="color:#d4d0ab">// Use it after it's moved? Free it twice? Neither compiles. </span><span>
+</span></span><span><span></span><span style="color:#d4d0ab">// Forget to free it? There's no free call to forget — drop is automatic.</span></span></code></pre><p>For Python to TypeScript the gap was interfaces and contracts. Python doesn’t require a contract declaring what shape of object it will accept or what it returns, but TypeScript does. For example:</p><p>Python</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-python" style="white-space:pre-wrap"><span><span class="hljs-function" style="color:#dcc6e0">def</span><span class="hljs-function"> </span><span class="hljs-function" style="color:#00e0e0">register</span><span class="hljs-function">(</span><span class="hljs-function" style="color:#f5ab35">handler</span><span class="hljs-function">):</span><span>
+</span></span><span>    handler.setup()
+</span><span><span>    </span><span style="color:#dcc6e0">return</span><span> handler.run({</span><span style="color:#abe338">"retries"</span><span>: </span><span style="color:#f5ab35">3</span><span>})
+</span></span><span>
+</span><span><span></span><span style="color:#d4d0ab"># Any object with .setup() and .run() works here. Which objects actually get passed in? Read the whole codebase to find out.</span><span>
+</span></span><span></span></code></pre><p>TypeScript</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-typescript" style="white-space:pre-wrap"><span><span style="color:#dcc6e0">interface</span><span> RunResult { ok: </span><span style="color:#f5ab35">boolean</span><span> } 
+</span></span><span>
+</span><span><span></span><span style="color:#dcc6e0">interface</span><span> Handler 
+</span></span><span><span>{ setup(): </span><span style="color:#f5ab35">void</span><span>; 
+</span></span><span><span>run(opts: { </span><span class="hljs-attr">retries</span><span>: </span><span style="color:#f5ab35">number</span><span> }): </span><span style="color:#f5ab35">Promise</span><span>&lt;RunResult&gt;; 
+</span></span><span>} 
+</span><span>
+</span><span><span></span><span class="hljs-function" style="color:#dcc6e0">function</span><span class="hljs-function"> </span><span class="hljs-function" style="color:#00e0e0">register</span><span class="hljs-function">(</span><span class="hljs-function" style="color:#f5ab35">handler: Handler</span><span class="hljs-function">): </span><span class="hljs-function" style="color:#00e0e0">Promise</span><span class="hljs-function">&lt;</span><span class="hljs-function" style="color:#00e0e0">RunResult</span><span class="hljs-function">&gt; </span><span>{ 
+</span></span><span>handler.setup(); 
+</span><span><span></span><span style="color:#dcc6e0">return</span><span> handler.run({ </span><span class="hljs-attr">retries</span><span>: </span><span style="color:#f5ab35">3</span><span> }); } 
+</span></span><span>
+</span><span><span></span><span style="color:#d4d0ab">// The contract must be written down before this compiles</span></span></code></pre><p>Both Jarred and Mike created gap inventory files capturing this implicit knowledge. Jarred inventoried these gaps up front, which is what we do here, while Mike chose to translate first and then create the gap inventory by auditing afterwards. You may need to do both.&nbsp;</p><p>Check out this sample <a href="https://github.com/anthropics/code-migration-kit-with-claude-code/blob/main/prompts/02-gap-inventory.md">Claude Code prompt to create a gap inventory file</a>.</p><h3><strong>Step 2 — Stress-test the rules&nbsp;</strong></h3><figure style="max-width:744pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a58fbe31db98b8b59d39ba8_MIgration-step2.jpeg" loading="lazy"></div></figure><p>This step involves a mini-migration that serves as a “shakedown cruise” for the larger migration.&nbsp;</p><p>In this step, Jarred used one agent to translate three files using the rulebook, one agent to translate three files “like a senior Rust engineer,” and one agent to use the diff to create new translation rules. At this stage he caught two critical issues that would have created numerous issues if fanned out across all 1,448 files.</p><p>The prompt may look something like <a href="https://github.com/anthropics/code-migration-kit-with-claude-code/blob/main/prompts/03-stress-test.md">this</a>.</p><p>This type of stress test <strong>only works for structure-preserving migrations</strong>, where two translations of the same file are comparable line by line.&nbsp; If your rulebook is a redesign — like Mike's — the equivalent test is attacking the design document directly with adversarial reviewers, then validating it with a disposable end-to-end run.</p><p>Regardless, throw out any translated files. The goal is to refine the rules, not make incremental progress.</p><h3><strong>Step 3 — Translate everything&nbsp;</strong></h3><figure style="max-width:751pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a58fd9c8899de91189a89e0_ai-migation-step4-5-6.jpeg" loading="lazy"></div></figure><p>For the remaining steps, you run the same multi-agent loop architecture: implement, review, and fix.&nbsp;</p><p>You can offload implementer work to smaller models and keep reviewers on larger ones. For example, Mike used Claude Sonnet when he fanned out 12 subagents for the main migration.&nbsp;</p><p>The work queue should be mechanical. A batch script decides what’s done by checking whether the translated file exists on disk, then slices the pending files into batches for the implementer agents. Because the queue is rebuilt from disk every time, the migration is resumable by construction.</p><p>At this stage, agents can be overly cautious with how much work they do. The fix can be a blunt, emphatic prompt instruction with context that the compiler will catch mistakes in the next step. </p><p>Anything the translator can’t execute confidently gets flagged with // TODO(port): &lt;reason&gt; to be dealt with in step 4. From here on, the to-do lists write themselves: the compiler enumerates the errors, the smoke tests find the crashes, the suite reports the failures.</p><p>Two adversarial reviewers evaluate the work of the implementers using separate contexts and disagreement between reviewers goes to a third agent. When a reviewer keeps catching the same mistake across files, the fix isn't per-file. You add one sentence to the rulebook and regenerate the affected batch. The rulebook keeps growing through this step; the code never gets hand-patched against it.</p><p>One important design decision to note in this step is where the compiler sits. Mike ran the TypeScript compiler inside every loop, because it checks a unit in seconds. Jarred banned the compiler from the loop entirely and deferred it to the next step, because cargo takes minutes.</p><p>At this step, much of the heavy lifting has been done and <a href="https://github.com/anthropics/code-migration-kit-with-claude-code/blob/main/prompts/04-translation-kickoff.md">the prompts start to get shorter.</a></p><h3><strong>Steps 4, 5, 6 — Compile, run, and match behavior</strong></h3><figure style="max-width:746pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a58fd76153c143199b57e1b_ai-migration-step3.jpeg" loading="lazy"></div></figure><p>These three steps share the same loop architecture and need progressively less human judgment, so we cover them together.</p><p><strong>Step 4</strong>, for example, may often dissolve into step 3 depending on the language and size of the migration.&nbsp;</p><p>Depending on the size and difficulty of the compiler step, agents may not run this at all. Jarred executed this with an orchestrator script that invoked the compiler once across the whole workspace. “Fixer agents” then ran through the error list in parallel with adversarial review. The build runs again, rinse and repeat.&nbsp;</p><p>Reviewing the error list is helpful to catch systemic issues that may require adjustments. For example, Jarred ran into thousands of Rust module errors that surfaced after fixing cyclic imports that Zig's lazy compilation tolerated. He fixed the loop by encoding logic to classify which dependence to delete, move, or restructure the boundary.&nbsp;</p><p><strong>Step 5 </strong>also has a mechanical source of truth similar to the compiler error list: crashes from the smoke test. Again, the loop fix was to group issues into categories, in this case grouping causes by root cause that are reviewed by adversarial subagents.&nbsp;</p><p><strong>Step 6</strong> and the end of our story is comparing the programs’ behavior across the two codebases.</p><p>Our files have now been translated, compiled, and smoke tested. Now it's time to shard them and run the test suite (from the prerequisite stage) against them. Tackle failures with "fixer agents" that review the failed tests against both codebases. Adversarial reviewers check their fixes.</p><p>The next stage in this loop is a <a href="https://github.com/anthropics/code-migration-kit-with-claude-code/blob/main/scripts/build_daemon.sh">build daemon</a>, which is the only process allowed to rebuild the binary. Fixers write patches; the daemon batches them, rebuilds once, re-runs the affected tests, and feeds the results back. This serializes the most expensive operation instead of letting multiple agents trigger it independently.</p><p>When the same failure repeats across many tests, the fix moves upstream: you amend the rule that produced the bug and regenerate only the files that rule touched.</p><p>Mike's approach matters here, because many developers won't have a built-out or ported test suite. Mike had Claude create a small script to run 7 real-world scenarios against both the new port and the original Python codebase, and diffed the results. Each failing scenario got its own fix agent, and the loop ran until all seven passed.</p><p>Then he went one step further. Claude designed its own end-to-end test suite and ran it autonomously overnight, fixing what broke and re-running four nights in a row. As a result, it caught the paper cuts no scenario list would have predicted.</p><p>The lesson is that a missing test suite doesn't block this step. If you can't inherit a referee, have Claude build one. Your original codebase is the ground truth either way.</p><h2><strong>Code migrations best practices</strong></h2><p>Every run taught us something the previous one didn't. It’s a safe bet your next migration will teach you things this guide can't. But a few practices held up across every project:</p><ul role="list"><li><strong>Don't follow this guide blindly.</strong> Each migration is different. Treat this as a starting point, and plan your specific migration with Claude before committing to it.</li><li><strong>Don’t focus on individual failures.</strong> Individual failures are the loop's job. Fixer agents burn those down. Your attention belongs on the patterns.&nbsp;</li><li><strong>Make review adversarial and verification mechanical.</strong> Adversarial review allows for longer running tasks and is often worth the token consumption. Let scripts — a compiler, a diff, a test suite — be the referee.&nbsp;</li><li><strong>Don't use the largest model for everything.</strong> Token spend concentrates in your loops, so design them deliberately. Smaller models handle the high-volume implementation fan-out well; save your largest model for reviewers and for anything that writes rules other agents will follow.</li><li><strong>Front-load the human hours.</strong> The rulebook and the stress test are the most time-consuming. Everything after is mostly queues burning down.&nbsp;</li><li><strong>Make the work queue mechanical and resumable.</strong> Done should mean "the output file exists on disk."&nbsp;</li></ul><h2><strong>Review loop results, not code</strong></h2><p>Jarred’s Bun migration is now in production, although every migration has tradeoffs. For example, about 4% of the Rust code sits inside "unsafe" blocks, mostly single-line pointer operations at C/C++ boundaries.</p><p>But the new codebase is measurably better. Every memory leak the team's tooling can detect has been fixed: one benchmark of 2,000 repeated builds dropped from 6,745 MB of memory to 609. The binary is 19% smaller on Linux and Windows. And cross-language optimization made it 2–5% faster across HTTP serving and real-world workloads like next build and tsc.&nbsp;</p><p>Consider whether it’s time to re-run the math of your long deferred migration. Pick the codebase you've been tolerating and ask Claude what the migration process looks like for it.</p><p><strong><em>Related</em></strong></p><ul role="list"><li><a href="https://github.com/anthropics/code-migration-kit-with-claude-code"><em>Migration starter kit</em></a><em> Note: The starter kit is a generalized template of the process above — it's not what these specific ports ran on.</em></li><li><a href="https://github.com/anthropics/claude-plugins-official/tree/main/plugins/code-modernization"><em>Code-modernization plugin</em></a><em> — for legacy modernization and framework upgrades rather than language ports</em></li><li><a href="https://claude.com/blog/introducing-dynamic-workflows-in-claude-code"><em>Dynamic workflows in Claude Code</em></a></li></ul><p>‍</p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/ai-code-migration" target="_blank">View original</a></p>
+              <p><a href="/">← Back to home</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
     </div>
   </main>
 <footer class="footer">
@@ -51,6 +359,53 @@
       <p>Content from <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · Translation by AI</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

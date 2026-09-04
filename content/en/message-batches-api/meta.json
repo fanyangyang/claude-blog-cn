@@ -13,5 +13,22 @@
   "translatedTitle": "Message Batches API 介绍",
   "translated": true,
   "translatedAt": "2026-09-02T04:39:32.652Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Platform"
+    ],
+    "usecase": [
+      "Agents",
+      "Coding"
+    ]
+  },
+  "subtitle": "Claude now offers a Message Batches API that processes up to large volumes of queries asynchronously at lower cost.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/platform/api"
 }

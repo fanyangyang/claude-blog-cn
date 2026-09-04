@@ -13,5 +13,21 @@
   "translatedTitle": "人们如何使用 Claude Cowork",
   "translated": true,
   "translatedAt": "2026-09-02T04:40:00.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Cowork"
+    ],
+    "usecase": [
+      "Productivity"
+    ]
+  },
+  "subtitle": "In a sample of Claude Cowork sessions, we found that roughly half of all usage comprises “the work around the work”—tasks that are part of a broad swath of jobs, but are rarely a person’s core responsibility.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/product/cowork"
 }

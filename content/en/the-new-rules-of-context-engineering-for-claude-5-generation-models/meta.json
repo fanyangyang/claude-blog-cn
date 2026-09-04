@@ -13,5 +13,27 @@
   "translatedTitle": "面向 Claude 5 世代模型的上下文工程新法则",
   "translated": true,
   "translatedAt": "2026-09-02T04:06:29.981Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Claude Code",
+      "Agents"
+    ],
+    "product": [
+      "Claude Code",
+      "Claude Enterprise",
+      "Claude Platform"
+    ],
+    "usecase": [
+      "Agents",
+      "Coding"
+    ]
+  },
+  "subtitle": "We removed over 80% of Claude Code's system prompt for more advanced models. How to apply the lessons we learned to your own context engineering in Claude Code and with your own agents.",
+  "authors": [
+    "Thariq Shihipar"
+  ],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/claude-code",
+  "productUrl": "https://claude.com/product/claude-code"
 }

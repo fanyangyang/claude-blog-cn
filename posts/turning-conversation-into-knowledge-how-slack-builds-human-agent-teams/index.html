@@ -3,55 +3,243 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>把对话变成知识：Slack 如何构建人机协作团队 — Claude Blog 中文翻译</title>
-  <meta name="description" content="把对话变成知识：Slack 如何构建人机协作团队">
+  <title>将对话转化为知识：Slack 如何构建人机协作团队 — Claude Blog 中文翻译</title>
+  <meta name="description" content="A conversation with Jaime DeLanghe, Chief Product Officer at Slack.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/turning-conversation-into-knowledge-how-slack-builds-human-agent-teams" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>将对话转化为知识：Slack 如何构建人机协作团队</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/turning-conversation-into-knowledge-how-slack-builds-human-agent-teams" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/turning-conversation-into-knowledge-how-slack-builds-human-agent-teams/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># 将对话转化为知识：Slack 如何构建人机协作团队
+
+A conversation with Jaime DeLanghe, Chief Product Officer at Slack.
+
+*这是&quot;构建人机协作团队&quot;系列的第二篇。*[*第一篇*](https://claude.com/blog/building-effective-human-agent-teams)*分享了我们在 Anthropic 用多人协作 AI 构建团队的经验。本篇则来自一家早在 AI 到来之前就开始思考人机协作团队的公司，看他们有哪些最佳实践。*
+
+Jaime Delanghe 于 2017 年加入 Slack，从事搜索和机器学习方面的工作，使命是把职场对话转化为组织级的知识。如今她已是公司的首席产品官。她从一开始就坚信：要实现这个目标，人们必须在开放中工作——把对话、决策和进行中的工作放在公司里任何人都能阅读和搜索的频道里。在她近期的文章[*The Work is the Conversation*](https://jaimedelanghe.medium.com/the-work-is-the-conversation-50a1d61f8f9e)中，她为智能体提出了同样的主张：围绕工作展开的对话正是智能体发挥作用所需要的上下文，也只有这样，我们才能最终实现那个存在了几十年的目标——把散落的知识转化为生产力。
+
+为了了解这在 Slack 的实践中是什么样子，我们与 Jaime 聊了聊她在构建高效人机协作团队、推广这些全新工作方式上的最佳实践。
+
+## 把对话历史当作知识库来对待
+
+多年来，&quot;职场对话——人们协作时产生的'废气'——会沉淀为组织知识&quot;这一承诺始终没有兑现。
+
+&quot;我在 Slack 早期看过很多研究论文，结论其实是：不，对话并不会变成知识，&quot;Jaime 说，&quot;你希望它变成知识，但实际上它只是堆在那里的一堆东西，人们还是得反复重复自己说过的话。&quot;
+
+要消化掉这些&quot;废气&quot;，靠人力根本不可能。而现在，这成了智能体的工作。
+
+### 如何落地实践
+
+- **默认使用公开频道**：智能体只能从它能看到的东西中学习。在私信或私密话题里做出的决策，对它们是不可见的——也就此在组织里流失了。
+- **向智能体要推理过程，而不只是记录**：与其搜索&quot;当时决定了什么&quot;，不如让智能体重构*为什么*这么决定，以及此后背景发生了哪些变化。
+- **扩大接触面**：Slack 和 Claude 这类工具正在把会议、邮件、日历和文档库缝合在一起——连接的上下文越多，你的团队需要重复的内容就越少。
+
+## 学会在智能体与人类之间适时交接任务
+
+人机协作团队的核心节奏，是一轮又一轮的交接循环。在 Slack 中由 Claude 驱动的智能体承担生产性工作——起草、总结、监控、准备——并把结果交给人。人负责审查、决策、调整方向，再把工作交回给智能体执行下一步。
+
+要看这个过程如何运转，只需看看 Jaime 每周如何开始工作。
+
+&quot;现在是周一早上，我刚看完一份由智能体为我准备的每日简报，&quot;Jaime 说。
+
+同样在等她审阅的还有：上周产品工作坊的回顾（其中标注了需要升级处理的事项）、一份全网 AI 动态报告、当天会议的背景材料，以及一段她交给智能体重写的过时个人简介。在每一轮循环的末尾，都由人类基于智能体的产出进行审查和决策。
+
+### 如何落地实践：
+
+- **用智能体生成的简报开启一天。**回顾总结、升级事项、会前准备和网络动态 roundup，都很适合由智能体驱动完成、由人工审阅把关。
+- **把工作锚定在共享频道中。**把所有工作都放到共享频道里，让人和智能体一起分拣处理，由人主导优先级的排序。
+- **让轻量信号变成可执行的动作。**在 Jaime 的频道里，一个表情回应就会把条目加入待办清单，并由一个智能体接手处理。
+
+## 给智能体分派清晰的角色
+
+如果你的心智模型还停留在一对一的聊天机器人，那面对一整支各司其职的 Claude 智能体队伍时难免会手足无措。Jaime 的应对方式偏社会性而非技术性：&quot;我愿意把智能体看作某种意义上的同事。&quot;
+
+就像人类队友各有职责分工一样，智能体也应该有明确的目标和专注领域。&quot;如果智能体的价值让人感觉是强制摊派的，而不是被使用者真切感受到和理解，那你真的很难记住它是干什么用的，&quot;她说。
+
+**如何落地实践：**
+
+- **把常规的、事务性的任务交给通用智能体。**与其让人记住某个专用工具，不如训练一个智能体来处理重复性任务，比如提交一张工单，或把上周的指标拉进状态汇报。
+- **让价值被感受到，而不是被规定。**如果人们说不清某个智能体是干什么的，也许就该让它退役了。
+
+## 共享频道默认公开，私密要是有意为之
+
+从最早的年代起，Slack 就倡导频道默认公开：&quot;你是在为接下来要发生的所有工作，构建共同的认知和共享的背景，&quot;Jaime 说。
+
+她建议，除非有明确理由需要对背景和知识设限，否则频道都应保持公开。智能体能调取的信息越多，就越能做好自己的工作，也就会成为更得力的队友。
+
+开放的背景会复利式增长——新人一入职就能看到全部历史，而不是面对一个空空的收件箱；没有人需要重复自己说过的话。现在智能体也从中受益，而这些背景和工作记忆又会回流到人这里。
+
+**如何落地实践：**
+
+- **让日常工作保持公开。**把不涉及敏感信息的项目、公告和问答频道设为公开，让智能体同事能获取它们所需的知识，发挥最大作用。
+- **记住你的智能体读到的和你团队读到的一样。**一个私密频道，对所有需要就该频道汇报的智能体来说都是盲区。
+- **让心理安全感来划定界线。**当真正敏感的内容被隔离之后，工作退回私信的主要原因就不再是保密，而是不习惯被人看到半成品。人们应当有底气在公开场合做日常工作——包括粗糙的草稿和没想清楚的问题——并相信同事会以善意相待。这种开放同样会复利式增长：&quot;你先给出信任，才能赢得信任。&quot;
+
+## 用&quot;展示可能性&quot;来推广新工作方式
+
+学习一种新工作方式最快的方法，就是看队友怎么做。Jaime 在 Salesforce 见证过这一点：员工们在一个名为 *How I Slackbot* 的全员频道里分享技巧、调试心得和工作流窍门，据她估计这个频道有数千名成员。在这个默认公开的频道里，一个销售流程里的窍门，最终可能重塑一个工程流程。
+
+在 Slack 内部，一场推动产品经理使用 Claude 的运动&quot;是你能想象到的最自组织的事情&quot;。一位 PM 找开发者体验负责人帮他完成配置，随后写了一篇 canvas，记录自己做了什么、怎么做的。其他 PM 纷纷效仿这个格式。各个团队自发组织工作坊，建起了自己的 git 仓库。
+
+**如何落地实践：**
+
+- **建一个全员分享频道。**给员工一个公开场合来分享技巧、调试心得和工作流窍门，让一个职能的窍门能够重塑另一个职能。
+- **鼓励写出别人可以直接照搬的分享。**一份简短的&quot;我做了什么、怎么做的&quot;文档，就能把一个人的配置变成团队的模板或技能。
+
+## 度量成果，而不是活跃度
+
+从在 Slack 的早期开始，Jaime 就一直在思考如何度量生产力。&quot;我们希望人们发更多消息吗？&quot;她说，&quot;也许不。发更多消息未必意味着他们从 Slack 里得到了更多。消息变多，可能说明人们找不到需要的东西，或者第一次没法把话说清楚。&quot;
+
+如今，如何度量 AI 的价值这个问题如出一辙——面对如此复杂的事物，简单指标无能为力。Token 用量只能告诉你灯是亮着的，这固然重要，但远远不够。
+
+**如何落地实践：**
+
+- **把使用指标当脉搏，而不是价值证明。**活跃度只能说明大家在用，不能说明它真的有效。
+- **准备好运用你自己的判断。**没有什么干净利落的方法能证明人们使用这些工具的方式带来了更好的业务结果。用 Jaime 的话说，把两者联系起来仍然需要&quot;很多信念的跳跃&quot;，没有任何仪表盘或使用数据能替你证明这一点。
+
+## 一起改变工作方式
+
+对于想要推行人机协作团队的组织，Jaime 最大的建议是重新构想每一个工作流：&quot;我们必须想办法改变工作的方式，而不是把同样的活干得更快。而这将是一项团队运动。&quot;
+
+那构建一支高效的人机协作团队，她最重要的建议是什么？尽早开始，但从小处着手。拉一群人进一个带 Claude 的共享频道，给他们同一套资源，然后放手让他们工作。如果 Slack 的经验可以参考，他们构建出来的东西会自己传播开。</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Enterprise AI</span>
-            <span class="article-date">August 19, 2026</span>
-            
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-olive);">
+            <img class="hero-illo-img" src="/assets/illustrations/turning-conversation-into-knowledge-how-slack-builds-human-agent-teams.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">把对话变成知识：Slack 如何构建人机协作团队</h1>
-          <a href="/posts/turning-conversation-into-knowledge-how-slack-builds-human-agent-teams/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p><em>这是"构建人机协作团队"系列的第二篇。</em><a href="https://claude.com/blog/building-effective-human-agent-teams" target="_blank"><em>第一篇</em></a><em>分享了我们在 Anthropic 用多人协作 AI 构建团队的经验。本篇则来自一家早在 AI 到来之前就开始思考人机协作团队的公司，看他们有哪些最佳实践。</em></p><p>Jaime Delanghe 于 2017 年加入 Slack，从事搜索和机器学习方面的工作，使命是把职场对话转化为组织级的知识。如今她已是公司的首席产品官。她从一开始就坚信：要实现这个目标，人们必须在开放中工作——把对话、决策和进行中的工作放在公司里任何人都能阅读和搜索的频道里。在她近期的文章<a href="https://jaimedelanghe.medium.com/the-work-is-the-conversation-50a1d61f8f9e" target="_blank"><em>The Work is the Conversation</em></a>中，她为智能体提出了同样的主张：围绕工作展开的对话正是智能体发挥作用所需要的上下文，也只有这样，我们才能最终实现那个存在了几十年的目标——把散落的知识转化为生产力。</p><p>为了了解这在 Slack 的实践中是什么样子，我们与 Jaime 聊了聊她在构建高效人机协作团队、推广这些全新工作方式上的最佳实践。</p><h2>把对话历史当作知识库来对待</h2><p>多年来，"职场对话——人们协作时产生的'废气'——会沉淀为组织知识"这一承诺始终没有兑现。</p><p>"我在 Slack 早期看过很多研究论文，结论其实是：不，对话并不会变成知识，"Jaime 说，"你希望它变成知识，但实际上它只是堆在那里的一堆东西，人们还是得反复重复自己说过的话。"</p><p>要消化掉这些"废气"，靠人力根本不可能。而现在，这成了智能体的工作。</p><h3>如何落地实践</h3><ul role="list"><li><strong>默认使用公开频道</strong>：智能体只能从它能看到的东西中学习。在私信或私密话题里做出的决策，对它们是不可见的——也就此在组织里流失了。</li><li><strong>向智能体要推理过程，而不只是记录</strong>：与其搜索"当时决定了什么"，不如让智能体重构<em>为什么</em>这么决定，以及此后背景发生了哪些变化。</li><li><strong>扩大接触面</strong>：Slack 和 Claude 这类工具正在把会议、邮件、日历和文档库缝合在一起——连接的上下文越多，你的团队需要重复的内容就越少。</li></ul><h2>学会在智能体与人类之间适时交接任务</h2><p>人机协作团队的核心节奏，是一轮又一轮的交接循环。在 Slack 中由 Claude 驱动的智能体承担生产性工作——起草、总结、监控、准备——并把结果交给人。人负责审查、决策、调整方向，再把工作交回给智能体执行下一步。</p><p>要看这个过程如何运转，只需看看 Jaime 每周如何开始工作。</p><p>"现在是周一早上，我刚看完一份由智能体为我准备的每日简报，"Jaime 说。</p><p>同样在等她审阅的还有：上周产品工作坊的回顾（其中标注了需要升级处理的事项）、一份全网 AI 动态报告、当天会议的背景材料，以及一段她交给智能体重写的过时个人简介。在每一轮循环的末尾，都由人类基于智能体的产出进行审查和决策。</p><h3>如何落地实践：</h3><ul role="list"><li><strong>用智能体生成的简报开启一天。</strong>回顾总结、升级事项、会前准备和网络动态 roundup，都很适合由智能体驱动完成、由人工审阅把关。</li><li><strong>把工作锚定在共享频道中。</strong>把所有工作都放到共享频道里，让人和智能体一起分拣处理，由人主导优先级的排序。</li><li><strong>让轻量信号变成可执行的动作。</strong>在 Jaime 的频道里，一个表情回应就会把条目加入待办清单，并由一个智能体接手处理。</li></ul><h2>给智能体分派清晰的角色</h2><p>如果你的心智模型还停留在一对一的聊天机器人，那面对一整支各司其职的 Claude 智能体队伍时难免会手足无措。Jaime 的应对方式偏社会性而非技术性："我愿意把智能体看作某种意义上的同事。"</p><p>就像人类队友各有职责分工一样，智能体也应该有明确的目标和专注领域。"如果智能体的价值让人感觉是强制摊派的，而不是被使用者真切感受到和理解，那你真的很难记住它是干什么用的，"她说。</p><p><strong>如何落地实践：</strong></p><ul role="list"><li><strong>把常规的、事务性的任务交给通用智能体。</strong>与其让人记住某个专用工具，不如训练一个智能体来处理重复性任务，比如提交一张工单，或把上周的指标拉进状态汇报。</li><li><strong>让价值被感受到，而不是被规定。</strong>如果人们说不清某个智能体是干什么的，也许就该让它退役了。</li></ul><h2>共享频道默认公开，私密要是有意为之</h2><p>从最早的年代起，Slack 就倡导频道默认公开："你是在为接下来要发生的所有工作，构建共同的认知和共享的背景，"Jaime 说。</p><p>她建议，除非有明确理由需要对背景和知识设限，否则频道都应保持公开。智能体能调取的信息越多，就越能做好自己的工作，也就会成为更得力的队友。</p><p>开放的背景会复利式增长——新人一入职就能看到全部历史，而不是面对一个空空的收件箱；没有人需要重复自己说过的话。现在智能体也从中受益，而这些背景和工作记忆又会回流到人这里。</p><p><strong>如何落地实践：</strong></p><ul role="list"><li><strong>让日常工作保持公开。</strong>把不涉及敏感信息的项目、公告和问答频道设为公开，让智能体同事能获取它们所需的知识，发挥最大作用。</li><li><strong>记住你的智能体读到的和你团队读到的一样。</strong>一个私密频道，对所有需要就该频道汇报的智能体来说都是盲区。</li><li><strong>让心理安全感来划定界线。</strong>当真正敏感的内容被隔离之后，工作退回私信的主要原因就不再是保密，而是不习惯被人看到半成品。人们应当有底气在公开场合做日常工作——包括粗糙的草稿和没想清楚的问题——并相信同事会以善意相待。这种开放同样会复利式增长："你先给出信任，才能赢得信任。"</li></ul><h2>用"展示可能性"来推广新工作方式</h2><p>学习一种新工作方式最快的方法，就是看队友怎么做。Jaime 在 Salesforce 见证过这一点：员工们在一个名为 <em>How I Slackbot</em> 的全员频道里分享技巧、调试心得和工作流窍门，据她估计这个频道有数千名成员。在这个默认公开的频道里，一个销售流程里的窍门，最终可能重塑一个工程流程。</p><p>在 Slack 内部，一场推动产品经理使用 Claude 的运动"是你能想象到的最自组织的事情"。一位 PM 找开发者体验负责人帮他完成配置，随后写了一篇 canvas，记录自己做了什么、怎么做的。其他 PM 纷纷效仿这个格式。各个团队自发组织工作坊，建起了自己的 git 仓库。</p><p><strong>如何落地实践：</strong></p><ul role="list"><li><strong>建一个全员分享频道。</strong>给员工一个公开场合来分享技巧、调试心得和工作流窍门，让一个职能的窍门能够重塑另一个职能。</li><li><strong>鼓励写出别人可以直接照搬的分享。</strong>一份简短的"我做了什么、怎么做的"文档，就能把一个人的配置变成团队的模板或技能。</li></ul><h2>度量成果，而不是活跃度</h2><p>从在 Slack 的早期开始，Jaime 就一直在思考如何度量生产力。"我们希望人们发更多消息吗？"她说，"也许不。发更多消息未必意味着他们从 Slack 里得到了更多。消息变多，可能说明人们找不到需要的东西，或者第一次没法把话说清楚。"</p><p>如今，如何度量 AI 的价值这个问题如出一辙——面对如此复杂的事物，简单指标无能为力。Token 用量只能告诉你灯是亮着的，这固然重要，但远远不够。</p><p><strong>如何落地实践：</strong></p><ul role="list"><li><strong>把使用指标当脉搏，而不是价值证明。</strong>活跃度只能说明大家在用，不能说明它真的有效。</li><li><strong>准备好运用你自己的判断。</strong>没有什么干净利落的方法能证明人们使用这些工具的方式带来了更好的业务结果。用 Jaime 的话说，把两者联系起来仍然需要"很多信念的跳跃"，没有任何仪表盘或使用数据能替你证明这一点。</li></ul><h2>一起改变工作方式</h2><p>对于想要推行人机协作团队的组织，Jaime 最大的建议是重新构想每一个工作流："我们必须想办法改变工作的方式，而不是把同样的活干得更快。而这将是一项团队运动。"</p><p>那构建一支高效的人机协作团队，她最重要的建议是什么？尽早开始，但从小处着手。拉一群人进一个带 Claude 的共享频道，给他们同一套资源，然后放手让他们工作。如果 Slack 的经验可以参考，他们构建出来的东西会自己传播开。</p></div>
+            <h1 class="article-title u-text-style-h1">将对话转化为知识：Slack 如何构建人机协作团队</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>A conversation with Jaime DeLanghe, Chief Product Officer at Slack.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/enterprise-ai" target="_blank" rel="noopener noreferrer">Enterprise AI</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">August 19, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/turning-conversation-into-knowledge-how-slack-builds-human-agent-teams/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/turning-conversation-into-knowledge-how-slack-builds-human-agent-teams" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p><em>这是"构建人机协作团队"系列的第二篇。</em><a href="https://claude.com/blog/building-effective-human-agent-teams" target="_blank"><em>第一篇</em></a><em>分享了我们在 Anthropic 用多人协作 AI 构建团队的经验。本篇则来自一家早在 AI 到来之前就开始思考人机协作团队的公司，看他们有哪些最佳实践。</em></p><p>Jaime Delanghe 于 2017 年加入 Slack，从事搜索和机器学习方面的工作，使命是把职场对话转化为组织级的知识。如今她已是公司的首席产品官。她从一开始就坚信：要实现这个目标，人们必须在开放中工作——把对话、决策和进行中的工作放在公司里任何人都能阅读和搜索的频道里。在她近期的文章<a href="https://jaimedelanghe.medium.com/the-work-is-the-conversation-50a1d61f8f9e" target="_blank"><em>The Work is the Conversation</em></a>中，她为智能体提出了同样的主张：围绕工作展开的对话正是智能体发挥作用所需要的上下文，也只有这样，我们才能最终实现那个存在了几十年的目标——把散落的知识转化为生产力。</p><p>为了了解这在 Slack 的实践中是什么样子，我们与 Jaime 聊了聊她在构建高效人机协作团队、推广这些全新工作方式上的最佳实践。</p><h2>把对话历史当作知识库来对待</h2><p>多年来，"职场对话——人们协作时产生的'废气'——会沉淀为组织知识"这一承诺始终没有兑现。</p><p>"我在 Slack 早期看过很多研究论文，结论其实是：不，对话并不会变成知识，"Jaime 说，"你希望它变成知识，但实际上它只是堆在那里的一堆东西，人们还是得反复重复自己说过的话。"</p><p>要消化掉这些"废气"，靠人力根本不可能。而现在，这成了智能体的工作。</p><h3>如何落地实践</h3><ul role="list"><li><strong>默认使用公开频道</strong>：智能体只能从它能看到的东西中学习。在私信或私密话题里做出的决策，对它们是不可见的——也就此在组织里流失了。</li><li><strong>向智能体要推理过程，而不只是记录</strong>：与其搜索"当时决定了什么"，不如让智能体重构<em>为什么</em>这么决定，以及此后背景发生了哪些变化。</li><li><strong>扩大接触面</strong>：Slack 和 Claude 这类工具正在把会议、邮件、日历和文档库缝合在一起——连接的上下文越多，你的团队需要重复的内容就越少。</li></ul><h2>学会在智能体与人类之间适时交接任务</h2><p>人机协作团队的核心节奏，是一轮又一轮的交接循环。在 Slack 中由 Claude 驱动的智能体承担生产性工作——起草、总结、监控、准备——并把结果交给人。人负责审查、决策、调整方向，再把工作交回给智能体执行下一步。</p><p>要看这个过程如何运转，只需看看 Jaime 每周如何开始工作。</p><p>"现在是周一早上，我刚看完一份由智能体为我准备的每日简报，"Jaime 说。</p><p>同样在等她审阅的还有：上周产品工作坊的回顾（其中标注了需要升级处理的事项）、一份全网 AI 动态报告、当天会议的背景材料，以及一段她交给智能体重写的过时个人简介。在每一轮循环的末尾，都由人类基于智能体的产出进行审查和决策。</p><h3>如何落地实践：</h3><ul role="list"><li><strong>用智能体生成的简报开启一天。</strong>回顾总结、升级事项、会前准备和网络动态 roundup，都很适合由智能体驱动完成、由人工审阅把关。</li><li><strong>把工作锚定在共享频道中。</strong>把所有工作都放到共享频道里，让人和智能体一起分拣处理，由人主导优先级的排序。</li><li><strong>让轻量信号变成可执行的动作。</strong>在 Jaime 的频道里，一个表情回应就会把条目加入待办清单，并由一个智能体接手处理。</li></ul><h2>给智能体分派清晰的角色</h2><p>如果你的心智模型还停留在一对一的聊天机器人，那面对一整支各司其职的 Claude 智能体队伍时难免会手足无措。Jaime 的应对方式偏社会性而非技术性："我愿意把智能体看作某种意义上的同事。"</p><p>就像人类队友各有职责分工一样，智能体也应该有明确的目标和专注领域。"如果智能体的价值让人感觉是强制摊派的，而不是被使用者真切感受到和理解，那你真的很难记住它是干什么用的，"她说。</p><p><strong>如何落地实践：</strong></p><ul role="list"><li><strong>把常规的、事务性的任务交给通用智能体。</strong>与其让人记住某个专用工具，不如训练一个智能体来处理重复性任务，比如提交一张工单，或把上周的指标拉进状态汇报。</li><li><strong>让价值被感受到，而不是被规定。</strong>如果人们说不清某个智能体是干什么的，也许就该让它退役了。</li></ul><h2>共享频道默认公开，私密要是有意为之</h2><p>从最早的年代起，Slack 就倡导频道默认公开："你是在为接下来要发生的所有工作，构建共同的认知和共享的背景，"Jaime 说。</p><p>她建议，除非有明确理由需要对背景和知识设限，否则频道都应保持公开。智能体能调取的信息越多，就越能做好自己的工作，也就会成为更得力的队友。</p><p>开放的背景会复利式增长——新人一入职就能看到全部历史，而不是面对一个空空的收件箱；没有人需要重复自己说过的话。现在智能体也从中受益，而这些背景和工作记忆又会回流到人这里。</p><p><strong>如何落地实践：</strong></p><ul role="list"><li><strong>让日常工作保持公开。</strong>把不涉及敏感信息的项目、公告和问答频道设为公开，让智能体同事能获取它们所需的知识，发挥最大作用。</li><li><strong>记住你的智能体读到的和你团队读到的一样。</strong>一个私密频道，对所有需要就该频道汇报的智能体来说都是盲区。</li><li><strong>让心理安全感来划定界线。</strong>当真正敏感的内容被隔离之后，工作退回私信的主要原因就不再是保密，而是不习惯被人看到半成品。人们应当有底气在公开场合做日常工作——包括粗糙的草稿和没想清楚的问题——并相信同事会以善意相待。这种开放同样会复利式增长："你先给出信任，才能赢得信任。"</li></ul><h2>用"展示可能性"来推广新工作方式</h2><p>学习一种新工作方式最快的方法，就是看队友怎么做。Jaime 在 Salesforce 见证过这一点：员工们在一个名为 <em>How I Slackbot</em> 的全员频道里分享技巧、调试心得和工作流窍门，据她估计这个频道有数千名成员。在这个默认公开的频道里，一个销售流程里的窍门，最终可能重塑一个工程流程。</p><p>在 Slack 内部，一场推动产品经理使用 Claude 的运动"是你能想象到的最自组织的事情"。一位 PM 找开发者体验负责人帮他完成配置，随后写了一篇 canvas，记录自己做了什么、怎么做的。其他 PM 纷纷效仿这个格式。各个团队自发组织工作坊，建起了自己的 git 仓库。</p><p><strong>如何落地实践：</strong></p><ul role="list"><li><strong>建一个全员分享频道。</strong>给员工一个公开场合来分享技巧、调试心得和工作流窍门，让一个职能的窍门能够重塑另一个职能。</li><li><strong>鼓励写出别人可以直接照搬的分享。</strong>一份简短的"我做了什么、怎么做的"文档，就能把一个人的配置变成团队的模板或技能。</li></ul><h2>度量成果，而不是活跃度</h2><p>从在 Slack 的早期开始，Jaime 就一直在思考如何度量生产力。"我们希望人们发更多消息吗？"她说，"也许不。发更多消息未必意味着他们从 Slack 里得到了更多。消息变多，可能说明人们找不到需要的东西，或者第一次没法把话说清楚。"</p><p>如今，如何度量 AI 的价值这个问题如出一辙——面对如此复杂的事物，简单指标无能为力。Token 用量只能告诉你灯是亮着的，这固然重要，但远远不够。</p><p><strong>如何落地实践：</strong></p><ul role="list"><li><strong>把使用指标当脉搏，而不是价值证明。</strong>活跃度只能说明大家在用，不能说明它真的有效。</li><li><strong>准备好运用你自己的判断。</strong>没有什么干净利落的方法能证明人们使用这些工具的方式带来了更好的业务结果。用 Jaime 的话说，把两者联系起来仍然需要"很多信念的跳跃"，没有任何仪表盘或使用数据能替你证明这一点。</li></ul><h2>一起改变工作方式</h2><p>对于想要推行人机协作团队的组织，Jaime 最大的建议是重新构想每一个工作流："我们必须想办法改变工作的方式，而不是把同样的活干得更快。而这将是一项团队运动。"</p><p>那构建一支高效的人机协作团队，她最重要的建议是什么？尽早开始，但从小处着手。拉一群人进一个带 Claude 的共享频道，给他们同一套资源，然后放手让他们工作。如果 Slack 的经验可以参考，他们构建出来的东西会自己传播开。</p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/turning-conversation-into-knowledge-how-slack-builds-human-agent-teams" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

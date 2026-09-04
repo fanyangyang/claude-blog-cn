@@ -13,5 +13,22 @@
   "translatedTitle": "在医疗健康与生命科学领域构建 AI 智能体",
   "translated": true,
   "translatedAt": "2026-09-02T04:53:33.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Agents",
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Platform"
+    ],
+    "usecase": [
+      "Health care and life sciences"
+    ]
+  },
+  "subtitle": "AI agents are delivering measurable results in healthcare and life sciences while navigating the industry's unique regulatory complexity and safety standards. Here's how.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/agents",
+  "productUrl": "https://claude.com/platform/api"
 }

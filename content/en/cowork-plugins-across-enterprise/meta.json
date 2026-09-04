@@ -13,5 +13,26 @@
   "translatedTitle": "面向企业各部门团队的 Cowork 与 plugins",
   "translated": true,
   "translatedAt": "2026-09-02T04:19:54.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Agents",
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Enterprise"
+    ],
+    "usecase": [
+      "Agents",
+      "Financial services",
+      "Legal",
+      "Business",
+      "Productivity"
+    ]
+  },
+  "subtitle": "Admins can now create private plugin marketplaces, with better control over plugins, connectors, and skills. We've also added new plugins and connectors across more departments.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/agents",
+  "productUrl": "https://claude.com/solutions/enterprise"
 }

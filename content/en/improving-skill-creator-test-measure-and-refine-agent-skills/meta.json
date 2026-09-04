@@ -13,5 +13,20 @@
   "translatedTitle": "skill-creator 再升级：测试、度量与打磨 Agent Skills",
   "translated": true,
   "translatedAt": "2026-09-02T04:18:04.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Claude Code",
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": []
+  },
+  "subtitle": "Skill authors can now verify that their skills work, catch regressions, and improve descriptions.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/claude-code",
+  "productUrl": "https://claude.com/product/claude-code"
 }

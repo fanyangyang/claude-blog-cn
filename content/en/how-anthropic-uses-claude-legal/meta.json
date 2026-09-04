@@ -13,5 +13,19 @@
   "translatedTitle": "Anthropic 法务团队如何用 Claude 把审核时间从数天缩短到数小时",
   "translated": true,
   "translatedAt": "2026-09-02T04:54:25.809Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Enterprise"
+    ],
+    "usecase": []
+  },
+  "subtitle": "Mark Pike, Associate General Counsel, shares how our legal team uses Claude to build workflows that automate repetitive tasks like reviewing marketing content and redlining contracts—no coding required.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/solutions/enterprise"
 }

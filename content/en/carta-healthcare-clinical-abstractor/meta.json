@@ -13,5 +13,21 @@
   "translatedTitle": "Carta Healthcare 如何让 AI 像临床抽象员一样推理",
   "translated": true,
   "translatedAt": "2026-09-02T04:48:07Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Platform"
+    ],
+    "usecase": [
+      "Business"
+    ]
+  },
+  "subtitle": "Inside a clinical data abstraction platform processing 22,000 surgical cases a year—and how the team reached 99% accuracy by getting context engineering right.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/platform/api"
 }

@@ -4,39 +4,224 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>使用 Claude Code：会话管理与 1M 上下文 — Claude Blog 中文翻译</title>
-  <meta name="description" content="使用 Claude Code：会话管理与 1M 上下文">
+  <meta name="description" content="How you manage sessions, context, and compaction in Claude Code shapes your results more than you might expect. Here's a practical guide to making the right call at every turn.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/using-claude-code-session-management-and-1m-context" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>使用 Claude Code：会话管理与 1M 上下文</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/using-claude-code-session-management-and-1m-context" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/using-claude-code-session-management-and-1m-context/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># 使用 Claude Code：会话管理与 1M 上下文
+
+How you manage sessions, context, and compaction in Claude Code shapes your results more than you might expect. Here's a practical guide to making the right call at every turn.
+
+我们发布了 **`/usage`**，一个新的斜杠命令，帮助你了解自己在 Claude Code 中的使用情况。这个功能的诞生源于与客户的多次交流。 
+
+在这些沟通中反复出现的一个话题是：用户管理会话的方式千差万别，尤其是在 Claude Code 新近升级到 100 万上下文之后。
+
+你是只开一两个会话一直挂在终端里，还是每条提示词都开个新会话？你什么时候用 [compact](https://platform.claude.com/docs/en/build-with-claude/compaction)、回退（rewind）或 [subagent](https://code.claude.com/docs/en/sub-agents)？什么会导致一次糟糕的压缩或糟糕的会话？
+
+这里的细节多得惊人，而这些细节实实在在地决定了你使用 [Claude Code](https://claude.com/product/claude-code) 的体验，而且几乎全部源于[管理你的上下文窗口](https://code.claude.com/docs/en/how-claude-code-works)。
+
+## **上下文、压缩与上下文腐朽速览**
+
+上下文窗口是模型在生成下一条回复时能一次性&quot;看到&quot;的全部内容。它包括系统提示词、到目前为止的对话、每一次工具调用及其输出，以及所有已读取的文件。Claude Code 拥有一百万 token 的上下文窗口。
+
+遗憾的是，使用上下文会轻微影响性能，这种现象常被称为&quot;上下文腐朽&quot;（context rot）。上下文腐朽指的是：随着上下文增长，模型性能会下降，因为注意力被摊薄到更多 token 上，而较早的、已不相关的内容会开始干扰当前任务。
+
+上下文窗口是硬性上限，所以当你接近上下文窗口的尽头时，你一直在做的任务会被自动总结成一段更短的描述，模型随后在新的上下文窗口中继续工作。我们称之为压缩（compaction）。你也可以自己触发压缩。
+
+## **每一轮都是一个分叉点**
+
+假设你刚让 Claude 做完一件事——此时上下文里已经有一些信息（工具调用、工具输出、你的指示），而下一步怎么做，你拥有的选项多得惊人：
+
+- **继续**——在同一会话中发送下一条消息
+- **`/rewind`（连按两次 esc）**——跳回之前的某条消息，从那里重新来过
+- **`/clear`**——开一个新会话，通常附上你从刚才的收获中提炼出的简报
+- **压缩**——总结当前会话，然后在摘要的基础上继续
+- **Subagent**——把下一块工作委托给一个拥有干净上下文的 agent，只把它的结果拉回来
+
+虽然最自然的做法是直接继续，但另外四个选项都是为帮你管理上下文而存在的。
+
+## **什么时候该开新会话**
+
+什么时候保持一个长会话，什么时候另起一个？我们的经验法则是：开始新任务时，也应该开始新会话。
+
+100 万的上下文窗口意味着你现在可以更可靠地完成更长的任务，比如从零构建一个全栈应用，但上下文腐朽仍可能发生。 
+
+有时你会做一些相关联的任务，其中部分上下文仍然必要，但并非总是如此。例如，为你刚实现的功能编写文档。虽然你可以开个新会话，但那样 Claude 就得重新读一遍你刚实现的那些文件，反而更慢也更贵。
+
+## **用回退代替纠正**
+
+在 Claude Code 中，连按两次 Esc（或运行 `/rewind`）可以让你跳回之前任意一条消息并从那里重新提示。该节点之后的消息会从上下文中丢弃。 
+
+回退往往是比&quot;口头纠正&quot;更好的做法。例如，Claude 读了五个文件，尝试了一种方案，行不通。你的直觉可能是输入&quot;这不行，改试 X&quot;。但更好的做法可能是回退到刚读完文件之后，带着你学到的东西重新提示：&quot;别用方案 A，foo 模块没有暴露那个接口——直接上 B。&quot; 
+
+你也可以使用*&quot;从这里开始总结&quot;*或 `/rewind` 斜杠命令，让 Claude 总结它的经验教训并生成一份交接信息——有点像未来的 Claude（试过某方案失败了）给上一版 Claude 留的话。
+
+## **压缩还是另起全新会话**
+
+会话一旦变长，你有两种办法甩掉多余的上下文：`/compact` 或 `/clear`（重新开始）。它们感觉相似，行为却大不相同。
+
+**压缩**是让模型总结到目前为止的对话，然后用摘要替换历史。它有信息损耗，但你无需亲自动笔，而且 Claude 或许会把重要的经验教训和文件收录得更全面。你也可以通过传入指令来引导它（`/compact focus on the auth refactor, drop the test debugging`）。
+
+使用 `/clear`**` `**时，由*你*写下重要的内容（&quot;我们在重构认证中间件，约束是 X，关键文件是 A 和 B，方案 Y 已被排除&quot;），然后干干净净地开始。这更费工夫，但留下的上下文正是你判断为相关的内容。 
+
+## **什么会导致糟糕的自动压缩？**
+
+如果你经常运行长会话，可能已经注意到某些时刻压缩效果特别差。我们发现，糟糕的压缩往往发生在模型无法预判你工作方向的时候。 
+
+在上面的例子中，自动压缩在一场漫长的调试会话后触发，把调查过程做了总结，而你的下一条消息是&quot;现在修复我们刚才在 bar.ts 里看到的另一个警告&quot;。 
+
+但由于整个会话都聚焦在调试上，那个警告可能已经在摘要中被丢掉了。
+
+这尤其棘手，因为受上下文腐朽影响，模型在压缩时正处于智能的最低点。 有了 100 万上下文，你就有更充裕的时间带着对接下来要做什么的描述去主动 /compact。 
+
+## **Subagent 与干净的上下文窗口**
+
+[Subagent](https://claude.com/blog/subagents-in-claude-code) 在你预知某块工作会产生大量后续不再需要的中间输出时，往往很好用。
+
+当 Claude 通过 Agent 工具生成一个 subagent 时，这个 subagent 会获得自己全新的上下文窗口。它想干多少活都行，最后把结果综合好，只有最终报告会回到父级那里。
+
+我们在 Anthropic 内部常用的判断标准是：*我之后还需要这些工具输出本身，还是只要结论？* 
+
+虽然 Claude Code 会自动调用 subagent，但你可能需要明确让它这么做。例如，你可以告诉它：
+
+- &quot;生成一个 subagent，根据以下规格文件验证这项工作的结果&quot;
+- &quot;派一个 subagent 通读另一个代码库，总结它是如何实现认证流程的，然后你自己照着同样的方式实现&quot;
+- &quot;派一个 subagent 根据我的 git 改动为这个功能编写文档&quot;
+
+**融会贯通**
+
+为了帮助你选择该用哪个上下文管理功能，我们整理了下面这张表格，列出常见情形、该用哪个工具，以及原因。 
+
+  
+    
+      
+        
+          情形
+          建议使用
+          原因
+        
+      
+      
+        
+          同一任务，上下文仍然相关
+          继续
+          窗口里的所有内容都还承重；别为重建它们买单。
+        
+        
+          Claude 走错了方向
+          回退（连按两次 Esc）
+          保留有用的文件读取，丢掉失败的尝试，带着学到的经验重新提示。
+        
+        
+          任务进行中，但会话被过时的调试/探索内容撑得臃肿
+          `/compact &lt;hint&gt;`
+          省事；由 Claude 决定哪些重要。需要时可用指令引导。
+        
+        
+          开始一个真正的新任务
+          `/clear`
+          零腐朽；哪些内容带入新会话完全由你掌控。
+        
+        
+          下一步会产生大量你只需要结论的输出（代码库搜索、验证、写文档）
+          Subagent
+          中间的工具噪音留在子 agent 的上下文里；只有结果会返回。
+        
+      
+    
+  
+期待看到你构建的作品。 
+
+‍
+
+*立即开始使用 *[*Claude Code*](https://claude.com/product/claude-code)*。*
+
+***关于作者：****Thariq Shihipar 是 Anthropic 的技术团队成员，从事 Claude Code 的开发工作。*
+
+‍</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Claude Code</span>
-            <span class="article-date">April 15, 2026</span>
-            
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-mineral);">
+            <img class="hero-illo-img" src="/assets/illustrations/using-claude-code-session-management-and-1m-context.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">使用 Claude Code：会话管理与 1M 上下文</h1>
-          <a href="/posts/using-claude-code-session-management-and-1m-context/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>我们发布了 <strong><code>/usage</code></strong>，一个新的斜杠命令，帮助你了解自己在 Claude Code 中的使用情况。这个功能的诞生源于与客户的多次交流。&nbsp;</p><p>在这些沟通中反复出现的一个话题是：用户管理会话的方式千差万别，尤其是在 Claude Code 新近升级到 100 万上下文之后。</p><p>你是只开一两个会话一直挂在终端里，还是每条提示词都开个新会话？你什么时候用 <a href="https://platform.claude.com/docs/en/build-with-claude/compaction" target="_blank">compact</a>、回退（rewind）或 <a href="https://code.claude.com/docs/en/sub-agents" target="_blank">subagent</a>？什么会导致一次糟糕的压缩或糟糕的会话？</p><p>这里的细节多得惊人，而这些细节实实在在地决定了你使用 <a href="https://claude.com/product/claude-code" target="_blank">Claude Code</a> 的体验，而且几乎全部源于<a href="https://code.claude.com/docs/en/how-claude-code-works" target="_blank">管理你的上下文窗口</a>。</p><h2><strong>上下文、压缩与上下文腐朽速览</strong></h2><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:1440px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="1440px"><div><img alt="__wf_reserved_inherit" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69e02238a3e7e9532cb643de_image6.png" width="auto" height="auto" loading="lazy"></div></figure><p>上下文窗口是模型在生成下一条回复时能一次性"看到"的全部内容。它包括系统提示词、到目前为止的对话、每一次工具调用及其输出，以及所有已读取的文件。Claude Code 拥有一百万 token 的上下文窗口。</p><p>遗憾的是，使用上下文会轻微影响性能，这种现象常被称为"上下文腐朽"（context rot）。上下文腐朽指的是：随着上下文增长，模型性能会下降，因为注意力被摊薄到更多 token 上，而较早的、已不相关的内容会开始干扰当前任务。</p><p>上下文窗口是硬性上限，所以当你接近上下文窗口的尽头时，你一直在做的任务会被自动总结成一段更短的描述，模型随后在新的上下文窗口中继续工作。我们称之为压缩（compaction）。你也可以自己触发压缩。</p><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:1440px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="1440px"><div><img alt="__wf_reserved_inherit" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69e02297f13357d9b32d8312_image5.png" width="auto" height="auto" loading="lazy"></div></figure><h2><strong>每一轮都是一个分叉点</strong></h2><p>假设你刚让 Claude 做完一件事——此时上下文里已经有一些信息（工具调用、工具输出、你的指示），而下一步怎么做，你拥有的选项多得惊人：</p><ul><li><strong>继续</strong>——在同一会话中发送下一条消息</li><li><strong><code>/rewind</code>（连按两次 esc）</strong>——跳回之前的某条消息，从那里重新来过</li><li><strong><code>/clear</code></strong>——开一个新会话，通常附上你从刚才的收获中提炼出的简报</li><li><strong>压缩</strong>——总结当前会话，然后在摘要的基础上继续</li><li><strong>Subagent</strong>——把下一块工作委托给一个拥有干净上下文的 agent，只把它的结果拉回来</li></ul><p>虽然最自然的做法是直接继续，但另外四个选项都是为帮你管理上下文而存在的。</p><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:1999px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="1999px"><div><img alt="__wf_reserved_inherit" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69e022cf45e7f9c9d025756d_image3.png" width="auto" height="auto" loading="lazy"></div></figure><h2><strong>什么时候该开新会话</strong></h2><p>什么时候保持一个长会话，什么时候另起一个？我们的经验法则是：开始新任务时，也应该开始新会话。</p><p>100 万的上下文窗口意味着你现在可以更可靠地完成更长的任务，比如从零构建一个全栈应用，但上下文腐朽仍可能发生。&nbsp;</p><p>有时你会做一些相关联的任务，其中部分上下文仍然必要，但并非总是如此。例如，为你刚实现的功能编写文档。虽然你可以开个新会话，但那样 Claude 就得重新读一遍你刚实现的那些文件，反而更慢也更贵。</p><h2><strong>用回退代替纠正</strong></h2><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:1440px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="1440px"><div><img alt="__wf_reserved_inherit" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69e0234c97977d4944bea810_image4.png" width="auto" height="auto" loading="lazy"></div></figure><p>在 Claude Code 中，连按两次 Esc（或运行 <code>/rewind</code>）可以让你跳回之前任意一条消息并从那里重新提示。该节点之后的消息会从上下文中丢弃。&nbsp;</p><p>回退往往是比"口头纠正"更好的做法。例如，Claude 读了五个文件，尝试了一种方案，行不通。你的直觉可能是输入"这不行，改试 X"。但更好的做法可能是回退到刚读完文件之后，带着你学到的东西重新提示："别用方案 A，foo 模块没有暴露那个接口——直接上 B。"&nbsp;</p><p>你也可以使用<em>"从这里开始总结"</em>或 <code>/rewind</code> 斜杠命令，让 Claude 总结它的经验教训并生成一份交接信息——有点像未来的 Claude（试过某方案失败了）给上一版 Claude 留的话。</p><h2><strong>压缩还是另起全新会话</strong></h2><p>会话一旦变长，你有两种办法甩掉多余的上下文：<code>/compact</code> 或 <code>/clear</code>（重新开始）。它们感觉相似，行为却大不相同。</p><p><strong>压缩</strong>是让模型总结到目前为止的对话，然后用摘要替换历史。它有信息损耗，但你无需亲自动笔，而且 Claude 或许会把重要的经验教训和文件收录得更全面。你也可以通过传入指令来引导它（<code>/compact focus on the auth refactor, drop the test debugging</code>）。</p><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:1440px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="1440px"><div><img alt="__wf_reserved_inherit" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69e02427049669efd6bb7604_image1.png" width="auto" height="auto" loading="lazy"></div></figure><p>使用 <code>/clear</code><strong><code> </code></strong>时，由<em>你</em>写下重要的内容（"我们在重构认证中间件，约束是 X，关键文件是 A 和 B，方案 Y 已被排除"），然后干干净净地开始。这更费工夫，但留下的上下文正是你判断为相关的内容。&nbsp;</p><h2><strong>什么会导致糟糕的自动压缩？</strong></h2><p>如果你经常运行长会话，可能已经注意到某些时刻压缩效果特别差。我们发现，糟糕的压缩往往发生在模型无法预判你工作方向的时候。&nbsp;</p><p>在上面的例子中，自动压缩在一场漫长的调试会话后触发，把调查过程做了总结，而你的下一条消息是"现在修复我们刚才在 bar.ts 里看到的另一个警告"。&nbsp;</p><p>但由于整个会话都聚焦在调试上，那个警告可能已经在摘要中被丢掉了。</p><p>这尤其棘手，因为受上下文腐朽影响，模型在压缩时正处于智能的最低点。&nbsp;有了 100 万上下文，你就有更充裕的时间带着对接下来要做什么的描述去主动 /compact。&nbsp;</p><h2><strong>Subagent 与干净的上下文窗口</strong></h2><p><a href="https://claude.com/blog/subagents-in-claude-code" target="_blank">Subagent</a> 在你预知某块工作会产生大量后续不再需要的中间输出时，往往很好用。</p><p>当 Claude 通过 Agent 工具生成一个 subagent 时，这个 subagent 会获得自己全新的上下文窗口。它想干多少活都行，最后把结果综合好，只有最终报告会回到父级那里。</p><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:1440px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="1440px"><div><img alt="__wf_reserved_inherit" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69e0241044643c5402b312a9_image2.png" width="auto" height="auto" loading="lazy"></div></figure><p>我们在 Anthropic 内部常用的判断标准是：<em>我之后还需要这些工具输出本身，还是只要结论？</em>&nbsp;</p><p>虽然 Claude Code 会自动调用 subagent，但你可能需要明确让它这么做。例如，你可以告诉它：</p><ul><li>"生成一个 subagent，根据以下规格文件验证这项工作的结果"</li><li>"派一个 subagent 通读另一个代码库，总结它是如何实现认证流程的，然后你自己照着同样的方式实现"</li><li>"派一个 subagent 根据我的 git 改动为这个功能编写文档"</li></ul><p><strong>融会贯通</strong></p><p>为了帮助你选择该用哪个上下文管理功能，我们整理了下面这张表格，列出常见情形、该用哪个工具，以及原因。&nbsp;</p><div data-rt-embed-type="true"><figure>
+            <h1 class="article-title u-text-style-h1">使用 Claude Code：会话管理与 1M 上下文</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>How you manage sessions, context, and compaction in Claude Code shapes your results more than you might expect. Here's a practical guide to making the right call at every turn.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/product/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">April 15, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/using-claude-code-session-management-and-1m-context/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>我们发布了 <strong><code>/usage</code></strong>，一个新的斜杠命令，帮助你了解自己在 Claude Code 中的使用情况。这个功能的诞生源于与客户的多次交流。&nbsp;</p><p>在这些沟通中反复出现的一个话题是：用户管理会话的方式千差万别，尤其是在 Claude Code 新近升级到 100 万上下文之后。</p><p>你是只开一两个会话一直挂在终端里，还是每条提示词都开个新会话？你什么时候用 <a href="https://platform.claude.com/docs/en/build-with-claude/compaction" target="_blank">compact</a>、回退（rewind）或 <a href="https://code.claude.com/docs/en/sub-agents" target="_blank">subagent</a>？什么会导致一次糟糕的压缩或糟糕的会话？</p><p>这里的细节多得惊人，而这些细节实实在在地决定了你使用 <a href="https://claude.com/product/claude-code" target="_blank">Claude Code</a> 的体验，而且几乎全部源于<a href="https://code.claude.com/docs/en/how-claude-code-works" target="_blank">管理你的上下文窗口</a>。</p><h2><strong>上下文、压缩与上下文腐朽速览</strong></h2><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:1440px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="1440px"><div><img alt="__wf_reserved_inherit" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69e02238a3e7e9532cb643de_image6.png" width="auto" height="auto" loading="lazy"></div></figure><p>上下文窗口是模型在生成下一条回复时能一次性"看到"的全部内容。它包括系统提示词、到目前为止的对话、每一次工具调用及其输出，以及所有已读取的文件。Claude Code 拥有一百万 token 的上下文窗口。</p><p>遗憾的是，使用上下文会轻微影响性能，这种现象常被称为"上下文腐朽"（context rot）。上下文腐朽指的是：随着上下文增长，模型性能会下降，因为注意力被摊薄到更多 token 上，而较早的、已不相关的内容会开始干扰当前任务。</p><p>上下文窗口是硬性上限，所以当你接近上下文窗口的尽头时，你一直在做的任务会被自动总结成一段更短的描述，模型随后在新的上下文窗口中继续工作。我们称之为压缩（compaction）。你也可以自己触发压缩。</p><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:1440px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="1440px"><div><img alt="__wf_reserved_inherit" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69e02297f13357d9b32d8312_image5.png" width="auto" height="auto" loading="lazy"></div></figure><h2><strong>每一轮都是一个分叉点</strong></h2><p>假设你刚让 Claude 做完一件事——此时上下文里已经有一些信息（工具调用、工具输出、你的指示），而下一步怎么做，你拥有的选项多得惊人：</p><ul><li><strong>继续</strong>——在同一会话中发送下一条消息</li><li><strong><code>/rewind</code>（连按两次 esc）</strong>——跳回之前的某条消息，从那里重新来过</li><li><strong><code>/clear</code></strong>——开一个新会话，通常附上你从刚才的收获中提炼出的简报</li><li><strong>压缩</strong>——总结当前会话，然后在摘要的基础上继续</li><li><strong>Subagent</strong>——把下一块工作委托给一个拥有干净上下文的 agent，只把它的结果拉回来</li></ul><p>虽然最自然的做法是直接继续，但另外四个选项都是为帮你管理上下文而存在的。</p><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:1999px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="1999px"><div><img alt="__wf_reserved_inherit" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69e022cf45e7f9c9d025756d_image3.png" width="auto" height="auto" loading="lazy"></div></figure><h2><strong>什么时候该开新会话</strong></h2><p>什么时候保持一个长会话，什么时候另起一个？我们的经验法则是：开始新任务时，也应该开始新会话。</p><p>100 万的上下文窗口意味着你现在可以更可靠地完成更长的任务，比如从零构建一个全栈应用，但上下文腐朽仍可能发生。&nbsp;</p><p>有时你会做一些相关联的任务，其中部分上下文仍然必要，但并非总是如此。例如，为你刚实现的功能编写文档。虽然你可以开个新会话，但那样 Claude 就得重新读一遍你刚实现的那些文件，反而更慢也更贵。</p><h2><strong>用回退代替纠正</strong></h2><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:1440px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="1440px"><div><img alt="__wf_reserved_inherit" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69e0234c97977d4944bea810_image4.png" width="auto" height="auto" loading="lazy"></div></figure><p>在 Claude Code 中，连按两次 Esc（或运行 <code>/rewind</code>）可以让你跳回之前任意一条消息并从那里重新提示。该节点之后的消息会从上下文中丢弃。&nbsp;</p><p>回退往往是比"口头纠正"更好的做法。例如，Claude 读了五个文件，尝试了一种方案，行不通。你的直觉可能是输入"这不行，改试 X"。但更好的做法可能是回退到刚读完文件之后，带着你学到的东西重新提示："别用方案 A，foo 模块没有暴露那个接口——直接上 B。"&nbsp;</p><p>你也可以使用<em>"从这里开始总结"</em>或 <code>/rewind</code> 斜杠命令，让 Claude 总结它的经验教训并生成一份交接信息——有点像未来的 Claude（试过某方案失败了）给上一版 Claude 留的话。</p><h2><strong>压缩还是另起全新会话</strong></h2><p>会话一旦变长，你有两种办法甩掉多余的上下文：<code>/compact</code> 或 <code>/clear</code>（重新开始）。它们感觉相似，行为却大不相同。</p><p><strong>压缩</strong>是让模型总结到目前为止的对话，然后用摘要替换历史。它有信息损耗，但你无需亲自动笔，而且 Claude 或许会把重要的经验教训和文件收录得更全面。你也可以通过传入指令来引导它（<code>/compact focus on the auth refactor, drop the test debugging</code>）。</p><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:1440px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="1440px"><div><img alt="__wf_reserved_inherit" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69e02427049669efd6bb7604_image1.png" width="auto" height="auto" loading="lazy"></div></figure><p>使用 <code>/clear</code><strong><code> </code></strong>时，由<em>你</em>写下重要的内容（"我们在重构认证中间件，约束是 X，关键文件是 A 和 B，方案 Y 已被排除"），然后干干净净地开始。这更费工夫，但留下的上下文正是你判断为相关的内容。&nbsp;</p><h2><strong>什么会导致糟糕的自动压缩？</strong></h2><p>如果你经常运行长会话，可能已经注意到某些时刻压缩效果特别差。我们发现，糟糕的压缩往往发生在模型无法预判你工作方向的时候。&nbsp;</p><p>在上面的例子中，自动压缩在一场漫长的调试会话后触发，把调查过程做了总结，而你的下一条消息是"现在修复我们刚才在 bar.ts 里看到的另一个警告"。&nbsp;</p><p>但由于整个会话都聚焦在调试上，那个警告可能已经在摘要中被丢掉了。</p><p>这尤其棘手，因为受上下文腐朽影响，模型在压缩时正处于智能的最低点。&nbsp;有了 100 万上下文，你就有更充裕的时间带着对接下来要做什么的描述去主动 /compact。&nbsp;</p><h2><strong>Subagent 与干净的上下文窗口</strong></h2><p><a href="https://claude.com/blog/subagents-in-claude-code" target="_blank">Subagent</a> 在你预知某块工作会产生大量后续不再需要的中间输出时，往往很好用。</p><p>当 Claude 通过 Agent 工具生成一个 subagent 时，这个 subagent 会获得自己全新的上下文窗口。它想干多少活都行，最后把结果综合好，只有最终报告会回到父级那里。</p><figure class="w-richtext-figure-type-image w-richtext-align-fullwidth" style="max-width:1440px" data-rt-type="image" data-rt-align="fullwidth" data-rt-max-width="1440px"><div><img alt="__wf_reserved_inherit" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69e0241044643c5402b312a9_image2.png" width="auto" height="auto" loading="lazy"></div></figure><p>我们在 Anthropic 内部常用的判断标准是：<em>我之后还需要这些工具输出本身，还是只要结论？</em>&nbsp;</p><p>虽然 Claude Code 会自动调用 subagent，但你可能需要明确让它这么做。例如，你可以告诉它：</p><ul><li>"生成一个 subagent，根据以下规格文件验证这项工作的结果"</li><li>"派一个 subagent 通读另一个代码库，总结它是如何实现认证流程的，然后你自己照着同样的方式实现"</li><li>"派一个 subagent 根据我的 git 改动为这个功能编写文档"</li></ul><p><strong>融会贯通</strong></p><p>为了帮助你选择该用哪个上下文管理功能，我们整理了下面这张表格，列出常见情形、该用哪个工具，以及原因。&nbsp;</p><div data-rt-embed-type="true"><figure>
   <div role="region" tabindex="0">
     <table>
       <thead>
@@ -76,21 +261,70 @@
     </table>
   </div>
 </figure></div><p>期待看到你构建的作品。&nbsp;</p><p>‍</p><p><em>立即开始使用 </em><a href="https://claude.com/product/claude-code"><em>Claude Code</em></a><em>。</em></p><p><strong><em>关于作者：</em></strong><em>Thariq Shihipar 是 Anthropic 的技术团队成员，从事 Claude Code 的开发工作。</em></p><p>‍</p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/using-claude-code-session-management-and-1m-context" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/using-claude-code-session-management-and-1m-context" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

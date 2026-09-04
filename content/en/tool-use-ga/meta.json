@@ -13,5 +13,22 @@
   "translatedTitle": "Claude 现在可以使用工具了",
   "translated": true,
   "translatedAt": "2026-09-02T04:39:32.652Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Platform"
+    ],
+    "usecase": [
+      "Business",
+      "Agents"
+    ]
+  },
+  "subtitle": "Claude now connects with external tools and APIs to perform tasks, manipulate data, and deliver more accurate responses.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/platform/api"
 }

@@ -4,54 +4,288 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>什么是 Model Context Protocol？将 AI 连接到你的世界 — Claude Blog 中文翻译</title>
-  <meta name="description" content="什么是 Model Context Protocol？将 AI 连接到你的世界">
+  <meta name="description" content="Connect AI assistants to your tools without custom integrations using Model Context Protocol.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/what-is-model-context-protocol" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>什么是 Model Context Protocol？将 AI 连接到你的世界</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/what-is-model-context-protocol" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/what-is-model-context-protocol/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># 什么是 Model Context Protocol？将 AI 连接到你的世界
+
+Connect AI assistants to your tools without custom integrations using Model Context Protocol.
+
+AI 模型的表现好坏，取决于提供给它的上下文。像 [Claude](https://claude.ai) 这样的 AI 助手可以回答问题、完成种类惊人的任务，但如果无法访问所需的数据或工具，它们能为你做的就很有限。通常你的解决办法是在不同标签页之间复制粘贴上下文——无论是在 Google Drive 中编辑文档、在 Slack 中回复话题，还是在 IDE 中更新代码。这个过程缓慢、手动，还有遗漏重要上下文的风险。
+
+**Model Context Protocol（MCP，模型上下文协议）**提供了一种开放的解决方案，并已在所有 AI 应用和助手中广泛可用。在本文中，你将了解 MCP 是什么、它如何工作、为什么重要，以及它适合谁。你会看到 MCP 的实际应用示例，并理解如何从今天开始使用或基于 MCP 进行构建。
+
+## 什么是 Model Context Protocol（MCP）？
+
+**Model Context Protocol** 是一个开放标准，定义了 LLM 与外部系统通信的方式。
+
+可以把 MCP 理解为**「LLM 的 USB-C」**。正如 USB-C 为你的手机、笔记本和其他设备提供了一种通用接口，MCP 为 LLM 连接外部系统提供了一种通用格式。在 USB-C 出现之前，每种电子设备都有自己的数据线：iPhone 用 Lightning，Android 用 micro-USB，相机用专有接口。随着越来越多的设备采用 USB-C，整个生态系统的连接变得无缝。
+
+MCP 为 AI 集成带来了同样的简洁。在 MCP 出现之前，每个应用和数据库都需要定制代码才能与 LLM 连接。Google Drive 需要一套集成，Slack 需要另一套，Figma 又需要一套。现在，MCP 提供了单一、标准化的格式，把这些工具连接到 Claude 及其他 AI 应用。
+
+## MCP 从何而来？
+
+MCP 诞生于 Anthropic，由 David Soria Parra 和 Justin Spahr-Summers 创建。这个想法源于 David 的一个烦恼：他要在 Claude Desktop 和他的集成开发环境（IDE）之间不断复制代码。意识到这是一个典型的 M×N 问题——多个应用需要多个集成——David 向 Justin 提议构建一个协议来解决它。他们基于广受欢迎的 Language Server Protocol 设计了 MCP，并于 2024 年 11 月在 Anthropic 的支持下开源，以确保整个 AI 生态系统都能从中受益。
+
+## MCP 如何工作？
+
+MCP 采用双侧架构。像 Claude 这样的 AI 智能体和聊天机器人创建 **MCP Client**，从而连接到 Notion、Canva、Figma 等应用；而这些应用通过 **MCP Server** 把自己的工具和数据开放出来。
+
+通过构建 **MCP Client**，AI 智能体和聊天机器人可以访问社区构建的数千个 MCP Server，从而拥有一条直接的路径来扩展自身能力。智能体还可以通过 [MCP 隧道](https://claude.com/blog/claude-managed-agents-updates)访问防火墙后面的 MCP 服务器。通过构建 **MCP Server**，公司和开发者可以让自己的产品直接为 AI 所用，开辟一条提供价值的新途径。
+
+由于 MCP 是开源的，任何人都可以构建 MCP Server 或 Client。
+
+## MCP 为什么重要？
+
+MCP 让 LLM 得以超越聊天、执行现实世界的任务：阅读一封邮件往来并回复、访问代码库并部署更新，或者审阅一份设计简报并生成初稿。该协议为 LLM 连接外部系统、工具和应用以访问数据、执行操作奠定了基础。这带来了：
+
+### AI 的通用兼容性
+
+**AI 助手可以访问数千种工具**——一旦某个 AI 助手实现了 MCP（通过 MCP client），它就能立即连接到数千个兼容 MCP 的应用，从专业编码工具到企业工作流平台，无需为每一个单独构建定制集成。
+
+**工具和应用一次性连接到所有 AI 助手**——Notion、Figma、Asana 等公司只需构建一个 MCP 服务器，即可与任何兼容（即实现了 MCP client）的 AI 助手配合。开发者只需构建一个集成，就能覆盖所有 AI 连接。
+
+### 开放、AI 原生的生态系统
+
+**任何人都可以构建和分享**——作为开放标准，开发者或公司发布的 MCP 服务器与任何 MCP client 兼容。这种开放性造就了一个由数千个社区构建的服务器组成的繁荣生态系统，加速了面向 AI 助手的工具和应用普及。
+
+**让软件从设计上就可被 AI 访问**——传统软件是为使用 Web 界面的人类构建的。MCP 提供了一个专为 AI 交互设计的并行接口，让应用真正成为 AI 原生。这意味着 AI 模型与人们已经在使用的工具之间，会有更好、更可靠的集成。
+
+### 智能体的基础协议
+
+MCP 为 AI 智能体构建了访问任意数量服务和工具的基础设施，实现真正的端到端任务自动化。随着越来越多的应用采用该协议，AI 智能体独立处理复杂多步骤工作流的愿景正变得越来越切实可行。
+
+## MCP 适合谁？
+
+开发者获得一种标准化的方式：只需构建一次集成，即可与任何兼容的 AI 配合工作。企业可以获得安全、由 IT 部门管控、且能在整个组织内规模化扩展的 AI 连接。消费者则可以即时把自己喜欢的工具连接到 AI，无需任何技术知识。
+
+### 面向开发者：一个标准连接 AI 与应用
+
+开发者只需遵循单一标准，就能将外部产品连接到你的 AI 应用和智能体。这简化了构建集成的过程，增加了可连接产品的数量，也提升了整个生态系统中连接的质量和安全性。
+
+要构建一个连接众多应用的智能体？还是要构建一个被众多智能体连接的应用？MCP 让你通过精简的集成接入一个兼容工具的生态系统。
+
+### 面向企业：覆盖整个组织的安全、可扩展 AI 连接
+
+企业可以更有效地推动 AI 工具和应用的内部采用，因为 MCP 简化了将你的系统连接到 AI 的过程。这有助于让 AI 在组织内部实现更紧密的连接，扩展它对员工的能力和用处。
+
+### 面向消费者：即时访问你喜欢的工具
+
+MCP 为终端用户在他们喜爱的 AI 助手与工作工具之间提供了无缝连接。它让任务自动化更容易，也免去了跨标签页复制粘贴的麻烦。简而言之，MCP 让 AI 更好地访问和连接你的世界。
+
+在 [Claude](https://claude.ai) 中，你可以即时连接到被称为 [**Connectors（连接器）**](https://claude.com/partners/mcp) 的 MCP Server。这为你提供了一种直接的方式，把 Claude 连接到你常用的工作应用。
+
+## Connectors（MCP）实战
+
+当你看到 MCP 与你已在使用的工具结合时，它的真正价值就会显现。以下是一些在 Claude 中由 MCP 驱动的集成示例，它们被称为 **Connectors**：
+
+### 在 Claude 中使用 Canva
+
+Canva Connector 让 Claude 可以直接在 Canva 中生成新设计。借助 MCP，Claude 能够连接 Canva 提供的工具，在画布上生成设计。
+
+### 在 Claude 中使用 Notion 和 Linear
+
+借助 Notion 和 Linear Connectors，Claude 可以访问你在 Notion 中的页面，并用它们来更新 Linear 中的工单。MCP 在这里实现了从非结构化上下文到独立项目管理系统中有序工单的无缝转换。
+
+### 在 Claude Code 中使用 Figma
+
+Figma Connector 让 Claude 可以访问 Figma 中的设计。这使得 Claude Code 能够根据 Figma 中创建的设计，生成网站、应用或用户界面的可运行原型。
+
+### 可用的 Claude Connectors
+
+Claude Connectors 包括以下集成：
+
+- **Notion**：工作区文档
+- **Linear**：问题跟踪
+- **Stripe**：支付数据
+- **Canva** 和 **Figma**：设计辅助
+- **Hubspot**：CRM 任务自动化
+- **Sentry**：错误跟踪
+- ……以及更多
+
+每个 Connector 只需几秒钟即可完成配置，成为 Claude 工作上下文的一部分。在 Claude 之外，[开源的 MCP Registry](https://modelcontextprotocol.io) 上还有一个庞大的 MCP 服务器生态。
+
+## 开始探索 MCP
+
+根据你的需求，有两条路径可选。
+
+### Claude 中的 Connectors
+
+[Connectors](https://claude.com/partners/mcp) 是预先构建好的，可让 Claude 即时访问工具、数据库和应用，为你带来一组全新能力。打开 [Claude](https://claude.ai/directory)，浏览可用的 connectors，点击即可添加。
+
+### 构建自定义 MCP 连接
+
+MCP 是开源的，这意味着任何人都可以采用 MCP 将 AI 连接到应用。[Model Context Protocol 文档](https://modelcontextprotocol.io)详细介绍了如何基于 MCP 进行构建。
+
+## 入门
+
+如果你想体验 MCP，可以先浏览找一个 Claude Connector，立即在 Claude 中用起来。
+
+如果现有的 MCP 服务器不能满足需求，自己动手创建一个需要一些工作量，但如果你会 TypeScript 或 Python，其实并不复杂。[Model Context Protocol 快速入门](https://modelcontextprotocol.io/quickstart)提供了可以直接修改使用的可运行示例。
+
+## FAQ
+
+### MCP 只适用于 Claude 吗？
+
+不是。MCP 是开源协议。虽然 Claude 率先采用了 MCP，其他 AI 提供商现已采用同一协议，任何人都可以连接到同一套 MCP 服务器生态。
+
+### 使用 MCP 需要编程技能吗？
+
+使用 [connectors](https://claude.com/partners/mcp) 不需要。浏览、安装、完成认证，就这些。构建自定义 MCP 服务器需要 TypeScript 或 Python 知识，但不断扩充的 [connector 库](https://claude.com/partners/mcp)已经覆盖了大多数主流工具。
+
+### MCP 的安全机制是怎样的？
+
+每个服务器会请求特定权限，以允许 Claude 访问。你可以批准或拒绝访问，也可以随时撤销权限。
+
+### MCP 的性能如何？
+
+MCP 使用高效的协议。本地服务器的 Stdio 传输开销极小。远程服务器的 Server-sent events (SSE) 和 Streamable HTTP 保持持久连接。响应流式传输可避免大数据操作超时。协议支持分页、过滤和部分响应，以高效处理大型数据集。</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Agents</span>
-            <span class="article-date">October 31, 2025</span>
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
             
+            <h1 class="article-title u-text-style-h1">什么是 Model Context Protocol？将 AI 连接到你的世界</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>Connect AI assistants to your tools without custom integrations using Model Context Protocol.</p></div>
           </div>
-          <h1 class="article-title">什么是 Model Context Protocol？将 AI 连接到你的世界</h1>
-          <a href="/posts/what-is-model-context-protocol/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>AI 模型的表现好坏，取决于提供给它的上下文。像 <a href="https://claude.ai">Claude</a> 这样的 AI 助手可以回答问题、完成种类惊人的任务，但如果无法访问所需的数据或工具，它们能为你做的就很有限。通常你的解决办法是在不同标签页之间复制粘贴上下文——无论是在 Google Drive 中编辑文档、在 Slack 中回复话题，还是在 IDE 中更新代码。这个过程缓慢、手动，还有遗漏重要上下文的风险。</p><p><strong>Model Context Protocol（MCP，模型上下文协议）</strong>提供了一种开放的解决方案，并已在所有 AI 应用和助手中广泛可用。在本文中，你将了解 MCP 是什么、它如何工作、为什么重要，以及它适合谁。你会看到 MCP 的实际应用示例，并理解如何从今天开始使用或基于 MCP 进行构建。</p><h2>什么是 Model Context Protocol（MCP）？</h2><p><strong>Model Context Protocol</strong> 是一个开放标准，定义了 LLM 与外部系统通信的方式。</p><p>可以把 MCP 理解为<strong>「LLM 的 USB-C」</strong>。正如 USB-C 为你的手机、笔记本和其他设备提供了一种通用接口，MCP 为 LLM 连接外部系统提供了一种通用格式。在 USB-C 出现之前，每种电子设备都有自己的数据线：iPhone 用 Lightning，Android 用 micro-USB，相机用专有接口。随着越来越多的设备采用 USB-C，整个生态系统的连接变得无缝。</p><p>MCP 为 AI 集成带来了同样的简洁。在 MCP 出现之前，每个应用和数据库都需要定制代码才能与 LLM 连接。Google Drive 需要一套集成，Slack 需要另一套，Figma 又需要一套。现在，MCP 提供了单一、标准化的格式，把这些工具连接到 Claude 及其他 AI 应用。</p><figure style="max-width:2880pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68f64b7d51a1d57549b3ad8e_What%20is%20MCP_%20Final%402x.png" loading="lazy"></div></figure><h2>MCP 从何而来？</h2><p>MCP 诞生于 Anthropic，由 David Soria Parra 和 Justin Spahr-Summers 创建。这个想法源于 David 的一个烦恼：他要在 Claude Desktop 和他的集成开发环境（IDE）之间不断复制代码。意识到这是一个典型的 M×N 问题——多个应用需要多个集成——David 向 Justin 提议构建一个协议来解决它。他们基于广受欢迎的 Language Server Protocol 设计了 MCP，并于 2024 年 11 月在 Anthropic 的支持下开源，以确保整个 AI 生态系统都能从中受益。</p><h2>MCP 如何工作？</h2><p>MCP 采用双侧架构。像 Claude 这样的 AI 智能体和聊天机器人创建 <strong>MCP Client</strong>，从而连接到 Notion、Canva、Figma 等应用；而这些应用通过 <strong>MCP Server</strong> 把自己的工具和数据开放出来。</p><p>通过构建 <strong>MCP Client</strong>，AI 智能体和聊天机器人可以访问社区构建的数千个 MCP Server，从而拥有一条直接的路径来扩展自身能力。智能体还可以通过 <a href="https://claude.com/blog/claude-managed-agents-updates">MCP 隧道</a>访问防火墙后面的 MCP 服务器。通过构建 <strong>MCP Server</strong>，公司和开发者可以让自己的产品直接为 AI 所用，开辟一条提供价值的新途径。</p><p>由于 MCP 是开源的，任何人都可以构建 MCP Server 或 Client。</p><h2>MCP 为什么重要？</h2><p>MCP 让 LLM 得以超越聊天、执行现实世界的任务：阅读一封邮件往来并回复、访问代码库并部署更新，或者审阅一份设计简报并生成初稿。该协议为 LLM 连接外部系统、工具和应用以访问数据、执行操作奠定了基础。这带来了：</p><h3>AI 的通用兼容性</h3><p><strong>AI 助手可以访问数千种工具</strong>——一旦某个 AI 助手实现了 MCP（通过 MCP client），它就能立即连接到数千个兼容 MCP 的应用，从专业编码工具到企业工作流平台，无需为每一个单独构建定制集成。</p><p><strong>工具和应用一次性连接到所有 AI 助手</strong>——Notion、Figma、Asana 等公司只需构建一个 MCP 服务器，即可与任何兼容（即实现了 MCP client）的 AI 助手配合。开发者只需构建一个集成，就能覆盖所有 AI 连接。</p><h3>开放、AI 原生的生态系统</h3><p><strong>任何人都可以构建和分享</strong>——作为开放标准，开发者或公司发布的 MCP 服务器与任何 MCP client 兼容。这种开放性造就了一个由数千个社区构建的服务器组成的繁荣生态系统，加速了面向 AI 助手的工具和应用普及。</p><p><strong>让软件从设计上就可被 AI 访问</strong>——传统软件是为使用 Web 界面的人类构建的。MCP 提供了一个专为 AI 交互设计的并行接口，让应用真正成为 AI 原生。这意味着 AI 模型与人们已经在使用的工具之间，会有更好、更可靠的集成。</p><h3>智能体的基础协议</h3><p>MCP 为 AI 智能体构建了访问任意数量服务和工具的基础设施，实现真正的端到端任务自动化。随着越来越多的应用采用该协议，AI 智能体独立处理复杂多步骤工作流的愿景正变得越来越切实可行。</p><h2>MCP 适合谁？</h2><p>开发者获得一种标准化的方式：只需构建一次集成，即可与任何兼容的 AI 配合工作。企业可以获得安全、由 IT 部门管控、且能在整个组织内规模化扩展的 AI 连接。消费者则可以即时把自己喜欢的工具连接到 AI，无需任何技术知识。</p><h3>面向开发者：一个标准连接 AI 与应用</h3><p>开发者只需遵循单一标准，就能将外部产品连接到你的 AI 应用和智能体。这简化了构建集成的过程，增加了可连接产品的数量，也提升了整个生态系统中连接的质量和安全性。</p><p>要构建一个连接众多应用的智能体？还是要构建一个被众多智能体连接的应用？MCP 让你通过精简的集成接入一个兼容工具的生态系统。</p><h3>面向企业：覆盖整个组织的安全、可扩展 AI 连接</h3><p>企业可以更有效地推动 AI 工具和应用的内部采用，因为 MCP 简化了将你的系统连接到 AI 的过程。这有助于让 AI 在组织内部实现更紧密的连接，扩展它对员工的能力和用处。</p><h3>面向消费者：即时访问你喜欢的工具</h3><p>MCP 为终端用户在他们喜爱的 AI 助手与工作工具之间提供了无缝连接。它让任务自动化更容易，也免去了跨标签页复制粘贴的麻烦。简而言之，MCP 让 AI 更好地访问和连接你的世界。</p><p>在 <a href="https://claude.ai">Claude</a> 中，你可以即时连接到被称为 <a href="https://claude.com/partners/mcp"><strong>Connectors（连接器）</strong></a> 的 MCP Server。这为你提供了一种直接的方式，把 Claude 连接到你常用的工作应用。</p><h2>Connectors（MCP）实战</h2><p>当你看到 MCP 与你已在使用的工具结合时，它的真正价值就会显现。以下是一些在 Claude 中由 MCP 驱动的集成示例，它们被称为 <strong>Connectors</strong>：</p><h3>在 Claude 中使用 Canva</h3><p>Canva Connector 让 Claude 可以直接在 Canva 中生成新设计。借助 MCP，Claude 能够连接 Canva 提供的工具，在画布上生成设计。</p><figure style="width:100%;max-width:100%;padding-bottom:56.206088992974244%" class="w-richtext-align-center w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/wXC2u36w2Rc" title="Move from content to polished design with Canva + Claude" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><h3>在 Claude 中使用 Notion 和 Linear</h3><p>借助 Notion 和 Linear Connectors，Claude 可以访问你在 Notion 中的页面，并用它们来更新 Linear 中的工单。MCP 在这里实现了从非结构化上下文到独立项目管理系统中有序工单的无缝转换。</p><figure style="width:100%;max-width:100%;padding-bottom:56.206088992974244%" class="w-richtext-align-center w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/xBV60h9_lbw" title="Ship faster with real context from Linear, Notion, and Claude" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><h3>在 Claude Code 中使用 Figma</h3><p>Figma Connector 让 Claude 可以访问 Figma 中的设计。这使得 Claude Code 能够根据 Figma 中创建的设计，生成网站、应用或用户界面的可运行原型。</p><figure style="width:100%;max-width:100%;padding-bottom:56.206088992974244%" class="w-richtext-align-center w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/dcKXca3Bs2o" title="Turn designs into code with Claude Code + Figma" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><h3>可用的 Claude Connectors</h3><p>Claude Connectors 包括以下集成：</p><ul role="list"><li><strong>Notion</strong>：工作区文档</li><li><strong>Linear</strong>：问题跟踪</li><li><strong>Stripe</strong>：支付数据</li><li><strong>Canva</strong> 和 <strong>Figma</strong>：设计辅助</li><li><strong>Hubspot</strong>：CRM 任务自动化</li><li><strong>Sentry</strong>：错误跟踪</li><li>……以及更多</li></ul><p>每个 Connector 只需几秒钟即可完成配置，成为 Claude 工作上下文的一部分。在 Claude 之外，<a href="https://modelcontextprotocol.io">开源的 MCP Registry</a> 上还有一个庞大的 MCP 服务器生态。</p><figure style="max-width:3840pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e948c50eec666207cdd811_2.png" loading="lazy"></div></figure><h2>开始探索 MCP</h2><p>根据你的需求，有两条路径可选。</p><h3>Claude 中的 Connectors</h3><p><a href="https://claude.com/partners/mcp">Connectors</a> 是预先构建好的，可让 Claude 即时访问工具、数据库和应用，为你带来一组全新能力。打开 <a href="https://claude.ai/directory">Claude</a>，浏览可用的 connectors，点击即可添加。</p><h3>构建自定义 MCP 连接</h3><p>MCP 是开源的，这意味着任何人都可以采用 MCP 将 AI 连接到应用。<a href="https://modelcontextprotocol.io">Model Context Protocol 文档</a>详细介绍了如何基于 MCP 进行构建。</p><h2>入门</h2><p>如果你想体验 MCP，可以先浏览找一个 Claude Connector，立即在 Claude 中用起来。</p><p>如果现有的 MCP 服务器不能满足需求，自己动手创建一个需要一些工作量，但如果你会 TypeScript 或 Python，其实并不复杂。<a href="https://modelcontextprotocol.io/quickstart">Model Context Protocol 快速入门</a>提供了可以直接修改使用的可运行示例。</p></div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/agents" target="_blank" rel="noopener noreferrer">Agents</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <div class="hero-detail-value u-text-style-body-3">Claude apps</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">October 31, 2025</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/what-is-model-context-protocol/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/what-is-model-context-protocol" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>AI 模型的表现好坏，取决于提供给它的上下文。像 <a href="https://claude.ai">Claude</a> 这样的 AI 助手可以回答问题、完成种类惊人的任务，但如果无法访问所需的数据或工具，它们能为你做的就很有限。通常你的解决办法是在不同标签页之间复制粘贴上下文——无论是在 Google Drive 中编辑文档、在 Slack 中回复话题，还是在 IDE 中更新代码。这个过程缓慢、手动，还有遗漏重要上下文的风险。</p><p><strong>Model Context Protocol（MCP，模型上下文协议）</strong>提供了一种开放的解决方案，并已在所有 AI 应用和助手中广泛可用。在本文中，你将了解 MCP 是什么、它如何工作、为什么重要，以及它适合谁。你会看到 MCP 的实际应用示例，并理解如何从今天开始使用或基于 MCP 进行构建。</p><h2>什么是 Model Context Protocol（MCP）？</h2><p><strong>Model Context Protocol</strong> 是一个开放标准，定义了 LLM 与外部系统通信的方式。</p><p>可以把 MCP 理解为<strong>「LLM 的 USB-C」</strong>。正如 USB-C 为你的手机、笔记本和其他设备提供了一种通用接口，MCP 为 LLM 连接外部系统提供了一种通用格式。在 USB-C 出现之前，每种电子设备都有自己的数据线：iPhone 用 Lightning，Android 用 micro-USB，相机用专有接口。随着越来越多的设备采用 USB-C，整个生态系统的连接变得无缝。</p><p>MCP 为 AI 集成带来了同样的简洁。在 MCP 出现之前，每个应用和数据库都需要定制代码才能与 LLM 连接。Google Drive 需要一套集成，Slack 需要另一套，Figma 又需要一套。现在，MCP 提供了单一、标准化的格式，把这些工具连接到 Claude 及其他 AI 应用。</p><figure style="max-width:2880pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68f64b7d51a1d57549b3ad8e_What%20is%20MCP_%20Final%402x.png" loading="lazy"></div></figure><h2>MCP 从何而来？</h2><p>MCP 诞生于 Anthropic，由 David Soria Parra 和 Justin Spahr-Summers 创建。这个想法源于 David 的一个烦恼：他要在 Claude Desktop 和他的集成开发环境（IDE）之间不断复制代码。意识到这是一个典型的 M×N 问题——多个应用需要多个集成——David 向 Justin 提议构建一个协议来解决它。他们基于广受欢迎的 Language Server Protocol 设计了 MCP，并于 2024 年 11 月在 Anthropic 的支持下开源，以确保整个 AI 生态系统都能从中受益。</p><h2>MCP 如何工作？</h2><p>MCP 采用双侧架构。像 Claude 这样的 AI 智能体和聊天机器人创建 <strong>MCP Client</strong>，从而连接到 Notion、Canva、Figma 等应用；而这些应用通过 <strong>MCP Server</strong> 把自己的工具和数据开放出来。</p><p>通过构建 <strong>MCP Client</strong>，AI 智能体和聊天机器人可以访问社区构建的数千个 MCP Server，从而拥有一条直接的路径来扩展自身能力。智能体还可以通过 <a href="https://claude.com/blog/claude-managed-agents-updates">MCP 隧道</a>访问防火墙后面的 MCP 服务器。通过构建 <strong>MCP Server</strong>，公司和开发者可以让自己的产品直接为 AI 所用，开辟一条提供价值的新途径。</p><p>由于 MCP 是开源的，任何人都可以构建 MCP Server 或 Client。</p><h2>MCP 为什么重要？</h2><p>MCP 让 LLM 得以超越聊天、执行现实世界的任务：阅读一封邮件往来并回复、访问代码库并部署更新，或者审阅一份设计简报并生成初稿。该协议为 LLM 连接外部系统、工具和应用以访问数据、执行操作奠定了基础。这带来了：</p><h3>AI 的通用兼容性</h3><p><strong>AI 助手可以访问数千种工具</strong>——一旦某个 AI 助手实现了 MCP（通过 MCP client），它就能立即连接到数千个兼容 MCP 的应用，从专业编码工具到企业工作流平台，无需为每一个单独构建定制集成。</p><p><strong>工具和应用一次性连接到所有 AI 助手</strong>——Notion、Figma、Asana 等公司只需构建一个 MCP 服务器，即可与任何兼容（即实现了 MCP client）的 AI 助手配合。开发者只需构建一个集成，就能覆盖所有 AI 连接。</p><h3>开放、AI 原生的生态系统</h3><p><strong>任何人都可以构建和分享</strong>——作为开放标准，开发者或公司发布的 MCP 服务器与任何 MCP client 兼容。这种开放性造就了一个由数千个社区构建的服务器组成的繁荣生态系统，加速了面向 AI 助手的工具和应用普及。</p><p><strong>让软件从设计上就可被 AI 访问</strong>——传统软件是为使用 Web 界面的人类构建的。MCP 提供了一个专为 AI 交互设计的并行接口，让应用真正成为 AI 原生。这意味着 AI 模型与人们已经在使用的工具之间，会有更好、更可靠的集成。</p><h3>智能体的基础协议</h3><p>MCP 为 AI 智能体构建了访问任意数量服务和工具的基础设施，实现真正的端到端任务自动化。随着越来越多的应用采用该协议，AI 智能体独立处理复杂多步骤工作流的愿景正变得越来越切实可行。</p><h2>MCP 适合谁？</h2><p>开发者获得一种标准化的方式：只需构建一次集成，即可与任何兼容的 AI 配合工作。企业可以获得安全、由 IT 部门管控、且能在整个组织内规模化扩展的 AI 连接。消费者则可以即时把自己喜欢的工具连接到 AI，无需任何技术知识。</p><h3>面向开发者：一个标准连接 AI 与应用</h3><p>开发者只需遵循单一标准，就能将外部产品连接到你的 AI 应用和智能体。这简化了构建集成的过程，增加了可连接产品的数量，也提升了整个生态系统中连接的质量和安全性。</p><p>要构建一个连接众多应用的智能体？还是要构建一个被众多智能体连接的应用？MCP 让你通过精简的集成接入一个兼容工具的生态系统。</p><h3>面向企业：覆盖整个组织的安全、可扩展 AI 连接</h3><p>企业可以更有效地推动 AI 工具和应用的内部采用，因为 MCP 简化了将你的系统连接到 AI 的过程。这有助于让 AI 在组织内部实现更紧密的连接，扩展它对员工的能力和用处。</p><h3>面向消费者：即时访问你喜欢的工具</h3><p>MCP 为终端用户在他们喜爱的 AI 助手与工作工具之间提供了无缝连接。它让任务自动化更容易，也免去了跨标签页复制粘贴的麻烦。简而言之，MCP 让 AI 更好地访问和连接你的世界。</p><p>在 <a href="https://claude.ai">Claude</a> 中，你可以即时连接到被称为 <a href="https://claude.com/partners/mcp"><strong>Connectors（连接器）</strong></a> 的 MCP Server。这为你提供了一种直接的方式，把 Claude 连接到你常用的工作应用。</p><h2>Connectors（MCP）实战</h2><p>当你看到 MCP 与你已在使用的工具结合时，它的真正价值就会显现。以下是一些在 Claude 中由 MCP 驱动的集成示例，它们被称为 <strong>Connectors</strong>：</p><h3>在 Claude 中使用 Canva</h3><p>Canva Connector 让 Claude 可以直接在 Canva 中生成新设计。借助 MCP，Claude 能够连接 Canva 提供的工具，在画布上生成设计。</p><figure style="width:100%;max-width:100%;padding-bottom:56.206088992974244%" class="w-richtext-align-center w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/wXC2u36w2Rc" title="Move from content to polished design with Canva + Claude" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><h3>在 Claude 中使用 Notion 和 Linear</h3><p>借助 Notion 和 Linear Connectors，Claude 可以访问你在 Notion 中的页面，并用它们来更新 Linear 中的工单。MCP 在这里实现了从非结构化上下文到独立项目管理系统中有序工单的无缝转换。</p><figure style="width:100%;max-width:100%;padding-bottom:56.206088992974244%" class="w-richtext-align-center w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/xBV60h9_lbw" title="Ship faster with real context from Linear, Notion, and Claude" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><h3>在 Claude Code 中使用 Figma</h3><p>Figma Connector 让 Claude 可以访问 Figma 中的设计。这使得 Claude Code 能够根据 Figma 中创建的设计，生成网站、应用或用户界面的可运行原型。</p><figure style="width:100%;max-width:100%;padding-bottom:56.206088992974244%" class="w-richtext-align-center w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/dcKXca3Bs2o" title="Turn designs into code with Claude Code + Figma" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><h3>可用的 Claude Connectors</h3><p>Claude Connectors 包括以下集成：</p><ul role="list"><li><strong>Notion</strong>：工作区文档</li><li><strong>Linear</strong>：问题跟踪</li><li><strong>Stripe</strong>：支付数据</li><li><strong>Canva</strong> 和 <strong>Figma</strong>：设计辅助</li><li><strong>Hubspot</strong>：CRM 任务自动化</li><li><strong>Sentry</strong>：错误跟踪</li><li>……以及更多</li></ul><p>每个 Connector 只需几秒钟即可完成配置，成为 Claude 工作上下文的一部分。在 Claude 之外，<a href="https://modelcontextprotocol.io">开源的 MCP Registry</a> 上还有一个庞大的 MCP 服务器生态。</p><figure style="max-width:3840pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e948c50eec666207cdd811_2.png" loading="lazy"></div></figure><h2>开始探索 MCP</h2><p>根据你的需求，有两条路径可选。</p><h3>Claude 中的 Connectors</h3><p><a href="https://claude.com/partners/mcp">Connectors</a> 是预先构建好的，可让 Claude 即时访问工具、数据库和应用，为你带来一组全新能力。打开 <a href="https://claude.ai/directory">Claude</a>，浏览可用的 connectors，点击即可添加。</p><h3>构建自定义 MCP 连接</h3><p>MCP 是开源的，这意味着任何人都可以采用 MCP 将 AI 连接到应用。<a href="https://modelcontextprotocol.io">Model Context Protocol 文档</a>详细介绍了如何基于 MCP 进行构建。</p><h2>入门</h2><p>如果你想体验 MCP，可以先浏览找一个 Claude Connector，立即在 Claude 中用起来。</p><p>如果现有的 MCP 服务器不能满足需求，自己动手创建一个需要一些工作量，但如果你会 TypeScript 或 Python，其实并不复杂。<a href="https://modelcontextprotocol.io/quickstart">Model Context Protocol 快速入门</a>提供了可以直接修改使用的可运行示例。</p><h2>FAQ</h2><div class="article-faq"><h3>MCP 只适用于 Claude 吗？</h3><p>不是。MCP 是开源协议。虽然 Claude 率先采用了 MCP，其他 AI 提供商现已采用同一协议，任何人都可以连接到同一套 MCP 服务器生态。</p><h3>使用 MCP 需要编程技能吗？</h3><p>使用 <a href="https://claude.com/partners/mcp">connectors</a> 不需要。浏览、安装、完成认证，就这些。构建自定义 MCP 服务器需要 TypeScript 或 Python 知识，但不断扩充的 <a href="https://claude.com/partners/mcp">connector 库</a>已经覆盖了大多数主流工具。</p><h3>MCP 的安全机制是怎样的？</h3><p>每个服务器会请求特定权限，以允许 Claude 访问。你可以批准或拒绝访问，也可以随时撤销权限。</p><h3>MCP 的性能如何？</h3><p>MCP 使用高效的协议。本地服务器的 Stdio 传输开销极小。远程服务器的 Server-sent events (SSE) 和 Streamable HTTP 保持持久连接。响应流式传输可避免大数据操作超时。协议支持分页、过滤和部分响应，以高效处理大型数据集。</p></div></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/what-is-model-context-protocol" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

@@ -4,54 +4,256 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Anthropic 网络安全团队如何用 Claude Code 打造威胁检测平台 — Claude Blog 中文翻译</title>
-  <meta name="description" content="Anthropic 网络安全团队如何用 Claude Code 打造威胁检测平台">
+  <meta name="description" content="Jackie Bow, technical lead for Anthropic's Detection Platform Engineering team, shares how her team uses Claude Code to build tools that automate alert triage, accelerate investigations, and transform how security analysts work.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/how-anthropic-uses-claude-cybersecurity" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>Anthropic 网络安全团队如何用 Claude Code 打造威胁检测平台</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/how-anthropic-uses-claude-cybersecurity" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/how-anthropic-uses-claude-cybersecurity/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># Anthropic 网络安全团队如何用 Claude Code 打造威胁检测平台
+
+Jackie Bow, technical lead for Anthropic's Detection Platform Engineering team, shares how her team uses Claude Code to build tools that automate alert triage, accelerate investigations, and transform how security analysts work.
+
+在 Jackie Bow 的整个职业生涯里，她一直在想象这样的工具：能够接入真正要紧的上下文——不只是日志和告警，还有 Slack 对话、内部文档和机构知识，从而判断某个东西到底是真实威胁还是噪音——而且不需要人来承担手工翻查数据的重担。
+
+加入 Anthropic 后，她终于有机会把它们造出来——与 Claude 搭档。Jackie 领导 Anthropic 的检测平台工程团队，专注于防御性网络安全：检测威胁、响应潜在入侵，而非探测漏洞。这项工作包括监控系统中的可疑活动、分诊安全告警，以及在异常演变为事件之前进行调查。
+
+对于一家构建能力越来越强的 AI 模型的公司来说，这项工作是根基所在。[Anthropic 的负责任扩展政策（Responsible Scaling Policy）](https://www.anthropic.com/news/anthropics-responsible-scaling-policy)把产品发布与安全承诺直接挂钩，这意味着 Bow 的团队帮助决定公司能安全地发布什么。
+
+&quot;我觉得这是安全工程师的黄金时代，&quot;担任 Anthropic 检测平台工程技术负责人的 Bow 说，&quot;我终于可以打造那些我一直希望自己能拥有的工具了。&quot;
+
+## **问题：淹没在数据和告警里**
+
+安全负责人对这种场景再熟悉不过了。
+
+一条告警触发。分析师打开终端，开始那套熟悉的流程：在五六个工具之间来回切换，每个工具都有自己的查询语言和思维模型。他们必须同时精通多个平台，还要不断在不同界面和查询语法之间来回切换上下文。
+
+每一次调查都像一场数据考古，把散落在互不相通的系统里的碎片拼起来。对大多数团队来说，简单的调查要花几个小时，复杂的可能拖上好几天。 
+
+&quot;一个人一天能看的告警就那么多，超量之后分析的细致程度就会下降，&quot;Jackie 解释道。
+
+她的团队决定改变这一点。他们问自己：什么在消耗我们的精力？哪些事情感觉在重复劳动？是什么妨碍我们做真正有影响力的工作？
+
+答案很清晰。告警分诊在分析师判断威胁真假之前就能吃掉好几个小时；在互不相通的系统中做人工关联拖慢了一切；而在查询语言和界面之间不停切换上下文带来的认知负担，会随着一天的推进不断累积。
+
+随着公司成长，攻击面在扩大，对安全团队的要求也在提高。
+
+&quot;不借助 Claude 这样的工具来增强，我们无法扩展到满足 Anthropic 的需求，&quot;Jackie 说。
+
+## **解决方案：Claude Looks Up Evidence（CLUE）**
+
+几个月时间里，Bow 的团队构建了 CLUE——一个重新定义安全团队调查威胁方式的检测与响应平台。CLUE 没有在技术栈上再叠一个仪表盘，而是提供了一个由 Claude 驱动的自然语言界面，通过工具调用直接连接 Anthropic 的内部系统。
+
+用 Claude Code 构建 CLUE，把传统软件开发周期压缩了指数级的幅度，让他们在完成日常工作之余还有余力打造这套系统。Bow 的团队一天之内就跑起了概念验证；设计文档、开发步骤和实现一周之内全部完成。
+
+&quot;我们构建的很多东西，就是我们和 Claude Code 对话的过程，&quot;Jackie 回忆道，&quot;它既是设计伙伴，也是协作者。&quot;
+
+真正改变她认知的一刻，是她让 Claude Code 给 CLUE 界面加一个按钮。她原本以为又要陷入 JavaScript 框架和 CSS 调试的泥潭。Claude Code 立刻实现了这个功能，而且做得比她自己做的还好。
+
+&quot;那一刻我意识到，我不再被自己的技术能力限制住了。只要能想得到，我就能造出来，&quot;她说。
+
+### **CLUE Triage**
+
+告警涌入时，CLUE Triage 会在人类分析师看到它们之前完成第一轮分诊。Claude 使用工具从 Anthropic 各个系统为每条告警补充上下文，包括 Slack 消息、内部文档、代码仓库和数据仓库。它会给出处置判定：误报、真实威胁、恶意行为或预期行为。每条告警都会附上置信度评分，让分析师知道该把注意力放在哪里。
+
+这个富化步骤解决了所有安全分析师都认识到的难题：告警抵达时都是孤立的信号。一次失败的登录，一个异常的 API 调用，一次配置变更。没有上下文，这些事件只是噪音；有了上下文（用户是谁、当时在做什么、是否符合其团队的既有模式），清晰的信号就会浮现。
+
+&quot;这些内部上下文正是缺失的那一块，它真正能让告警在你的环境里获得语境，&quot;Jackie 解释道。
+
+### **CLUE Investigate**
+
+有了 CLUE，安全分析师现在可以用自然语言查询所有安全关键日志。想知道&quot;过去一天这个系统所有失败的登录记录&quot;？直接问 CLUE，Claude 会执行必要的 SQL 查询。
+
+&quot;Claude 写精确查询的能力比人强得多，&quot;Jackie 说。这个工具运行一个智能体循环：编排器向各个子智能体下达指令，它们并行执行查询、汇集发现，并把结果综合成条理清晰的调查摘要。过去需要数小时人工关联的工作，现在三四分钟就能完成。
+
+数据也印证了这一点。在每次调查中，CLUE 平均执行 25 次工具调用和近 11 次查询——远超分析师手工合理执行的规模，而且精度更高。这些工具调用中的每一次，原本都需要打开一个单独的控制台或切换到另一个界面。
+
+不过，真正的差异化优势是内部上下文。CLUE 通过工具直接连接 Anthropic 的系统，让 Claude 能访问外部安全平台永远无法触及的机构知识。告警触发时，Claude 可以查看 Slack，看团队是否讨论过计划内的维护；可以查询数据仓库，理解基线行为；可以检视代码仓库，弄清某项服务究竟做什么。
+
+### **数据治理审查**
+
+团队用一个常见的数据治理场景演示了 CLUE 的能力：核查三名外包人员在过去两个月里是否访问过任何不该访问的文档。
+
+据 Bow 介绍，这类调查通常至少需要半天的手工工作，包括查询访问日志、交叉核对权限、审查文档密级。而用 CLUE，Claude 读取请求、制定计划、生成详尽的查询，把技术复杂性都抽象掉。调查几分钟就结束了，产出一份摘要和建议，且每一次执行的查询都完全透明可查。
+
+## **衡量影响**
+
+在着手构建 CLUE 时，团队想搞清楚的不只是&quot;感觉更快了&quot;，而是结果能不能量化。
+
+**误报更少**：在 CLUE Triage 之前，大约三分之一的告警最终被证明是误报。如今这一比例降到了 7%，分析师可以把时间花在真正有价值的信号上。*
+
+**覆盖更广**：可能比速度更重要的是团队如今有能力检查的范围。在使用 CLUE 之前，低置信度的信号根本无人查看，因为没有时间。现在，CLUE Triage 会对每一条涌入的告警做富化处理，批量处理还能应对数千条过去只会成为仪表盘里噪音的信号。
+
+**大规模节省时间**：基于 30 天的使用数据，CLUE 自动化了大约 12000 次查询和 27000 次工具调用——这些工作若靠人工完成估计需要 1870 小时（234 人天）。相比人工分诊，这相当于节省 5 到 10 倍的时间。*
+
+**仍在学习如何衡量的部分**：准确率比速度更难量化。团队会复核 CLUE 的处置判定并记录分歧，但他们仍在建立反馈闭环，以弄清 Claude 抓住了哪些分析师会漏掉的东西——反之亦然。调查记录帮得上忙：每一次调查都可以审计，查证 Claude 究竟看了什么、如何得出结论。
+
+## **下一步：让 Claude 以 Claude 的方式调查**
+
+AI 研究领域有个概念叫&quot;[苦涩的教训（the bitter lesson）](http://www.incompleteideas.net/IncIdeas/BitterLesson.html)&quot;——观察发现，把人类特定的推理方式硬编码进模型，效果总是不如赋予模型通用能力、让它们自己找到方法。Bow 和她的团队一直在思考这对检测与响应意味着什么。
+
+&quot;在 CLUE 开发早期，团队曾争论过要在多大程度上约束 Claude 的调查路径，&quot;Bow 说。&quot;SOAR 时代的直觉是：写好 playbook，定义每一步，让流程确定化。但我们不断注意到一件事：当我们给 Claude 探索的自由——给它工具和目标，而不是一串僵硬的步骤——它常常走出我们绝不会规定的调查路径。有时候，这些路径能挖出我们会错过的上下文。&quot;
+
+关键在于给 Claude 划定边界（能用哪些工具、能访问哪些数据），同时把策略留白。这一洞见决定了 CLUE 的下一步方向。
+
+**从被动到主动**：今天，CLUE 响应告警——事件触发，Claude 调查。但这个架构支撑着更进一步的愿景：持续探索。Claude 智能体不必等待检测规则触发，而是可以主动搜寻可疑模式——那些不匹配任何已写规则的异常、单独看正常而聚合起来反常的行为。
+
+**从自身学习**：团队保存了每一份调查记录。这些语料正在变成一个知识库，Claude 可以从中查询过往调查展开方式的模式。假以时日，CLUE 会积累起任何人类分析师都无法维持的组织记忆。
+
+**拥抱非确定性**：传统安全工具把不一致视为缺陷，CLUE 却把它当作特性。同一条告警在不同日子可能被以不同方式调查，这没有问题——有时第二条路径能发现第一条遗漏的东西。团队正在试验并行运行多种调查策略并比较结果。
+
+&quot;安全运营版的苦涩的教训？我们花了多年构建把人类调查方式硬编码进去的系统。下一代工具应该赋予模型调查的能力，让它们找到比我们规定的更好的方法，&quot;Bow 补充道。
+
+*欢迎阅读我们的最佳实践：如何为 AI 加速的攻击方做好准备。*
+
+*今天就[开始使用 Claude Code](https://claude.com/product/claude-code)。敬请期待&quot;Anthropic 如何使用 Claude&quot;系列的更多故事。*
+
+**这些结果基于 Claude Sonnet 和 Opus 模型产生。*</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Claude Code</span>
-            <span class="article-date">May 12, 2026</span>
-            
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-mineral);">
+            <img class="hero-illo-img" src="/assets/illustrations/how-anthropic-uses-claude-cybersecurity.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">Anthropic 网络安全团队如何用 Claude Code 打造威胁检测平台</h1>
-          <a href="/posts/how-anthropic-uses-claude-cybersecurity/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>在 Jackie Bow 的整个职业生涯里，她一直在想象这样的工具：能够接入真正要紧的上下文——不只是日志和告警，还有 Slack 对话、内部文档和机构知识，从而判断某个东西到底是真实威胁还是噪音——而且不需要人来承担手工翻查数据的重担。</p><p>加入 Anthropic 后，她终于有机会把它们造出来——与 Claude 搭档。Jackie 领导 Anthropic 的检测平台工程团队，专注于防御性网络安全：检测威胁、响应潜在入侵，而非探测漏洞。这项工作包括监控系统中的可疑活动、分诊安全告警，以及在异常演变为事件之前进行调查。</p><p>对于一家构建能力越来越强的 AI 模型的公司来说，这项工作是根基所在。<a href="https://www.anthropic.com/news/anthropics-responsible-scaling-policy" target="_blank">Anthropic 的负责任扩展政策（Responsible Scaling Policy）</a>把产品发布与安全承诺直接挂钩，这意味着 Bow 的团队帮助决定公司能安全地发布什么。</p><p>"我觉得这是安全工程师的黄金时代，"担任 Anthropic 检测平台工程技术负责人的 Bow 说，"我终于可以打造那些我一直希望自己能拥有的工具了。"</p><figure class="w-richtext-figure-type-video w-richtext-align-fullwidth" style="padding-bottom:56.206088992974244%" data-rt-type="video" data-rt-align="fullwidth" data-rt-max-width="" data-rt-max-height="56.206088992974244%" data-rt-dimensions="854:480" data-page-url="https://youtu.be/FPPTnI88RR8"><div><iframe src="https://www.youtube.com/embed/FPPTnI88RR8" title="How Anthropic uses Claude in Cybersecurity" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><h2><strong>问题：淹没在数据和告警里</strong></h2><p>安全负责人对这种场景再熟悉不过了。</p><p>一条告警触发。分析师打开终端，开始那套熟悉的流程：在五六个工具之间来回切换，每个工具都有自己的查询语言和思维模型。他们必须同时精通多个平台，还要不断在不同界面和查询语法之间来回切换上下文。</p><p>每一次调查都像一场数据考古，把散落在互不相通的系统里的碎片拼起来。对大多数团队来说，简单的调查要花几个小时，复杂的可能拖上好几天。&nbsp;</p><p>"一个人一天能看的告警就那么多，超量之后分析的细致程度就会下降，"Jackie 解释道。</p><p>她的团队决定改变这一点。他们问自己：什么在消耗我们的精力？哪些事情感觉在重复劳动？是什么妨碍我们做真正有影响力的工作？</p><p>答案很清晰。告警分诊在分析师判断威胁真假之前就能吃掉好几个小时；在互不相通的系统中做人工关联拖慢了一切；而在查询语言和界面之间不停切换上下文带来的认知负担，会随着一天的推进不断累积。</p><p>随着公司成长，攻击面在扩大，对安全团队的要求也在提高。</p><p>"不借助 Claude 这样的工具来增强，我们无法扩展到满足 Anthropic 的需求，"Jackie 说。</p><h2><strong>解决方案：Claude Looks Up Evidence（CLUE）</strong></h2><p>几个月时间里，Bow 的团队构建了 CLUE——一个重新定义安全团队调查威胁方式的检测与响应平台。CLUE 没有在技术栈上再叠一个仪表盘，而是提供了一个由 Claude 驱动的自然语言界面，通过工具调用直接连接 Anthropic 的内部系统。</p><p>用 Claude Code 构建 CLUE，把传统软件开发周期压缩了指数级的幅度，让他们在完成日常工作之余还有余力打造这套系统。Bow 的团队一天之内就跑起了概念验证；设计文档、开发步骤和实现一周之内全部完成。</p><p>"我们构建的很多东西，就是我们和 Claude Code 对话的过程，"Jackie 回忆道，"它既是设计伙伴，也是协作者。"</p><p>真正改变她认知的一刻，是她让 Claude Code 给 CLUE 界面加一个按钮。她原本以为又要陷入 JavaScript 框架和 CSS 调试的泥潭。Claude Code 立刻实现了这个功能，而且做得比她自己做的还好。</p><p>"那一刻我意识到，我不再被自己的技术能力限制住了。只要能想得到，我就能造出来，"她说。</p><h3><strong>CLUE Triage</strong></h3><p>告警涌入时，CLUE Triage 会在人类分析师看到它们之前完成第一轮分诊。Claude 使用工具从 Anthropic 各个系统为每条告警补充上下文，包括 Slack 消息、内部文档、代码仓库和数据仓库。它会给出处置判定：误报、真实威胁、恶意行为或预期行为。每条告警都会附上置信度评分，让分析师知道该把注意力放在哪里。</p><p>这个富化步骤解决了所有安全分析师都认识到的难题：告警抵达时都是孤立的信号。一次失败的登录，一个异常的 API 调用，一次配置变更。没有上下文，这些事件只是噪音；有了上下文（用户是谁、当时在做什么、是否符合其团队的既有模式），清晰的信号就会浮现。</p><p>"这些内部上下文正是缺失的那一块，它真正能让告警在你的环境里获得语境，"Jackie 解释道。</p><h3><strong>CLUE Investigate</strong></h3><p>有了 CLUE，安全分析师现在可以用自然语言查询所有安全关键日志。想知道"过去一天这个系统所有失败的登录记录"？直接问 CLUE，Claude 会执行必要的 SQL 查询。</p><p>"Claude 写精确查询的能力比人强得多，"Jackie 说。这个工具运行一个智能体循环：编排器向各个子智能体下达指令，它们并行执行查询、汇集发现，并把结果综合成条理清晰的调查摘要。过去需要数小时人工关联的工作，现在三四分钟就能完成。</p><p>数据也印证了这一点。在每次调查中，CLUE 平均执行 25 次工具调用和近 11 次查询——远超分析师手工合理执行的规模，而且精度更高。这些工具调用中的每一次，原本都需要打开一个单独的控制台或切换到另一个界面。</p><p>不过，真正的差异化优势是内部上下文。CLUE 通过工具直接连接 Anthropic 的系统，让 Claude 能访问外部安全平台永远无法触及的机构知识。告警触发时，Claude 可以查看 Slack，看团队是否讨论过计划内的维护；可以查询数据仓库，理解基线行为；可以检视代码仓库，弄清某项服务究竟做什么。</p><h3><strong>数据治理审查</strong></h3><p>团队用一个常见的数据治理场景演示了 CLUE 的能力：核查三名外包人员在过去两个月里是否访问过任何不该访问的文档。</p><p>据 Bow 介绍，这类调查通常至少需要半天的手工工作，包括查询访问日志、交叉核对权限、审查文档密级。而用 CLUE，Claude 读取请求、制定计划、生成详尽的查询，把技术复杂性都抽象掉。调查几分钟就结束了，产出一份摘要和建议，且每一次执行的查询都完全透明可查。</p><h2><strong>衡量影响</strong></h2><p>在着手构建 CLUE 时，团队想搞清楚的不只是"感觉更快了"，而是结果能不能量化。</p><p><strong>误报更少</strong>：在 CLUE Triage 之前，大约三分之一的告警最终被证明是误报。如今这一比例降到了 7%，分析师可以把时间花在真正有价值的信号上。*</p><p><strong>覆盖更广</strong>：可能比速度更重要的是团队如今有能力检查的范围。在使用 CLUE 之前，低置信度的信号根本无人查看，因为没有时间。现在，CLUE Triage 会对每一条涌入的告警做富化处理，批量处理还能应对数千条过去只会成为仪表盘里噪音的信号。</p><p><strong>大规模节省时间</strong>：基于 30 天的使用数据，CLUE 自动化了大约 12000 次查询和 27000 次工具调用——这些工作若靠人工完成估计需要 1870 小时（234 人天）。相比人工分诊，这相当于节省 5 到 10 倍的时间。*</p><p><strong>仍在学习如何衡量的部分</strong>：准确率比速度更难量化。团队会复核 CLUE 的处置判定并记录分歧，但他们仍在建立反馈闭环，以弄清 Claude 抓住了哪些分析师会漏掉的东西——反之亦然。调查记录帮得上忙：每一次调查都可以审计，查证 Claude 究竟看了什么、如何得出结论。</p><h2><strong>下一步：让 Claude 以 Claude 的方式调查</strong></h2><p>AI 研究领域有个概念叫"<a href="http://www.incompleteideas.net/IncIdeas/BitterLesson.html" target="_blank">苦涩的教训（the bitter lesson）</a>"——观察发现，把人类特定的推理方式硬编码进模型，效果总是不如赋予模型通用能力、让它们自己找到方法。Bow 和她的团队一直在思考这对检测与响应意味着什么。</p><p>"在 CLUE 开发早期，团队曾争论过要在多大程度上约束 Claude 的调查路径，"Bow 说。"SOAR 时代的直觉是：写好 playbook，定义每一步，让流程确定化。但我们不断注意到一件事：当我们给 Claude 探索的自由——给它工具和目标，而不是一串僵硬的步骤——它常常走出我们绝不会规定的调查路径。有时候，这些路径能挖出我们会错过的上下文。"</p><p>关键在于给 Claude 划定边界（能用哪些工具、能访问哪些数据），同时把策略留白。这一洞见决定了 CLUE 的下一步方向。</p><p><strong>从被动到主动</strong>：今天，CLUE 响应告警——事件触发，Claude 调查。但这个架构支撑着更进一步的愿景：持续探索。Claude 智能体不必等待检测规则触发，而是可以主动搜寻可疑模式——那些不匹配任何已写规则的异常、单独看正常而聚合起来反常的行为。</p><p><strong>从自身学习</strong>：团队保存了每一份调查记录。这些语料正在变成一个知识库，Claude 可以从中查询过往调查展开方式的模式。假以时日，CLUE 会积累起任何人类分析师都无法维持的组织记忆。</p><p><strong>拥抱非确定性</strong>：传统安全工具把不一致视为缺陷，CLUE 却把它当作特性。同一条告警在不同日子可能被以不同方式调查，这没有问题——有时第二条路径能发现第一条遗漏的东西。团队正在试验并行运行多种调查策略并比较结果。</p><p>"安全运营版的苦涩的教训？我们花了多年构建把人类调查方式硬编码进去的系统。下一代工具应该赋予模型调查的能力，让它们找到比我们规定的更好的方法，"Bow 补充道。</p><p><em>欢迎阅读我们的最佳实践：如何为 AI 加速的攻击方做好准备。</em></p><p><em>今天就<a href="https://claude.com/product/claude-code" target="_blank">开始使用 Claude Code</a>。敬请期待"Anthropic 如何使用 Claude"系列的更多故事。</em></p><p><em>*这些结果基于 Claude Sonnet 和 Opus 模型产生。</em></p></div>
+            <h1 class="article-title u-text-style-h1">Anthropic 网络安全团队如何用 Claude Code 打造威胁检测平台</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>Jackie Bow, technical lead for Anthropic's Detection Platform Engineering team, shares how her team uses Claude Code to build tools that automate alert triage, accelerate investigations, and transform how security analysts work.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/product/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">May 12, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/how-anthropic-uses-claude-cybersecurity/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/how-anthropic-uses-claude-cybersecurity" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>在 Jackie Bow 的整个职业生涯里，她一直在想象这样的工具：能够接入真正要紧的上下文——不只是日志和告警，还有 Slack 对话、内部文档和机构知识，从而判断某个东西到底是真实威胁还是噪音——而且不需要人来承担手工翻查数据的重担。</p><p>加入 Anthropic 后，她终于有机会把它们造出来——与 Claude 搭档。Jackie 领导 Anthropic 的检测平台工程团队，专注于防御性网络安全：检测威胁、响应潜在入侵，而非探测漏洞。这项工作包括监控系统中的可疑活动、分诊安全告警，以及在异常演变为事件之前进行调查。</p><p>对于一家构建能力越来越强的 AI 模型的公司来说，这项工作是根基所在。<a href="https://www.anthropic.com/news/anthropics-responsible-scaling-policy" target="_blank">Anthropic 的负责任扩展政策（Responsible Scaling Policy）</a>把产品发布与安全承诺直接挂钩，这意味着 Bow 的团队帮助决定公司能安全地发布什么。</p><p>"我觉得这是安全工程师的黄金时代，"担任 Anthropic 检测平台工程技术负责人的 Bow 说，"我终于可以打造那些我一直希望自己能拥有的工具了。"</p><figure class="w-richtext-figure-type-video w-richtext-align-fullwidth" style="padding-bottom:56.206088992974244%" data-rt-type="video" data-rt-align="fullwidth" data-rt-max-width="" data-rt-max-height="56.206088992974244%" data-rt-dimensions="854:480" data-page-url="https://youtu.be/FPPTnI88RR8"><div><iframe src="https://www.youtube.com/embed/FPPTnI88RR8" title="How Anthropic uses Claude in Cybersecurity" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><h2><strong>问题：淹没在数据和告警里</strong></h2><p>安全负责人对这种场景再熟悉不过了。</p><p>一条告警触发。分析师打开终端，开始那套熟悉的流程：在五六个工具之间来回切换，每个工具都有自己的查询语言和思维模型。他们必须同时精通多个平台，还要不断在不同界面和查询语法之间来回切换上下文。</p><p>每一次调查都像一场数据考古，把散落在互不相通的系统里的碎片拼起来。对大多数团队来说，简单的调查要花几个小时，复杂的可能拖上好几天。&nbsp;</p><p>"一个人一天能看的告警就那么多，超量之后分析的细致程度就会下降，"Jackie 解释道。</p><p>她的团队决定改变这一点。他们问自己：什么在消耗我们的精力？哪些事情感觉在重复劳动？是什么妨碍我们做真正有影响力的工作？</p><p>答案很清晰。告警分诊在分析师判断威胁真假之前就能吃掉好几个小时；在互不相通的系统中做人工关联拖慢了一切；而在查询语言和界面之间不停切换上下文带来的认知负担，会随着一天的推进不断累积。</p><p>随着公司成长，攻击面在扩大，对安全团队的要求也在提高。</p><p>"不借助 Claude 这样的工具来增强，我们无法扩展到满足 Anthropic 的需求，"Jackie 说。</p><h2><strong>解决方案：Claude Looks Up Evidence（CLUE）</strong></h2><p>几个月时间里，Bow 的团队构建了 CLUE——一个重新定义安全团队调查威胁方式的检测与响应平台。CLUE 没有在技术栈上再叠一个仪表盘，而是提供了一个由 Claude 驱动的自然语言界面，通过工具调用直接连接 Anthropic 的内部系统。</p><p>用 Claude Code 构建 CLUE，把传统软件开发周期压缩了指数级的幅度，让他们在完成日常工作之余还有余力打造这套系统。Bow 的团队一天之内就跑起了概念验证；设计文档、开发步骤和实现一周之内全部完成。</p><p>"我们构建的很多东西，就是我们和 Claude Code 对话的过程，"Jackie 回忆道，"它既是设计伙伴，也是协作者。"</p><p>真正改变她认知的一刻，是她让 Claude Code 给 CLUE 界面加一个按钮。她原本以为又要陷入 JavaScript 框架和 CSS 调试的泥潭。Claude Code 立刻实现了这个功能，而且做得比她自己做的还好。</p><p>"那一刻我意识到，我不再被自己的技术能力限制住了。只要能想得到，我就能造出来，"她说。</p><h3><strong>CLUE Triage</strong></h3><p>告警涌入时，CLUE Triage 会在人类分析师看到它们之前完成第一轮分诊。Claude 使用工具从 Anthropic 各个系统为每条告警补充上下文，包括 Slack 消息、内部文档、代码仓库和数据仓库。它会给出处置判定：误报、真实威胁、恶意行为或预期行为。每条告警都会附上置信度评分，让分析师知道该把注意力放在哪里。</p><p>这个富化步骤解决了所有安全分析师都认识到的难题：告警抵达时都是孤立的信号。一次失败的登录，一个异常的 API 调用，一次配置变更。没有上下文，这些事件只是噪音；有了上下文（用户是谁、当时在做什么、是否符合其团队的既有模式），清晰的信号就会浮现。</p><p>"这些内部上下文正是缺失的那一块，它真正能让告警在你的环境里获得语境，"Jackie 解释道。</p><h3><strong>CLUE Investigate</strong></h3><p>有了 CLUE，安全分析师现在可以用自然语言查询所有安全关键日志。想知道"过去一天这个系统所有失败的登录记录"？直接问 CLUE，Claude 会执行必要的 SQL 查询。</p><p>"Claude 写精确查询的能力比人强得多，"Jackie 说。这个工具运行一个智能体循环：编排器向各个子智能体下达指令，它们并行执行查询、汇集发现，并把结果综合成条理清晰的调查摘要。过去需要数小时人工关联的工作，现在三四分钟就能完成。</p><p>数据也印证了这一点。在每次调查中，CLUE 平均执行 25 次工具调用和近 11 次查询——远超分析师手工合理执行的规模，而且精度更高。这些工具调用中的每一次，原本都需要打开一个单独的控制台或切换到另一个界面。</p><p>不过，真正的差异化优势是内部上下文。CLUE 通过工具直接连接 Anthropic 的系统，让 Claude 能访问外部安全平台永远无法触及的机构知识。告警触发时，Claude 可以查看 Slack，看团队是否讨论过计划内的维护；可以查询数据仓库，理解基线行为；可以检视代码仓库，弄清某项服务究竟做什么。</p><h3><strong>数据治理审查</strong></h3><p>团队用一个常见的数据治理场景演示了 CLUE 的能力：核查三名外包人员在过去两个月里是否访问过任何不该访问的文档。</p><p>据 Bow 介绍，这类调查通常至少需要半天的手工工作，包括查询访问日志、交叉核对权限、审查文档密级。而用 CLUE，Claude 读取请求、制定计划、生成详尽的查询，把技术复杂性都抽象掉。调查几分钟就结束了，产出一份摘要和建议，且每一次执行的查询都完全透明可查。</p><h2><strong>衡量影响</strong></h2><p>在着手构建 CLUE 时，团队想搞清楚的不只是"感觉更快了"，而是结果能不能量化。</p><p><strong>误报更少</strong>：在 CLUE Triage 之前，大约三分之一的告警最终被证明是误报。如今这一比例降到了 7%，分析师可以把时间花在真正有价值的信号上。*</p><p><strong>覆盖更广</strong>：可能比速度更重要的是团队如今有能力检查的范围。在使用 CLUE 之前，低置信度的信号根本无人查看，因为没有时间。现在，CLUE Triage 会对每一条涌入的告警做富化处理，批量处理还能应对数千条过去只会成为仪表盘里噪音的信号。</p><p><strong>大规模节省时间</strong>：基于 30 天的使用数据，CLUE 自动化了大约 12000 次查询和 27000 次工具调用——这些工作若靠人工完成估计需要 1870 小时（234 人天）。相比人工分诊，这相当于节省 5 到 10 倍的时间。*</p><p><strong>仍在学习如何衡量的部分</strong>：准确率比速度更难量化。团队会复核 CLUE 的处置判定并记录分歧，但他们仍在建立反馈闭环，以弄清 Claude 抓住了哪些分析师会漏掉的东西——反之亦然。调查记录帮得上忙：每一次调查都可以审计，查证 Claude 究竟看了什么、如何得出结论。</p><h2><strong>下一步：让 Claude 以 Claude 的方式调查</strong></h2><p>AI 研究领域有个概念叫"<a href="http://www.incompleteideas.net/IncIdeas/BitterLesson.html" target="_blank">苦涩的教训（the bitter lesson）</a>"——观察发现，把人类特定的推理方式硬编码进模型，效果总是不如赋予模型通用能力、让它们自己找到方法。Bow 和她的团队一直在思考这对检测与响应意味着什么。</p><p>"在 CLUE 开发早期，团队曾争论过要在多大程度上约束 Claude 的调查路径，"Bow 说。"SOAR 时代的直觉是：写好 playbook，定义每一步，让流程确定化。但我们不断注意到一件事：当我们给 Claude 探索的自由——给它工具和目标，而不是一串僵硬的步骤——它常常走出我们绝不会规定的调查路径。有时候，这些路径能挖出我们会错过的上下文。"</p><p>关键在于给 Claude 划定边界（能用哪些工具、能访问哪些数据），同时把策略留白。这一洞见决定了 CLUE 的下一步方向。</p><p><strong>从被动到主动</strong>：今天，CLUE 响应告警——事件触发，Claude 调查。但这个架构支撑着更进一步的愿景：持续探索。Claude 智能体不必等待检测规则触发，而是可以主动搜寻可疑模式——那些不匹配任何已写规则的异常、单独看正常而聚合起来反常的行为。</p><p><strong>从自身学习</strong>：团队保存了每一份调查记录。这些语料正在变成一个知识库，Claude 可以从中查询过往调查展开方式的模式。假以时日，CLUE 会积累起任何人类分析师都无法维持的组织记忆。</p><p><strong>拥抱非确定性</strong>：传统安全工具把不一致视为缺陷，CLUE 却把它当作特性。同一条告警在不同日子可能被以不同方式调查，这没有问题——有时第二条路径能发现第一条遗漏的东西。团队正在试验并行运行多种调查策略并比较结果。</p><p>"安全运营版的苦涩的教训？我们花了多年构建把人类调查方式硬编码进去的系统。下一代工具应该赋予模型调查的能力，让它们找到比我们规定的更好的方法，"Bow 补充道。</p><p><em>欢迎阅读我们的最佳实践：如何为 AI 加速的攻击方做好准备。</em></p><p><em>今天就<a href="https://claude.com/product/claude-code" target="_blank">开始使用 Claude Code</a>。敬请期待"Anthropic 如何使用 Claude"系列的更多故事。</em></p><p><em>*这些结果基于 Claude Sonnet 和 Opus 模型产生。</em></p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/how-anthropic-uses-claude-cybersecurity" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

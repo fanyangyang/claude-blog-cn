@@ -13,5 +13,23 @@
   "translatedTitle": "在 Claude Code 中用 Skills 构建验证循环",
   "translated": true,
   "translatedAt": "2026-09-02T04:10:15.615Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Claude Code"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": [
+      "Coding"
+    ]
+  },
+  "subtitle": "How to turn your manual checks into skills, so Claude closes its own feedback loop.",
+  "authors": [
+    "Delba de Oliveira"
+  ],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/claude-code",
+  "productUrl": "https://claude.com/product/claude-code"
 }

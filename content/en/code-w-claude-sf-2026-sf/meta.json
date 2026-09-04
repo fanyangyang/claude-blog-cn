@@ -13,5 +13,22 @@
   "translatedTitle": "Code w/ Claude SF 2026 回顾：在 AI 指数级增长之上构建",
   "translated": true,
   "translatedAt": "2026-09-02T04:20:29.710Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Code",
+      "Claude Platform"
+    ],
+    "usecase": [
+      "Coding"
+    ]
+  },
+  "subtitle": "Missed our SF Code w/ Claude developer conference? Keynotes and breakout sessions are now on YouTube.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/product/claude-code"
 }

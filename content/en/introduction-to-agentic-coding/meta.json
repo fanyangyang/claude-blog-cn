@@ -13,5 +13,21 @@
   "translatedTitle": "智能体式编码入门",
   "translated": true,
   "translatedAt": "2026-09-02T04:51:05.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Claude Code"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": [
+      "Coding"
+    ]
+  },
+  "subtitle": "Move from fragmented AI code snippets to deploying integrated features with agentic coding that understands your entire codebase.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/claude-code",
+  "productUrl": "https://claude.com/product/claude-code"
 }

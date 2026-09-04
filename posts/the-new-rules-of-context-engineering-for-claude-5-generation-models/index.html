@@ -4,54 +4,290 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>面向 Claude 5 世代模型的上下文工程新法则 — Claude Blog 中文翻译</title>
-  <meta name="description" content="面向 Claude 5 世代模型的上下文工程新法则">
+  <meta name="description" content="We removed over 80% of Claude Code's system prompt for more advanced models. How to apply the lessons we learned to your own context engineering in Claude Code and with your own agents.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/the-new-rules-of-context-engineering-for-claude-5-generation-models" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>面向 Claude 5 世代模型的上下文工程新法则</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/the-new-rules-of-context-engineering-for-claude-5-generation-models" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/the-new-rules-of-context-engineering-for-claude-5-generation-models/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># 面向 Claude 5 世代模型的上下文工程新法则
+
+We removed over 80% of Claude Code's system prompt for more advanced models. How to apply the lessons we learned to your own context engineering in Claude Code and with your own agents.
+
+我此前写过如何最好地[为最新一代 Claude 5 模型编写提示词](https://claude.com/blog/a-field-guide-to-claude-fable-finding-your-unknowns)，以及如何与它们迭代协作，去发现你真正想构建的东西。
+
+但当你向 Claude 发送一条消息时，提示词只是它所获得上下文的一小部分。你的上下文大部分来自系统提示词、Skills、CLAUDE.md 文件、记忆以及其他来源。我们将其称为[上下文工程](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)（context engineering），无论你是在使用 Claude Code 还是构建自己的智能体，它都会对生成结果产生巨大影响。
+
+与提示词不同，上下文会在大量请求中被通用使用，因此无法做到那么具体。如何为 Claude 构建这些通用提示和指引，尤其是在你不知道用户的提示词可能是什么的时候？
+
+随着 Claude 自身能力的演进，这件事出人意料地变得困难。最近，我们注意到在为最新一代 Claude 模型编写提示词的方式上出现了巨大转变。对于 Claude Opus 5 和 Claude Fable 5 等模型，我们删除了 Claude Code 系统提示词中超过 80% 的内容，而在编码评估中没有任何可衡量的性能损失。
+
+以下是我们对这类新模型提示方式的经验总结，以及你如何利用这些经验来更新你的上下文工程。我们已将这些最佳实践内置到 `claude doctor;` 中；在 Claude Code 中使用 /doctor 命令，即可为你的 skills 和 CLAUDE.md 文件做合理的瘦身。
+
+## 解除对 Claude 的束缚
+
+总体而言，我们发现过去对 Claude Code 限制过度了——无论是通过系统提示词，还是通过 CLAUDE.md 文件和 skills。 
+
+例如，当我们阅读自己内部使用 Claude Code 的会话记录时，会看到单个请求中出现多条相互冲突的指令，比如&quot;酌情保留文档&quot;或&quot;绝对不要（DO NOT）添加注释&quot;——系统提示词、skills 和用户请求彼此打架。 
+
+通常，Claude 能够理解用户意图并得出正确答案，但 Claude 必须更仔细地权衡这些重叠且冲突的指令，才能决定怎么做。
+
+这些约束在过去是避免最坏情况所必需的，但后来我们发现，可以删掉其中很多条，让模型转而依靠周围上下文和自身判断。
+
+此外，Claude Code 现在拥有多得多的工具。过去 Claude 依赖 CLAUDE.md 作为记忆、信息和指引的来源。现在我们有了记忆、artifacts 和 skills，Claude 可以用它们创造出跨会话加载和共享上下文的新方式。
+
+## 过去与现在
+
+不少以往的上下文工程最佳实践已经变成了迷思。其中包括：
+
+### 过去：给 Claude 定规则
+
+### 现在：让 Claude 自己判断
+
+我们刚推出 Claude Code 时，必须确保 Claude 避开最坏情况，比如删除文件。这意味着我们会给出特别强硬的指引，而这些指引并不总是成立。例如，系统提示词里我们曾经这样写： 
+
+*写代码时，默认不要加注释。绝不要写多段 docstring 或多行注释块，最多一行短注释。除非用户要求，否则不要创建规划、决策或分析文档，从对话上下文出发工作，而不是中间文件。*
+
+但对一部分提示词来说，这条指引是错的。就文档而言，用户可能有自己的偏好，或者非常复杂的代码的某些部分确实需要多行注释块。
+
+不过，对较老的模型来说，没有这些护栏，Claude 写出的注释在很多情况下会是错的，我们只能接受这种权衡。但这代新模型判断力更好，不必靠显式规则也能处理好这些决策。 
+
+新的系统提示词里我们这样写：*写出读起来像周围代码的代码：对齐它的注释密度、命名和惯用法。*
+
+### 过去：给 Claude 示例
+
+### 现在：设计接口
+
+工具使用的第一条规则曾经是给 Claude 示范怎么用。对最新的模型，我们发现给示例反而会把它们限制在特定的探索空间里。 
+
+与其给示例，不如多想想工具、脚本和文件本身的设计，Claude 有哪些参数，怎样才能更有表达力？ 
+
+例如，在 Todo 工具里，只把 status 列为 pending、in_progress 和 completed 这三个枚举值，就已经在提示 Claude 该怎么用。要求同一时间只保持一项 in_progress 的指令，则界定了我们期望的行为。
+
+### 过去：全部放在前面
+
+### 现在：使用渐进式披露
+
+因为 Claude Code 最初聚焦于编码，系统提示词里包含了如何做代码审查和验证的详细信息。这些信息不总是需要，但一旦需要，就是关键信息。
+
+此后，Claude Code 已经非常擅长使用渐进式披露，在正确的时机加载正确的上下文。例如，我们把验证和代码审查拆成独立的 skills，由 Claude Code 按需调用。
+
+但渐进式披露不只适用于 skills，我们也用在工具上。我们的一部分工具是&quot;延迟加载&quot;的，意思是 agent 必须先用 ToolSearch 搜索完整定义才能使用它们。这样我们就能拥有更多工具（比如 Task 工具），在需要之前不会占用上下文。
+
+同样的做法也可以用在你自己的 CLAUDE.md 和 Skill.md 文件上。一个常见的迷思是，你要把这些文件做成所有*可能*会遇到的已知实践的中央仓库，否则 Claude 就找不到。其实应当[考虑做成一棵可以在正确时机加载的文件树](https://claude.com/blog/a-harness-for-every-task-dynamic-workflows-in-claude-code)。
+
+### 过去：反复重复
+
+### 现在：简洁的工具描述
+
+较早的 Claude 模型有时需要重复的指令，也更可能听从上下文窗口末尾而非开头的指令。这意味着系统提示词里有时会在主系统提示中引用工具，同时工具描述里也有一份指令。 
+
+我们发现可以删掉这些重复示例，把如何使用工具的指令放进工具描述，而不是系统提示词。
+
+### 过去：把记忆写进 CLAUDE.md
+
+### 现在：自动记忆
+
+我们曾经鼓励用户用 # 快捷键自动写入 [CLAUDE.md](http://claude.md)，把内容存进 Claude 的记忆。现在，Claude 会自动保存与当前工作和你本人相关的记忆。 
+
+### 过去：简单的规格说明
+
+### 现在：丰富的引用
+
+在 plan mode 中，Claude Code 大量依赖带有计划的 markdown 文件。把这些文件存成计划，方便 Claude 在需要时查阅。另一条类似的最佳实践是把规格说明存在代码库里，供 Claude 在较长项目中参考。
+
+但我们发现 Claude 已经能处理越来越复杂的引用。不再只是简单的 markdown 文件，Claude 还可以引用我们新的 artifacts 功能生成的 HTML artifacts。 
+
+你也可以用代码的形式给 Claude 引用。一份规格说明也可以是一套详细的测试套件，或是另一个代码库里 Claude 可能要移植的函数。 
+
+评分标准（rubrics）是另一种引用。评分标准让 Claude 可以通过[动态工作流](https://claude.com/blog/a-harness-for-every-task-dynamic-workflows-in-claude-code)，并拉起带有这些评分标准的验证 agent，去尝试核验你在某个领域的品味（例如，好的 API 设计是什么样的）。
+
+## 把这些用到你的上下文里
+
+把以上内容合在一起，组装你自己的上下文时会是什么样子？
+
+### System Prompt
+
+系统提示词与产品上下文紧密绑定。它告诉 Claude 自己运行在什么产品里、正在做什么。对 Claude Code 来说，你很可能永远不会改它；但如果你在构建自己的 agent harness，这里才是你应该投入大量时间的地方。
+
+### CLAUDE.md
+
+让 CLAUDE.md 保持轻量，简要说明仓库是做什么的，把大部分 token 花在代码库内部的坑上。例如，你可能把类型都集中在一个单体文件里，其他地方都没有。避免陈述那些 Claude 看一眼文件系统或仓库就该知道的&quot;显而易见&quot;的事。
+
+大量使用渐进式披露。例如，如果你有若干条关于如何验证工作的独特指令，就创建一个 verification skill，然后从 CLAUDE.md 引用它。
+
+### Skills
+
+把 skills 想成轻量指引，让 Claude 在需要时找到信息。除非是极其重要的领域，否则避免把它们限制得过死。 
+
+对于较长的 skills，尽量使用渐进式披露，拆成许多文件并分开存放。
+
+最好的 skills 编码的是属于你、你的团队或产品的特定观点、知识或最佳实践。 
+
+### References 
+
+你可以用 @ 提及文件，把它们作为引用纳入。引用让 Claude 能够查阅当前计划的深入信息。 
+
+这可能是规格文件、原型，甚至整个代码库。一般来说，你应该优先选择代码中的文件，因为它用 Claude 非常熟悉的语言提供了清晰、高保真的指令。例如，一个设计的 HTML 原型通常会比设计描述或截图产生更好的结果。
+
+## 试着简化
+
+在你的系统提示词、skills 和 CLAUDE.md 文件中，你可能也需要像我们一样做简化。我们推出了一个名为 `claude doctor` 的新命令，它也会帮你自动完成这件事。关于专门为更先进的模型编写提示词的更多细节，请参阅我们的 [Fable field guide](https://claude.com/blog/a-field-guide-to-claude-fable-finding-your-unknowns)。
+
+*本文作者为 Anthropic 技术员工 Thariq Shihipar。*</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Claude Code</span>
-            <span class="article-date">July 24, 2026</span>
-            
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-peach);">
+            <img class="hero-illo-img" src="/assets/illustrations/the-new-rules-of-context-engineering-for-claude-5-generation-models.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">面向 Claude 5 世代模型的上下文工程新法则</h1>
-          <a href="/posts/the-new-rules-of-context-engineering-for-claude-5-generation-models/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>我此前写过如何最好地<a href="https://claude.com/blog/a-field-guide-to-claude-fable-finding-your-unknowns">为最新一代 Claude 5 模型编写提示词</a>，以及如何与它们迭代协作，去发现你真正想构建的东西。</p><p>但当你向 Claude 发送一条消息时，提示词只是它所获得上下文的一小部分。你的上下文大部分来自系统提示词、Skills、CLAUDE.md 文件、记忆以及其他来源。我们将其称为<a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">上下文工程</a>（context engineering），无论你是在使用 Claude Code 还是构建自己的智能体，它都会对生成结果产生巨大影响。</p><p>与提示词不同，上下文会在大量请求中被通用使用，因此无法做到那么具体。如何为 Claude 构建这些通用提示和指引，尤其是在你不知道用户的提示词可能是什么的时候？</p><p>随着 Claude 自身能力的演进，这件事出人意料地变得困难。最近，我们注意到在为最新一代 Claude 模型编写提示词的方式上出现了巨大转变。对于 Claude Opus 5 和 Claude Fable 5 等模型，我们删除了 Claude Code 系统提示词中超过 80% 的内容，而在编码评估中没有任何可衡量的性能损失。</p><p>以下是我们对这类新模型提示方式的经验总结，以及你如何利用这些经验来更新你的上下文工程。我们已将这些最佳实践内置到 `claude doctor;` 中；在 Claude Code 中使用 /doctor 命令，即可为你的 skills 和 CLAUDE.md 文件做合理的瘦身。</p><h2>解除对 Claude 的束缚</h2><p>总体而言，我们发现过去对 Claude Code 限制过度了——无论是通过系统提示词，还是通过 CLAUDE.md 文件和 skills。&nbsp;</p><p>例如，当我们阅读自己内部使用 Claude Code 的会话记录时，会看到单个请求中出现多条相互冲突的指令，比如"酌情保留文档"或"绝对不要（DO NOT）添加注释"——系统提示词、skills 和用户请求彼此打架。&nbsp;</p><figure style="max-width:2048pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a63620bedb2b7813b1071e2_afa90c36.png" loading="lazy"></div></figure><p>通常，Claude 能够理解用户意图并得出正确答案，但 Claude 必须更仔细地权衡这些重叠且冲突的指令，才能决定怎么做。</p><p>这些约束在过去是避免最坏情况所必需的，但后来我们发现，可以删掉其中很多条，让模型转而依靠周围上下文和自身判断。</p><p>此外，Claude Code 现在拥有多得多的工具。过去 Claude 依赖 CLAUDE.md 作为记忆、信息和指引的来源。现在我们有了记忆、artifacts 和 skills，Claude 可以用它们创造出跨会话加载和共享上下文的新方式。</p></div>
+            <h1 class="article-title u-text-style-h1">面向 Claude 5 世代模型的上下文工程新法则</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>We removed over 80% of Claude Code's system prompt for more advanced models. How to apply the lessons we learned to your own context engineering in Claude Code and with your own agents.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <div class="hero-detail-value-stack"><a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a><div class="hero-detail-value u-text-style-body-3">Agents</div></div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <div class="hero-detail-value-stack"><a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/product/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a><div class="hero-detail-value u-text-style-body-3">Claude Enterprise</div><div class="hero-detail-value u-text-style-body-3">Claude Platform</div></div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">July 24, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/the-new-rules-of-context-engineering-for-claude-5-generation-models/">Copy link</button>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M15.5117 1.99707C15.9213 2.0091 16.3438 2.13396 16.6768 2.46679C17.0278 2.81814 17.1209 3.26428 17.0801 3.68261C17.0404 4.08745 16.8765 4.49344 16.6787 4.85058C16.3934 5.36546 15.9941 5.85569 15.6348 6.20898C15.7682 6.41421 15.8912 6.66414 15.9551 6.9453C16.0804 7.4977 15.9714 8.13389 15.4043 8.70116C14.8566 9.24884 13.974 9.54823 13.1943 9.71679C12.7628 9.81003 12.3303 9.86698 11.9473 9.90233C12.0596 10.2558 12.0902 10.7051 11.8779 11.2012L11.8223 11.3203C11.5396 11.8854 11.0275 12.2035 10.4785 12.3965C9.93492 12.5875 9.29028 12.6792 8.65332 12.75C7.99579 12.8231 7.34376 12.8744 6.70117 12.9775C6.14371 13.067 5.63021 13.1903 5.18652 13.3818L5.00585 13.4658C4.53515 14.2245 4.13745 14.9658 3.80957 15.6465C4.43885 15.2764 5.1935 15 5.99999 15C6.27614 15 6.49999 15.2238 6.49999 15.5C6.49999 15.7761 6.27613 16 5.99999 16C5.35538 16 4.71132 16.2477 4.15039 16.6103C3.58861 16.9736 3.14957 17.427 2.91601 17.7773C2.91191 17.7835 2.90568 17.788 2.90136 17.7939C2.88821 17.8119 2.8746 17.8289 2.85937 17.8447C2.85117 17.8533 2.84268 17.8612 2.83398 17.8691C2.81803 17.8835 2.80174 17.897 2.78417 17.9092C2.774 17.9162 2.76353 17.9225 2.75292 17.9287C2.73854 17.9372 2.72412 17.9451 2.70898 17.9521C2.69079 17.9605 2.6723 17.9675 2.65332 17.9736C2.6417 17.9774 2.63005 17.9805 2.61816 17.9834C2.60263 17.9872 2.5871 17.9899 2.57128 17.9922C2.55312 17.9948 2.53511 17.9974 2.5166 17.998C2.50387 17.9985 2.49127 17.9976 2.47851 17.9971C2.45899 17.9962 2.43952 17.9954 2.41992 17.9922C2.40511 17.9898 2.39062 17.9862 2.37597 17.9824C2.36477 17.9795 2.35294 17.9783 2.34179 17.9746C2.33697 17.973 2.33286 17.9695 2.32812 17.9678C2.31042 17.9612 2.29351 17.953 2.27636 17.9443C2.26332 17.9378 2.25053 17.9314 2.23828 17.9238C2.23339 17.9208 2.22747 17.9192 2.22265 17.916C2.21414 17.9103 2.20726 17.9026 2.19921 17.8965C2.18396 17.8849 2.16896 17.8735 2.15527 17.8603C2.14518 17.8507 2.13609 17.8404 2.12695 17.8301C2.11463 17.8161 2.10244 17.8023 2.09179 17.7871C2.08368 17.7756 2.07736 17.7631 2.07031 17.751C2.06168 17.7362 2.05297 17.7216 2.04589 17.706C2.03868 17.6901 2.03283 17.6738 2.02734 17.6572C2.0228 17.6436 2.01801 17.6302 2.01464 17.6162C2.01117 17.6017 2.009 17.587 2.00683 17.5722C2.00411 17.5538 2.00161 17.5354 2.00097 17.5166C2.00054 17.5039 2.00141 17.4912 2.00195 17.4785C2.00279 17.459 2.00364 17.4395 2.00683 17.4199C2.00902 17.4064 2.01327 17.3933 2.0166 17.3799C2.01973 17.3673 2.02123 17.3543 2.02539 17.3418C2.41772 16.1648 3.18163 14.466 4.30468 12.7012C4.31908 12.5557 4.34007 12.3582 4.36914 12.1201C4.43379 11.5907 4.53836 10.8564 4.69921 10.0381C5.0174 8.41955 5.56814 6.39783 6.50585 4.9912L6.73242 4.66894C7.27701 3.93277 7.93079 3.30953 8.61035 2.85156C9.3797 2.33311 10.2221 2 11.001 2C11.7951 2.00025 12.3531 2.35795 12.7012 2.70605C12.7723 2.77723 12.8348 2.84998 12.8896 2.91796C13.2829 2.66884 13.7917 2.39502 14.3174 2.21191C14.6946 2.08056 15.1094 1.98537 15.5117 1.99707ZM17.04 15.5537C17.1486 15.3 17.4425 15.1818 17.6963 15.29C17.95 15.3986 18.0683 15.6925 17.96 15.9463C17.4827 17.0612 16.692 18 15.5 18C14.6309 17.9999 13.9764 17.5003 13.5 16.7978C13.0236 17.5003 12.3691 18 11.5 18C10.6309 17.9999 9.97639 17.5003 9.49999 16.7978C9.02359 17.5003 8.36911 18 7.49999 18C7.22391 17.9999 7 17.7761 6.99999 17.5C6.99999 17.2239 7.22391 17 7.49999 17C8.07039 17 8.6095 16.5593 9.04003 15.5537L9.07421 15.4873C9.16428 15.3412 9.32494 15.25 9.49999 15.25C9.70008 15.25 9.88121 15.3698 9.95996 15.5537L10.042 15.7353C10.4581 16.6125 10.9652 16.9999 11.5 17C12.0704 17 12.6095 16.5593 13.04 15.5537L13.0742 15.4873C13.1643 15.3412 13.3249 15.25 13.5 15.25C13.7001 15.25 13.8812 15.3698 13.96 15.5537L14.042 15.7353C14.4581 16.6125 14.9652 16.9999 15.5 17C16.0704 17 16.6095 16.5593 17.04 15.5537ZM15.4824 2.99707C15.247 2.99022 14.9608 3.04682 14.6465 3.15624C14.0173 3.37541 13.389 3.76516 13.0498 4.01953C12.9277 4.11112 12.7697 4.14131 12.6221 4.10253C12.4745 4.06357 12.3522 3.9591 12.291 3.81933V3.81835C12.2892 3.81468 12.2861 3.80833 12.2822 3.80078C12.272 3.78092 12.2541 3.7485 12.2295 3.70898C12.1794 3.62874 12.1011 3.52019 11.9941 3.41308C11.7831 3.2021 11.4662 3.00024 11.001 2.99999C10.4904 2.99999 9.84173 3.22729 9.16894 3.68066C8.58685 4.07297 8.01568 4.61599 7.5371 5.26269L7.33789 5.54589C6.51634 6.77827 5.99475 8.63369 5.68066 10.2314C5.63363 10.4707 5.5913 10.7025 5.55371 10.9238C7.03031 9.01824 8.94157 7.19047 11.2812 6.05077C11.5295 5.92989 11.8283 6.03301 11.9492 6.28124C12.0701 6.52949 11.967 6.82829 11.7187 6.94921C9.33153 8.11208 7.38648 10.0746 5.91406 12.1103C6.12313 12.0632 6.33385 12.0238 6.54296 11.9902C7.21709 11.8821 7.92723 11.8243 8.54296 11.7558C9.17886 11.6852 9.72123 11.6025 10.1465 11.4531C10.5662 11.3056 10.8063 11.1158 10.9277 10.873L10.9795 10.7549C11.0776 10.487 11.0316 10.2723 10.9609 10.1123C10.918 10.0155 10.8636 9.93595 10.8203 9.88183C10.7996 9.85598 10.7822 9.83638 10.7715 9.82518L10.7607 9.81542L10.7627 9.8164L10.7646 9.81835C10.6114 9.67972 10.5597 9.46044 10.6338 9.26757C10.7082 9.07475 10.8939 8.94726 11.1006 8.94726C11.5282 8.94719 12.26 8.8956 12.9834 8.73925C13.7297 8.5779 14.3654 8.32602 14.6973 7.99413C15.0087 7.68254 15.0327 7.40213 14.9795 7.16698C14.9332 6.96327 14.8204 6.77099 14.707 6.62792L14.5957 6.50195C14.4933 6.39957 14.4401 6.25769 14.4502 6.11327C14.4605 5.96888 14.5327 5.83599 14.6484 5.74902C14.9558 5.51849 15.4742 4.96086 15.8037 4.3662C15.9675 4.07048 16.0637 3.80137 16.085 3.58593C16.1047 3.38427 16.0578 3.26213 15.9697 3.17382C15.8631 3.06726 15.7102 3.00377 15.4824 2.99707Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Author(s)</div>
+                  <div class="hero-detail-value u-text-style-body-3">Thariq Shihipar</div>
+                </div>
+              </li>
+            </ul>
+          </aside>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/the-new-rules-of-context-engineering-for-claude-5-generation-models" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>我此前写过如何最好地<a href="https://claude.com/blog/a-field-guide-to-claude-fable-finding-your-unknowns">为最新一代 Claude 5 模型编写提示词</a>，以及如何与它们迭代协作，去发现你真正想构建的东西。</p><p>但当你向 Claude 发送一条消息时，提示词只是它所获得上下文的一小部分。你的上下文大部分来自系统提示词、Skills、CLAUDE.md 文件、记忆以及其他来源。我们将其称为<a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">上下文工程</a>（context engineering），无论你是在使用 Claude Code 还是构建自己的智能体，它都会对生成结果产生巨大影响。</p><p>与提示词不同，上下文会在大量请求中被通用使用，因此无法做到那么具体。如何为 Claude 构建这些通用提示和指引，尤其是在你不知道用户的提示词可能是什么的时候？</p><p>随着 Claude 自身能力的演进，这件事出人意料地变得困难。最近，我们注意到在为最新一代 Claude 模型编写提示词的方式上出现了巨大转变。对于 Claude Opus 5 和 Claude Fable 5 等模型，我们删除了 Claude Code 系统提示词中超过 80% 的内容，而在编码评估中没有任何可衡量的性能损失。</p><p>以下是我们对这类新模型提示方式的经验总结，以及你如何利用这些经验来更新你的上下文工程。我们已将这些最佳实践内置到 `claude doctor;` 中；在 Claude Code 中使用 /doctor 命令，即可为你的 skills 和 CLAUDE.md 文件做合理的瘦身。</p><h2>解除对 Claude 的束缚</h2><p>总体而言，我们发现过去对 Claude Code 限制过度了——无论是通过系统提示词，还是通过 CLAUDE.md 文件和 skills。&nbsp;</p><p>例如，当我们阅读自己内部使用 Claude Code 的会话记录时，会看到单个请求中出现多条相互冲突的指令，比如"酌情保留文档"或"绝对不要（DO NOT）添加注释"——系统提示词、skills 和用户请求彼此打架。&nbsp;</p><figure style="max-width:2048pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a63620bedb2b7813b1071e2_afa90c36.png" loading="lazy"></div></figure><p>通常，Claude 能够理解用户意图并得出正确答案，但 Claude 必须更仔细地权衡这些重叠且冲突的指令，才能决定怎么做。</p><p>这些约束在过去是避免最坏情况所必需的，但后来我们发现，可以删掉其中很多条，让模型转而依靠周围上下文和自身判断。</p><p>此外，Claude Code 现在拥有多得多的工具。过去 Claude 依赖 CLAUDE.md 作为记忆、信息和指引的来源。现在我们有了记忆、artifacts 和 skills，Claude 可以用它们创造出跨会话加载和共享上下文的新方式。</p><h2>过去与现在</h2><p>不少以往的上下文工程最佳实践已经变成了迷思。其中包括：</p><figure style="max-width:2048pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a63620bedb2b7813b107213_3979f6a1.png" loading="lazy"></div></figure><h3>过去：给 Claude 定规则</h3><h3>现在：让 Claude 自己判断</h3><p>我们刚推出 Claude Code 时，必须确保 Claude 避开最坏情况，比如删除文件。这意味着我们会给出特别强硬的指引，而这些指引并不总是成立。例如，系统提示词里我们曾经这样写：&nbsp;</p><p><em>写代码时，默认不要加注释。绝不要写多段 docstring 或多行注释块，最多一行短注释。除非用户要求，否则不要创建规划、决策或分析文档，从对话上下文出发工作，而不是中间文件。</em></p><p>但对一部分提示词来说，这条指引是错的。就文档而言，用户可能有自己的偏好，或者非常复杂的代码的某些部分确实需要多行注释块。</p><p>不过，对较老的模型来说，没有这些护栏，Claude 写出的注释在很多情况下会是错的，我们只能接受这种权衡。但这代新模型判断力更好，不必靠显式规则也能处理好这些决策。&nbsp;</p><p>新的系统提示词里我们这样写：<em>写出读起来像周围代码的代码：对齐它的注释密度、命名和惯用法。</em></p><h3>过去：给 Claude 示例</h3><h3>现在：设计接口</h3><p>工具使用的第一条规则曾经是给 Claude 示范怎么用。对最新的模型，我们发现给示例反而会把它们限制在特定的探索空间里。&nbsp;</p><figure style="max-width:2048pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a63620bedb2b7813b107216_c4fdec0d.png" loading="lazy"></div></figure><p>与其给示例，不如多想想工具、脚本和文件本身的设计，Claude 有哪些参数，怎样才能更有表达力？&nbsp;</p><p>例如，在 Todo 工具里，只把 status 列为 pending、in_progress 和 completed 这三个枚举值，就已经在提示 Claude 该怎么用。要求同一时间只保持一项 in_progress 的指令，则界定了我们期望的行为。</p><h3>过去：全部放在前面</h3><h3>现在：使用渐进式披露</h3><p>因为 Claude Code 最初聚焦于编码，系统提示词里包含了如何做代码审查和验证的详细信息。这些信息不总是需要，但一旦需要，就是关键信息。</p><p>此后，Claude Code 已经非常擅长使用渐进式披露，在正确的时机加载正确的上下文。例如，我们把验证和代码审查拆成独立的 skills，由 Claude Code 按需调用。</p><p>但渐进式披露不只适用于 skills，我们也用在工具上。我们的一部分工具是"延迟加载"的，意思是 agent 必须先用 ToolSearch 搜索完整定义才能使用它们。这样我们就能拥有更多工具（比如 Task 工具），在需要之前不会占用上下文。</p><p>同样的做法也可以用在你自己的 CLAUDE.md 和 Skill.md 文件上。一个常见的迷思是，你要把这些文件做成所有<em>可能</em>会遇到的已知实践的中央仓库，否则 Claude 就找不到。其实应当<a href="https://claude.com/blog/a-harness-for-every-task-dynamic-workflows-in-claude-code">考虑做成一棵可以在正确时机加载的文件树</a>。</p><h3>过去：反复重复</h3><h3>现在：简洁的工具描述</h3><p>较早的 Claude 模型有时需要重复的指令，也更可能听从上下文窗口末尾而非开头的指令。这意味着系统提示词里有时会在主系统提示中引用工具，同时工具描述里也有一份指令。&nbsp;</p><p>我们发现可以删掉这些重复示例，把如何使用工具的指令放进工具描述，而不是系统提示词。</p><h3>过去：把记忆写进 CLAUDE.md</h3><h3>现在：自动记忆</h3><p>我们曾经鼓励用户用 # 快捷键自动写入 <a href="http://claude.md">CLAUDE.md</a>，把内容存进 Claude 的记忆。现在，Claude 会自动保存与当前工作和你本人相关的记忆。&nbsp;</p><h3>过去：简单的规格说明</h3><h3>现在：丰富的引用</h3><p>在 plan mode 中，Claude Code 大量依赖带有计划的 markdown 文件。把这些文件存成计划，方便 Claude 在需要时查阅。另一条类似的最佳实践是把规格说明存在代码库里，供 Claude 在较长项目中参考。</p><p>但我们发现 Claude 已经能处理越来越复杂的引用。不再只是简单的 markdown 文件，Claude 还可以引用我们新的 artifacts 功能生成的 HTML artifacts。&nbsp;</p><p>你也可以用代码的形式给 Claude 引用。一份规格说明也可以是一套详细的测试套件，或是另一个代码库里 Claude 可能要移植的函数。&nbsp;</p><p>评分标准（rubrics）是另一种引用。评分标准让 Claude 可以通过<a href="https://claude.com/blog/a-harness-for-every-task-dynamic-workflows-in-claude-code">动态工作流</a>，并拉起带有这些评分标准的验证 agent，去尝试核验你在某个领域的品味（例如，好的 API 设计是什么样的）。</p><h2>把这些用到你的上下文里</h2><p>把以上内容合在一起，组装你自己的上下文时会是什么样子？</p><figure style="max-width:2048pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a63620bedb2b7813b10721a_836a850d.png" loading="lazy"></div></figure><h3>System Prompt</h3><p>系统提示词与产品上下文紧密绑定。它告诉 Claude 自己运行在什么产品里、正在做什么。对 Claude Code 来说，你很可能永远不会改它；但如果你在构建自己的 agent harness，这里才是你应该投入大量时间的地方。</p><h3>CLAUDE.md</h3><p>让 CLAUDE.md 保持轻量，简要说明仓库是做什么的，把大部分 token 花在代码库内部的坑上。例如，你可能把类型都集中在一个单体文件里，其他地方都没有。避免陈述那些 Claude 看一眼文件系统或仓库就该知道的"显而易见"的事。</p><p>大量使用渐进式披露。例如，如果你有若干条关于如何验证工作的独特指令，就创建一个 verification skill，然后从 CLAUDE.md 引用它。</p><h3>Skills</h3><p>把 skills 想成轻量指引，让 Claude 在需要时找到信息。除非是极其重要的领域，否则避免把它们限制得过死。&nbsp;</p><p>对于较长的 skills，尽量使用渐进式披露，拆成许多文件并分开存放。</p><p>最好的 skills 编码的是属于你、你的团队或产品的特定观点、知识或最佳实践。&nbsp;</p><h3>References&nbsp;</h3><p>你可以用 @ 提及文件，把它们作为引用纳入。引用让 Claude 能够查阅当前计划的深入信息。&nbsp;</p><p>这可能是规格文件、原型，甚至整个代码库。一般来说，你应该优先选择代码中的文件，因为它用 Claude 非常熟悉的语言提供了清晰、高保真的指令。例如，一个设计的 HTML 原型通常会比设计描述或截图产生更好的结果。</p><h2>试着简化</h2><p>在你的系统提示词、skills 和 CLAUDE.md 文件中，你可能也需要像我们一样做简化。我们推出了一个名为 `claude doctor` 的新命令，它也会帮你自动完成这件事。关于专门为更先进的模型编写提示词的更多细节，请参阅我们的 <a href="https://claude.com/blog/a-field-guide-to-claude-fable-finding-your-unknowns">Fable field guide</a>。</p><p><em>本文作者为 Anthropic 技术员工 Thariq Shihipar。</em></p></div>
+
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/the-new-rules-of-context-engineering-for-claude-5-generation-models" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

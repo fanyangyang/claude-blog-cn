@@ -4,54 +4,293 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>用 Claude 更快修复软件 Bug — Claude Blog 中文翻译</title>
-  <meta name="description" content="用 Claude 更快修复软件 Bug">
+  <meta name="description" content="Turn debugging from detective work into systematic problem-solving. Analyze errors, trace root causes, and implement fixes faster.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="https://claude.com/blog/fix-software-bugs-faster-with-claude" class="nav-link" target="_blank">原文 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>用 Claude 更快修复软件 Bug</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/fix-software-bugs-faster-with-claude" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/fix-software-bugs-faster-with-claude/en.html">阅读英文原文 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># 用 Claude 更快修复软件 Bug
+
+Turn debugging from detective work into systematic problem-solving. Analyze errors, trace root causes, and implement fixes faster.
+
+调试代码既耗时又枯燥。而最难的部分通常不是修复 Bug 本身，而是弄清你的代码当初为什么会坏。
+
+测试套件挂了，但错误信息指向的是表象，不是根源。用户报告了一个异常行为，一路追溯到三个迭代之前的代码。真正的问题可能藏在某个你早已忘记其存在的依赖里。每个 Bug 都把你从心流状态拽进侦探模式——在你本想专心写代码的时候，却要翻遍日志和堆栈信息。
+
+大多数团队的调试方式都一样：翻日志、在本地复现、加更多日志，然后手动梳理最近的变更。这些方法有效，但很慢。每一步都要求你对系统有深入的了解，各种关联排查能把一个 20 分钟的修复拖成 3 个小时的调查。
+
+下面介绍如何把调试从侦探工作变成系统化的问题解决。
+
+## 大多数调试的真实过程
+
+### 解析日志，追踪错误
+
+调试通常从查看应用日志或堆栈信息开始。借助 Splunk 或 ELK 之类的工具，你跨服务关联错误信息、追踪请求流向，拼凑出故障时间段内发生了什么。 
+
+当错误信息能清楚指向问题代码、日志也带有足够的业务上下文时，这种方式是有效的。但生产系统产生的日志量巨大，需要领域专家才能解读。堆栈信息只能告诉你代码在*哪里*失败了，却说不清校验规则*为什么*被触发、外部服务返回了什么。
+
+### 在本地复现问题
+
+接下来，你会构造可控的测试场景，在本地重现生产问题，以便使用断点和单步调试。这意味着要搭建复现环境，准备特定数据并模拟用户操作。
+
+本地复现让你能观察代码执行，但许多生产问题只在特定条件下发生：系统负载、第三方行为与真实用户数据的特定组合，往往是预发环境无法复制的。性能问题和竞态条件在人工测试条件下的表现可能截然不同。
+
+### 埋点、部署、等待
+
+当日志不够用时，就在疑似有问题的区域周围添加日志语句，部署可观测性改进，在故障发生时捕获更细粒度的系统行为。
+
+你会获得有价值的洞察，但这需要生产部署，带来风险也拉长了周期。在高流量环境中，调试日志本身就会影响性能。这种“加埋点、部署、等待复现”的循环，常常把调试从几个小时拖长到好几天。
+
+### 审查最近的代码变更
+
+你会审查与问题出现时间吻合的最近提交、依赖更新和配置变更，包括翻查 Git 历史、PR 讨论和部署日志，以找出有问题的修改。
+
+细致的分析确实能定位根因，但现代部署意味着每天有几十个变更跨多个服务进入生产。复杂问题往往跨越多个仓库，需要理解看似不相关的修改之间的相互作用。
+
+## 与 Claude 协作分析 Bug
+
+各种水平的开发者都可以把 Claude 这样的 AI 编码助手融入调试工作流，即时获得错误分析。你可以通过两种方式与 Claude 协作调试：
+
+- [**Claude.ai**](https://claude.ai)：免费 Web 界面。粘贴堆栈信息、描述 Bug，即可获得包含具体假设和排查路径的快速分析。任何浏览器、桌面或移动设备可用。
+- [**Claude Code**](https://claude.com/product/claude-code)：用于[智能体式编码](https://claude.com/blog/introduction-to-agentic-coding)的命令行工具。与等待你下一条指令的传统助手不同，Claude Code 能自主执行多步骤调试工作流——读取错误堆栈、跨文件分析代码、运行诊断测试并实施修复——而你可以专注于其他任务。 
+
+## 从 Claude.ai 开始
+
+在深入代码库之前，先用 [Claude.ai](https://claude.ai) 快速分析错误模式、生成排查假设。Web 界面让你可以粘贴堆栈信息、描述症状，并立即获得反馈。这轮初步分析能帮你在投入耗时的调试方法之前，先弄清楚该找什么。开发者常问 Claude 的调试问题包括：
+
+- “这是 CI 里的一个测试失败，可能是什么原因？”
+- “为什么这个 Redux selector 有时会返回 undefined？”
+- “对比一下我们的 debounce 和 throttle 工具函数——哪个更安全？”
+
+这些问题能帮你快速验证猜想、发现排查中的盲点，并确定优先尝试哪种调试方法。 
+
+### **尽早识别失败模式**
+
+在深入代码之前，Claude 能帮你系统地梳理潜在问题。请 Claude 找出会触发特定错误的场景：超时、限流、字段缺失。
+
+**示例**：“什么原因可能导致这个 API 调用中的分页悄悄丢结果？”
+
+Claude 会列出常见肇因，比如游标处理不当、连接数上限、竞态条件。你会得到一份明确的排查清单，而不是盲目搜寻。
+
+### 把日志转化为行动项
+
+把晦涩的错误日志粘贴给 Claude，要求“按可能性排序的可能根因”。
+
+Claude 会从错误数据中识别模式，指出具体是哪个服务、哪次配置变更或哪条代码路径导致的问题。你的团队得到的不再是“排查 API 故障”，而是“检查认证服务的限流逻辑”。
+
+## 用 Claude Code 应对复杂调查
+
+当 Bug 涉及整个代码库时，[Claude Code](https://claude.com/product/claude-code) 就是一位自主工作的调试搭档。与等待指令的传统编码助手不同，Claude Code 可以独立探索你的项目、跨文件追踪调试线索，并执行一位资深开发者会采取的完整调查流程——而你可以专注于其他任务。
+
+安装：
+
+`npm install -g @anthropic-ai/claude-code`在你的项目中启动：
+
+`claude`然后立刻开始排查：
+
+Claude Code 会分析你的整个代码库、检查依赖，并给出结账流程失败的具体原因。典型调试时间可以从几个小时缩短到几分钟。
+
+### 推演架构层面的问题
+
+有些 Bug 需要的是结构化推理，而不是直接动手调试。
+
+可以试试：
+
+- “推演一下两个用户同时触发结账时的并发问题”
+- “如果把令牌有效期从 24 小时缩短到 15 分钟，会破坏什么？”
+- “帮我推演一下如何安全地重构我们的 session 处理器”
+
+Claude 会系统地拆解问题、识别竞态条件，并给出缓解策略。
+
+### 放心地应用修复
+
+一旦 Claude Code 定位了问题，它会提出符合你编码风格和项目约定的针对性修复。每条建议都遵循你现有的模式和架构决策。
+
+`&gt; Explain the changes you just made`每次修改都在本地完成、需要授权、可以回滚。默认情况下，Claude Code 在修改文件之前会先征得你的许可，确保你对代码库拥有完全的掌控。
+
+### 用测试验证修复
+
+Claude Code 会生成并运行测试，验证 Bug 已被修复且周边行为保持稳定：
+
+- 写一个能复现这个 Bug 的测试
+- 为这个修复生成集成测试
+- 运行测试套件，告诉我有什么变化
+
+### 借助自动化工作流交付
+
+测试通过后，Claude Code 会接手发布流程：
+
+`&gt; Commit these changes and open a PR`它会生成描述清晰的提交信息，撰写清晰的 PR 说明，并把变更与测试关联起来。
+
+## 选择适合你的调试方式
+
+**Claude.ai**：适合快速分析错误、生成假设和理解堆栈信息。免费的 Web 界面，任何浏览器、桌面或移动设备都能访问，无需任何配置。
+
+**Claude Code**：为大型代码库中的自主调试而生。能处理跨多文件的调查并实施修复。需要通过 npm 安装，并配合 Claude API 或 Claude 订阅使用。
+
+## 实际成效：Ramp 更快的事故响应
+
+Ramp 使用 Claude Code 加速数百个服务的交付。
+
+成效：
+
+- **30 天内超过 100 万行 AI 建议代码**
+- **事故分诊时间减少 80%**
+- **工程团队周活跃使用率达到 50%**
+
+“当我们发现 Claude Code 时，团队立刻意识到了它的潜力，并把它融入了我们的工作流，”高级软件工程师 Austin Ray 说。
+
+## 开始使用
+
+**即时调试**：访问 Claude.ai，粘贴你的错误信息，即可获得 Claude Sonnet 4.5（我们迄今最智能的模型）的即时分析。只需描述你的 Bug，几秒钟内就能得到可操作的洞察。
+
+**深入代码库调查**：当你需要在整个代码库中进行自主调试时，用一条命令安装 Claude Code：
+
+`npm install -g @anthropic-ai/claude-code`安装完成后，描述你遇到的问题，与 Claude 携手分析整个代码库、跨多个文件追踪问题，并实施针对性的修复。调查交给 Claude Code，你只管专心构建。</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Claude Code</span>
-            <span class="article-date">October 28, 2025</span>
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
             
+            <h1 class="article-title u-text-style-h1">用 Claude 更快修复软件 Bug</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>Turn debugging from detective work into systematic problem-solving. Analyze errors, trace root causes, and implement fixes faster.</p></div>
           </div>
-          <h1 class="article-title">用 Claude 更快修复软件 Bug</h1>
-          <a href="/posts/fix-software-bugs-faster-with-claude/en.html" class="lang-toggle">阅读英文原文 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>调试代码既耗时又枯燥。而最难的部分通常不是修复 Bug 本身，而是弄清你的代码当初为什么会坏。</p><p>测试套件挂了，但错误信息指向的是表象，不是根源。用户报告了一个异常行为，一路追溯到三个迭代之前的代码。真正的问题可能藏在某个你早已忘记其存在的依赖里。每个 Bug 都把你从心流状态拽进侦探模式——在你本想专心写代码的时候，却要翻遍日志和堆栈信息。</p><p>大多数团队的调试方式都一样：翻日志、在本地复现、加更多日志，然后手动梳理最近的变更。这些方法有效，但很慢。每一步都要求你对系统有深入的了解，各种关联排查能把一个 20 分钟的修复拖成 3 个小时的调查。</p><p>下面介绍如何把调试从侦探工作变成系统化的问题解决。</p><h2>大多数调试的真实过程</h2><h3>解析日志，追踪错误</h3><p>调试通常从查看应用日志或堆栈信息开始。借助 Splunk 或 ELK 之类的工具，你跨服务关联错误信息、追踪请求流向，拼凑出故障时间段内发生了什么。&nbsp;</p><p>当错误信息能清楚指向问题代码、日志也带有足够的业务上下文时，这种方式是有效的。但生产系统产生的日志量巨大，需要领域专家才能解读。堆栈信息只能告诉你代码在<em>哪里</em>失败了，却说不清校验规则<em>为什么</em>被触发、外部服务返回了什么。</p><h3>在本地复现问题</h3><p>接下来，你会构造可控的测试场景，在本地重现生产问题，以便使用断点和单步调试。这意味着要搭建复现环境，准备特定数据并模拟用户操作。</p><p>本地复现让你能观察代码执行，但许多生产问题只在特定条件下发生：系统负载、第三方行为与真实用户数据的特定组合，往往是预发环境无法复制的。性能问题和竞态条件在人工测试条件下的表现可能截然不同。</p><h3>埋点、部署、等待</h3><p>当日志不够用时，就在疑似有问题的区域周围添加日志语句，部署可观测性改进，在故障发生时捕获更细粒度的系统行为。</p><p>你会获得有价值的洞察，但这需要生产部署，带来风险也拉长了周期。在高流量环境中，调试日志本身就会影响性能。这种“加埋点、部署、等待复现”的循环，常常把调试从几个小时拖长到好几天。</p><h3>审查最近的代码变更</h3><p>你会审查与问题出现时间吻合的最近提交、依赖更新和配置变更，包括翻查 Git 历史、PR 讨论和部署日志，以找出有问题的修改。</p><p>细致的分析确实能定位根因，但现代部署意味着每天有几十个变更跨多个服务进入生产。复杂问题往往跨越多个仓库，需要理解看似不相关的修改之间的相互作用。</p><h2>与 Claude 协作分析 Bug</h2><p>各种水平的开发者都可以把 Claude 这样的 AI 编码助手融入调试工作流，即时获得错误分析。你可以通过两种方式与 Claude 协作调试：</p><ul role="list"><li><a href="https://claude.ai"><strong>Claude.ai</strong></a>：免费 Web 界面。粘贴堆栈信息、描述 Bug，即可获得包含具体假设和排查路径的快速分析。任何浏览器、桌面或移动设备可用。</li><li><a href="https://claude.com/product/claude-code"><strong>Claude Code</strong></a>：用于<a href="https://claude.com/blog/introduction-to-agentic-coding">智能体式编码</a>的命令行工具。与等待你下一条指令的传统助手不同，Claude Code 能自主执行多步骤调试工作流——读取错误堆栈、跨文件分析代码、运行诊断测试并实施修复——而你可以专注于其他任务。&nbsp;</li></ul><h2>从 Claude.ai 开始</h2><p>在深入代码库之前，先用 <a href="https://claude.ai">Claude.ai</a> 快速分析错误模式、生成排查假设。Web 界面让你可以粘贴堆栈信息、描述症状，并立即获得反馈。这轮初步分析能帮你在投入耗时的调试方法之前，先弄清楚该找什么。开发者常问 Claude 的调试问题包括：</p><ul role="list"><li>“这是 CI 里的一个测试失败，可能是什么原因？”</li><li>“为什么这个 Redux selector 有时会返回 undefined？”</li><li>“对比一下我们的 debounce 和 throttle 工具函数——哪个更安全？”</li></ul><p>这些问题能帮你快速验证猜想、发现排查中的盲点，并确定优先尝试哪种调试方法。&nbsp;</p><h3><strong>尽早识别失败模式</strong></h3><p>在深入代码之前，Claude 能帮你系统地梳理潜在问题。请 Claude 找出会触发特定错误的场景：超时、限流、字段缺失。</p><p><strong>示例</strong>：“什么原因可能导致这个 API 调用中的分页悄悄丢结果？”</p><p>Claude 会列出常见肇因，比如游标处理不当、连接数上限、竞态条件。你会得到一份明确的排查清单，而不是盲目搜寻。</p><h3>把日志转化为行动项</h3><p>把晦涩的错误日志粘贴给 Claude，要求“按可能性排序的可能根因”。</p><p>Claude 会从错误数据中识别模式，指出具体是哪个服务、哪次配置变更或哪条代码路径导致的问题。你的团队得到的不再是“排查 API 故障”，而是“检查认证服务的限流逻辑”。</p><h2>用 Claude Code 应对复杂调查</h2><p>当 Bug 涉及整个代码库时，<a href="https://claude.com/product/claude-code">Claude Code</a> 就是一位自主工作的调试搭档。与等待指令的传统编码助手不同，Claude Code 可以独立探索你的项目、跨文件追踪调试线索，并执行一位资深开发者会采取的完整调查流程——而你可以专注于其他任务。</p><p>安装：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>npm install -g @anthropic-ai/claude-code</span></span></code></pre><p>在你的项目中启动：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>claude</span></span></code></pre><p>然后立刻开始排查：</p><figure style="max-width:3840pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e94380eaa92d7ae4db5b9a_TUI.png"></div></figure><p>Claude Code 会分析你的整个代码库、检查依赖，并给出结账流程失败的具体原因。典型调试时间可以从几个小时缩短到几分钟。</p><h3>推演架构层面的问题</h3><p>有些 Bug 需要的是结构化推理，而不是直接动手调试。</p><p>可以试试：</p><ul role="list"><li>“推演一下两个用户同时触发结账时的并发问题”</li><li>“如果把令牌有效期从 24 小时缩短到 15 分钟，会破坏什么？”</li><li>“帮我推演一下如何安全地重构我们的 session 处理器”</li></ul><p>Claude 会系统地拆解问题、识别竞态条件，并给出缓解策略。</p><h3>放心地应用修复</h3><p>一旦 Claude Code 定位了问题，它会提出符合你编码风格和项目约定的针对性修复。每条建议都遵循你现有的模式和架构决策。</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>&gt; Explain the changes you just made</span></span></code></pre><p>每次修改都在本地完成、需要授权、可以回滚。默认情况下，Claude Code 在修改文件之前会先征得你的许可，确保你对代码库拥有完全的掌控。</p><h3>用测试验证修复</h3><p>Claude Code 会生成并运行测试，验证 Bug 已被修复且周边行为保持稳定：</p><ul role="list"><li>写一个能复现这个 Bug 的测试</li><li>为这个修复生成集成测试</li><li>运行测试套件，告诉我有什么变化</li></ul><h3>借助自动化工作流交付</h3><p>测试通过后，Claude Code 会接手发布流程：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>&gt; Commit these changes and open a PR</span></span></code></pre><p>它会生成描述清晰的提交信息，撰写清晰的 PR 说明，并把变更与测试关联起来。</p><h2>选择适合你的调试方式</h2><p><strong>Claude.ai</strong>：适合快速分析错误、生成假设和理解堆栈信息。免费的 Web 界面，任何浏览器、桌面或移动设备都能访问，无需任何配置。</p><p><strong>Claude Code</strong>：为大型代码库中的自主调试而生。能处理跨多文件的调查并实施修复。需要通过 npm 安装，并配合 Claude API 或 Claude 订阅使用。</p><h2>实际成效：Ramp 更快的事故响应</h2><p>Ramp 使用 Claude Code 加速数百个服务的交付。</p><p>成效：</p><ul role="list"><li><strong>30 天内超过 100 万行 AI 建议代码</strong></li><li><strong>事故分诊时间减少 80%</strong></li><li><strong>工程团队周活跃使用率达到 50%</strong></li></ul><p>“当我们发现 Claude Code 时，团队立刻意识到了它的潜力，并把它融入了我们的工作流，”高级软件工程师 Austin Ray 说。</p><h2>开始使用</h2><p><strong>即时调试</strong>：访问 Claude.ai，粘贴你的错误信息，即可获得 Claude Sonnet 4.5（我们迄今最智能的模型）的即时分析。只需描述你的 Bug，几秒钟内就能得到可操作的洞察。</p><p><strong>深入代码库调查</strong>：当你需要在整个代码库中进行自主调试时，用一条命令安装 Claude Code：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>npm install -g @anthropic-ai/claude-code</span></span></code></pre><p>安装完成后，描述你遇到的问题，与 Claude 携手分析整个代码库、跨多个文件追踪问题，并实施针对性的修复。调查交给 Claude Code，你只管专心构建。</p></div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/product/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">October 28, 2025</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/fix-software-bugs-faster-with-claude/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/fix-software-bugs-faster-with-claude" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
-          <p><a href="/">← 返回首页</a></p>
-        </footer>
-      </article>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>调试代码既耗时又枯燥。而最难的部分通常不是修复 Bug 本身，而是弄清你的代码当初为什么会坏。</p><p>测试套件挂了，但错误信息指向的是表象，不是根源。用户报告了一个异常行为，一路追溯到三个迭代之前的代码。真正的问题可能藏在某个你早已忘记其存在的依赖里。每个 Bug 都把你从心流状态拽进侦探模式——在你本想专心写代码的时候，却要翻遍日志和堆栈信息。</p><p>大多数团队的调试方式都一样：翻日志、在本地复现、加更多日志，然后手动梳理最近的变更。这些方法有效，但很慢。每一步都要求你对系统有深入的了解，各种关联排查能把一个 20 分钟的修复拖成 3 个小时的调查。</p><p>下面介绍如何把调试从侦探工作变成系统化的问题解决。</p><h2>大多数调试的真实过程</h2><h3>解析日志，追踪错误</h3><p>调试通常从查看应用日志或堆栈信息开始。借助 Splunk 或 ELK 之类的工具，你跨服务关联错误信息、追踪请求流向，拼凑出故障时间段内发生了什么。&nbsp;</p><p>当错误信息能清楚指向问题代码、日志也带有足够的业务上下文时，这种方式是有效的。但生产系统产生的日志量巨大，需要领域专家才能解读。堆栈信息只能告诉你代码在<em>哪里</em>失败了，却说不清校验规则<em>为什么</em>被触发、外部服务返回了什么。</p><h3>在本地复现问题</h3><p>接下来，你会构造可控的测试场景，在本地重现生产问题，以便使用断点和单步调试。这意味着要搭建复现环境，准备特定数据并模拟用户操作。</p><p>本地复现让你能观察代码执行，但许多生产问题只在特定条件下发生：系统负载、第三方行为与真实用户数据的特定组合，往往是预发环境无法复制的。性能问题和竞态条件在人工测试条件下的表现可能截然不同。</p><h3>埋点、部署、等待</h3><p>当日志不够用时，就在疑似有问题的区域周围添加日志语句，部署可观测性改进，在故障发生时捕获更细粒度的系统行为。</p><p>你会获得有价值的洞察，但这需要生产部署，带来风险也拉长了周期。在高流量环境中，调试日志本身就会影响性能。这种“加埋点、部署、等待复现”的循环，常常把调试从几个小时拖长到好几天。</p><h3>审查最近的代码变更</h3><p>你会审查与问题出现时间吻合的最近提交、依赖更新和配置变更，包括翻查 Git 历史、PR 讨论和部署日志，以找出有问题的修改。</p><p>细致的分析确实能定位根因，但现代部署意味着每天有几十个变更跨多个服务进入生产。复杂问题往往跨越多个仓库，需要理解看似不相关的修改之间的相互作用。</p><h2>与 Claude 协作分析 Bug</h2><p>各种水平的开发者都可以把 Claude 这样的 AI 编码助手融入调试工作流，即时获得错误分析。你可以通过两种方式与 Claude 协作调试：</p><ul role="list"><li><a href="https://claude.ai"><strong>Claude.ai</strong></a>：免费 Web 界面。粘贴堆栈信息、描述 Bug，即可获得包含具体假设和排查路径的快速分析。任何浏览器、桌面或移动设备可用。</li><li><a href="https://claude.com/product/claude-code"><strong>Claude Code</strong></a>：用于<a href="https://claude.com/blog/introduction-to-agentic-coding">智能体式编码</a>的命令行工具。与等待你下一条指令的传统助手不同，Claude Code 能自主执行多步骤调试工作流——读取错误堆栈、跨文件分析代码、运行诊断测试并实施修复——而你可以专注于其他任务。&nbsp;</li></ul><h2>从 Claude.ai 开始</h2><p>在深入代码库之前，先用 <a href="https://claude.ai">Claude.ai</a> 快速分析错误模式、生成排查假设。Web 界面让你可以粘贴堆栈信息、描述症状，并立即获得反馈。这轮初步分析能帮你在投入耗时的调试方法之前，先弄清楚该找什么。开发者常问 Claude 的调试问题包括：</p><ul role="list"><li>“这是 CI 里的一个测试失败，可能是什么原因？”</li><li>“为什么这个 Redux selector 有时会返回 undefined？”</li><li>“对比一下我们的 debounce 和 throttle 工具函数——哪个更安全？”</li></ul><p>这些问题能帮你快速验证猜想、发现排查中的盲点，并确定优先尝试哪种调试方法。&nbsp;</p><h3><strong>尽早识别失败模式</strong></h3><p>在深入代码之前，Claude 能帮你系统地梳理潜在问题。请 Claude 找出会触发特定错误的场景：超时、限流、字段缺失。</p><p><strong>示例</strong>：“什么原因可能导致这个 API 调用中的分页悄悄丢结果？”</p><p>Claude 会列出常见肇因，比如游标处理不当、连接数上限、竞态条件。你会得到一份明确的排查清单，而不是盲目搜寻。</p><h3>把日志转化为行动项</h3><p>把晦涩的错误日志粘贴给 Claude，要求“按可能性排序的可能根因”。</p><p>Claude 会从错误数据中识别模式，指出具体是哪个服务、哪次配置变更或哪条代码路径导致的问题。你的团队得到的不再是“排查 API 故障”，而是“检查认证服务的限流逻辑”。</p><h2>用 Claude Code 应对复杂调查</h2><p>当 Bug 涉及整个代码库时，<a href="https://claude.com/product/claude-code">Claude Code</a> 就是一位自主工作的调试搭档。与等待指令的传统编码助手不同，Claude Code 可以独立探索你的项目、跨文件追踪调试线索，并执行一位资深开发者会采取的完整调查流程——而你可以专注于其他任务。</p><p>安装：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>npm install -g @anthropic-ai/claude-code</span></span></code></pre><p>在你的项目中启动：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>claude</span></span></code></pre><p>然后立刻开始排查：</p><figure style="max-width:3840pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img loading="lazy" alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/68e94380eaa92d7ae4db5b9a_TUI.png"></div></figure><p>Claude Code 会分析你的整个代码库、检查依赖，并给出结账流程失败的具体原因。典型调试时间可以从几个小时缩短到几分钟。</p><h3>推演架构层面的问题</h3><p>有些 Bug 需要的是结构化推理，而不是直接动手调试。</p><p>可以试试：</p><ul role="list"><li>“推演一下两个用户同时触发结账时的并发问题”</li><li>“如果把令牌有效期从 24 小时缩短到 15 分钟，会破坏什么？”</li><li>“帮我推演一下如何安全地重构我们的 session 处理器”</li></ul><p>Claude 会系统地拆解问题、识别竞态条件，并给出缓解策略。</p><h3>放心地应用修复</h3><p>一旦 Claude Code 定位了问题，它会提出符合你编码风格和项目约定的针对性修复。每条建议都遵循你现有的模式和架构决策。</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>&gt; Explain the changes you just made</span></span></code></pre><p>每次修改都在本地完成、需要授权、可以回滚。默认情况下，Claude Code 在修改文件之前会先征得你的许可，确保你对代码库拥有完全的掌控。</p><h3>用测试验证修复</h3><p>Claude Code 会生成并运行测试，验证 Bug 已被修复且周边行为保持稳定：</p><ul role="list"><li>写一个能复现这个 Bug 的测试</li><li>为这个修复生成集成测试</li><li>运行测试套件，告诉我有什么变化</li></ul><h3>借助自动化工作流交付</h3><p>测试通过后，Claude Code 会接手发布流程：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>&gt; Commit these changes and open a PR</span></span></code></pre><p>它会生成描述清晰的提交信息，撰写清晰的 PR 说明，并把变更与测试关联起来。</p><h2>选择适合你的调试方式</h2><p><strong>Claude.ai</strong>：适合快速分析错误、生成假设和理解堆栈信息。免费的 Web 界面，任何浏览器、桌面或移动设备都能访问，无需任何配置。</p><p><strong>Claude Code</strong>：为大型代码库中的自主调试而生。能处理跨多文件的调查并实施修复。需要通过 npm 安装，并配合 Claude API 或 Claude 订阅使用。</p><h2>实际成效：Ramp 更快的事故响应</h2><p>Ramp 使用 Claude Code 加速数百个服务的交付。</p><p>成效：</p><ul role="list"><li><strong>30 天内超过 100 万行 AI 建议代码</strong></li><li><strong>事故分诊时间减少 80%</strong></li><li><strong>工程团队周活跃使用率达到 50%</strong></li></ul><p>“当我们发现 Claude Code 时，团队立刻意识到了它的潜力，并把它融入了我们的工作流，”高级软件工程师 Austin Ray 说。</p><h2>开始使用</h2><p><strong>即时调试</strong>：访问 Claude.ai，粘贴你的错误信息，即可获得 Claude Sonnet 4.5（我们迄今最智能的模型）的即时分析。只需描述你的 Bug，几秒钟内就能得到可操作的洞察。</p><p><strong>深入代码库调查</strong>：当你需要在整个代码库中进行自主调试时，用一条命令安装 Claude Code：</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-bash" style="white-space:pre-wrap"><span><span>npm install -g @anthropic-ai/claude-code</span></span></code></pre><p>安装完成后，描述你遇到的问题，与 Claude 携手分析整个代码库、跨多个文件追踪问题，并实施针对性的修复。调查交给 Claude Code，你只管专心构建。</p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/fix-software-bugs-faster-with-claude" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
     </div>
   </main>
 <footer class="footer">
     <div class="container">
       <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
-      <p class="footer-meta">最后更新：2026/9/3 06:04:58</p>
+      <p class="footer-meta">最后更新：2026/9/3 18:05:07</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

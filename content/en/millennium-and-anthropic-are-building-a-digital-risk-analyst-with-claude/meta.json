@@ -13,5 +13,23 @@
   "translatedTitle": "Millennium 与 Anthropic 正在用 Claude 打造数字化风险分析师",
   "translated": true,
   "translatedAt": "2026-09-02T04:30:13.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI",
+      "Agents",
+      "Claude Code"
+    ],
+    "product": [
+      "Claude Enterprise"
+    ],
+    "usecase": [
+      "Financial services"
+    ]
+  },
+  "subtitle": "Anthropic is working with Millennium to co-develop a digital risk analyst to surface new risk insights and form opinions on risk exposure across asset classes.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/solutions/enterprise"
 }

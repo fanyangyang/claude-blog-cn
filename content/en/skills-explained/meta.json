@@ -13,5 +13,20 @@
   "translatedTitle": "深入理解 Skills：它与提示词、Projects、MCP 和 subagents 的对比",
   "translated": true,
   "translatedAt": "2026-09-02T04:17:12.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Agents"
+    ],
+    "product": [
+      "Claude Platform",
+      "Claude apps"
+    ],
+    "usecase": []
+  },
+  "subtitle": "Skills are an increasingly powerful tool for creating custom AI workflows and agents, but where do they fit in the Claude stack? We explain what tool to use when - and how they all work together.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/agents",
+  "productUrl": "https://claude.com/platform/api"
 }

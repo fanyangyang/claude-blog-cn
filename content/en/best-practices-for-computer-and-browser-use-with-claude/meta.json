@@ -13,5 +13,19 @@
   "translatedTitle": "Claude 计算机与浏览器使用的最佳实践",
   "translated": true,
   "translatedAt": "2026-09-02T04:36:39.576Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Agents"
+    ],
+    "product": [
+      "Claude Platform"
+    ],
+    "usecase": []
+  },
+  "subtitle": "Practical guidance for developers building computer and browser use integrations with the Claude model family.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/agents",
+  "productUrl": "https://claude.com/platform/api"
 }

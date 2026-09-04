@@ -13,5 +13,19 @@
   "translatedTitle": "Code with Claude 走进旧金山、伦敦与东京",
   "translated": true,
   "translatedAt": "2026-09-02T04:11:28.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Claude Code"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": []
+  },
+  "subtitle": "Technical sessions, live demos of new capabilities, and office hours with Anthropic engineers—watch live or apply to attend.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/claude-code",
+  "productUrl": "https://claude.com/product/claude-code"
 }

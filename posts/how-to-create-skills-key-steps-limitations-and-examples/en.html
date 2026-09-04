@@ -4,39 +4,600 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>How to create Skills: Key steps, limitations, and examples — Claude Blog CN</title>
-  <meta name="description" content="How to create Skills: Key steps, limitations, and examples">
+  <meta name="description" content="Learn how to write tailored skills that deliver stronger, more effective outputs from Claude.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="/posts/how-to-create-skills-key-steps-limitations-and-examples/" class="nav-link">中文版 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>How to create Skills: Key steps, limitations, and examples</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/how-to-create-skills-key-steps-limitations-and-examples" target="_blank" rel="noopener noreferrer">Ask questions about this page</a>
+        <button type="button" class="explore-item" data-copy-markdown>Copy as markdown</button>
+        <a class="explore-item" href="/posts/how-to-create-skills-key-steps-limitations-and-examples/">阅读中文翻译 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># How to create Skills: Key steps, limitations, and examples
+
+Learn how to write tailored skills that deliver stronger, more effective outputs from Claude.
+
+[Skills](https://www.claude.com/blog/skills) are custom instructions that extend Claude's capabilities for specific tasks or domains. 
+
+When you create a skill via a [SKILL.md](http://skill.md) file, you're teaching Claude how to handle specific scenarios more effectively. The power of skills lies in their ability to encode institutional knowledge, standardize outputs, and handle complex multi-step workflows that would otherwise require repeated explanation or investment in building a custom agent.
+
+Learn how to create skills that transform Claude from general-purpose assistant into specialized expert for your specific workflows either with our [skill creator](https://github.com/anthropics/skills/tree/main/skill-creator) template or manually. (Pro-tip: to make it easy, we recommend building your [SKILL.md](http://skill.md) file with this template and tailoring from there).
+
+## **Creating a skill in 5 steps**
+
+Follow this structured approach to build skills that trigger more reliably.
+
+### **1. Understand the core requirements**
+
+Before writing anything, clarify what problem your skill solves. Strong skills address concrete needs with measurable outcomes. &quot;Extract financial data from PDFs and format as CSV&quot; beats &quot;Help with my finance stuff&quot; because it specifies the input format, the operation, and the expected output.
+
+Start by asking yourself: What specific task does this skill accomplish? What triggers should activate it? What does success look like? What are the edge cases or limitations?
+
+### **2. Write the name**
+
+Your skill needs three core components: **name** (clear identifier), **description** (when to activate), and **instructions** (how to execute). In fact, the name and description are the only parts of the [SKILL.md](http://skill.md) file that influence triggering, in other words, the ability for Claude  to call a skill for specialized knowledge or workflows. 
+
+The name should be straightforward and descriptive. Use lowercase with hyphens (e.g., pdf-editor, brand-guidelines). Keep it short and clear.
+
+### **3. Write the description field**
+
+The description determines when your skill activates, making it the most critical component. Write it from Claude's perspective, focusing on triggers, capabilities, and use cases.
+
+A strong description balances several elements: specific capabilities, clear triggers, relevant context, and boundaries.
+
+**Weak description**:
+
+`This skill helps with PDFs and documents.`**Strong description**:
+
+`Comprehensive PDF manipulation toolkit for extracting text and tables, creating new PDFs, merging/splitting documents, and handling forms. When Claude needs to fill in a PDF form or programmatically process, generate, or analyze PDF documents at scale. Use for document workflows and batch operations. Not for simple PDF viewing or basic conversions.`The stronger version gives Claude multiple data points: specific verbs (extract, create, merge), concrete use cases (form filling, batch operations), and clear boundaries (not for simple viewing).
+
+### **4. Write the main instructions**
+
+Your instructions should be structured, scannable, and actionable. Use markdown headers, bullet points for options, and code blocks for examples.
+
+Structure with clear hierarchy: overview, prerequisites, execution steps, examples, error handling, and limitations. Break complex workflows into discrete phases with clear inputs and outputs.
+
+Include concrete examples showing correct usage. Specify what the skill cannot do to prevent misuse and manage expectations. Your [SKILL.md](http://skill.md) file can also include additional reference files and assets to provide even more clarity and guidance around what you’re asking the agent to do when the skill is triggered. 
+
+### **5. Upload your skill **
+
+Depending on what Claude surface you’re building on, here’s how to upload your skill for use: 
+
+- [Claude.ai](http://claude.ai) (Claude apps): Go to **Settings** and add your custom skill there. Custom skills require a Pro, Max, Team, or Enterprise plan with code execution enabled. Skills uploaded here are individual to each user—they are not shared organization-wide and cannot be centrally managed by admins.
+- [Claude Code](https://www.claude.com/product/claude-code): Create a skills/ directory in your plugin or project root and add skill folders containing SKILL.md files. Claude discovers and uses them automatically when the plugin is installed. Example structure:
+
+`my-project/
+├── skills/
+│   └── my-skill/
+│       └── SKILL.md`
+- [Claude Developer Platform](https://www.claude.com/platform/api): Upload skills via the Skills API (/v1/skills endpoints). Use a POST request with the required beta headers:
+
+`curl -X POST &quot;https://api.anthropic.com/v1/skills&quot; \
+  -H &quot;x-api-key: $ANTHROPIC_API_KEY&quot; \
+  -H &quot;anthropic-version: 2023-06-01&quot; \
+  -H &quot;anthropic-beta: skills-2025-10-02&quot; \
+  -F &quot;display_title=My Skill Name&quot; \
+  -F &quot;files[]=@my-skill/SKILL.md;filename=my-skill/SKILL.md&quot;`
+### **4. Testing and validation**
+
+Test your skill with realistic scenarios before deploying it. Systematic testing reveals gaps in instructions, ambiguities in descriptions, and unexpected edge cases that only surface during actual use.
+
+Create a test matrix covering three scenarios:
+
+- **Normal operations**: Test the skill with typical requests it should handle perfectly. If you built a financial analysis skill, try &quot;analyze Microsoft's latest earnings&quot; or &quot;build a datapack for this 10-K filing.&quot; These baseline tests confirm your instructions work as intended.
+- **Edge cases**: Test with incomplete or unusual inputs. What happens when data is missing? When file formats are unexpected? When users provide ambiguous instructions? Your skill should handle these gracefully—either producing degraded but useful output or explaining what's needed to proceed.
+- **Out-of-scope requests**: Test with tasks that seem related but shouldn't trigger your skill. If you built an NDA review skill, try requesting &quot;review this employment agreement&quot; or &quot;analyze this lease.&quot; The skill should stay dormant, letting other skills or general Claude capabilities handle the request.
+
+Consider implementing the following tests for even deeper validation:
+
+- **Triggering tests:** Does the skill activate when expected? Test with both explicit requests (&quot;use the financial datapack skill to analyze this company&quot;) and natural requests (&quot;help me understand this company's financials&quot;). Does it stay inactive when irrelevant? A well-scoped skill knows when not to activate. Test similar but distinct requests to verify boundaries.
+- **Functional tests: **These include output consistency (do multiple runs with similar inputs produce comparable results?), usability (can someone unfamiliar with the domain use it successfully?), and documentation accuracy (do your examples match actual behavior?). 
+
+### **5. Iterate based on usage**
+
+Monitor how your skill performs in real-world usage. Refine descriptions if triggering is inconsistent. Clarify instructions if outputs vary unexpectedly. As with prompts, the best skills evolve through practical application.
+
+## **General best practices for creating skills**
+
+These principles help you create skills that are maintainable, reusable, and genuinely useful rather than theoretical.
+
+### **Start with use cases**
+
+Don't write skills speculatively. Build them when you have real, repeated tasks. The best skills solve problems you encounter regularly.
+
+Before creating a skill, ask: Have I done this task at least five times? Will I do it at least ten more times? If yes, a skill makes sense.
+
+### **Define success criteria—and include it in the skill**
+
+Tell Claude what a good out looks like. If you're creating financial reports, specify required sections, formatting standards, validation checks, and quality thresholds. Include these criteria in your instructions so Claude can self-check.
+
+### **Use the Skill-Creator skill**
+
+The [skill-creator skill](https://github.com/anthropics/skills/tree/main/skill-creator) guides you through creating well-structured skills. It asks clarifying questions, suggests description improvements, and helps format instructions properly. Available in the [Skills repository on GitHub](https://github.com/anthropics/skills) and directly via [Claude.ai](http://claude.ai), it's particularly valuable for your first few skills.
+
+## **Skill limitations and considerations**
+
+Understanding how skills work—and their boundaries—helps you design more effective skills and set appropriate expectations.
+
+### **Skill triggering**
+
+Claude evaluates skill descriptions against your request to determine relevance. This isn't keyword matching—Claude understands semantic relationships. However, vague descriptions reduce triggering accuracy.
+
+Multiple skills can activate simultaneously if they address different aspects of a complex task. Overly generic descriptions cause inappropriate activation, while missing use cases cause missed activations.
+
+### **Appropriate file sizes**
+
+When writing skills, avoid bloating the context window with unnecessary content. Consider whether each piece of information needs to be loaded every time, or only conditionally.
+
+Use a &quot;menu&quot; approach: if your skill covers multiple distinct processes or options, the SKILL.md should describe what's available and use relative paths to reference separate files for each. Claude then reads only the file relevant to the user's task, leaving the others untouched for that conversation.
+
+These separate files don't need to represent mutually exclusive paths. The key principle is breaking content into reasonable chunks and letting Claude select what's needed based on the task at hand.
+
+## ‍**Real-world skills examples**
+
+### **Skill example #1: **[**docx creation skill**](https://github.com/anthropics/skills/tree/main/document-skills/docx)
+
+`#---
+name: docx
+description: &quot;Comprehensive document creation, editing, and analysis with support for tracked changes, comments, formatting preservation, and text extraction. When Claude needs to work with professional documents (.docx files) for: (1) Creating new documents, (2) Modifying or editing content, (3) Working with tracked changes, (4) Adding comments, or any other document tasks&quot;
+license: Proprietary. LICENSE.txt has complete terms
+---
+
+# DOCX creation, editing, and analysis
+
+## Overview
+
+A user may ask you to create, edit, or analyze the contents of a .docx file. A .docx file is essentially a ZIP archive containing XML files and other resources that you can read or edit. You have different tools and workflows available for different tasks.
+
+## Workflow Decision Tree
+
+### Reading/Analyzing Content
+Use &quot;Text extraction&quot; or &quot;Raw XML access&quot; sections below
+
+### Creating New Document
+Use &quot;Creating a new Word document&quot; workflow
+
+### Editing Existing Document
+- **Your own document + simple changes**
+  Use &quot;Basic OOXML editing&quot; workflow
+
+- **Someone else's document**
+  Use **&quot;Redlining workflow&quot;** (recommended default)
+
+- **Legal, academic, business, or government docs**
+  Use **&quot;Redlining workflow&quot;** (required)
+
+## Reading and analyzing content
+
+### Text extraction
+If you just need to read the text contents of a document, you should convert the document to markdown using pandoc. Pandoc provides excellent support for preserving document structure and can show tracked changes:
+
+```bash
+# Convert document to markdown with tracked changes
+pandoc --track-changes=all path-to-file.docx -o output.md
+# Options: --track-changes=accept/reject/all
+```
+
+### Raw XML access
+You need raw XML access for: comments, complex formatting, document structure, embedded media, and metadata. For any of these features, you'll need to unpack a document and read its raw XML contents.
+
+#### Unpacking a file
+`python ooxml/scripts/unpack.py &lt;office_file&gt; &lt;output_directory&gt;`
+
+#### Key file structures
+* `word/document.xml` - Main document contents
+* `word/comments.xml` - Comments referenced in document.xml
+* `word/media/` - Embedded images and media files
+* Tracked changes use `&lt;w:ins&gt;` (insertions) and `&lt;w:del&gt;` (deletions) tags
+
+## Creating a new Word document
+
+When creating a new Word document from scratch, use **docx-js**, which allows you to create Word documents using JavaScript/TypeScript.
+
+### Workflow
+1. **MANDATORY - READ ENTIRE FILE**: Read [`docx-js.md`](docx-js.md) (~500 lines) completely from start to finish. **NEVER set any range limits when reading this file.** Read the full file content for detailed syntax, critical formatting rules, and best practices before proceeding with document creation.
+2. Create a JavaScript/TypeScript file using Document, Paragraph, TextRun components (You can assume all dependencies are installed, but if not, refer to the dependencies section below)
+3. Export as .docx using Packer.toBuffer()
+
+## Editing an existing Word document
+
+When editing an existing Word document, use the **Document library** (a Python library for OOXML manipulation). The library automatically handles infrastructure setup and provides methods for document manipulation. For complex scenarios, you can access the underlying DOM directly through the library.
+
+### Workflow
+1. **MANDATORY - READ ENTIRE FILE**: Read [`ooxml.md`](ooxml.md) (~600 lines) completely from start to finish. **NEVER set any range limits when reading this file.** Read the full file content for the Document library API and XML patterns for directly editing document files.
+2. Unpack the document: `python ooxml/scripts/unpack.py &lt;office_file&gt; &lt;output_directory&gt;`
+3. Create and run a Python script using the Document library (see &quot;Document Library&quot; section in ooxml.md)
+4. Pack the final document: `python ooxml/scripts/pack.py &lt;input_directory&gt; &lt;office_file&gt;`
+
+The Document library provides both high-level methods for common operations and direct DOM access for complex scenarios.
+
+## Redlining workflow for document review
+
+This workflow allows you to plan comprehensive tracked changes using markdown before implementing them in OOXML. **CRITICAL**: For complete tracked changes, you must implement ALL changes systematically.
+
+**Batching Strategy**: Group related changes into batches of 3-10 changes. This makes debugging manageable while maintaining efficiency. Test each batch before moving to the next.
+
+**Principle: Minimal, Precise Edits**
+When implementing tracked changes, only mark text that actually changes. Repeating unchanged text makes edits harder to review and appears unprofessional. Break replacements into: [unchanged text] + [deletion] + [insertion] + [unchanged text]. Preserve the original run's RSID for unchanged text by extracting the `&lt;w:r&gt;` element from the original and reusing it.
+
+Example - Changing &quot;30 days&quot; to &quot;60 days&quot; in a sentence:
+```python
+# BAD - Replaces entire sentence
+'&lt;w:del&gt;&lt;w:r&gt;&lt;w:delText&gt;The term is 30 days.&lt;/w:delText&gt;&lt;/w:r&gt;&lt;/w:del&gt;&lt;w:ins&gt;&lt;w:r&gt;&lt;w:t&gt;The term is 60 days.&lt;/w:t&gt;&lt;/w:r&gt;&lt;/w:ins&gt;'
+
+# GOOD - Only marks what changed, preserves original &lt;w:r&gt; for unchanged text
+'&lt;w:r w:rsidR=&quot;00AB12CD&quot;&gt;&lt;w:t&gt;The term is &lt;/w:t&gt;&lt;/w:r&gt;&lt;w:del&gt;&lt;w:r&gt;&lt;w:delText&gt;30&lt;/w:delText&gt;&lt;/w:r&gt;&lt;/w:del&gt;&lt;w:ins&gt;&lt;w:r&gt;&lt;w:t&gt;60&lt;/w:t&gt;&lt;/w:r&gt;&lt;/w:ins&gt;&lt;w:r w:rsidR=&quot;00AB12CD&quot;&gt;&lt;w:t&gt; days.&lt;/w:t&gt;&lt;/w:r&gt;'
+```
+
+### Tracked changes workflow
+
+1. **Get markdown representation**: Convert document to markdown with tracked changes preserved:
+   ```bash
+   pandoc --track-changes=all path-to-file.docx -o current.md
+   ```
+
+2. **Identify and group changes**: Review the document and identify ALL changes needed, organizing them into logical batches:
+
+   **Location methods** (for finding changes in XML):
+   - Section/heading numbers (e.g., &quot;Section 3.2&quot;, &quot;Article IV&quot;)
+   - Paragraph identifiers if numbered
+   - Grep patterns with unique surrounding text
+   - Document structure (e.g., &quot;first paragraph&quot;, &quot;signature block&quot;)
+   - **DO NOT use markdown line numbers** - they don't map to XML structure
+
+   **Batch organization** (group 3-10 related changes per batch):
+   - By section: &quot;Batch 1: Section 2 amendments&quot;, &quot;Batch 2: Section 5 updates&quot;
+   - By type: &quot;Batch 1: Date corrections&quot;, &quot;Batch 2: Party name changes&quot;
+   - By complexity: Start with simple text replacements, then tackle complex structural changes
+   - Sequential: &quot;Batch 1: Pages 1-3&quot;, &quot;Batch 2: Pages 4-6&quot;
+
+3. **Read documentation and unpack**:
+   - **MANDATORY - READ ENTIRE FILE**: Read [`ooxml.md`](ooxml.md) (~600 lines) completely from start to finish. **NEVER set any range limits when reading this file.** Pay special attention to the &quot;Document Library&quot; and &quot;Tracked Change Patterns&quot; sections.
+   - **Unpack the document**: `python ooxml/scripts/unpack.py &lt;file.docx&gt; &lt;dir&gt;`
+   - **Note the suggested RSID**: The unpack script will suggest an RSID to use for your tracked changes. Copy this RSID for use in step 4b.
+
+4. **Implement changes in batches**: Group changes logically (by section, by type, or by proximity) and implement them together in a single script. This approach:
+   - Makes debugging easier (smaller batch = easier to isolate errors)
+   - Allows incremental progress
+   - Maintains efficiency (batch size of 3-10 changes works well)
+
+   **Suggested batch groupings:**
+   - By document section (e.g., &quot;Section 3 changes&quot;, &quot;Definitions&quot;, &quot;Termination clause&quot;)
+   - By change type (e.g., &quot;Date changes&quot;, &quot;Party name updates&quot;, &quot;Legal term replacements&quot;)
+   - By proximity (e.g., &quot;Changes on pages 1-3&quot;, &quot;Changes in first half of document&quot;)
+
+   For each batch of related changes:
+
+   **a. Map text to XML**: Grep for text in `word/document.xml` to verify how text is split across `&lt;w:r&gt;` elements.
+
+   **b. Create and run script**: Use `get_node` to find nodes, implement changes, then `doc.save()`. See **&quot;Document Library&quot;** section in ooxml.md for patterns.
+
+   **Note**: Always grep `word/document.xml` immediately before writing a script to get current line numbers and verify text content. Line numbers change after each script run.
+
+5. **Pack the document**: After all batches are complete, convert the unpacked directory back to .docx:
+   ```bash
+   python ooxml/scripts/pack.py unpacked reviewed-document.docx
+   ```
+
+6. **Final verification**: Do a comprehensive check of the complete document:
+   - Convert final document to markdown:
+     ```bash
+     pandoc --track-changes=all reviewed-document.docx -o verification.md
+     ```
+   - Verify ALL changes were applied correctly:
+     ```bash
+     grep &quot;original phrase&quot; verification.md  # Should NOT find it
+     grep &quot;replacement phrase&quot; verification.md  # Should find it
+     ```
+   - Check that no unintended changes were introduced
+
+## Converting Documents to Images
+
+To visually analyze Word documents, convert them to images using a two-step process:
+
+1. **Convert DOCX to PDF**:
+   ```bash
+   soffice --headless --convert-to pdf document.docx
+   ```
+
+2. **Convert PDF pages to JPEG images**:
+   ```bash
+   pdftoppm -jpeg -r 150 document.pdf page
+   ```
+   This creates files like `page-1.jpg`, `page-2.jpg`, etc.
+
+Options:
+- `-r 150`: Sets resolution to 150 DPI (adjust for quality/size balance)
+- `-jpeg`: Output JPEG format (use `-png` for PNG if preferred)
+- `-f N`: First page to convert (e.g., `-f 2` starts from page 2)
+- `-l N`: Last page to convert (e.g., `-l 5` stops at page 5)
+- `page`: Prefix for output files
+
+Example for specific range:
+```bash
+pdftoppm -jpeg -r 150 -f 2 -l 5 document.pdf page  # Converts only pages 2-5
+```
+
+## Code Style Guidelines
+**IMPORTANT**: When generating code for DOCX operations:
+- Write concise code
+- Avoid verbose variable names and redundant operations
+- Avoid unnecessary print statements
+
+## Dependencies
+
+Required dependencies (install if not available):
+
+- **pandoc**: `sudo apt-get install pandoc` (for text extraction)
+- **docx**: `npm install -g docx` (for creating new documents)
+- **LibreOffice**: `sudo apt-get install libreoffice` (for PDF conversion)
+- **Poppler**: `sudo apt-get install poppler-utils` (for pdftoppm to convert PDF to images)
+- **defusedxml**: `pip install defusedxml` (for secure XML parsing)`**What makes it strong**: Provides a clear decision tree that routes Claude to the right workflow based on task type, uses progressive disclosure to keep the main file lean while referencing detailed implementation files only when needed, and includes concrete good/bad examples that show exactly how to implement complex patterns like tracked changes.
+
+### **Skill example #2: **[**Brand guidelines**](https://github.com/anthropics/skills/blob/main/brand-guidelines/SKILL.md?plain=1)
+
+`#name: brand-guidelines
+description: Applies Anthropic's official brand colors and typography to any sort of artifact that may benefit from having Anthropic's look-and-feel. Use it when brand colors or style guidelines, visual formatting, or company design standards apply.
+license: Complete terms in LICENSE.txt
+---
+
+# Anthropic Brand Styling
+
+## Overview
+
+To access Anthropic's official brand identity and style resources, use this skill.
+
+**Keywords**: branding, corporate identity, visual identity, post-processing, styling, brand colors, typography, Anthropic brand, visual formatting, visual design
+
+## Brand Guidelines
+
+### Colors
+
+**Main Colors:**
+
+- Dark: `#141413` - Primary text and dark backgrounds
+- Light: `#faf9f5` - Light backgrounds and text on dark
+- Mid Gray: `#b0aea5` - Secondary elements
+- Light Gray: `#e8e6dc` - Subtle backgrounds
+
+**Accent Colors:**
+
+- Orange: `#d97757` - Primary accent
+- Blue: `#6a9bcc` - Secondary accent
+- Green: `#788c5d` - Tertiary accent
+
+### Typography
+
+- **Headings**: Poppins (with Arial fallback)
+- **Body Text**: Lora (with Georgia fallback)
+- **Note**: Fonts should be pre-installed in your environment for best results
+
+## Features
+
+### Smart Font Application
+
+- Applies Poppins font to headings (24pt and larger)
+- Applies Lora font to body text
+- Automatically falls back to Arial/Georgia if custom fonts unavailable
+- Preserves readability across all systems
+
+### Text Styling
+
+- Headings (24pt+): Poppins font
+- Body text: Lora font
+- Smart color selection based on background
+- Preserves text hierarchy and formatting
+
+### Shape and Accent Colors
+
+- Non-text shapes use accent colors
+- Cycles through orange, blue, and green accents
+- Maintains visual interest while staying on-brand
+
+## Technical Details
+
+### Font Management
+
+- Uses system-installed Poppins and Lora fonts when available
+- Provides automatic fallback to Arial (headings) and Georgia (body)
+- No font installation required - works with existing system fonts
+- For best results, pre-install Poppins and Lora fonts in your environment
+
+### Color Application
+
+- Uses RGB color values for precise brand matching
+- Applied via python-pptx's RGBColor class
+- Maintains color fidelity across different systems`**What makes it strong**: Provides precise, actionable information Claude doesn't inherently have (exact hex codes, font names, size thresholds) with a clear description that tells Claude both what it does and when to trigger it.
+
+**What makes it strong**: Creative capability with clear boundaries, copyright protection built in, technical scaffolding for non-musicians, quality standards.
+
+### **Skill example #3: **[**frontend design skill**](https://www.claude.com/blog/improving-frontend-design-through-skills)
+
+`name: frontend-design
+description: Create distinctive, production-grade frontend interfaces with high design quality. Use this skill when the user asks to build web components, pages, or applications. Generates creative, polished code that avoids generic AI aesthetics.
+license: Complete terms in LICENSE.txt
+---
+
+This skill guides creation of distinctive, production-grade frontend interfaces that avoid generic &quot;AI slop&quot; aesthetics. Implement real working code with exceptional attention to aesthetic details and creative choices.
+
+The user provides frontend requirements: a component, page, application, or interface to build. They may include context about the purpose, audience, or technical constraints.
+
+## Design Thinking
+
+Before coding, understand the context and commit to a BOLD aesthetic direction:
+- **Purpose**: What problem does this interface solve? Who uses it?
+- **Tone**: Pick an extreme: brutally minimal, maximalist chaos, retro-futuristic, organic/natural, luxury/refined, playful/toy-like, editorial/magazine, brutalist/raw, art deco/geometric, soft/pastel, industrial/utilitarian, etc. There are so many flavors to choose from. Use these for inspiration but design one that is true to the aesthetic direction.
+- **Constraints**: Technical requirements (framework, performance, accessibility).
+- **Differentiation**: What makes this UNFORGETTABLE? What's the one thing someone will remember?
+
+**CRITICAL**: Choose a clear conceptual direction and execute it with precision. Bold maximalism and refined minimalism both work - the key is intentionality, not intensity.
+
+Then implement working code (HTML/CSS/JS, React, Vue, etc.) that is:
+- Production-grade and functional
+- Visually striking and memorable
+- Cohesive with a clear aesthetic point-of-view
+- Meticulously refined in every detail
+
+## Frontend Aesthetics Guidelines
+
+Focus on:
+- **Typography**: Choose fonts that are beautiful, unique, and interesting. Avoid generic fonts like Arial and Inter; opt instead for distinctive choices that elevate the frontend's aesthetics; unexpected, characterful font choices. Pair a distinctive display font with a refined body font.
+- **Color &amp; Theme**: Commit to a cohesive aesthetic. Use CSS variables for consistency. Dominant colors with sharp accents outperform timid, evenly-distributed palettes.
+- **Motion**: Use animations for effects and micro-interactions. Prioritize CSS-only solutions for HTML. Use Motion library for React when available. Focus on high-impact moments: one well-orchestrated page load with staggered reveals (animation-delay) creates more delight than scattered micro-interactions. Use scroll-triggering and hover states that surprise.
+- **Spatial Composition**: Unexpected layouts. Asymmetry. Overlap. Diagonal flow. Grid-breaking elements. Generous negative space OR controlled density.
+- **Backgrounds &amp; Visual Details**: Create atmosphere and depth rather than defaulting to solid colors. Add contextual effects and textures that match the overall aesthetic. Apply creative forms like gradient meshes, noise textures, geometric patterns, layered transparencies, dramatic shadows, decorative borders, custom cursors, and grain overlays.
+
+NEVER use generic AI-generated aesthetics like overused font families (Inter, Roboto, Arial, system fonts), cliched color schemes (particularly purple gradients on white backgrounds), predictable layouts and component patterns, and cookie-cutter design that lacks context-specific character.
+
+Interpret creatively and make unexpected choices that feel genuinely designed for the context. No design should be the same. Vary between light and dark themes, different fonts, different aesthetics. NEVER converge on common choices (Space Grotesk, for example) across generations.
+
+**IMPORTANT**: Match implementation complexity to the aesthetic vision. Maximalist designs need elaborate code with extensive animations and effects. Minimalist or refined designs need restraint, precision, and careful attention to spacing, typography, and subtle details. Elegance comes from executing the vision well.
+
+Remember: Claude is capable of extraordinary creative work. Don't hold back, show what can truly be created when thinking outside the box and committing fully to a distinctive vision.`**What makes it strong**: Creative capability with clear boundaries, copyright protection built in, technical scaffolding for non-musicians, quality standards.
+
+## **Common questions**
+
+### **How do I write descriptions that actually trigger?**
+
+Focus on capabilities and scenarios, not generic keywords. Include action verbs, specific file types, and clear use cases. Instead of &quot;document processing skill,&quot; write &quot;extract tables from PDFs and convert to CSV format for data analysis workflows.&quot;
+
+### **How does Claude decide which skills to invoke?**
+
+Claude evaluates your request against skill descriptions using semantic understanding. It's not keyword matching—Claude determines contextual relevance. Multiple skills can activate if they address different aspects of your request.
+
+### **What's the right granularity for my descriptions?**
+
+Aim for single-purpose skills. &quot;SEO optimization for blog posts&quot; is focused enough for specific instructions while broad enough for reusability. Too broad: &quot;Content marketing helper.&quot; Too narrow: &quot;Add meta descriptions.&quot;
+
+### **How do I share Skills across my organization?**
+
+Regardless of your team size, we suggest creating a shared document repository with skill specifications. 
+
+**For smaller teams**, use a template format with name, description, instructions, and version info.
+
+**For medium to large teams**, establish a skills governance process:
+
+- Designate skill owners for each domain (finance, legal, marketing)
+- Maintain a central wiki or shared drive as your skill library
+- Include usage examples and common troubleshooting for each skill
+- Version your skills and document changes in a changelog
+- Schedule quarterly reviews to update or retire outdated skills
+
+**Best practices for all team sizes**:
+
+- Document the business purpose for each skill
+- Assign clear ownership for maintenance and updates
+- Create onboarding materials showing new team members how to implement shared skills
+- Track which skills deliver the most value to prioritize maintenance efforts
+- Use consistent naming conventions so skills are easy to find
+
+Enterprise customers can work with Anthropic's customer success team to explore additional deployment options and governance frameworks.
+
+### **How do I debug skills?**
+
+Test triggering and execution separately. If skills don't activate, broaden your description and add use cases. If results are inconsistent, add specificity to instructions and include validation steps. Create a test case library covering normal usage, edge cases, and out-of-scope requests.
+
+### **How do I share Skills across my organization?**
+
+**‍**In [Claude.ai](http://claude.ai/), Skills are currently individual to each user, though org-wide management and sharing capabilities are coming soon. In the meantime, regardless of your team size, we suggest creating a shared document repository with skill specifications. This prepares your organization for upcoming features while establishing good governance practices today.
+
+## **Get started**
+
+Ready to build with Skills? Here's how to start:
+
+[Claude.ai](https://claude.ai/) users:
+
+- Enable Skills in Settings → Features
+- Create your first project at claude.ai/projects
+- Try combining project knowledge with Skills for your next analysis task
+
+API developers:
+
+- Explore the Skills endpoint in[ documentation](https://docs.anthropic.com/)
+- Check out our [skills cookbook](https://platform.claude.com/cookbook/skills-notebooks-01-skills-introduction)
+
+Claude Code users:
+
+- Install Skills via [plugin marketplaces](https://code.claude.com/docs/en/plugin-marketplaces)
+- Check out our [skills cookbook](https://platform.claude.com/cookbook/skills-notebooks-01-skills-introduction)</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Claude Code</span>
-            <span class="article-date">November 19, 2025</span>
-            <span class="lang-badge-large">EN</span>
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-olive);">
+            <img class="hero-illo-img" src="/assets/illustrations/how-to-create-skills-key-steps-limitations-and-examples.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">How to create Skills: Key steps, limitations, and examples</h1>
-          <a href="/posts/how-to-create-skills-key-steps-limitations-and-examples/" class="lang-toggle">阅读中文翻译 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p><a href="https://www.claude.com/blog/skills" target="_blank">Skills</a> are custom instructions that extend Claude's capabilities for specific tasks or domains.&nbsp;</p><p>When you create a skill via a <a href="http://skill.md" target="_blank">SKILL.md</a> file, you're teaching Claude how to handle specific scenarios more effectively. The power of skills lies in their ability to encode institutional knowledge, standardize outputs, and handle complex multi-step workflows that would otherwise require repeated explanation or investment in building a custom agent.</p><p>Learn how to create skills that transform Claude from general-purpose assistant into specialized expert for your specific workflows either with our <a href="https://github.com/anthropics/skills/tree/main/skill-creator" target="_blank">skill creator</a> template or manually. (Pro-tip: to make it easy, we recommend building your <a href="http://skill.md" target="_blank">SKILL.md</a> file with this template and tailoring from there).</p><h2><strong>Creating a skill in 5 steps</strong></h2><p>Follow this structured approach to build skills that trigger more reliably.</p><h3><strong>1. Understand the core requirements</strong></h3><p>Before writing anything, clarify what problem your skill solves. Strong skills address concrete needs with measurable outcomes. "Extract financial data from PDFs and format as CSV" beats "Help with my finance stuff" because it specifies the input format, the operation, and the expected output.</p><p>Start by asking yourself: What specific task does this skill accomplish? What triggers should activate it? What does success look like? What are the edge cases or limitations?</p><h3><strong>2. Write the name</strong></h3><p>Your skill needs three core components: <strong>name</strong> (clear identifier), <strong>description</strong> (when to activate), and <strong>instructions</strong> (how to execute). In fact, the name and description are the only parts of the <a href="http://skill.md" target="_blank">SKILL.md</a> file that influence triggering, in other words, the ability for Claude&nbsp; to call a skill for specialized knowledge or workflows.&nbsp;</p><p>The name should be straightforward and descriptive. Use lowercase with hyphens (e.g., pdf-editor, brand-guidelines). Keep it short and clear.</p><h3><strong>3. Write the description field</strong></h3><p>The description determines when your skill activates, making it the most critical component. Write it from Claude's perspective, focusing on triggers, capabilities, and use cases.</p><p>A strong description balances several elements: specific capabilities, clear triggers, relevant context, and boundaries.</p><p><strong>Weak description</strong>:</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-markdown" style="white-space:pre-wrap"><span><span>This skill helps with PDFs and documents.</span></span></code></pre><p><strong>Strong description</strong>:</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-markdown" style="white-space:pre-wrap"><span><span>Comprehensive PDF manipulation toolkit for extracting text and tables, creating new PDFs, merging/splitting documents, and handling forms. When Claude needs to fill in a PDF form or programmatically process, generate, or analyze PDF documents at scale. Use for document workflows and batch operations. Not for simple PDF viewing or basic conversions.</span></span></code></pre><p>The stronger version gives Claude multiple data points: specific verbs (extract, create, merge), concrete use cases (form filling, batch operations), and clear boundaries (not for simple viewing).</p><h3><strong>4. Write the main instructions</strong></h3><p>Your instructions should be structured, scannable, and actionable. Use markdown headers, bullet points for options, and code blocks for examples.</p><p>Structure with clear hierarchy: overview, prerequisites, execution steps, examples, error handling, and limitations. Break complex workflows into discrete phases with clear inputs and outputs.</p><p>Include concrete examples showing correct usage. Specify what the skill cannot do to prevent misuse and manage expectations. Your <a href="http://skill.md" target="_blank">SKILL.md</a> file can also include additional reference files and assets to provide even more clarity and guidance around what you’re asking the agent to do when the skill is triggered.&nbsp;</p><h3><strong>5. Upload your skill&nbsp;</strong></h3><p>Depending on what Claude surface you’re building on, here’s how to upload your skill for use:&nbsp;</p><ul role="list"><li><a href="http://claude.ai" target="_blank">Claude.ai</a> (Claude apps): Go to <strong>Settings</strong> and add your custom skill there. Custom skills require a Pro, Max, Team, or Enterprise plan with code execution enabled. Skills uploaded here are individual to each user—they are not shared organization-wide and cannot be centrally managed by admins.</li><li><a href="https://www.claude.com/product/claude-code" target="_blank">Claude Code</a>: Create a skills/ directory in your plugin or project root and add skill folders containing SKILL.md files. Claude discovers and uses them automatically when the plugin is installed. Example structure:</li></ul><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-markdown" style="white-space:pre-wrap"><span><span>my-project/
+            <h1 class="article-title u-text-style-h1">How to create Skills: Key steps, limitations, and examples</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>Learn how to write tailored skills that deliver stronger, more effective outputs from Claude.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <div class="hero-detail-value-stack"><a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a><div class="hero-detail-value u-text-style-body-3">Agents</div></div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <div class="hero-detail-value u-text-style-body-3">Claude apps</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">November 19, 2025</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/how-to-create-skills-key-steps-limitations-and-examples/en.html">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p><a href="https://www.claude.com/blog/skills" target="_blank">Skills</a> are custom instructions that extend Claude's capabilities for specific tasks or domains.&nbsp;</p><p>When you create a skill via a <a href="http://skill.md" target="_blank">SKILL.md</a> file, you're teaching Claude how to handle specific scenarios more effectively. The power of skills lies in their ability to encode institutional knowledge, standardize outputs, and handle complex multi-step workflows that would otherwise require repeated explanation or investment in building a custom agent.</p><p>Learn how to create skills that transform Claude from general-purpose assistant into specialized expert for your specific workflows either with our <a href="https://github.com/anthropics/skills/tree/main/skill-creator" target="_blank">skill creator</a> template or manually. (Pro-tip: to make it easy, we recommend building your <a href="http://skill.md" target="_blank">SKILL.md</a> file with this template and tailoring from there).</p><h2><strong>Creating a skill in 5 steps</strong></h2><p>Follow this structured approach to build skills that trigger more reliably.</p><h3><strong>1. Understand the core requirements</strong></h3><p>Before writing anything, clarify what problem your skill solves. Strong skills address concrete needs with measurable outcomes. "Extract financial data from PDFs and format as CSV" beats "Help with my finance stuff" because it specifies the input format, the operation, and the expected output.</p><p>Start by asking yourself: What specific task does this skill accomplish? What triggers should activate it? What does success look like? What are the edge cases or limitations?</p><h3><strong>2. Write the name</strong></h3><p>Your skill needs three core components: <strong>name</strong> (clear identifier), <strong>description</strong> (when to activate), and <strong>instructions</strong> (how to execute). In fact, the name and description are the only parts of the <a href="http://skill.md" target="_blank">SKILL.md</a> file that influence triggering, in other words, the ability for Claude&nbsp; to call a skill for specialized knowledge or workflows.&nbsp;</p><p>The name should be straightforward and descriptive. Use lowercase with hyphens (e.g., pdf-editor, brand-guidelines). Keep it short and clear.</p><h3><strong>3. Write the description field</strong></h3><p>The description determines when your skill activates, making it the most critical component. Write it from Claude's perspective, focusing on triggers, capabilities, and use cases.</p><p>A strong description balances several elements: specific capabilities, clear triggers, relevant context, and boundaries.</p><p><strong>Weak description</strong>:</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-markdown" style="white-space:pre-wrap"><span><span>This skill helps with PDFs and documents.</span></span></code></pre><p><strong>Strong description</strong>:</p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-markdown" style="white-space:pre-wrap"><span><span>Comprehensive PDF manipulation toolkit for extracting text and tables, creating new PDFs, merging/splitting documents, and handling forms. When Claude needs to fill in a PDF form or programmatically process, generate, or analyze PDF documents at scale. Use for document workflows and batch operations. Not for simple PDF viewing or basic conversions.</span></span></code></pre><p>The stronger version gives Claude multiple data points: specific verbs (extract, create, merge), concrete use cases (form filling, batch operations), and clear boundaries (not for simple viewing).</p><h3><strong>4. Write the main instructions</strong></h3><p>Your instructions should be structured, scannable, and actionable. Use markdown headers, bullet points for options, and code blocks for examples.</p><p>Structure with clear hierarchy: overview, prerequisites, execution steps, examples, error handling, and limitations. Break complex workflows into discrete phases with clear inputs and outputs.</p><p>Include concrete examples showing correct usage. Specify what the skill cannot do to prevent misuse and manage expectations. Your <a href="http://skill.md" target="_blank">SKILL.md</a> file can also include additional reference files and assets to provide even more clarity and guidance around what you’re asking the agent to do when the skill is triggered.&nbsp;</p><h3><strong>5. Upload your skill&nbsp;</strong></h3><p>Depending on what Claude surface you’re building on, here’s how to upload your skill for use:&nbsp;</p><ul role="list"><li><a href="http://claude.ai" target="_blank">Claude.ai</a> (Claude apps): Go to <strong>Settings</strong> and add your custom skill there. Custom skills require a Pro, Max, Team, or Enterprise plan with code execution enabled. Skills uploaded here are individual to each user—they are not shared organization-wide and cannot be centrally managed by admins.</li><li><a href="https://www.claude.com/product/claude-code" target="_blank">Claude Code</a>: Create a skills/ directory in your plugin or project root and add skill folders containing SKILL.md files. Claude discovers and uses them automatically when the plugin is installed. Example structure:</li></ul><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-markdown" style="white-space:pre-wrap"><span><span>my-project/
 </span></span><span>├── skills/
 </span><span>│   └── my-skill/
 </span><span>│       └── SKILL.md</span></code></pre><ul role="list"><li><a href="https://www.claude.com/platform/api" target="_blank">Claude Developer Platform</a>: Upload skills via the Skills API (/v1/skills endpoints). Use a POST request with the required beta headers:</li></ul><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#fefefe;color:#545454;padding:0.5em"><code class="language-markdown" style="white-space:pre-wrap"><span style="font-style:italic"><span>curl -X POST "https://api.anthropic.com/v1/skills" \
@@ -352,13 +913,15 @@
 </span><span><span></span><span style="font-weight:bold">**IMPORTANT**</span><span>: Match implementation complexity to the aesthetic vision. Maximalist designs need elaborate code with extensive animations and effects. Minimalist or refined designs need restraint, precision, and careful attention to spacing, typography, and subtle details. Elegance comes from executing the vision well.
 </span></span><span>
 </span><span>Remember: Claude is capable of extraordinary creative work. Don't hold back, show what can truly be created when thinking outside the box and committing fully to a distinctive vision.</span></code></pre><p><strong>What makes it strong</strong>: Creative capability with clear boundaries, copyright protection built in, technical scaffolding for non-musicians, quality standards.</p><h2><strong>Common questions</strong></h2><h3><strong>How do I write descriptions that actually trigger?</strong></h3><p>Focus on capabilities and scenarios, not generic keywords. Include action verbs, specific file types, and clear use cases. Instead of "document processing skill," write "extract tables from PDFs and convert to CSV format for data analysis workflows."</p><h3><strong>How does Claude decide which skills to invoke?</strong></h3><p>Claude evaluates your request against skill descriptions using semantic understanding. It's not keyword matching—Claude determines contextual relevance. Multiple skills can activate if they address different aspects of your request.</p><h3><strong>What's the right granularity for my descriptions?</strong></h3><p>Aim for single-purpose skills. "SEO optimization for blog posts" is focused enough for specific instructions while broad enough for reusability. Too broad: "Content marketing helper." Too narrow: "Add meta descriptions."</p><h3><strong>How do I share Skills across my organization?</strong></h3><p>Regardless of your team size, we suggest creating a shared document repository with skill specifications.&nbsp;</p><p><strong>For smaller teams</strong>, use a template format with name, description, instructions, and version info.</p><p><strong>For medium to large teams</strong>, establish a skills governance process:</p><ul role="list"><li>Designate skill owners for each domain (finance, legal, marketing)</li><li>Maintain a central wiki or shared drive as your skill library</li><li>Include usage examples and common troubleshooting for each skill</li><li>Version your skills and document changes in a changelog</li><li>Schedule quarterly reviews to update or retire outdated skills</li></ul><p><strong>Best practices for all team sizes</strong>:</p><ul role="list"><li>Document the business purpose for each skill</li><li>Assign clear ownership for maintenance and updates</li><li>Create onboarding materials showing new team members how to implement shared skills</li><li>Track which skills deliver the most value to prioritize maintenance efforts</li><li>Use consistent naming conventions so skills are easy to find</li></ul><p>Enterprise customers can work with Anthropic's customer success team to explore additional deployment options and governance frameworks.</p><h3><strong>How do I debug skills?</strong></h3><p>Test triggering and execution separately. If skills don't activate, broaden your description and add use cases. If results are inconsistent, add specificity to instructions and include validation steps. Create a test case library covering normal usage, edge cases, and out-of-scope requests.</p><h3><strong>How do I share Skills across my organization?</strong></h3><p><strong>‍</strong>In <a href="http://claude.ai/" target="_blank">Claude.ai</a>, Skills are currently individual to each user, though org-wide management and sharing capabilities are coming soon. In the meantime, regardless of your team size, we suggest creating a shared document repository with skill specifications. This prepares your organization for upcoming features while establishing good governance practices today.</p><h2><strong>Get started</strong></h2><p>Ready to build with Skills? Here's how to start:</p><p><a href="https://claude.ai/" target="_blank">Claude.ai</a> users:</p><ul role="list"><li>Enable Skills in Settings → Features</li><li>Create your first project at claude.ai/projects</li><li>Try combining project knowledge with Skills for your next analysis task</li></ul><p>API developers:</p><ul role="list"><li>Explore the Skills endpoint in<a href="https://docs.anthropic.com/" target="_blank"> documentation</a></li><li>Check out our <a href="https://platform.claude.com/cookbook/skills-notebooks-01-skills-introduction" target="_blank">skills cookbook</a></li></ul><p>Claude Code users:</p><ul role="list"><li>Install Skills via <a href="https://code.claude.com/docs/en/plugin-marketplaces" target="_blank">plugin marketplaces</a></li><li>Check out our <a href="https://platform.claude.com/cookbook/skills-notebooks-01-skills-introduction" target="_blank">skills cookbook</a></li></ul></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/how-to-create-skills-key-steps-limitations-and-examples" target="_blank">View original</a></p>
+              <p><a href="/">← Back to home</a></p>
+            </footer>
+          </article>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/how-to-create-skills-key-steps-limitations-and-examples" target="_blank">View original</a></p>
-          <p><a href="/">← Back to home</a></p>
-        </footer>
-      </article>
+      </div>
     </div>
   </main>
 <footer class="footer">
@@ -366,6 +929,53 @@
       <p>Content from <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · Translation by AI</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

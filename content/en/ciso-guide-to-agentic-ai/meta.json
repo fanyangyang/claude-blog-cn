@@ -13,5 +13,19 @@
   "translatedTitle": "零风险不是目标：写给 CISO 的智能体 AI 指南",
   "translated": true,
   "translatedAt": "2026-09-02T04:34:18.000Z",
-  "translateLang": "zh-CN"
+  "translateLang": "zh-CN",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [],
+    "usecase": []
+  },
+  "subtitle": "Anthropic's Deputy CISO, Jason Clinton, shares his team's lessons learned adopting agentic AI, and the risk assessment framework they've developed for building and deploying agents securely.",
+  "authors": [
+    "Jason Clinton"
+  ],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": ""
 }

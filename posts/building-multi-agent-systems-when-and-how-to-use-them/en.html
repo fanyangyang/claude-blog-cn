@@ -4,39 +4,450 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Building multi-agent systems: When and how to use them — Claude Blog CN</title>
-  <meta name="description" content="Building multi-agent systems: When and how to use them">
+  <meta name="description" content="While single-agent systems handle most enterprise workflows effectively, multi-agent architectures can unlock additional value for your organization. Learn when and how to use them.">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
   
 </head>
 <body>
-<header class="header">
-    <div class="container">
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-text">Claude Blog <span class="logo-cn">中文</span></span>
-        </a>
-        <nav class="nav">
-          <a href="/" class="nav-link">首页</a>
-          <a href="/posts/building-multi-agent-systems-when-and-how-to-use-them/" class="nav-link">中文版 →</a>
-        </nav>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>Building multi-agent systems: When and how to use them</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/building-multi-agent-systems-when-and-how-to-use-them" target="_blank" rel="noopener noreferrer">Ask questions about this page</a>
+        <button type="button" class="explore-item" data-copy-markdown>Copy as markdown</button>
+        <a class="explore-item" href="/posts/building-multi-agent-systems-when-and-how-to-use-them/">阅读中文翻译 →</a>
       </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># Building multi-agent systems: When and how to use them
+
+While single-agent systems handle most enterprise workflows effectively, multi-agent architectures can unlock additional value for your organization. Learn when and how to use them.
+
+## What is a multi-agent system?
+
+A multi-agent system is an architecture where multiple LLM instances run with separate conversation contexts, coordinated through code. Each agent handles a distinct slice of a task — a subagent researches while an orchestrator plans, for example — which protects context, enables parallel work, and allows specialization a single agent can't sustain.
+
+Multiple coordination patterns exist (agent swarms, capability-based systems, and message bus architectures), but this article focuses on the orchestrator-subagent pattern: a hierarchical model where a lead agent spawns and manages specialized subagents for specific subtasks. This pattern offers a straightforward coordination model and is a good starting point for teams new to multi-agent systems. We'll explore other patterns in detail in our next article.
+
+Today, multi-agent systems are often applied in situations where a single agent would perform better, though this calculus continues to evolve as models improve. At Anthropic, we’ve seen teams invest months building elaborate multi-agent architectures only to discover that improved prompting on a single agent achieved equivalent results.
+
+After building multi-agent systems and working with teams deploying them in production, we've identified three situations where multiple agents consistently outperform a single agent: when context pollution degrades performance, when tasks can run in parallel, and when specialization improves tool selection or task focus. Outside these situations, the coordination costs typically exceed the benefits.
+In this article, we share how to recognize single-agent limits, identify the three scenarios where multi-agent systems excel, and avoid common implementation mistakes. 
+
+## The case for starting with a single agent
+
+A well-designed single agent with appropriate tools can accomplish far more than many developers expect.
+
+Multi-agent systems introduce overhead. Every additional agent represents another potential point of failure, another set of prompts to maintain, and another source of unexpected behavior. 
+
+We've observed teams build elaborate multi-agent systems with separate agents for planning, execution, review, and iteration, only to discover that they suffered from lost context at each handoff and spent more tokens coordinating than executing. In our testing, multi-agent implementations typically use 3-10x more tokens than single-agent approaches for equivalent tasks. This overhead stems from duplicating context across agents, coordination messages between agents, and summarizing results for handoffs.
+
+## A decision framework for multi-agent systems
+
+Multi-agent architectures provide value when they address specific constraints that a single agent cannot overcome. This means multi-agent architectures should be reserved for cases where they provide clear benefits that justify the additional cost. Managed infrastructure can also handle this for you (see [multiagent orchestration in Claude Managed Agents)](https://claude.com/blog/new-in-claude-managed-agents).
+
+The patterns below represent cases where we consistently observe positive returns on this investment.
+
+### Context protection
+
+Large language models have finite context windows, and response quality can degrade as context grows. When an agent's context accumulates information from one subtask that is irrelevant to subsequent subtasks, context pollution occurs. Subagents provide isolation, with each operating in its own clean context focused on its specific task.
+
+Consider a customer support agent that needs to retrieve order history while diagnosing technical issues. If every order lookup adds thousands of tokens to the context, the agent's ability to reason about the technical problem degrades.
+
+‍
+
+**The single-agent approach:**
+
+`# Single agent accumulates everything in context
+conversation_history = [
+    {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;My order #12345 isn't working&quot;},
+    {&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: &quot;Let me check your order...&quot;},
+    # Tool result adds 2000+ tokens of order history
+    {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;... (order details, past purchases, shipping info) ...&quot;},
+    {&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: &quot;Now let me diagnose the technical issue...&quot;},
+    # Context is now polluted with order details the agent doesn't need
+]
+`The agent must reason about the technical issue while maintaining 2000+ tokens of irrelevant order history in context, diluting attention and reducing response quality.
+
+‍
+
+**The multi-agent approach:**
+
+`from anthropic import Anthropic
+
+client = Anthropic()
+
+class OrderLookupAgent:
+    def lookup_order(self, order_id: str) -&gt; dict:
+        # Separate agent with its own context
+        messages = [
+            {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;Get essential details for order {order_id}&quot;}
+        ]
+        response = client.messages.create(
+            model=&quot;claude-sonnet-4-5&quot;,
+            max_tokens=1024,
+            messages=messages,
+            tools=[get_order_details_tool]
+        )
+        # Returns only essential information
+        return extract_summary(response)
+
+class SupportAgent:
+    def handle_issue(self, user_message: str):
+        if needs_order_info(user_message):
+            order_id = extract_order_id(user_message)
+            # Get only what's needed, not full history
+            order_summary = OrderLookupAgent().lookup_order(order_id)
+            # Inject compact summary, not full context
+            context = f&quot;Order {order_id}: {order_summary['status']}, purchased {order_summary['date']}&quot;
+        
+        # Main agent context stays clean
+        messages = [
+            {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;{context}\n\nUser issue: {user_message}&quot;}
+        ]
+        response = client.messages.create(
+            model=&quot;claude-sonnet-4-5&quot;,
+            max_tokens=2048,
+            messages=messages
+        )
+        return response
+`The order lookup agent processes the full order history and extracts a summary. The main agent receives only the 50-100 tokens it actually needs, keeping context focused.
+
+Context isolation is most effective when subtasks generate high context volume (more than 1000 tokens) but most of that information is irrelevant to the main task, when the subtask is well-defined with clear criteria for what information to extract, and for lookup or retrieval operations that require filtering before use.
+
+### Parallelization
+
+Running multiple agents in parallel allows you to explore a larger search space than a single agent can cover. This pattern has proven particularly valuable for search and research tasks.
+
+Anthropic's research team documented this in [how we built our multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system). A lead agent analyzes a query and spawns multiple subagents to investigate different facets in parallel. Each subagent searches independently, then returns distilled findings. Multi-agent search has shown substantial accuracy improvements over single-agent approaches by allowing exploration across larger information spaces.
+
+The core implementation decomposes a question into independent facets, runs subagents concurrently, then synthesizes the results.
+
+`import asyncio
+from anthropic import AsyncAnthropic
+
+client = AsyncAnthropic()
+
+async def research_topic(query: str) -&gt; dict:
+    # Lead agent breaks query into research facets
+    facets = await lead_agent.decompose_query(query)
+    
+    # Spawn subagents to research each facet in parallel
+    tasks = [
+        research_subagent(facet) 
+        for facet in facets
+    ]
+    results = await asyncio.gather(*tasks)
+    
+    # Lead agent synthesizes findings
+    return await lead_agent.synthesize(results)
+
+async def research_subagent(facet: str) -&gt; dict:
+    &quot;&quot;&quot;Each subagent has its own context window&quot;&quot;&quot;
+    messages = [
+        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;Research: {facet}&quot;}
+    ]
+    response = await client.messages.create(
+        model=&quot;claude-sonnet-4-5&quot;,
+        max_tokens=4096,
+        messages=messages,
+        tools=[web_search, read_document]
+    )
+    return extract_findings(response)`This improved coverage comes at a cost. Multi-agent systems typically consume 3 to 10 times more tokens than single-agent approaches for equivalent tasks. This happens because each agent needs its own context, agents must exchange messages to coordinate, and results must be summarized when passed between agents. While parallelism helps reduce total execution time compared to running all that work sequentially, multi-agent systems often take longer overall than single-agent systems because of the sheer increase in total computation.
+
+The primary benefit of parallelization is thoroughness, not speed. When you need to search across a large information space or investigate many angles of a complex question, parallel agents can cover more ground than a single agent working within its context limits. The tradeoff is higher token usage and often longer total execution time in exchange for more comprehensive results.
+
+### Specialization
+
+Different tasks sometimes benefit from different tool sets, system prompts, or domains of expertise. Rather than providing a single agent with access to dozens of tools, specialized agents with focused toolsets matched to their responsibilities can improve reliability.
+
+#### **Tool set specialization**
+
+When an agent has access to too many tools, performance suffers. Three signals indicate tool specialization would help:
+
+- **Quantity.** An agent with too many tools (often 20+) struggles to select the appropriate one.
+- **Domain confusion.** When tools span multiple unrelated domains (database operations, API calls, file system operations), the agent confuses which domain applies to a given task.
+- **Degraded performance.** Adding new tools degrades performance on existing tasks, suggesting the agent has reached its capacity for tool management.
+
+#### **System prompt specialization**
+
+Different tasks sometimes require different personas, constraints, or instructions that conflict when combined. A customer support agent needs to be empathetic and patient; a code review agent needs to be precise and critical. A compliance-checking agent needs rigid rule-following; a brainstorming agent needs creative flexibility. When a single agent must switch between conflicting behavioral modes, separating into specialized agents with tailored system prompts produces more consistent results. 
+
+Each specialized agent is only as good as its instructions — the same [prompt engineering best practices](https://claude.com/blog/best-practices-for-prompt-engineering) that improve a single agent's outputs apply to every subagent's system prompt.
+
+#### **Domain expertise specialization**
+
+Some tasks benefit from deep domain context that would overwhelm a generalist agent. A legal analysis agent might need extensive context about case law and regulatory frameworks. A medical research agent might need specialized knowledge about clinical trial methodology. Rather than loading all domain context into a single agent, specialized agents can carry focused expertise relevant to their specific responsibilities.
+
+**Example: Multi-platform integration.** Consider an integration system where agents need to work across CRM, marketing automation, and messaging platforms. Each platform has 10-15 relevant API endpoints. A single agent with 40+ tools often struggles to select correctly, confusing similar operations across platforms. Splitting into specialized agents with focused toolsets and tailored prompts resolves selection errors.
+
+`from anthropic import Anthropic
+
+client = Anthropic()
+
+# Specialized agents with focused toolsets and tailored prompts
+class CRMAgent:
+    &quot;&quot;&quot;Handles customer relationship management operations&quot;&quot;&quot;
+    system_prompt = &quot;&quot;&quot;You are a CRM specialist. You manage contacts, 
+    opportunities, and account records. Always verify record ownership 
+    before updates and maintain data integrity across related records.&quot;&quot;&quot;
+    tools = [
+        crm_get_contacts,
+        crm_create_opportunity,
+        # 8-10 CRM-specific tools
+    ]
+
+class MarketingAgent:
+    &quot;&quot;&quot;Handles marketing automation operations&quot;&quot;&quot;
+    system_prompt = &quot;&quot;&quot;You are a marketing automation specialist. You 
+    manage campaigns, lead scoring, and email sequences. Prioritize 
+    data hygiene and respect contact preferences.&quot;&quot;&quot;
+    tools = [
+        marketing_get_campaigns,
+        marketing_create_lead,
+        # 8-10 marketing-specific tools
+    ]
+
+class OrchestratorAgent:
+    &quot;&quot;&quot;Routes requests to specialized agents&quot;&quot;&quot;
+    def execute(self, user_request: str):
+        response = client.messages.create(
+            model=&quot;claude-sonnet-4-5&quot;,
+            max_tokens=1024,
+            system=&quot;&quot;&quot;You coordinate platform integrations. Route requests to the appropriate specialist:
+- CRM: Contact records, opportunities, accounts, sales pipeline
+- Marketing: Campaigns, lead nurturing, email sequences, scoring
+- Messaging: Notifications, alerts, team communication&quot;&quot;&quot;,
+            messages=[
+                {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: user_request}
+            ],
+            tools=[delegate_to_crm, delegate_to_marketing, delegate_to_messaging]
+        )
+        return response
+`This pattern mirrors effective professional collaboration, where specialists with tools matched to their roles collaborate more effectively than generalists attempting to maintain expertise across all domains. However, specialization introduces routing complexity. The orchestrator must correctly classify requests and delegate to the right agent, and misrouting leads to poor results. Maintaining multiple specialized agents also increases prompt maintenance overhead. Specialization works best when domains are clearly separable and routing decisions are unambiguous.
+
+## Outgrowing single-agent architectures
+
+Beyond the general framework, certain concrete signals suggest that single-agent patterns have been outgrown:
+
+**Approaching context limits.**If an agent routinely uses large amounts of context and performance is degrading, context pressure may be the bottleneck. Note that recent advances in context management ([such as compaction](https://platform.claude.com/cookbook/tool-use-automatic-context-compaction)) are reducing this limitation, allowing single agents to maintain effective memory across much longer horizons.
+
+**Managing many tools.** When an agent has 15-20+ tools, the model spends significant context and attention understanding its options. Before adopting a multi-agent architecture, consider using the[ Tool Search Tool](https://docs.anthropic.com/en/docs/agents-and-tools/tool-use/tool-search-tool), which lets Claude dynamically discover tools on-demand rather than loading all definitions upfront. This can [reduce token usage by up to 85%](https://www.anthropic.com/engineering/advanced-tool-use) while improving tool selection accuracy.
+
+**Parallelizable subtasks.** When tasks naturally decompose into independent pieces (research across multiple sources, tests for multiple components), parallel subagents can provide substantial speedups.
+
+These thresholds will shift as models improve. Current limits represent practical guidelines, not fundamental constraints.
+
+## Context-centric decomposition
+
+When adopting a multi-agent architecture, the most important design decision is how to divide work between agents. We've observed that teams frequently make this choice incorrectly, leading to coordination overhead that negates the benefits of multi-agent design.
+
+The key insight is to adopt a **context-centric view** rather than a problem-centric view when decomposing work.
+
+**Problem-centric decomposition (often counterproductive).** Dividing by type of work (one agent writes features, another writes tests, a third reviews code) creates constant coordination overhead. Each handoff loses context. The test-writing agent lacks knowledge of why certain implementation decisions were made and the code reviewer lacks the context of exploration and iteration.
+
+**Context-centric decomposition (usually effective).** Dividing by context boundaries means an agent handling a feature should also handle its tests, because it already possesses the necessary context. Work should only be split when context can be truly isolated.
+
+This principle emerges from observing failure modes in multi-agent systems. When agents are split by problem type, they engage in a &quot;telephone game,&quot; passing information back and forth with each handoff degrading fidelity. In one experiment with agents specialized by software development role (planner, implementer, tester, reviewer), the subagents spent more tokens on coordination than on actual work.
+
+**Effective decomposition boundaries include:**
+
+- **Independent research paths.** Investigating &quot;market trends in Asia&quot; versus &quot;market trends in Europe&quot; can proceed in parallel with no shared context.
+- **Separate components with clean interfaces.** With a well-defined API contract, frontend and backend work can proceed in parallel.
+- **Blackbox verification.** A verifier that only needs to run tests and report results does not require implementation context.
+
+**Problematic decomposition boundaries include:**
+
+- **Sequential phases of the same work.** Planning, implementation, and testing of the same feature share too much context.
+- **Tightly coupled components.** Components requiring constant back-and-forth belong in the same agent.
+- **Work requiring shared state.** Agents that would need to frequently synchronize understanding should remain together.
+
+## The verification subagent pattern
+
+One multi-agent pattern that consistently works well across domains is the **verification subagent**. This is a dedicated agent whose sole responsibility is testing or validating the main agent's work.
+
+It's worth noting that more capable orchestrator models (like Claude Opus 4.5) are increasingly able to evaluate subagent work directly without a separate verification step. However, verification subagents remain valuable when using less capable orchestrators, when verification requires specialized tools, or when you want to enforce explicit verification checkpoints in your workflow.
+
+Verification subagents succeed because they sidestep the telephone game problem. Verification requires minimal context transfer by nature, so a verifier can blackbox-test a system without needing the full history of how it was built.
+
+### Implementating a multi-agent system
+
+The main agent completes a unit of work. Before proceeding, it spawns a verification subagent with the artifact to verify, clear success criteria, and tools to perform verification.
+
+The verifier does not need to understand why the artifact was built as it was. It only needs to determine whether the artifact meets the specified criteria.
+
+`from anthropic import Anthropic
+
+client = Anthropic()
+
+class CodingAgent:
+    def implement_feature(self, requirements: str) -&gt; dict:
+        &quot;&quot;&quot;Main agent implements the feature&quot;&quot;&quot;
+        messages = [
+            {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;Implement: {requirements}&quot;}
+        ]
+        response = client.messages.create(
+            model=&quot;claude-sonnet-4-5&quot;,
+            max_tokens=4096,
+            messages=messages,
+            tools=[read_file, write_file, list_directory]
+        )
+        return {
+            &quot;code&quot;: response.content,
+            &quot;files_changed&quot;: extract_files(response)
+        }
+
+class VerificationAgent:
+    def verify_implementation(self, requirements: str, files_changed: list) -&gt; dict:
+        &quot;&quot;&quot;Separate agent verifies the work&quot;&quot;&quot;
+        messages = [
+            {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;&quot;&quot;
+Requirements: {requirements}
+Files changed: {files_changed}
+
+Run the test suite and verify:
+1. All existing tests pass
+2. New functionality works as specified
+3. No obvious errors or security issues
+
+You MUST run the complete test suite before marking as passed.
+Do not mark as passing after only running a few tests.
+Run: pytest --verbose
+Only mark as PASSED if ALL tests pass with no failures.
+&quot;&quot;&quot;}
+        ]
+        response = client.messages.create(
+            model=&quot;claude-sonnet-4-5&quot;,
+            max_tokens=4096,
+            messages=messages,
+            tools=[run_tests, execute_code, read_file]
+        )
+        return {
+            &quot;passed&quot;: extract_pass_fail(response),
+            &quot;issues&quot;: extract_issues(response)
+        }
+
+def implement_with_verification(requirements: str, max_attempts: int = 3):
+    for attempt in range(max_attempts):
+        result = CodingAgent().implement_feature(requirements)
+        verification = VerificationAgent().verify_implementation(
+            requirements,
+            result['files_changed']
+        )
+        
+        if verification['passed']:
+            return result
+        
+        requirements += f&quot;\n\nPrevious attempt failed: {verification['issues']}&quot;
+    
+    raise Exception(f&quot;Failed verification after {max_attempts} attempts&quot;)`
+### Multi-agent system applications
+
+Verification subagents are effective for:
+
+- **Quality assurance.** Running test suites, linting code, validating outputs against schemas.
+- **Compliance checking.** Verifying documents meet policy requirements, checking outputs against rules.
+- **Output validation.** Confirming generated content meets specifications before delivery.
+- **Factual verification.** Having a separate agent verify claims or citations in generated content.
+
+### The early victory problem
+
+The most significant failure mode for verification subagents is marking outputs as passing without thorough testing. The verifier runs one or two tests, observes them pass, and declares success.
+
+Mitigation strategies include:
+
+- **Concrete criteria.** Specify &quot;Run the full test suite and report all failures&quot; rather than &quot;make sure it works.&quot;
+- **Comprehensive checks.** Require the verifier to test multiple scenarios and edge cases.
+- **Negative tests.** Direct the verifier to attempt inputs that should fail and confirm they do.
+- **Explicit instructions.** The instruction &quot;You MUST run the complete test suite before marking as passed&quot; is essential. Without explicit requirements for comprehensive validation, verification agents take shortcuts.
+
+## Choosing between single-agent and multi-agent systems
+
+Multi-agent systems are powerful, but not universally appropriate. Before adding the complexity of multiple coordinated agents, confirm that:
+
+- **Genuine constraints exist** that multi-agent solves, such as context limits, parallelization opportunities, or need for specialization.
+- **Decomposition follows context, not problem type.** Group work by what context it requires, not by what kind of work it is.
+- **Clear verification points exist** where subagents can validate work without requiring full context.
+
+Our advice? Start with the simplest approach that works, and add complexity only when evidence supports it.
+
+*This is the first in a series of posts on multi-agent systems. For more on single-agent patterns, see *[*Building effective agents*](https://www.anthropic.com/engineering/building-effective-agents)*. For context management strategies, see *[*Effective context engineering for AI agents*](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)*. For a deep dive into how we built our multi-agent research system, see *[*How we built our multi-agent research system*](https://www.anthropic.com/engineering/multi-agent-research-system)*.*
+
+## Acknowledgements
+
+Written by Cara Phillips, with contributions from Paul Chen, Andy Schumeister, Brad Abrams, and Theo Chu.</textarea>
     </div>
-  </header>
-<main class="main">
-    <div class="container article-container">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="tag">Agents</span>
-            <span class="article-date">January 23, 2026</span>
-            <span class="lang-badge-large">EN</span>
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-heather);">
+            <img class="hero-illo-img" src="/assets/illustrations/building-multi-agent-systems-when-and-how-to-use-them.svg" alt="" loading="lazy">
           </div>
-          <h1 class="article-title">Building multi-agent systems: When and how to use them</h1>
-          <a href="/posts/building-multi-agent-systems-when-and-how-to-use-them/" class="lang-toggle">阅读中文翻译 →</a>
-        </header>
-        <div class="article-content u-rich-text">
-          <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><h2>What is a multi-agent system?</h2><p>A multi-agent system is an architecture where multiple LLM instances run with separate conversation contexts, coordinated through code. Each agent handles a distinct slice of a task — a subagent researches while an orchestrator plans, for example — which protects context, enables parallel work, and allows specialization a single agent can't sustain.</p><p>Multiple coordination patterns exist (agent swarms, capability-based systems, and message bus architectures), but this article focuses on the orchestrator-subagent pattern: a hierarchical model where a lead agent spawns and manages specialized subagents for specific subtasks. This pattern offers a straightforward coordination model and is a good starting point for teams new to multi-agent systems. We'll explore other patterns in detail in our next article.</p><p>Today, multi-agent systems are often applied in situations where a single agent would perform better, though this calculus continues to evolve as models improve. At Anthropic, we’ve seen teams invest months building elaborate multi-agent architectures only to discover that improved prompting on a single agent achieved equivalent results.</p><p>After building multi-agent systems and working with teams deploying them in production, we've identified three situations where multiple agents consistently outperform a single agent: when context pollution degrades performance, when tasks can run in parallel, and when specialization improves tool selection or task focus. Outside these situations, the coordination costs typically exceed the benefits.<br>In this article, we share how to recognize single-agent limits, identify the three scenarios where multi-agent systems excel, and avoid common implementation mistakes.&nbsp;</p><h2>The case for starting with a single agent</h2><p>A well-designed single agent with appropriate tools can accomplish far more than many developers expect.</p><p>Multi-agent systems introduce overhead. Every additional agent represents another potential point of failure, another set of prompts to maintain, and another source of unexpected behavior.&nbsp;</p><p>We've observed teams build elaborate multi-agent systems with separate agents for planning, execution, review, and iteration, only to discover that they suffered from lost context at each handoff and spent more tokens coordinating than executing. In our testing, multi-agent implementations typically use 3-10x more tokens than single-agent approaches for equivalent tasks. This overhead stems from duplicating context across agents, coordination messages between agents, and summarizing results for handoffs.</p><h2>A decision framework for multi-agent systems</h2><p>Multi-agent architectures provide value when they address specific constraints that a single agent cannot overcome. This means multi-agent architectures should be reserved for cases where they provide clear benefits that justify the additional cost.&nbsp;Managed infrastructure can also handle this for you (see <a href="https://claude.com/blog/new-in-claude-managed-agents">multiagent orchestration in Claude Managed Agents)</a>.</p><p>The patterns below represent cases where we consistently observe positive returns on this investment.</p><h3>Context protection</h3><p>Large language models have finite context windows, and response quality can degrade as context grows. When an agent's context accumulates information from one subtask that is irrelevant to subsequent subtasks, context pollution occurs. Subagents provide isolation, with each operating in its own clean context focused on its specific task.</p><p>Consider a customer support agent that needs to retrieve order history while diagnosing technical issues. If every order lookup adds thousands of tokens to the context, the agent's ability to reason about the technical problem degrades.</p><p>‍</p><p><strong>The single-agent approach:</strong></p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-javascript" style="white-space:pre-wrap"><span style="color:#abe338"><span># Single agent accumulates everything </span><span style="color:#dcc6e0">in</span><span> context
+            <h1 class="article-title u-text-style-h1">Building multi-agent systems: When and how to use them</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>While single-agent systems handle most enterprise workflows effectively, multi-agent architectures can unlock additional value for your organization. Learn when and how to use them.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/agents" target="_blank" rel="noopener noreferrer">Agents</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <div class="hero-detail-value-stack"><a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/platform/api" target="_blank" rel="noopener noreferrer">Claude Platform</a><div class="hero-detail-value u-text-style-body-3">Claude Code</div></div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">January 23, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/building-multi-agent-systems-when-and-how-to-use-them/en.html">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><h2>What is a multi-agent system?</h2><p>A multi-agent system is an architecture where multiple LLM instances run with separate conversation contexts, coordinated through code. Each agent handles a distinct slice of a task — a subagent researches while an orchestrator plans, for example — which protects context, enables parallel work, and allows specialization a single agent can't sustain.</p><p>Multiple coordination patterns exist (agent swarms, capability-based systems, and message bus architectures), but this article focuses on the orchestrator-subagent pattern: a hierarchical model where a lead agent spawns and manages specialized subagents for specific subtasks. This pattern offers a straightforward coordination model and is a good starting point for teams new to multi-agent systems. We'll explore other patterns in detail in our next article.</p><p>Today, multi-agent systems are often applied in situations where a single agent would perform better, though this calculus continues to evolve as models improve. At Anthropic, we’ve seen teams invest months building elaborate multi-agent architectures only to discover that improved prompting on a single agent achieved equivalent results.</p><p>After building multi-agent systems and working with teams deploying them in production, we've identified three situations where multiple agents consistently outperform a single agent: when context pollution degrades performance, when tasks can run in parallel, and when specialization improves tool selection or task focus. Outside these situations, the coordination costs typically exceed the benefits.<br>In this article, we share how to recognize single-agent limits, identify the three scenarios where multi-agent systems excel, and avoid common implementation mistakes.&nbsp;</p><h2>The case for starting with a single agent</h2><p>A well-designed single agent with appropriate tools can accomplish far more than many developers expect.</p><p>Multi-agent systems introduce overhead. Every additional agent represents another potential point of failure, another set of prompts to maintain, and another source of unexpected behavior.&nbsp;</p><p>We've observed teams build elaborate multi-agent systems with separate agents for planning, execution, review, and iteration, only to discover that they suffered from lost context at each handoff and spent more tokens coordinating than executing. In our testing, multi-agent implementations typically use 3-10x more tokens than single-agent approaches for equivalent tasks. This overhead stems from duplicating context across agents, coordination messages between agents, and summarizing results for handoffs.</p><h2>A decision framework for multi-agent systems</h2><p>Multi-agent architectures provide value when they address specific constraints that a single agent cannot overcome. This means multi-agent architectures should be reserved for cases where they provide clear benefits that justify the additional cost.&nbsp;Managed infrastructure can also handle this for you (see <a href="https://claude.com/blog/new-in-claude-managed-agents">multiagent orchestration in Claude Managed Agents)</a>.</p><p>The patterns below represent cases where we consistently observe positive returns on this investment.</p><h3>Context protection</h3><p>Large language models have finite context windows, and response quality can degrade as context grows. When an agent's context accumulates information from one subtask that is irrelevant to subsequent subtasks, context pollution occurs. Subagents provide isolation, with each operating in its own clean context focused on its specific task.</p><p>Consider a customer support agent that needs to retrieve order history while diagnosing technical issues. If every order lookup adds thousands of tokens to the context, the agent's ability to reason about the technical problem degrades.</p><p>‍</p><p><strong>The single-agent approach:</strong></p><pre contenteditable="false" class="w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-javascript" style="white-space:pre-wrap"><span style="color:#abe338"><span># Single agent accumulates everything </span><span style="color:#dcc6e0">in</span><span> context
 </span></span><span style="color:#abe338">conversation_history = [
 </span><span style="color:#abe338"><span>    {</span><span style="color:#abe338">"role"</span><span>: </span><span style="color:#abe338">"user"</span><span>, </span><span style="color:#abe338">"content"</span><span>: </span><span style="color:#abe338">"My order #12345 isn't working"</span><span>},
 </span></span><span style="color:#abe338"><span>    {</span><span style="color:#abe338">"role"</span><span>: </span><span style="color:#abe338">"assistant"</span><span>, </span><span style="color:#abe338">"content"</span><span>: </span><span style="color:#abe338">"Let me check your order..."</span><span>},
@@ -221,13 +632,15 @@
 </span><span><span>        requirements += f</span><span style="color:#abe338">"\n\nPrevious attempt failed: {verification['issues']}"</span><span>
 </span></span><span>    
 </span><span><span>    raise Exception(f</span><span style="color:#abe338">"Failed verification after {max_attempts} attempts"</span><span>)</span></span></code></pre><h3>Multi-agent system applications</h3><p>Verification subagents are effective for:</p><ul role="list"><li><strong>Quality assurance.</strong> Running test suites, linting code, validating outputs against schemas.</li><li><strong>Compliance checking.</strong> Verifying documents meet policy requirements, checking outputs against rules.</li><li><strong>Output validation.</strong> Confirming generated content meets specifications before delivery.</li><li><strong>Factual verification.</strong> Having a separate agent verify claims or citations in generated content.</li></ul><h3>The early victory problem</h3><p>The most significant failure mode for verification subagents is marking outputs as passing without thorough testing. The verifier runs one or two tests, observes them pass, and declares success.</p><p>Mitigation strategies include:</p><ul role="list"><li><strong>Concrete criteria.</strong> Specify "Run the full test suite and report all failures" rather than "make sure it works."</li><li><strong>Comprehensive checks.</strong> Require the verifier to test multiple scenarios and edge cases.</li><li><strong>Negative tests.</strong> Direct the verifier to attempt inputs that should fail and confirm they do.</li><li><strong>Explicit instructions.</strong> The instruction "You MUST run the complete test suite before marking as passed" is essential. Without explicit requirements for comprehensive validation, verification agents take shortcuts.</li></ul><h2>Choosing between single-agent and multi-agent systems</h2><p>Multi-agent systems are powerful, but not universally appropriate. Before adding the complexity of multiple coordinated agents, confirm that:</p><ol role="list"><li><strong>Genuine constraints exist</strong> that multi-agent solves, such as context limits, parallelization opportunities, or need for specialization.</li><li><strong>Decomposition follows context, not problem type.</strong> Group work by what context it requires, not by what kind of work it is.</li><li><strong>Clear verification points exist</strong> where subagents can validate work without requiring full context.</li></ol><p>Our advice? Start with the simplest approach that works, and add complexity only when evidence supports it.</p><p><em>This is the first in a series of posts on multi-agent systems. For more on single-agent patterns, see </em><a href="https://www.anthropic.com/engineering/building-effective-agents"><em>Building effective agents</em></a><em>. For context management strategies, see </em><a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"><em>Effective context engineering for AI agents</em></a><em>. For a deep dive into how we built our multi-agent research system, see </em><a href="https://www.anthropic.com/engineering/multi-agent-research-system"><em>How we built our multi-agent research system</em></a><em>.</em></p><h2>Acknowledgements</h2><p>Written by Cara Phillips, with contributions from Paul Chen, Andy Schumeister, Brad Abrams, and Theo Chu.</p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/building-multi-agent-systems-when-and-how-to-use-them" target="_blank">View original</a></p>
+              <p><a href="/">← Back to home</a></p>
+            </footer>
+          </article>
         </div>
-        <footer class="article-footer">
-          <hr>
-          <p><a href="https://claude.com/blog/building-multi-agent-systems-when-and-how-to-use-them" target="_blank">View original</a></p>
-          <p><a href="/">← Back to home</a></p>
-        </footer>
-      </article>
+      </div>
     </div>
   </main>
 <footer class="footer">
@@ -235,6 +648,53 @@
       <p>Content from <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · Translation by AI</p>
     </div>
   </footer>
-
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>
