@@ -1,6 +1,36 @@
 {
   "articles": [
     {
+      "slug": "reducing-cost-and-improving-performance-with-claude-platform",
+      "title": "Reducing cost and improving performance with Claude Platform",
+      "date": "September 8, 2026",
+      "category": "Agents",
+      "url": "https://claude.com/blog/reducing-cost-and-improving-performance-with-claude-platform",
+      "inHero": false,
+      "heroIndex": -1,
+      "inGrid": true,
+      "illustration": "assets/illustrations/reducing-cost-and-improving-performance-with-claude-platform.svg",
+      "illustrationBg": "Mineral",
+      "facets": {
+        "category": [
+          "Agents"
+        ],
+        "product": [
+          "Claude Platform"
+        ],
+        "usecase": []
+      },
+      "subtitle": "Tuning prompt caching, instructions, and effort can reduce Claude's cost without sacrificing application performance.",
+      "authors": [
+        "Lance Martin"
+      ],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/agents",
+      "productUrl": "https://claude.com/platform/api",
+      "fetchedAt": "2026-09-08T22:04:40.723Z",
+      "translated": true
+    },
+    {
       "slug": "the-anatomy-of-effective-commerce-agents",
       "title": "A guide to the anatomy of effective commerce agents",
       "date": "September 2, 2026",
@@ -7784,5 +7814,5 @@
       "productUrl": "https://claude.com/platform/api"
     }
   ],
-  "lastFetched": "2026-09-08T04:05:08.734Z"
+  "lastFetched": "2026-09-08T22:04:48.583Z"
 }
