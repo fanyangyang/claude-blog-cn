@@ -1,0 +1,29 @@
+{
+  "slug": "what-1-000-small-business-owners-taught-us-about-ai",
+  "title": "What 1,000 small business owners taught us about AI",
+  "date": "September 10, 2026",
+  "category": "Enterprise AI",
+  "url": "https://claude.com/blog/what-1-000-small-business-owners-taught-us-about-ai",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/what-1-000-small-business-owners-taught-us-about-ai.svg",
+  "illustrationBg": "Cactus",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude for Small Business"
+    ],
+    "usecase": []
+  },
+  "subtitle": "Lina Ochman, Head of U.S. SMB at Anthropic, shares what she learned during our Claude SMB Tour, and what’s next for the program.",
+  "authors": [
+    "Lina Ochman"
+  ],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "",
+  "fetchedAt": "2026-09-10T22:04:05.732Z"
+}

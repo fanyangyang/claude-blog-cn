@@ -1,6 +1,74 @@
 {
   "articles": [
     {
+      "slug": "t-rowe-price-brings-more-of-claude-to-its-investment-process",
+      "title": "T. Rowe Price brings more of Claude to its investment process",
+      "date": "September 10, 2026",
+      "category": "General",
+      "url": "https://claude.com/blog/t-rowe-price-brings-more-of-claude-to-its-investment-process",
+      "inHero": false,
+      "heroIndex": -1,
+      "inGrid": true,
+      "illustration": "assets/illustrations/t-rowe-price-brings-more-of-claude-to-its-investment-process.svg",
+      "illustrationBg": "Sky",
+      "facets": {
+        "category": [],
+        "product": [
+          "Claude Code",
+          "Claude Cowork",
+          "Claude apps"
+        ],
+        "usecase": [
+          "Business"
+        ]
+      },
+      "subtitle": "T. Rowe Price's portfolio managers and analysts are working with Claude and Claude Cowork on fundamental research, and its developers are building investment tools with Claude Code.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "",
+      "productUrl": "https://claude.com/product/claude-code",
+      "fetchedAt": "2026-09-10T22:04:05.121Z",
+      "translated": true,
+      "translatedTitle": "T. Rowe Price 将 Claude 更广泛地引入其投资流程",
+      "translatedSubtitle": "T. Rowe Price 的投资组合经理和分析师正在使用 Claude 与 Claude Cowork 开展基本面研究，其开发人员则使用 Claude Code 构建投资工具。",
+      "translatedAt": "2026-09-11T04:07:13.351Z",
+      "translateLang": "zh"
+    },
+    {
+      "slug": "what-1-000-small-business-owners-taught-us-about-ai",
+      "title": "What 1,000 small business owners taught us about AI",
+      "date": "September 10, 2026",
+      "category": "Enterprise AI",
+      "url": "https://claude.com/blog/what-1-000-small-business-owners-taught-us-about-ai",
+      "inHero": false,
+      "heroIndex": -1,
+      "inGrid": true,
+      "illustration": "assets/illustrations/what-1-000-small-business-owners-taught-us-about-ai.svg",
+      "illustrationBg": "Cactus",
+      "facets": {
+        "category": [
+          "Enterprise AI"
+        ],
+        "product": [
+          "Claude for Small Business"
+        ],
+        "usecase": []
+      },
+      "subtitle": "Lina Ochman, Head of U.S. SMB at Anthropic, shares what she learned during our Claude SMB Tour, and what’s next for the program.",
+      "authors": [
+        "Lina Ochman"
+      ],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "",
+      "fetchedAt": "2026-09-10T22:04:05.732Z",
+      "translated": true,
+      "translatedTitle": "1,000 位小企业主教会了我们关于 AI 的什么",
+      "translatedSubtitle": "Anthropic 美国中小企业业务负责人 Lina Ochman 分享了她在 Claude SMB 巡回活动中所学到的东西，以及该项目接下来的方向。",
+      "translatedAt": "2026-09-11T04:07:52.724Z",
+      "translateLang": "zh"
+    },
+    {
       "slug": "reducing-cost-and-improving-performance-with-claude-platform",
       "title": "Reducing cost and improving performance with Claude Platform",
       "date": "September 8, 2026",
@@ -7814,5 +7882,5 @@
       "productUrl": "https://claude.com/platform/api"
     }
   ],
-  "lastFetched": "2026-09-10T04:04:30.650Z"
+  "lastFetched": "2026-09-11T04:04:25.409Z"
 }

@@ -1,0 +1,29 @@
+{
+  "slug": "t-rowe-price-brings-more-of-claude-to-its-investment-process",
+  "title": "T. Rowe Price brings more of Claude to its investment process",
+  "date": "September 10, 2026",
+  "category": "General",
+  "url": "https://claude.com/blog/t-rowe-price-brings-more-of-claude-to-its-investment-process",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/t-rowe-price-brings-more-of-claude-to-its-investment-process.svg",
+  "illustrationBg": "Sky",
+  "facets": {
+    "category": [],
+    "product": [
+      "Claude Code",
+      "Claude Cowork",
+      "Claude apps"
+    ],
+    "usecase": [
+      "Business"
+    ]
+  },
+  "subtitle": "T. Rowe Price's portfolio managers and analysts are working with Claude and Claude Cowork on fundamental research, and its developers are building investment tools with Claude Code.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "",
+  "productUrl": "https://claude.com/product/claude-code",
+  "fetchedAt": "2026-09-10T22:04:05.121Z"
+}
