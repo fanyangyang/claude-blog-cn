@@ -1,0 +1,27 @@
+{
+  "slug": "claude-for-financial-advisors",
+  "title": "Claude for Financial Advisors",
+  "date": "September 14, 2026",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/claude-for-financial-advisors",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/claude-for-financial-advisors.svg",
+  "illustrationBg": "Clay",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [],
+    "usecase": [
+      "Financial services"
+    ]
+  },
+  "subtitle": "Financial advisors can now connect Claude to the custodians, portfolio platforms, CRMs, and planning tools they depend on, along with new skills tailored to the daily work of a financial advisor.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "",
+  "fetchedAt": "2026-09-14T16:15:42.202Z"
+}

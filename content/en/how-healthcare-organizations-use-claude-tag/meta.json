@@ -1,0 +1,33 @@
+{
+  "slug": "how-healthcare-organizations-use-claude-tag",
+  "title": "How healthcare organizations use Claude Tag",
+  "date": "September 14, 2026",
+  "category": "Enterprise AI",
+  "url": "https://claude.com/blog/how-healthcare-organizations-use-claude-tag",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/how-healthcare-organizations-use-claude-tag.svg",
+  "illustrationBg": "Plum",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Tag"
+    ],
+    "usecase": [
+      "Health care and life sciences"
+    ]
+  },
+  "subtitle": "How Insight Health, Tennr, and Medallion are building human-agent teams with Claude Tag.",
+  "authors": [
+    "Camy Pearson",
+    "Maria Howe",
+    "Araba Koomson"
+  ],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/product/tag",
+  "fetchedAt": "2026-09-14T22:10:09.870Z"
+}

@@ -1,0 +1,34 @@
+{
+  "slug": "agentic-coding-is-straining-ci-heres-how-we-scaled-test-impact-analysis-at-anthropic",
+  "title": "Agentic coding is straining CI. Here’s how we scaled test impact analysis at Anthropic",
+  "date": "September 14, 2026",
+  "category": "Claude Code",
+  "url": "https://claude.com/blog/agentic-coding-is-straining-ci-heres-how-we-scaled-test-impact-analysis-at-anthropic",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/agentic-coding-is-straining-ci-heres-how-we-scaled-test-impact-analysis-at-anthropic.svg",
+  "illustrationBg": "Sky",
+  "facets": {
+    "category": [
+      "Claude Code",
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Code",
+      "Claude Enterprise",
+      "Claude Tag"
+    ],
+    "usecase": [
+      "Coding"
+    ]
+  },
+  "subtitle": "Our CI job volume increased 25x over 6 months. We patched our test selection service three times before finding a sustainable solution.",
+  "authors": [
+    "Sachin Malhotra"
+  ],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/claude-code",
+  "productUrl": "https://claude.com/product/claude-code",
+  "fetchedAt": "2026-09-14T22:10:09.747Z"
+}

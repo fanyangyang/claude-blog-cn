@@ -1,0 +1,7 @@
+{
+  "slug": "agentic-coding-is-straining-ci-heres-how-we-scaled-test-impact-analysis-at-anthropic",
+  "translatedTitle": "智能体编码正在给 CI 带来压力：我们如何在 Anthropic 扩展测试影响分析",
+  "translatedAt": "2026-09-15T04:06:27.213Z",
+  "lang": "zh",
+  "translatedSubtitle": "我们的 CI 任务量在 6 个月内增长了 25 倍。在找到可持续的解决方案之前，我们对测试选择服务打了三个补丁。"
+}

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude for Financial Advisors — Claude Blog 中文翻译</title>
+  <meta name="description" content="财务顾问现在可以将 Claude 连接到他们依赖的托管机构、投资组合平台、CRM 和规划工具，以及为财务顾问日常工作量身定制的新技能。">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>Claude for Financial Advisors</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/claude-for-financial-advisors" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/claude-for-financial-advisors/en.html">阅读英文原文 →</a>
+      </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># Claude for Financial Advisors
+
+财务顾问现在可以将 Claude 连接到他们依赖的托管机构、投资组合平台、CRM 和规划工具，以及为财务顾问日常工作量身定制的新技能。
+
+今天，我们发布了 Claude for Financial Advisors——一套连接器（Connectors）与工作流技能（Skills）套件，旨在处理占据顾问大量时间、让他们无法专注于客户工作的研究、准备和文档任务。
+
+财务顾问的时间非常宝贵。根据 [Kitces 的研究](https://www.kitces.com/kitces-report-how-financial-planners-actually-do-financial-planning/)，典型的顾问业务只有六分之一的时间花在客户会议上，其余时间都用于围绕会议展开的工作：跨系统拼凑信息、做准备、做规划、记录讨论内容。与此同时，根据 [EBRI 的 2026 年退休信心调查](https://www.ebri.org/docs/default-source/rcs/2026-rcs/rcs_26-fs-3_prep.pdf)，超过四成的美国上班族表示，他们不知道该找谁获取可靠的财务或退休规划建议。顾问在准备工作和文书工作上节省下来的时间，可以用于服务现有客户，或服务那些他们目前还没有余力承接的新客户家庭。 
+
+Claude for Financial Advisors 包括： 
+
+- **Connectors（连接器），**which** **让 Claude 能够访问顾问最依赖的托管机构、资产管理公司和财富科技提供商，使顾问可以在一个地方处理客户的信息。 
+- **Skills（技能），**利用这些信息帮助完成具体任务，例如会议准备、投资组合分析和合规检查，始终服务于顾问自身的判断和风格。 
+
+## **连接顾问已经在使用的工具**
+
+新增的连接器接入了顾问依赖的 CRM、托管系统、投资组合报告、财务规划软件、遗产规划和会议记录工具。 
+
+- **Addepar** 将投资情报引入 Claude，让顾问在受管控的访问权限下，获取公开和私募市场的投资组合数据、分析和工作流。
+- **BlackRock** 通过 Advisor Center 将其组合构建专长、模型投资组合和机构级分析引入 Claude，使顾问能够在公开和私募市场提供全面的建议。
+- **Charles Schwab** 将 Claude 连接到 Schwab Advisor Services 的托管数据，包括余额、持仓、交易、成本基础、提醒和资金变动状态，让顾问可以审阅客户信息、识别需要关注的客户，并为评审做好准备。 
+- **Envestnet** 让顾问可以用自然语言总结 Tamarac 账户和客户家庭，并获得 MoneyGuide 的财务计划概览。 
+- **iCapital **将客户的另类投资持仓引入 Claude，使顾问能够查看 NAV、承诺出资、未出资资本、近期资本活动和业绩表现，同时更轻松地将这些洞察与客户更广泛的投资组合联系起来。
+- **Orion** 将投资组合报告和 Redtail CRM 的洞察引入 Claude，用于家庭账户评审、机会分析、会议准备和后续跟进*。  *
+- **SS&amp;C Black Diamond **将投资组合、业绩、持仓和再平衡数据引入 Claude，使顾问能够审阅业务账本、发现偏离目标区间的客户、发现税收损失收割机会，并在获得批准后生成客户报告、任务和再平衡会话。
+- **Wealthbox **将 Claude 连接到客户记录和会议历史，支持开户、会议准备和后续跟进。
+- **Wealth.com** 为 Claude 提供每个客户遗产与税务状况的结构化视图，包括信托和遗嘱摘要、税务申报洞察以及完整的资产负债表，使顾问能够从有序的信息摘要开始规划，而不是处理散落在多个系统中的文档。 
+- **Vanguard **将其模型投资组合和顾问投资解决方案的信息引入 Claude，使顾问在为客户做决策时，可以借鉴 Vanguard 值得信赖的研究、组合构建和资产配置专长。
+- **Zocks** 作为面向财务顾问的 AI 会议助手，将每一次对话中捕获的客户情报带给 Claude，包括客户档案、目标、人生大事和承诺事项。
+
+这些连接器加入了 Claude 中已有的其他 [connectors](https://claude.com/connectors)，包括 Microsoft 365、Salesforce、DocuSign、Box、FactSet、S&amp;P Global、Morningstar 等。
+
+Claude for Financial Advisors 插件将顾问技能和连接器打包为一次安装，支持 BlackRock、Charles Schwab、Addepar、Envestnet、iCapital、Orion、Wealthbox、Wealth.com 和 Zocks，顾问可以在引导式设置过程中选择要连接哪些工具。部分合作伙伴也提供自己的插件：BlackRock 将推出一个针对 Advisor Center 的插件，加入 S&amp;P Global 和 LSEG 现有的插件行列。
+
+## **围绕顾问一天工作构建的技能**
+
+Claude for Financial Advisors 插件中的每项技能都对应顾问一天工作中的特定时刻，从为客户会议做准备到解释偏离目标的投资组合，并将流程路由到公司已经在使用的业务工具。公司可以按原样采用我们 Claude for Financial Advisors 技能库中的技能，也可以将其改造为适应自己的工作流、服务模式和内部风格。
+
+- **顾问入职（Advisor onboarding）**自动连接公司的工具并运行第一次会议准备，帮助新顾问在第一天（而不是第三周）就进入高效状态。
+- **另类投资简报（Alternative investments brief）**将客户家庭的另类投资从 iCapital 或 Addepar 汇总为一份可直接用于会议的摘要，并与投资组合其余部分并列展示，顾问无需再手动核对多份独立报表。 
+- **合规与 AI 政策（Compliance and AI policy）**根据用户配置的标准，标出可能需要额外合规审查的内容，协助公司记录审查工作流，并支持 AI 治理文档化流程。
+- **遗产与税务简报（Estate and tax brief）**对照实际账户所有权和受益人信息检查客户的遗产规划，回溯上一年度的税务情况，并可创建 CRM 后续任务，使不一致之处浮现出来供顾问审阅。
+- **投资组合再平衡审查（Portfolio rebalance review）**对照客户的目标配置标记偏离和集中持仓，并生成顾问原本需要从零起草的解释初稿。
+- **会后记录与跟进（Post-meeting notes and follow-up）**一次性将会议记录转化为客户摘要、回顾邮件和 CRM 任务，顾问无需在通话结束后逐一手动完成。 
+- **会前准备（Pre-meeting prep）**将来自各连接系统的信息（包括客户持仓、近期账户活动和上次会议的待办事项）整合成一份供顾问审阅的简报，让他们可以带着准备进入对话，针对该客户的具体情况展开讨论，而不是从三个系统中重新拼凑背景信息。
+- **潜在客户录入（Prospect intake）**将潜在客户分享的信息整理成摘要、分析师交接材料和预期说明备忘录，让第一次会议从一开始就有条不紊。 
+
+这些技能协同工作，在顾问一天的工作中收集信息、进行总结，并起草客户沟通内容。投资建议、客户沟通、合规判定以及其他受监管活动，仍需经过人工审查和批准。
+
+## **为受监管的专业人士打造**
+
+Claude for Financial Advisors 的设计确保顾问始终掌握控制权，关键任务需要获得批准。Claude 为顾问准备简报、摘要和草拟分析供其审阅，并将 CRM 更新或客户沟通草稿等行政操作分阶段提交给顾问审查和批准。合规技能会根据 SEC 营销规则（SEC Marketing Rule）审查面向客户的措辞，标记潜在问题，帮助公司在其现有的治理和记录保存流程中记录审查活动，并包含一个自助式 AI 政策工作流，帮助公司按照 SEC 规则记录其 AI 使用情况。工作流活动可以被记录，以协助公司维护适当的记录和监督流程。 
+
+## **服务更多客户家庭**
+
+当 Claude 处理会议准备、跟进草稿和销售管线审查等行政任务时，顾问可以将更多时间用于服务客户。业务可以扩大客户群，并提供更多客户所需的服务，如税务、遗产、保险和退休规划。 
+
+以下是客户和生态合作伙伴与我们分享的、关于使用 Claude 的感受： 
+
+“顾问们正在应对日益复杂的客户需求，同时还要面对市场和技术加速变化的节奏。我们与 Anthropic 的合作，是我们更广泛努力中的重要一步：将 BlackRock 的投资组合情报和资产配置专长带给更多顾问，帮助他们扩大业务规模、构建更好的投资组合。通过让机构级投资组合分析更易获取，我们在帮助更多顾问运用我们的投资组合情报，让他们能把更多时间花在客户关系上。”
+
+Jaime Magyera，美国财富与退休业务负责人“Anthropic 构建的 AI 与人类价值观保持一致。Mercer Advisors 构建的家族办公室与客户利益保持一致。这种共同的执着是两家公司的核心，也是我们合作的基础。Claude 帮助我们的团队在客户的财务生活中无缝协作，而判断力和责任始终掌握在顾问手中。这就是 AI 在任何建立在信任之上的行业里应有的工作方式。”
+
+Daniel Gourvitch，总裁“我们很高兴看到 Anthropic 持续投资于满足财务顾问独特需求的能力。我们的合作植根于一个共同的信念：技术应该支持顾问，而不是取代顾问，帮助他们在驾驭复杂性的同时更高效地服务客户，并将人的判断和自由裁量权置于首位。”
+
+Ashley McCarthy，首席运营官兼法律顾问-董事总经理“Vanguard 致力于帮助顾问把更多时间花在客户身上，减少在复杂事务上耗费的时间。我们与 Claude 的集成扩大了对 Vanguard 投资解决方案的获取渠道，解放了顾问的时间，让他们能够提供更加个性化的服务。”
+
+Sid Ratna，财务顾问服务数字与分析负责人“顾问技术的未来，将由企业连接可信数据、强大智能和日常工作流的能力来定义。我们与 Anthropic 的合作体现了 Schwab 帮助注册投资顾问（RIA）在他们已使用的工具中利用创新的承诺，让服务客户、扩大业务规模和自信成长变得更加容易。”
+
+Jon Beatty，Schwab Advisor Services 负责人“AI 已经成为咨询业务日常工作流的一部分。我不想让我的 CFP 每周花几个小时在 CRM 更新和任务分配上。我希望他们与客户交流、专注于规划本身，因为那才是客户真正看重的部分。Claude for Financial Advisors 是我见过的第一个能横跨整个技术栈完成这些工作的产品，并且内置了我们所需的合规控制。”
+
+Josh Brown，CEO“Ritholtz 没有人会被聊天机器人取代。这门生意的算盘是工时，而不是人头：顾问的工时是有限的，而过去大部分工时都花在了准备工作和文书上，而不是花在真正付钱给我们的客户身上。Claude for Financial Advisors 可以把这些繁琐工作在我们已经在使用的系统中推进，凡是会触达客户的内容，顾问始终参与把关。这为我们整个公司省下了可观的时间，让客户得到更快的响应和更专注的服务。”
+
+Michael Batnick，管理合伙人“这是行业停止适应 AI、开始以 AI 为引擎运转的时刻。在我们看来，Anthropic 是发动机，Dynasty 是飞机，而顾问永远是飞行员。我们造飞机，让顾问能够安全地大规模飞行，而无需触碰底层的机械装置。结果是，我们不是给顾问又一个仪表盘，而是把他们的时间还给他们！”
+
+Shirl Penney，首席执行官兼创始人“顾问花在整理信息上的每一个小时，都是没有花在客户身上的一个小时。将 Claude 与 Tamarac 和 MoneyGuide 结合，意味着顾问可以在提问所需的时间内理解客户家庭或财务计划的某些要素。”
+
+Andrew Stavaridis，首席客户关系官“随着私募市场在客户投资组合中占据更大比重，顾问需要更便捷的方式来驾驭复杂性。iCapital 将全面的市场平台与数据及基础设施相结合，用于管理专业投资，而通过 Claude 连接这些数据，有助于把投资情报转化为可执行的洞察。”
+
+Gary Gallagher，总裁“当 AI 能够配合顾问已经使用的数据和系统时，它对顾问最为有效。将 Claude 与 SS&amp;C Black Diamond 财富解决方案相连，让顾问能够把客户和投资组合信息带入工作流，减少准备时间，并确保他们始终掌握控制权。”
+
+高级副总裁兼联席负责人“Addepar 构建了全球领先投资专业人士所依赖的数据与情报基础，管理着近 10 万亿美元的资产，治理、严谨性和控制能力原生内置于我们的平台。Addepar 与 Anthropic 的合作，将我们对复杂投资组合的独到深入理解带入 Claude，让客户无论在哪里工作都能获取 Addepar 业界领先的投资组合情报。”
+
+Eric Poirier，CEO“遗产和税务是客户计划中必须精确无误的部分。顾问们已经信任 Wealth.com 作为客户实际遗产与税务状况的记录系统。在 Claude 中，这份记录可以直接回答问题，每一项数字都能追溯到产生它的源文件。”
+
+Rafael Loureiro，CEO“顾问在掌握客户全貌时才能发挥最佳水平。将 Salesforce 连接到 Claude，让企业在我们平台上建立的关系能够随顾问而行，并且始终处于他们已有的权限和控制之内。我们与 Anthropic 一起，为企业提供更多方式，让值得信赖的客户数据为他们所服务的人发挥价值。”
+
+Eran Agrios，金融服务高级副总裁兼总经理“客户永远看不到一场好会议背后的工作，但当它缺失时，他们能感受到。通过与 Anthropic 的合作，Orion 为 Claude for Financial Advisors 打造的插件，将公司的投资组合和 CRM 数据带入会议准备、跟进草稿和销售管线审查，且始终处于公司现有的权限和控制之内。技术在后端处理更多准备工作，让顾问能够专注于客户和对话。顾问带着充分准备走进会议，而无需花几个小时把所有材料拼凑起来。”
+
+Reed Colley，总裁“好的财务建议取决于了解客户生活中正在发生的事情，而不仅仅是他们账户里的数字，”Zocks 首席执行官兼联合创始人 Mark Gilbert 表示。“Claude 与 Zocks 之间扩展的合作，将过去分散在各来源和系统中的数据与客户个人背景整合在一起。现在，通过 Claude 执行的每项任务和分析，都建立在对客户更完整的理解之上。这也让企业级公司拥有更大的灵活性，可以围绕顾问实际的工作方式来构建 AI 工作流。”
+
+Mark Gilbert，CEO 兼联合创始人“MCP 正在从根本上改变我们为顾问构建技术的方式。随着 Claude 和 Zocks 直接集成到我们的技术栈中，过去需要数月配置并依赖外部合作伙伴的问题，现在越来越多地可以由我们自己的开发团队解决。这让我们能够更快行动、与一流的合作伙伴合作，并围绕顾问实际的工作方式构建解决方案。我们不再要求顾问去适应技术，而是让技术适应他们。”
+
+Dr. Jordan Hutchison，技术与运营副总裁“顾问们花了多年时间在 Wealthbox 中积累深厚的客户背景。现在他们可以把这些背景直接带入 Claude，让前沿模型在此基础上工作，例如准备会议、处理后续跟进、起草沟通内容，同时一切仍然与业务运转所依赖的 CRM 保持连接。”
+
+John Rourke，CEO 兼联合创始人
+## **开始使用**
+
+顾问插件现已可用。我们建议注册投资顾问使用 Enterprise 计划，因为它包含支持记录保存的审计日志。如果你已经拥有 Enterprise 许可证，请打开 Cowork，在插件浏览器中找到“Claude for Financial Advisors”，安装它并按照引导式设置连接你的工具。
+
+如果你还没有 Enterprise 许可证，可以通过此 [表单](https://forms.gle/y9YmFF2j4moRinJA7) 申请，Anthropic 团队成员将与您联系并提供后续步骤。在 2026 年 9 月底之前申请新许可证的公司，还将获得一次性使用额度，帮助它们开始使用该插件。 
+
+在我们的[解决方案页面](https://claude.com/solutions/financial-services#financial-advisors)了解更多信息，并参加我们本周五（9 月 18 日）上午 11 点（美国东部时间）的[网络研讨会](http://anthropic.com/webinars/inside-claude-for-financial-advisors)。</textarea>
+    </div>
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-clay);">
+            <img class="hero-illo-img" src="/assets/illustrations/claude-for-financial-advisors.svg" alt="" loading="lazy">
+          </div>
+            <h1 class="article-title u-text-style-h1">Claude for Financial Advisors</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>财务顾问现在可以将 Claude 连接到他们依赖的托管机构、投资组合平台、CRM 和规划工具，以及为财务顾问日常工作量身定制的新技能。</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/announcements" target="_blank" rel="noopener noreferrer">Product announcements</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">September 14, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/claude-for-financial-advisors/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>今天，我们发布了 Claude for Financial Advisors——一套连接器（Connectors）与工作流技能（Skills）套件，旨在处理占据顾问大量时间、让他们无法专注于客户工作的研究、准备和文档任务。</p><p>财务顾问的时间非常宝贵。根据 <a href="https://www.kitces.com/kitces-report-how-financial-planners-actually-do-financial-planning/" target="_blank">Kitces 的研究</a>，典型的顾问业务只有六分之一的时间花在客户会议上，其余时间都用于围绕会议展开的工作：跨系统拼凑信息、做准备、做规划、记录讨论内容。与此同时，根据 <a href="https://www.ebri.org/docs/default-source/rcs/2026-rcs/rcs_26-fs-3_prep.pdf" target="_blank">EBRI 的 2026 年退休信心调查</a>，超过四成的美国上班族表示，他们不知道该找谁获取可靠的财务或退休规划建议。顾问在准备工作和文书工作上节省下来的时间，可以用于服务现有客户，或服务那些他们目前还没有余力承接的新客户家庭。&nbsp;</p><p>Claude for Financial Advisors 包括：&nbsp;</p><ul role="list"><li><strong>Connectors（连接器），</strong>which<strong> </strong>让 Claude 能够访问顾问最依赖的托管机构、资产管理公司和财富科技提供商，使顾问可以在一个地方处理客户的信息。&nbsp;</li><li><strong>Skills（技能），</strong>利用这些信息帮助完成具体任务，例如会议准备、投资组合分析和合规检查，始终服务于顾问自身的判断和风格。&nbsp;</li></ul><figure style="padding-bottom:56.206088992974244%" class="w-richtext-align-fullwidth w-richtext-figure-type-video"><div><iframe src="https://www.youtube.com/embed/3P27OausXPY" title="Claude for financial advisors" scrolling="no" frameborder="0" allowfullscreen="true"></iframe></div></figure><h2><strong>连接顾问已经在使用的工具</strong></h2><p>新增的连接器接入了顾问依赖的 CRM、托管系统、投资组合报告、财务规划软件、遗产规划和会议记录工具。&nbsp;</p><ul role="list"><li><strong>Addepar</strong> 将投资情报引入 Claude，让顾问在受管控的访问权限下，获取公开和私募市场的投资组合数据、分析和工作流。</li><li><strong>BlackRock</strong> 通过 Advisor Center 将其组合构建专长、模型投资组合和机构级分析引入 Claude，使顾问能够在公开和私募市场提供全面的建议。</li><li><strong>Charles Schwab</strong> 将 Claude 连接到 Schwab Advisor Services 的托管数据，包括余额、持仓、交易、成本基础、提醒和资金变动状态，让顾问可以审阅客户信息、识别需要关注的客户，并为评审做好准备。&nbsp;</li><li><strong>Envestnet</strong> 让顾问可以用自然语言总结 Tamarac 账户和客户家庭，并获得 MoneyGuide 的财务计划概览。&nbsp;</li><li><strong>iCapital </strong>将客户的另类投资持仓引入 Claude，使顾问能够查看 NAV、承诺出资、未出资资本、近期资本活动和业绩表现，同时更轻松地将这些洞察与客户更广泛的投资组合联系起来。</li><li><strong>Orion</strong> 将投资组合报告和 Redtail CRM 的洞察引入 Claude，用于家庭账户评审、机会分析、会议准备和后续跟进<em>。&nbsp;&nbsp;</em></li><li><strong>SS&amp;C Black Diamond </strong>将投资组合、业绩、持仓和再平衡数据引入 Claude，使顾问能够审阅业务账本、发现偏离目标区间的客户、发现税收损失收割机会，并在获得批准后生成客户报告、任务和再平衡会话。</li><li><strong>Wealthbox </strong>将 Claude 连接到客户记录和会议历史，支持开户、会议准备和后续跟进。</li><li><strong>Wealth.com</strong> 为 Claude 提供每个客户遗产与税务状况的结构化视图，包括信托和遗嘱摘要、税务申报洞察以及完整的资产负债表，使顾问能够从有序的信息摘要开始规划，而不是处理散落在多个系统中的文档。&nbsp;</li><li><strong>Vanguard </strong>将其模型投资组合和顾问投资解决方案的信息引入 Claude，使顾问在为客户做决策时，可以借鉴 Vanguard 值得信赖的研究、组合构建和资产配置专长。</li><li><strong>Zocks</strong> 作为面向财务顾问的 AI 会议助手，将每一次对话中捕获的客户情报带给 Claude，包括客户档案、目标、人生大事和承诺事项。</li></ul><p>这些连接器加入了 Claude 中已有的其他 <a href="https://claude.com/connectors" target="_blank">connectors</a>，包括 Microsoft 365、Salesforce、DocuSign、Box、FactSet、S&amp;P Global、Morningstar 等。</p><p>Claude for Financial Advisors 插件将顾问技能和连接器打包为一次安装，支持 BlackRock、Charles Schwab、Addepar、Envestnet、iCapital、Orion、Wealthbox、Wealth.com 和 Zocks，顾问可以在引导式设置过程中选择要连接哪些工具。部分合作伙伴也提供自己的插件：BlackRock 将推出一个针对 Advisor Center 的插件，加入 S&amp;P Global 和 LSEG 现有的插件行列。</p><h2><strong>围绕顾问一天工作构建的技能</strong></h2><p>Claude for Financial Advisors 插件中的每项技能都对应顾问一天工作中的特定时刻，从为客户会议做准备到解释偏离目标的投资组合，并将流程路由到公司已经在使用的业务工具。公司可以按原样采用我们 Claude for Financial Advisors 技能库中的技能，也可以将其改造为适应自己的工作流、服务模式和内部风格。</p><ul role="list"><li><strong>顾问入职（Advisor onboarding）</strong>自动连接公司的工具并运行第一次会议准备，帮助新顾问在第一天（而不是第三周）就进入高效状态。</li><li><strong>另类投资简报（Alternative investments brief）</strong>将客户家庭的另类投资从 iCapital 或 Addepar 汇总为一份可直接用于会议的摘要，并与投资组合其余部分并列展示，顾问无需再手动核对多份独立报表。&nbsp;</li><li><strong>合规与 AI 政策（Compliance and AI policy）</strong>根据用户配置的标准，标出可能需要额外合规审查的内容，协助公司记录审查工作流，并支持 AI 治理文档化流程。</li><li><strong>遗产与税务简报（Estate and tax brief）</strong>对照实际账户所有权和受益人信息检查客户的遗产规划，回溯上一年度的税务情况，并可创建 CRM 后续任务，使不一致之处浮现出来供顾问审阅。</li><li><strong>投资组合再平衡审查（Portfolio rebalance review）</strong>对照客户的目标配置标记偏离和集中持仓，并生成顾问原本需要从零起草的解释初稿。</li><li><strong>会后记录与跟进（Post-meeting notes and follow-up）</strong>一次性将会议记录转化为客户摘要、回顾邮件和 CRM 任务，顾问无需在通话结束后逐一手动完成。&nbsp;</li><li><strong>会前准备（Pre-meeting prep）</strong>将来自各连接系统的信息（包括客户持仓、近期账户活动和上次会议的待办事项）整合成一份供顾问审阅的简报，让他们可以带着准备进入对话，针对该客户的具体情况展开讨论，而不是从三个系统中重新拼凑背景信息。</li><li><strong>潜在客户录入（Prospect intake）</strong>将潜在客户分享的信息整理成摘要、分析师交接材料和预期说明备忘录，让第一次会议从一开始就有条不紊。&nbsp;</li></ul><p>这些技能协同工作，在顾问一天的工作中收集信息、进行总结，并起草客户沟通内容。投资建议、客户沟通、合规判定以及其他受监管活动，仍需经过人工审查和批准。</p><h2><strong>为受监管的专业人士打造</strong></h2><p>Claude for Financial Advisors 的设计确保顾问始终掌握控制权，关键任务需要获得批准。Claude 为顾问准备简报、摘要和草拟分析供其审阅，并将 CRM 更新或客户沟通草稿等行政操作分阶段提交给顾问审查和批准。合规技能会根据 SEC 营销规则（SEC Marketing Rule）审查面向客户的措辞，标记潜在问题，帮助公司在其现有的治理和记录保存流程中记录审查活动，并包含一个自助式 AI 政策工作流，帮助公司按照 SEC 规则记录其 AI 使用情况。工作流活动可以被记录，以协助公司维护适当的记录和监督流程。&nbsp;</p><h2><strong>服务更多客户家庭</strong></h2><p>当 Claude 处理会议准备、跟进草稿和销售管线审查等行政任务时，顾问可以将更多时间用于服务客户。业务可以扩大客户群，并提供更多客户所需的服务，如税务、遗产、保险和退休规划。&nbsp;</p><p>以下是客户和生态合作伙伴与我们分享的、关于使用 Claude 的感受： </p><div class="article-testimonials" role="list"><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6aa315b9e7fcd973a909ade2_blackrock-logo.svg" alt="6aa315b9e7fcd973a909ade2 rock" loading="lazy"><blockquote><p>“顾问们正在应对日益复杂的客户需求，同时还要面对市场和技术加速变化的节奏。我们与 Anthropic 的合作，是我们更广泛努力中的重要一步：将 BlackRock 的投资组合情报和资产配置专长带给更多顾问，帮助他们扩大业务规模、构建更好的投资组合。通过让机构级投资组合分析更易获取，我们在帮助更多顾问运用我们的投资组合情报，让他们能把更多时间花在客户关系上。”</p></blockquote><figcaption class="article-testimonial-caption">Jaime Magyera，美国财富与退休业务负责人</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6aa80bc46ca18e7dcce3c6ac_mercer-logo.svg" alt="6aa80bc46ca18e7dcce3c6ac mercer" loading="lazy"><blockquote><p>“Anthropic 构建的 AI 与人类价值观保持一致。Mercer Advisors 构建的家族办公室与客户利益保持一致。这种共同的执着是两家公司的核心，也是我们合作的基础。Claude 帮助我们的团队在客户的财务生活中无缝协作，而判断力和责任始终掌握在顾问手中。这就是 AI 在任何建立在信任之上的行业里应有的工作方式。”</p></blockquote><figcaption class="article-testimonial-caption">Daniel Gourvitch，总裁</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6aa80c3d6c72a469ddbac7b1_rockefeller-logo.svg" alt="6aa80c3d6c72a469ddbac7b1 rockefeller" loading="lazy"><blockquote><p>“我们很高兴看到 Anthropic 持续投资于满足财务顾问独特需求的能力。我们的合作植根于一个共同的信念：技术应该支持顾问，而不是取代顾问，帮助他们在驾驭复杂性的同时更高效地服务客户，并将人的判断和自由裁量权置于首位。”</p></blockquote><figcaption class="article-testimonial-caption">Ashley McCarthy，首席运营官兼法律顾问-董事总经理</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6aa811069111d0520103c7b0_vanguard-light.png" alt="6aa811069111d0520103c7b0 vanguard" loading="lazy"><blockquote><p>“Vanguard 致力于帮助顾问把更多时间花在客户身上，减少在复杂事务上耗费的时间。我们与 Claude 的集成扩大了对 Vanguard 投资解决方案的获取渠道，解放了顾问的时间，让他们能够提供更加个性化的服务。”</p></blockquote><figcaption class="article-testimonial-caption">Sid Ratna，财务顾问服务数字与分析负责人</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6aa316faab4529cd05ed45e1_charlesschwab-logo.svg" alt="6aa316faab4529cd05ed45e1 charlesschwab" loading="lazy"><blockquote><p>“顾问技术的未来，将由企业连接可信数据、强大智能和日常工作流的能力来定义。我们与 Anthropic 的合作体现了 Schwab 帮助注册投资顾问（RIA）在他们已使用的工具中利用创新的承诺，让服务客户、扩大业务规模和自信成长变得更加容易。”</p></blockquote><figcaption class="article-testimonial-caption">Jon Beatty，Schwab Advisor Services 负责人</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6aa49811ffb792950d3aa5ab_ritholtz-logo-lightmode-136w.png" alt="6aa49811ffb792950d3aa5ab ritholtz mode 136w" loading="lazy"><blockquote><p>“AI 已经成为咨询业务日常工作流的一部分。我不想让我的 CFP 每周花几个小时在 CRM 更新和任务分配上。我希望他们与客户交流、专注于规划本身，因为那才是客户真正看重的部分。Claude for Financial Advisors 是我见过的第一个能横跨整个技术栈完成这些工作的产品，并且内置了我们所需的合规控制。”</p></blockquote><figcaption class="article-testimonial-caption">Josh Brown，CEO</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6aa49811ffb792950d3aa5ab_ritholtz-logo-lightmode-136w.png" alt="6aa49811ffb792950d3aa5ab ritholtz mode 136w" loading="lazy"><blockquote><p>“Ritholtz 没有人会被聊天机器人取代。这门生意的算盘是工时，而不是人头：顾问的工时是有限的，而过去大部分工时都花在了准备工作和文书上，而不是花在真正付钱给我们的客户身上。Claude for Financial Advisors 可以把这些繁琐工作在我们已经在使用的系统中推进，凡是会触达客户的内容，顾问始终参与把关。这为我们整个公司省下了可观的时间，让客户得到更快的响应和更专注的服务。”</p></blockquote><figcaption class="article-testimonial-caption">Michael Batnick，管理合伙人</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6aa49870aedc9aa497883257_dynasty-logo-lightmode-136w.png" alt="6aa49870aedc9aa497883257 dynasty mode 136w" loading="lazy"><blockquote><p>“这是行业停止适应 AI、开始以 AI 为引擎运转的时刻。在我们看来，Anthropic 是发动机，Dynasty 是飞机，而顾问永远是飞行员。我们造飞机，让顾问能够安全地大规模飞行，而无需触碰底层的机械装置。结果是，我们不是给顾问又一个仪表盘，而是把他们的时间还给他们！”</p></blockquote><figcaption class="article-testimonial-caption">Shirl Penney，首席执行官兼创始人</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6aa31729cf819cb44f55292d_envestnet-logo.svg" alt="6aa31729cf819cb44f55292d envestnet" loading="lazy"><blockquote><p>“顾问花在整理信息上的每一个小时，都是没有花在客户身上的一个小时。将 Claude 与 Tamarac 和 MoneyGuide 结合，意味着顾问可以在提问所需的时间内理解客户家庭或财务计划的某些要素。”</p></blockquote><figcaption class="article-testimonial-caption">Andrew Stavaridis，首席客户关系官</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6aa317571d6f297f40dc0f80_icapital-logo.svg" alt="6aa317571d6f297f40dc0f80 icapital" loading="lazy"><blockquote><p>“随着私募市场在客户投资组合中占据更大比重，顾问需要更便捷的方式来驾驭复杂性。iCapital 将全面的市场平台与数据及基础设施相结合，用于管理专业投资，而通过 Claude 连接这些数据，有助于把投资情报转化为可执行的洞察。”</p></blockquote><figcaption class="article-testimonial-caption">Gary Gallagher，总裁</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69f298335759829f8761d0a5_ssc-logo.svg" alt="69f298335759829f8761d0a5 ssc" loading="lazy"><blockquote><p>“当 AI 能够配合顾问已经使用的数据和系统时，它对顾问最为有效。将 Claude 与 SS&amp;C Black Diamond 财富解决方案相连，让顾问能够把客户和投资组合信息带入工作流，减少准备时间，并确保他们始终掌握控制权。”</p></blockquote><figcaption class="article-testimonial-caption">高级副总裁兼联席负责人</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6aa3138c910a76dc398014d2_addepar-logo.svg" alt="6aa3138c910a76dc398014d2 addepar" loading="lazy"><blockquote><p>“Addepar 构建了全球领先投资专业人士所依赖的数据与情报基础，管理着近 10 万亿美元的资产，治理、严谨性和控制能力原生内置于我们的平台。Addepar 与 Anthropic 的合作，将我们对复杂投资组合的独到深入理解带入 Claude，让客户无论在哪里工作都能获取 Addepar 业界领先的投资组合情报。”</p></blockquote><figcaption class="article-testimonial-caption">Eric Poirier，CEO</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6aa317ba607c3d6bbb563931_wealthcom-logo.svg" alt="6aa317ba607c3d6bbb563931 wealthcom" loading="lazy"><blockquote><p>“遗产和税务是客户计划中必须精确无误的部分。顾问们已经信任 Wealth.com 作为客户实际遗产与税务状况的记录系统。在 Claude 中，这份记录可以直接回答问题，每一项数字都能追溯到产生它的源文件。”</p></blockquote><figcaption class="article-testimonial-caption">Rafael Loureiro，CEO</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6a3aad2a53be419579869170_logo_salesforce-light.svg" alt="6a3aad2a53be419579869170 salesforce" loading="lazy"><blockquote><p>“顾问在掌握客户全貌时才能发挥最佳水平。将 Salesforce 连接到 Claude，让企业在我们平台上建立的关系能够随顾问而行，并且始终处于他们已有的权限和控制之内。我们与 Anthropic 一起，为企业提供更多方式，让值得信赖的客户数据为他们所服务的人发挥价值。”</p></blockquote><figcaption class="article-testimonial-caption">Eran Agrios，金融服务高级副总裁兼总经理</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6aa3177b28f5d225d96430da_orion-logo.svg" alt="6aa3177b28f5d225d96430da orion" loading="lazy"><blockquote><p>“客户永远看不到一场好会议背后的工作，但当它缺失时，他们能感受到。通过与 Anthropic 的合作，Orion 为 Claude for Financial Advisors 打造的插件，将公司的投资组合和 CRM 数据带入会议准备、跟进草稿和销售管线审查，且始终处于公司现有的权限和控制之内。技术在后端处理更多准备工作，让顾问能够专注于客户和对话。顾问带着充分准备走进会议，而无需花几个小时把所有材料拼凑起来。”</p></blockquote><figcaption class="article-testimonial-caption">Reed Colley，总裁</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6aa818ef2513e21aebbd7d44_zocks-light.png" alt="6aa818ef2513e21aebbd7d44 zocks" loading="lazy"><blockquote><p>“好的财务建议取决于了解客户生活中正在发生的事情，而不仅仅是他们账户里的数字，”Zocks 首席执行官兼联合创始人 Mark Gilbert 表示。“Claude 与 Zocks 之间扩展的合作，将过去分散在各来源和系统中的数据与客户个人背景整合在一起。现在，通过 Claude 执行的每项任务和分析，都建立在对客户更完整的理解之上。这也让企业级公司拥有更大的灵活性，可以围绕顾问实际的工作方式来构建 AI 工作流。”</p></blockquote><figcaption class="article-testimonial-caption">Mark Gilbert，CEO 兼联合创始人</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6aa49ed25d98135219a7fd80_rfg-logo-lightmode-136w.png" alt="6aa49ed25d98135219a7fd80 rfg mode 136w" loading="lazy"><blockquote><p>“MCP 正在从根本上改变我们为顾问构建技术的方式。随着 Claude 和 Zocks 直接集成到我们的技术栈中，过去需要数月配置并依赖外部合作伙伴的问题，现在越来越多地可以由我们自己的开发团队解决。这让我们能够更快行动、与一流的合作伙伴合作，并围绕顾问实际的工作方式构建解决方案。我们不再要求顾问去适应技术，而是让技术适应他们。”</p></blockquote><figcaption class="article-testimonial-caption">Dr. Jordan Hutchison，技术与运营副总裁</figcaption></figure><figure class="article-testimonial" role="listitem"><img class="article-testimonial-logo" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6aa3179a7996059ba4d710be_wealthbox-logo.svg" alt="6aa3179a7996059ba4d710be wealthbox" loading="lazy"><blockquote><p>“顾问们花了多年时间在 Wealthbox 中积累深厚的客户背景。现在他们可以把这些背景直接带入 Claude，让前沿模型在此基础上工作，例如准备会议、处理后续跟进、起草沟通内容，同时一切仍然与业务运转所依赖的 CRM 保持连接。”</p></blockquote><figcaption class="article-testimonial-caption">John Rourke，CEO 兼联合创始人</figcaption></figure></div><h2><strong>开始使用</strong></h2><p>顾问插件现已可用。我们建议注册投资顾问使用 Enterprise 计划，因为它包含支持记录保存的审计日志。如果你已经拥有 Enterprise 许可证，请打开 Cowork，在插件浏览器中找到“Claude for Financial Advisors”，安装它并按照引导式设置连接你的工具。</p><p>如果你还没有 Enterprise 许可证，可以通过此 <a href="https://forms.gle/y9YmFF2j4moRinJA7" target="_blank">表单</a> 申请，Anthropic 团队成员将与您联系并提供后续步骤。在 2026 年 9 月底之前申请新许可证的公司，还将获得一次性使用额度，帮助它们开始使用该插件。&nbsp;</p><p>在我们的<a href="https://claude.com/solutions/financial-services#financial-advisors" target="_blank">解决方案页面</a>了解更多信息，并参加我们本周五（9 月 18 日）上午 11 点（美国东部时间）的<a href="http://anthropic.com/webinars/inside-claude-for-financial-advisors" target="_blank">网络研讨会</a>。</p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/claude-for-financial-advisors" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/9/15 12:04:04</p>
+    </div>
+  </footer>
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

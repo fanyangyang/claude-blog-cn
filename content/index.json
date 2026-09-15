@@ -1,6 +1,147 @@
 {
   "articles": [
     {
+      "slug": "claude-for-financial-advisors",
+      "title": "Claude for Financial Advisors",
+      "date": "September 14, 2026",
+      "category": "Product announcements",
+      "url": "https://claude.com/blog/claude-for-financial-advisors",
+      "inHero": false,
+      "heroIndex": -1,
+      "inGrid": true,
+      "illustration": "assets/illustrations/claude-for-financial-advisors.svg",
+      "illustrationBg": "Clay",
+      "facets": {
+        "category": [
+          "Product announcements"
+        ],
+        "product": [],
+        "usecase": [
+          "Financial services"
+        ]
+      },
+      "subtitle": "Financial advisors can now connect Claude to the custodians, portfolio platforms, CRMs, and planning tools they depend on, along with new skills tailored to the daily work of a financial advisor.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "",
+      "fetchedAt": "2026-09-14T16:15:42.202Z",
+      "translated": true,
+      "translatedTitle": "Claude for Financial Advisors",
+      "translatedSubtitle": "财务顾问现在可以将 Claude 连接到他们依赖的托管机构、投资组合平台、CRM 和规划工具，以及为财务顾问日常工作量身定制的新技能。",
+      "translatedAt": "2026-09-15T04:06:27.183Z",
+      "translateLang": "zh"
+    },
+    {
+      "slug": "agentic-coding-is-straining-ci-heres-how-we-scaled-test-impact-analysis-at-anthropic",
+      "title": "Agentic coding is straining CI. Here’s how we scaled test impact analysis at Anthropic",
+      "date": "September 14, 2026",
+      "category": "Claude Code",
+      "url": "https://claude.com/blog/agentic-coding-is-straining-ci-heres-how-we-scaled-test-impact-analysis-at-anthropic",
+      "inHero": false,
+      "heroIndex": -1,
+      "inGrid": true,
+      "illustration": "assets/illustrations/agentic-coding-is-straining-ci-heres-how-we-scaled-test-impact-analysis-at-anthropic.svg",
+      "illustrationBg": "Sky",
+      "facets": {
+        "category": [
+          "Claude Code",
+          "Enterprise AI"
+        ],
+        "product": [
+          "Claude Code",
+          "Claude Enterprise",
+          "Claude Tag"
+        ],
+        "usecase": [
+          "Coding"
+        ]
+      },
+      "subtitle": "Our CI job volume increased 25x over 6 months. We patched our test selection service three times before finding a sustainable solution.",
+      "authors": [
+        "Sachin Malhotra"
+      ],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/claude-code",
+      "productUrl": "https://claude.com/product/claude-code",
+      "fetchedAt": "2026-09-14T22:10:09.747Z",
+      "translated": true,
+      "translatedTitle": "智能体编码正在给 CI 带来压力：我们如何在 Anthropic 扩展测试影响分析",
+      "translatedSubtitle": "我们的 CI 任务量在 6 个月内增长了 25 倍。在找到可持续的解决方案之前，我们对测试选择服务打了三个补丁。",
+      "translatedAt": "2026-09-15T04:06:27.212Z",
+      "translateLang": "zh"
+    },
+    {
+      "slug": "how-healthcare-organizations-use-claude-tag",
+      "title": "How healthcare organizations use Claude Tag",
+      "date": "September 14, 2026",
+      "category": "Enterprise AI",
+      "url": "https://claude.com/blog/how-healthcare-organizations-use-claude-tag",
+      "inHero": false,
+      "heroIndex": -1,
+      "inGrid": true,
+      "illustration": "assets/illustrations/how-healthcare-organizations-use-claude-tag.svg",
+      "illustrationBg": "Plum",
+      "facets": {
+        "category": [
+          "Enterprise AI"
+        ],
+        "product": [
+          "Claude Tag"
+        ],
+        "usecase": [
+          "Health care and life sciences"
+        ]
+      },
+      "subtitle": "How Insight Health, Tennr, and Medallion are building human-agent teams with Claude Tag.",
+      "authors": [
+        "Camy Pearson",
+        "Maria Howe",
+        "Araba Koomson"
+      ],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/product/tag",
+      "fetchedAt": "2026-09-14T22:10:09.870Z",
+      "translated": true,
+      "translatedTitle": "医疗机构如何使用 Claude Tag",
+      "translatedSubtitle": "Insight Health、Tennr 和 Medallion 如何使用 Claude Tag 构建人机协作团队。",
+      "translatedAt": "2026-09-15T04:06:27.237Z",
+      "translateLang": "zh"
+    },
+    {
+      "slug": "deploying-ai-from-pilot-to-production",
+      "title": "Deploying AI from pilot to production",
+      "date": "September 14, 2026",
+      "category": "Enterprise AI",
+      "url": "https://claude.com/blog/deploying-ai-from-pilot-to-production",
+      "inHero": false,
+      "heroIndex": -1,
+      "inGrid": true,
+      "illustration": "assets/illustrations/deploying-ai-from-pilot-to-production.svg",
+      "illustrationBg": "Heather",
+      "facets": {
+        "category": [
+          "Enterprise AI"
+        ],
+        "product": [
+          "Claude Enterprise"
+        ],
+        "usecase": []
+      },
+      "subtitle": "In this guide, written with Accenture, we share seven considerations for taking enterprise AI from pilot to production, and the decisions leadership needs to make to get there.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/solutions/enterprise",
+      "fetchedAt": "2026-09-14T22:10:09.953Z",
+      "translated": true,
+      "translatedTitle": "将 AI 从试点部署到生产",
+      "translatedSubtitle": "这份与 Accenture 合作编写的指南分享了将企业 AI 从试点推进到生产的七个考量事项，以及领导层为实现这一目标需要做出的决策。",
+      "translatedAt": "2026-09-15T04:06:27.261Z",
+      "translateLang": "zh"
+    },
+    {
       "slug": "t-rowe-price-brings-more-of-claude-to-its-investment-process",
       "title": "T. Rowe Price brings more of Claude to its investment process",
       "date": "September 10, 2026",
@@ -7882,5 +8023,5 @@
       "productUrl": "https://claude.com/platform/api"
     }
   ],
-  "lastFetched": "2026-09-11T04:04:25.409Z"
+  "lastFetched": "2026-09-15T04:04:04.271Z"
 }

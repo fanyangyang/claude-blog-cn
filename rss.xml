@@ -6,7 +6,35 @@
     <description>Anthropic Claude 官方博客的中文翻译</description>
     <atom:link href="https://fanyangyang.github.io/claude-blog-cn/rss.xml" rel="self" type="application/rss+xml"/>
     <language>zh-CN</language>
-    <lastBuildDate>Fri, 11 Sep 2026 04:08:03 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 15 Sep 2026 04:07:24 GMT</lastBuildDate>
+    <item>
+      <title>Claude for Financial Advisors</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-for-financial-advisors/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-for-financial-advisors/</guid>
+      <pubDate>Sun, 13 Sep 2026 16:00:00 GMT</pubDate>
+      <category>Product announcements</category>
+    </item>
+    <item>
+      <title>智能体编码正在给 CI 带来压力：我们如何在 Anthropic 扩展测试影响分析</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/agentic-coding-is-straining-ci-heres-how-we-scaled-test-impact-analysis-at-anthropic/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/agentic-coding-is-straining-ci-heres-how-we-scaled-test-impact-analysis-at-anthropic/</guid>
+      <pubDate>Sun, 13 Sep 2026 16:00:00 GMT</pubDate>
+      <category>Claude Code</category>
+    </item>
+    <item>
+      <title>医疗机构如何使用 Claude Tag</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/how-healthcare-organizations-use-claude-tag/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/how-healthcare-organizations-use-claude-tag/</guid>
+      <pubDate>Sun, 13 Sep 2026 16:00:00 GMT</pubDate>
+      <category>Enterprise AI</category>
+    </item>
+    <item>
+      <title>将 AI 从试点部署到生产</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/deploying-ai-from-pilot-to-production/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/deploying-ai-from-pilot-to-production/</guid>
+      <pubDate>Sun, 13 Sep 2026 16:00:00 GMT</pubDate>
+      <category>Enterprise AI</category>
+    </item>
     <item>
       <title>T. Rowe Price 将 Claude 更广泛地引入其投资流程</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/t-rowe-price-brings-more-of-claude-to-its-investment-process/</link>

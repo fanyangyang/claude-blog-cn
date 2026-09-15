@@ -1,0 +1,27 @@
+{
+  "slug": "deploying-ai-from-pilot-to-production",
+  "title": "Deploying AI from pilot to production",
+  "date": "September 14, 2026",
+  "category": "Enterprise AI",
+  "url": "https://claude.com/blog/deploying-ai-from-pilot-to-production",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/deploying-ai-from-pilot-to-production.svg",
+  "illustrationBg": "Heather",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Enterprise"
+    ],
+    "usecase": []
+  },
+  "subtitle": "In this guide, written with Accenture, we share seven considerations for taking enterprise AI from pilot to production, and the decisions leadership needs to make to get there.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/solutions/enterprise",
+  "fetchedAt": "2026-09-14T22:10:09.953Z"
+}
