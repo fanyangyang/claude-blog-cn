@@ -1,0 +1,29 @@
+{
+  "slug": "claude-for-small-business-launches-new-workflows-integrations-and-training-programs",
+  "title": "Claude for Small Business launches new workflows, integrations, and training programs",
+  "date": "September 15, 2026",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/claude-for-small-business-launches-new-workflows-integrations-and-training-programs",
+  "inHero": true,
+  "heroIndex": 0,
+  "inGrid": true,
+  "illustration": "assets/illustrations/claude-for-small-business-launches-new-workflows-integrations-and-training-programs.svg",
+  "illustrationBg": "Clay",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude for Small Business"
+    ],
+    "usecase": [
+      "Business"
+    ]
+  },
+  "subtitle": "We’re releasing new Claude for Small Business workflows and integrations to help owners run and grow their business. We're also kicking off the next leg of our Claude SMB tour, with free partner webinars and community-run workshops.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "",
+  "fetchedAt": "2026-09-15T16:11:50.803Z"
+}

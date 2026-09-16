@@ -1,0 +1,29 @@
+{
+  "slug": "building-an-ai-native-revenue-organization",
+  "title": "Building an AI-native revenue organization",
+  "date": "September 15, 2026",
+  "category": "Enterprise AI",
+  "url": "https://claude.com/blog/building-an-ai-native-revenue-organization",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/building-an-ai-native-revenue-organization.svg",
+  "illustrationBg": "Peach",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Cowork"
+    ],
+    "usecase": [
+      "Sales"
+    ]
+  },
+  "subtitle": "In this guide, we share how revenue leaders can roll out Claude across a sales organization, including the setup decisions, a three-phase rollout plan, and an ROI measurement framework.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/product/cowork",
+  "fetchedAt": "2026-09-15T16:11:50.696Z"
+}

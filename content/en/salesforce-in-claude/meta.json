@@ -1,0 +1,29 @@
+{
+  "slug": "salesforce-in-claude",
+  "title": "Bringing Salesforce into Claude",
+  "date": "September 15, 2026",
+  "category": "Enterprise AI",
+  "url": "https://claude.com/blog/salesforce-in-claude",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/salesforce-in-claude.svg",
+  "illustrationBg": "Mineral",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Enterprise"
+    ],
+    "usecase": [
+      "Sales"
+    ]
+  },
+  "subtitle": "Sellers can now research companies, prep for calls, review pipeline, and draft CRM updates with our new Salesforce in Claude plugin.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/solutions/enterprise",
+  "fetchedAt": "2026-09-15T16:11:50.589Z"
+}

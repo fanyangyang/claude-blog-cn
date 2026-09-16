@@ -6,7 +6,28 @@
     <description>Anthropic Claude 官方博客的中文翻译</description>
     <atom:link href="https://fanyangyang.github.io/claude-blog-cn/rss.xml" rel="self" type="application/rss+xml"/>
     <language>zh-CN</language>
-    <lastBuildDate>Tue, 15 Sep 2026 04:07:24 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 16 Sep 2026 10:08:12 GMT</lastBuildDate>
+    <item>
+      <title>将 Salesforce 引入 Claude</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/salesforce-in-claude/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/salesforce-in-claude/</guid>
+      <pubDate>Mon, 14 Sep 2026 16:00:00 GMT</pubDate>
+      <category>Enterprise AI</category>
+    </item>
+    <item>
+      <title>打造 AI 原生的营收组织</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/building-an-ai-native-revenue-organization/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/building-an-ai-native-revenue-organization/</guid>
+      <pubDate>Mon, 14 Sep 2026 16:00:00 GMT</pubDate>
+      <category>Enterprise AI</category>
+    </item>
+    <item>
+      <title>Claude for Small Business 推出新工作流、集成与培训项目</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-for-small-business-launches-new-workflows-integrations-and-training-programs/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-for-small-business-launches-new-workflows-integrations-and-training-programs/</guid>
+      <pubDate>Mon, 14 Sep 2026 16:00:00 GMT</pubDate>
+      <category>Product announcements</category>
+    </item>
     <item>
       <title>Claude for Financial Advisors</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-for-financial-advisors/</link>
