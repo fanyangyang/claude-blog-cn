@@ -1,6 +1,39 @@
 {
   "articles": [
     {
+      "slug": "cowork-is-now-claude",
+      "title": "Claude Cowork and chat are now one Claude",
+      "date": "September 16, 2026",
+      "category": "Product announcements",
+      "url": "https://claude.com/blog/cowork-is-now-claude",
+      "inHero": true,
+      "heroIndex": 0,
+      "inGrid": true,
+      "illustration": "assets/illustrations/cowork-is-now-claude.svg",
+      "illustrationBg": "Clay",
+      "facets": {
+        "category": [
+          "Product announcements"
+        ],
+        "product": [
+          "Claude Cowork",
+          "Claude apps"
+        ],
+        "usecase": [
+          "Content Creation",
+          "Design",
+          "Work"
+        ]
+      },
+      "subtitle": "You don’t have to choose where a task goes. Claude does more of the work.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/product/cowork",
+      "fetchedAt": "2026-09-16T22:03:57.148Z",
+      "translated": true
+    },
+    {
       "slug": "salesforce-in-claude",
       "title": "Bringing Salesforce into Claude",
       "date": "September 15, 2026",
@@ -75,7 +108,7 @@
       "category": "Product announcements",
       "url": "https://claude.com/blog/claude-for-small-business-launches-new-workflows-integrations-and-training-programs",
       "inHero": true,
-      "heroIndex": 0,
+      "heroIndex": 1,
       "inGrid": true,
       "illustration": "assets/illustrations/claude-for-small-business-launches-new-workflows-integrations-and-training-programs.svg",
       "illustrationBg": "Clay",
@@ -524,7 +557,7 @@
       "translateLang": "zh",
       "translatedTitle": "Claude in Chrome 现已全面可用",
       "inHero": true,
-      "heroIndex": 1,
+      "heroIndex": 2,
       "inGrid": true,
       "illustration": "assets/illustrations/claude-in-chrome-generally-available.svg",
       "illustrationBg": "Clay",
@@ -559,7 +592,7 @@
       "translatedAt": "2026-09-01T11:12:27.766Z",
       "translateLang": "zh",
       "inHero": true,
-      "heroIndex": 2,
+      "heroIndex": 3,
       "inGrid": true,
       "illustration": "assets/illustrations/cowork-built-in-browser.svg",
       "illustrationBg": "Clay",
@@ -2528,7 +2561,7 @@
       "translatedAt": "2026-09-01T22:58:46.948Z",
       "translateLang": "zh",
       "inHero": true,
-      "heroIndex": 3,
+      "heroIndex": 4,
       "inGrid": true,
       "illustration": "assets/illustrations/artifacts-in-claude-code.svg",
       "illustrationBg": "Clay",
@@ -2836,7 +2869,7 @@
       "translatedAt": "2026-09-01T22:58:46.955Z",
       "translateLang": "zh",
       "inHero": true,
-      "heroIndex": 4,
+      "heroIndex": 5,
       "inGrid": true,
       "illustration": "assets/illustrations/claude-for-foundation-models.svg",
       "illustrationBg": "Clay",
@@ -3463,7 +3496,7 @@
       "translatedAt": "2026-09-03T11:00:00.000Z",
       "translateLang": "zh",
       "inHero": true,
-      "heroIndex": 5,
+      "heroIndex": 6,
       "inGrid": true,
       "illustration": "assets/illustrations/claude-managed-agents-updates.svg",
       "illustrationBg": "Clay",
@@ -3496,7 +3529,7 @@
       "translatedAt": "2026-09-03T11:00:00.000Z",
       "translateLang": "zh",
       "inHero": true,
-      "heroIndex": 6,
+      "heroIndex": 7,
       "inGrid": true,
       "illustration": "assets/illustrations/new-in-claude-managed-agents.svg",
       "illustrationBg": "Clay",
@@ -4193,7 +4226,7 @@
       "translatedAt": "2026-09-01T22:58:46.955Z",
       "translateLang": "zh",
       "inHero": true,
-      "heroIndex": 7,
+      "heroIndex": 8,
       "inGrid": true,
       "illustration": "assets/illustrations/connectors-for-everyday-life.svg",
       "illustrationBg": "Clay",
@@ -4226,7 +4259,7 @@
       "translatedAt": "2026-09-03T11:00:00.000Z",
       "translateLang": "zh",
       "inHero": true,
-      "heroIndex": 8,
+      "heroIndex": 9,
       "inGrid": true,
       "illustration": "assets/illustrations/claude-managed-agents-memory.svg",
       "illustrationBg": "Clay",
@@ -4386,8 +4419,8 @@
       "translatedTitle": "桌面版 Claude Code 重新设计：支持并行代理",
       "translatedAt": "2026-09-01T22:58:46.956Z",
       "translateLang": "zh",
-      "inHero": true,
-      "heroIndex": 9,
+      "inHero": false,
+      "heroIndex": -1,
       "inGrid": true,
       "illustration": "assets/illustrations/claude-code-desktop-redesign.svg",
       "illustrationBg": "Clay",
@@ -8125,5 +8158,5 @@
       "productUrl": "https://claude.com/platform/api"
     }
   ],
-  "lastFetched": "2026-09-16T16:04:05.104Z"
+  "lastFetched": "2026-09-16T22:04:05.202Z"
 }

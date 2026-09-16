@@ -1,0 +1,32 @@
+{
+  "slug": "cowork-is-now-claude",
+  "title": "Claude Cowork and chat are now one Claude",
+  "date": "September 16, 2026",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/cowork-is-now-claude",
+  "inHero": true,
+  "heroIndex": 0,
+  "inGrid": true,
+  "illustration": "assets/illustrations/cowork-is-now-claude.svg",
+  "illustrationBg": "Clay",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Cowork",
+      "Claude apps"
+    ],
+    "usecase": [
+      "Content Creation",
+      "Design",
+      "Work"
+    ]
+  },
+  "subtitle": "You don’t have to choose where a task goes. Claude does more of the work.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/product/cowork",
+  "fetchedAt": "2026-09-16T22:03:57.148Z"
+}

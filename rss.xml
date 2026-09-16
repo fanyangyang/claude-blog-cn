@@ -6,7 +6,14 @@
     <description>Anthropic Claude 官方博客的中文翻译</description>
     <atom:link href="https://fanyangyang.github.io/claude-blog-cn/rss.xml" rel="self" type="application/rss+xml"/>
     <language>zh-CN</language>
-    <lastBuildDate>Wed, 16 Sep 2026 10:08:12 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 16 Sep 2026 22:05:22 GMT</lastBuildDate>
+    <item>
+      <title>Claude Cowork and chat are now one Claude</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/cowork-is-now-claude/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/cowork-is-now-claude/</guid>
+      <pubDate>Tue, 15 Sep 2026 16:00:00 GMT</pubDate>
+      <category>Product announcements</category>
+    </item>
     <item>
       <title>将 Salesforce 引入 Claude</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/salesforce-in-claude/</link>
