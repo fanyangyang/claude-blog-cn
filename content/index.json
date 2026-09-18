@@ -1,6 +1,68 @@
 {
   "articles": [
     {
+      "slug": "working-at-the-frontier-how-balyasny-asset-management-evaluates-and-governs-claude-fable-5",
+      "title": "Working at the frontier: How Balyasny Asset Management evaluates and governs Claude Fable 5",
+      "date": "September 17, 2026",
+      "category": "Enterprise AI",
+      "url": "https://claude.com/blog/working-at-the-frontier-how-balyasny-asset-management-evaluates-and-governs-claude-fable-5",
+      "inHero": false,
+      "heroIndex": -1,
+      "inGrid": true,
+      "illustration": "assets/illustrations/working-at-the-frontier-how-balyasny-asset-management-evaluates-and-governs-claude-fable-5.svg",
+      "illustrationBg": "Plum",
+      "facets": {
+        "category": [
+          "Enterprise AI"
+        ],
+        "product": [
+          "Claude Platform",
+          "Claude Code"
+        ],
+        "usecase": [
+          "Financial services"
+        ]
+      },
+      "subtitle": "Balyasny Asset Management (BAM) Chief AI Officer Charlie Flanagan on why the firm uses Claude Fable 5 and the role of safeguards in deploying frontier intelligence safely and reliably across the organization.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+      "productUrl": "https://claude.com/platform/api",
+      "fetchedAt": "2026-09-18T04:10:06.544Z",
+      "translated": true
+    },
+    {
+      "slug": "projects-redesigned",
+      "title": "Projects redesigned: from folder to conversation",
+      "date": "September 17, 2026",
+      "category": "Product announcements",
+      "url": "https://claude.com/blog/projects-redesigned",
+      "inHero": false,
+      "heroIndex": -1,
+      "inGrid": true,
+      "illustration": "assets/illustrations/projects-redesigned.svg",
+      "illustrationBg": "Clay",
+      "facets": {
+        "category": [
+          "Product announcements",
+          "Claude Code"
+        ],
+        "product": [
+          "Claude Code"
+        ],
+        "usecase": [
+          "Coding"
+        ]
+      },
+      "subtitle": "A new experience for Claude projects, now available in beta in Claude Code",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/product/claude-code",
+      "fetchedAt": "2026-09-18T04:10:06.585Z",
+      "translated": true
+    },
+    {
       "slug": "cowork-is-now-claude",
       "title": "Claude Cowork and chat are now one Claude",
       "date": "September 16, 2026",
@@ -8158,5 +8220,5 @@
       "productUrl": "https://claude.com/platform/api"
     }
   ],
-  "lastFetched": "2026-09-16T22:04:05.202Z"
+  "lastFetched": "2026-09-18T04:10:14.958Z"
 }

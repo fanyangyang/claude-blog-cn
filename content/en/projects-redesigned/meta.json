@@ -1,0 +1,30 @@
+{
+  "slug": "projects-redesigned",
+  "title": "Projects redesigned: from folder to conversation",
+  "date": "September 17, 2026",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/projects-redesigned",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/projects-redesigned.svg",
+  "illustrationBg": "Clay",
+  "facets": {
+    "category": [
+      "Product announcements",
+      "Claude Code"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": [
+      "Coding"
+    ]
+  },
+  "subtitle": "A new experience for Claude projects, now available in beta in Claude Code",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/product/claude-code",
+  "fetchedAt": "2026-09-18T04:04:08.056Z"
+}
