@@ -1,0 +1,31 @@
+{
+  "slug": "what-a-task-costs-on-opus-5-5",
+  "title": "What a task costs on Opus 5.5",
+  "date": "September 22, 2026",
+  "category": "Claude Code",
+  "url": "https://claude.com/blog/what-a-task-costs-on-opus-5-5",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/what-a-task-costs-on-opus-5-5.svg",
+  "illustrationBg": "Cactus",
+  "facets": {
+    "category": [
+      "Claude Code"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": [
+      "Coding"
+    ]
+  },
+  "subtitle": "Opus 5.5 costs less per token than Opus 5.",
+  "authors": [
+    "Addy Osmani"
+  ],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/claude-code",
+  "productUrl": "https://claude.com/product/claude-code",
+  "fetchedAt": "2026-09-22T22:12:34.278Z"
+}

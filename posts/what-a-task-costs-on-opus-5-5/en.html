@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>What a task costs on Opus 5.5 — Claude Blog CN</title>
+  <meta name="description" content="Opus 5.5 costs less per token than Opus 5.">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>What a task costs on Opus 5.5</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/blog/what-a-task-costs-on-opus-5-5" target="_blank" rel="noopener noreferrer">Ask questions about this page</a>
+        <button type="button" class="explore-item" data-copy-markdown>Copy as markdown</button>
+        <a class="explore-item" href="/posts/what-a-task-costs-on-opus-5-5/">阅读中文翻译 →</a>
+      </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># What a task costs on Opus 5.5
+
+Opus 5.5 costs less per token than Opus 5.
+
+## The cost of a task, and the cost of a retry
+
+You don't set out to buy millions of tokens. You set out to build a feature, finish a migration, or run a task. The token count is whatever the model needed to get there.
+
+Two models with the same cost per token can cost very different amounts on the same task. One reads the code once. The other reads it, tries a fix, and reads it again. Each of those steps is a turn, and each turn resends the conversation so far. So the model that needs more turns costs more, even at the same price.
+
+By the end of this post you should be able to answer three questions about your own work:
+
+- What do my typical tasks cost me on Opus 5.5?
+- Which settings change that, and by how much?
+- How do I check my own session usage?
+
+The tradeoff I want to share upfront is that every way to spend fewer tokens can also cost you a finished task. Lower effort, a smaller model, or less context can all certainly save tokens. A retry costs more than those savings. This post attempts to put a price on each tradeoff.
+
+Some numbers here are list prices, and some are illustrations built from them. The figures are interactive, so change the inputs as you read. These are best effort illustrations, so be sure to check our docs and your own math.
+
+## What does a task cost?
+
+A task in Claude Code is a loop. The model reads the conversation, calls a tool, reads the result, and goes round again until it's done. Each trip round the loop is one request. Four things set what the loop costs.
+
+**Turns.** Every turn resends the conversation so far. Fewer turns means less input processed.
+
+**Cache reads.** Most of what a turn resends is text the model saw on the previous turn. It's billed as a cache read, at a small fraction of the input price.
+
+**Output token type.** The most expensive tokens, at five times the input price. [Thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking) is billed as output, so a model that reasons less on the way to the answer costs less.
+
+**Model. **Each model has its own prices, listed on the pricing page, so the model you pick sets the price of every token.
+
+Our examples use Opus 5.5 API list prices: $4 per million input tokens, $20 per million output tokens and $0.20 per million cache reads. Like the calculator further down, the examples bill cached input at the read price and everything else at the input price, and leave out cache writes. The token counts are illustrations.
+
+### Turns
+
+Let’s say a task starts with 20K tokens of context and grows to 120K as the model reads files and tool results. At 40 turns, the average turn sends about 70K tokens. That's about 2.8M input tokens for the task, though the conversation never grew past 120K. With 90% read from cache, the input costs about $1.62. The same task in 25 turns processes about 1.75M tokens and costs about $1.02 in input.
+
+A turn costs more than the tokens it adds, because it resends everything before it. So the cheapest turn is the one you don't need. 
+
+One habit that can cut turns is giving the model a way to check its work. For example, a test to run, a build, or a script that calls the endpoint. A model that can check its own work finds its mistakes earlier.
+
+A model that gathers what it needs in one pass, and batches its tool calls, pays the resend fewer times too.
+
+### Cache reads
+
+The same 2.8M input tokens cost $11.20 if none come from cache. At a 90% hit rate they cost $1.62, and at 96% about $0.99. No other setting moves input cost this much. A steady session keeps a high hit rate on its own. I cover some actions to avoid breaking your cache later in this post. 
+
+### Output tokens
+
+On Opus 5.5, an output token costs 100 times a cache read. The 60K output tokens of a typical task cost $1.20, the same as reading 6M tokens from cache. Output includes thinking. You pay for all of it, even when Claude Code only shows you a summary. That's why effort, which mostly changes how much the model thinks, moves the bill so much.
+
+### Model
+
+A model with cheaper cache reads mostly helps long sessions. One with cheaper output mostly helps tasks that need a lot of reasoning.
+
+## What changed in Opus 5.5
+
+Two things changed: the price, and how much work the model does. 
+
+**Every price line is lower.** Input and output tokens are 20% cheaper than on Opus 5. Cache reads are 60% cheaper. The input price falls, and the read rate falls with it, from a tenth of the input price to a twentieth. Fig A compares the two models per million tokens. These are API list prices. On a Pro, Max or Team plan, the lower Opus 5.5 price is passed on to your limits, including cached context, so they go about 25% further than on Opus 5. The extra cut on cache reads is an API price change.
+
+*Fig A. Price per million tokens.*On an API key, the cache-read price cut matters most for Claude Code.  A long agentic session spends most of its input on cache reads. In the session priced in Fig B below, the cache line falls from $1.00 to $0.40, the largest drop on the receipt.
+
+How much you save depends on the shape of your work. A session that is mostly cache reads can save up to 60% on input. A short question with no cache and a long answer can save up to 20%, because output dominates it. Most Claude Code tasks sit between the two. The calculator below shows where yours sits.
+
+Opus 5.5 can use more tokens on an answer, because it always thinks before it replies. We expect people to get more done on Opus 5.5, but it varies by task, so measure it on your own work.** ** Fig C compares cost per task on the two models. This part depends on your work far more than the price does.
+
+On a well-scoped task, both models finish in about the same number of turns, and the price cut is all you get. The gap should be biggest on open-ended tasks, where a model can spend many turns on the wrong idea. No single number holds for every codebase, so measure it (see the last section).
+
+**Long runs end with a report.** Opus 5.5 closes a long run with what it changed, what it found, and what it needs from you. That can save money too, because you rerun a session less often when you can see what happened.
+
+## The same tasks side-by-side
+
+Fig B prices one session on both models with the same token counts. So the difference is the price change and nothing else. Switch models to compare. The token counts are illustrative.
+
+  
+    
+      Same task on Opus 5
+      On Opus 5.5
+    
+    
+      $3.50
+      at Opus 5 list prices
+    
+  
+  
+  
+  **Fig B.** Illustrative session with the same tokens on both models, so this is the price change alone.
+
+*Fig B. Illustrative session with the same tokens on both models, so this is the price change alone.*
+
+The receipt has the three lines /usage shows for a session. Cache reads are the biggest line by tokens, at 2M. Output is the smallest by tokens and the biggest by cost. Fresh input sits between them. It covers the first read of each file and each new tool result.
+
+Fig B gives both models the same token counts, so it shows the price change alone. Your own sessions can use more or fewer tokens on Opus 5.5.  Priced that way, the session costs about 31% less. 
+
+A recorded run adds the second effect, the change in how much work the model does. On a task with a false start, the gap should widen. Try your own numbers
+
+Set what one of your tasks uses, or start from a preset. The presets are pretty illustrative but I’d still recommend doing your own math. Cached input bills at the cache-read price and fresh input at the input price, so the cache slider shows how much of the gap comes from cache reads.
+
+To fill the sliders from a real session, run /usage at the end of a task. The Session block gives input, output and cache figures. The last slider is your assumption about how much less work Opus 5.5 does on your tasks. Leave it at 0% for the price change alone. To set it from your own work, here's how: run the same task on Opus 5 and on Opus 5.5, and compare turns and output tokens. Measure it yourself walks through it, and Reading a session shows what to check in /usage. 
+
+  
+  
+    
+      Input tokens per task Everything sent to the model across all turns, cached or not.
+      Read from cache 
+      Output tokens per task Includes thinking, which is billed as output.
+      Tasks per day 
+      Fewer tokens on Opus 5.5 (your assumption) Leave at 0% for price alone. Opus 5.5 does more with fewer tokens, but measure that on your own tasks.
+    
+    
+      Opus 5 per task––
+      Opus 5.5 per task––
+      Change per task––
+      A month is  working days. List prices. No batch or volume discounts, and cache writes are not counted (see the caching section below).
+    
+  
+
+## Tips for maximizing the value of your session
+
+Opus 5.5’s lower price makes each token cost less. How you run a session decides how many tokens you use, and these steps help.
+
+### **Raise effort before you change models**
+
+Effort sets a general disposition for how many tokens the model spends on each turn: its thinking, the text it writes, and its tool calls. At lower effort it makes fewer tool calls and keeps them shorter. Opus 5.5 has four levels (low, medium, high and xhigh), plus max for a single session. Pick a level below to see when to use it and the command that sets it.
+
+  
+  
+    
+    
+    
+    Levels run from least to most thinking per turn.
+  
+  
+
+Claude Code sets a default level for each model, and /effort status shows yours. Try **medium** for well-scoped, day-to-day work. When medium stalls, try **high**. It spends more per turn than medium, but less than moving to a bigger model. Use **low** for mechanical work, like renames or applying a known pattern across files.
+
+A rough way to think about effort pricing: say high adds 20K thinking tokens across a task. On Opus 5.5 that's $0.40. A retry loop of ten turns at 100K of cached context, with 10K output tokens in total, costs about the same. So high pays for itself on a task where it saves one retry. On a task medium would have finished the first time, it's wasted.
+
+#### **When medium fixes one layer**
+
+The clearest sign you need more effort is a fix that stops at one layer.
+
+Say a field is renamed in an API handler. At medium, the model updates the handler, the handler's tests pass, and the client still sends the old field. It did what it was asked. It just didn't read far enough to find the second caller. At high, it spends more turns reading call sites before it writes, and it changes both layers in one pass.
+
+A check can catch the same bug. If the model can run a test that goes through the client, the old field fails that test on the turn it was written, at medium. So before you raise effort, check whether the model has a way to check its work. A test run costs one turn and its output. More effort adds thinking to every turn.
+
+If upgrading effort levels and adding checks doesn’t work, then switch to a bigger model. 
+
+#### **Changing effort mid-session**
+
+In Claude Code, run /effort with a level, for example /effort high. /effort status prints the current level. You can change it mid-task, and the new level applies to the next request.
+
+Changing effort or thinking settings clears the cached conversation, because those settings are part of the prompt the cache matches. The next request pays the cache-write price on the whole conversation.
+
+### **Choose the right model for your work**
+
+Model choice sets the price of every token in a session, so it moves the bill more than effort does. It also reaches further. Every subagent that inherits the main model inherits its price too. Most days need three models: a small one for lookups, Opus 5.5 for  work you supervise closely, and a bigger one for the hardest tasks.
+
+#### **Opus 5.5 as the daily driver**
+
+Use Opus 5.5 for work you supervise: feature work across a few files, debugging, and code review with follow-up edits. You read what it does and step in when it drifts, so the loop stays short. Moving up to Fable 5.1
+
+**Move up to Fable 5.1 when the result matters more than the token price. For example **long runs you won't supervise, problems with no existing pattern in the codebase, and large changes that coordinate many subagents. Don't wait for a third failure. If Opus 5.5 on high hits the same problem twice, switch, and switch back once it's solved. For interactive work, Opus 5.5 is a better fit as it has lower latency and costs less.
+
+Fable 5.1 lists at $10 per million input tokens and $50 per million output, two and a half times the Opus 5.5 price. Its cache reads cost $0.25 per million, only 1.25 times the Opus 5.5 rate, because they bill at 0.025 times its input price. So the gap is smallest on a long, cache-heavy run, and largest on a task that writes a lot.
+
+Switch at a natural break. The cache belongs to the previous model, so expect the first turn on the new model to pay the write price on the whole conversation. Run /compact first, or start a fresh session with a short written plan, to make that turn smaller. Run [/model](https://code.claude.com/docs/en/model-config) with an alias or a model name to switch. /model also saves your choice as the default for new sessions, so switch back when the hard part is done.
+
+#### **Moving down for lookups**
+
+**Move down to Sonnet or Haiku for lookups, not for writing code:** subagents that search and summarize, reading logs and test output, and &quot;where is this defined&quot; questions. For a mechanical edit across many files, keep Opus 5.5 and set effort to low. The edit stays on the model that writes the rest of your code, at a lower cost per turn.
+
+To put a [subagent](https://code.claude.com/docs/en/sub-agents) on a smaller model, set model: haiku or model: sonnet in its definition. To put every subagent on one model, set the CLAUDE_CODE_SUBAGENT_MODEL environment variable. A model named in a subagent's definition overrides the variable. A subagent with no model setting runs on your main model, unless the variable is set.
+
+Each subagent runs in its own context window and hands back a summary, so its file reads stay out of your main conversation. It still pays for its own tokens, so the model setting decides what that spend costs.
+
+The tradeoff: a small model that misreads a search result sends the main model after the wrong file, and the main model pays for the detour. Keep the small model on work where a mistake is cheap to spot, like finding files, running tests and reading logs. 
+
+Keep judgment calls on the main model. The opusplan alias splits the work a different way: Opus plans in plan mode, and Sonnet carries out the plan. That puts the code edits on Sonnet, the opposite of the advice above. Measure it on your own tasks before you make it a default.
+
+### **Check your prompts when you migrate**
+
+Instructions written for an older model can make Opus 5.5 write more and repeat tool calls. Run /claude-api prompt-audit in Claude Code to check your Claude Code setup, such as your skills and CLAUDE.md file, for these [prompting anti-patterns](https://claude.com/blog/reducing-cost-and-improving-performance-with-claude-platform). It also checks the code of an app you build on the Claude Platform.
+
+We tested this on a migration from Opus 4.8 to Opus 5.5, using an internal customer support benchmark of 44 tickets whose prompt had several of these patterns. The move to Opus 5.5, at low effort, cut the benchmark's cost by about 18%. Running prompt-audit cut it by a further 9%, to about 25% below the Opus 4.8 starting point. The audit removed ritual instructions that made the model write more and repeat tool calls: a mandatory six-step procedure, a scratchpad rule, a verify-twice rule, and instructions that contradicted each other.
+
+*Fig D. Migration from Opus 4.8 at default effort to Opus 5.5 at low effort, with prompt-audit, on the customer support benchmark.*That result comes from one benchmark, so treat it as an example rather than a number to expect. Run the audit, then compare /usage on a real task before and after (see Measure it yourself).
+
+### **Caching and compaction**
+
+Claude Code handles caching and compaction for you. How you run a session decides how much they save.
+
+#### **How the cache works**
+
+Claude Code caches the parts of a request that repeat, such as the system prompt, tool definitions, and the conversation so far.
+
+On Opus 5.5 a cached read costs 5% of a fresh input token. Writing to the cache costs more than a fresh read, at 1.25 times the input price for a five-minute cache and twice the input price for a one-hour cache, on today's pricing. Each hit resets the lifetime at no charge.
+
+In Claude Code the lifetime depends on how you pay. On a Claude subscription it's an hour. On an API key or a cloud provider it's five minutes by default, and a subscription drops to five minutes once it's drawing on usage credits.
+
+At 120K tokens of context, a five-minute write on Opus 5.5 costs about $0.60 and a read about $0.02. One write costs as much as 25 reads. On an API key, a six-minute coffee break turns the next $0.02 read into a $0.60 write. A one-hour write at the same size costs about $0.96, and on the API you can pay that premium to cover the gaps in your day.
+
+#### **Session shape and hit rate**
+
+The cache stores a prefix, so it can reuse only the part of a request that matches the previous one from the start.
+
+A steady session appends to the end of the conversation on every turn and keeps its hit rate high. Anything that changes an earlier part of the request lowers it. Changing the tool definitions clears the whole cache, and a change to the system prompt clears it from that point on, which is almost everything.
+
+In practice, expect a cache write when:
+
+- You pause longer than the cache lifetime;
+- You change effort or thinking settings (see the effort section), which can clear the cached conversation;
+- You connect or disconnect an MCP server, which can change what loads at the start of each request;
+- You switch models, since the new model starts from an empty cache; and
+- The conversation is compacted, which rewrites the history the cache matched.
+
+So set these up when the session starts, and leave them alone while it works.
+
+#### **Why long sessions cost more per turn**
+
+Every turn resends the whole context, so a turn costs more as the context grows, even with a warm cache. At 20K tokens of context a turn's cache read costs about $0.004 on Opus 5.5. At 150K it costs about $0.03, and 30 turns at that size spend $0.90 on reads alone. The same 30 turns at 20K cost about $0.12. On Claude 4.6 and later models a bigger context window doesn't change the price per token, so the cost comes entirely from resending the conversation.
+
+Much of that context is left over from earlier work: a stack trace from an hour ago, a file you've finished with, the output of a test run you've since fixed. It's all still sent on every turn.
+
+#### **Compaction, /compact and /clear**
+
+When a session gets close to its context limit, Claude Code summarizes older history so later turns send less. Run /autocompact with a token count to change how full the context gets before that happens.
+
+Two commands let you do this yourself. /clear empties the conversation and costs nothing, so use it when you move to unrelated work. /compact keeps continuity and costs one request. It reads the conversation it summarizes, and you can say what to keep, for example /compact keep the failing test names and the schema change.
+
+A rough price for compacting at 150K tokens is about $0.25. That's the read, a summary of a few thousand output tokens, and a new cache write on the shorter context. Each later turn saves about $0.025 in reads, so the compaction pays for itself within about ten turns. A compaction just before you finish costs more than it saves.
+
+The summary also loses detail. A compaction in the middle of a debugging session can drop the one log line that mattered. Compact at a natural break, and when the next step depends on something specific, say so in the /compact instruction.
+
+#### **What loads before you type**
+
+Your [CLAUDE.md file](https://code.claude.com/docs/en/memory) loads into the context at the start of every session, so each line in it is part of what every turn resends. The [costs docs](https://code.claude.com/docs/en/costs) suggest keeping it under 200 lines. MCP tool definitions are deferred. Only tool names and server instructions load at the start, and a full definition loads when its tool is used. Run /mcp to see which servers are connected, and turn off the ones you aren't using.
+
+#### **The rest of the bill**
+
+The table lists the other billing rules that affect a Claude Code session, with a link to the docs where one exists.
+
+## Measure it yourself
+
+The figures in this post are illustrations. Your codebase, prompts and habits are different, so measure cost on your own tasks. Here's how to check.
+
+- **In a session, run **[**/usage**](https://code.claude.com/docs/en/costs)**.** /cost does the same thing. The Session block shows token use and an estimated dollar cost at list price. A prompt-cache line shows how much of your input came from cache. On a Pro, Max, Team or Enterprise plan, the same screen shows your plan usage bars. The dollar figure is computed on your machine at list price, so on a subscription it is a guide to how much work you did, not a bill.
+- **Run the same task twice.** Pick something from your backlog, not a toy example. Use /model to switch between Opus 5 and Opus 5.5. Note turns, output tokens and cost for each run. Do three or four tasks before you draw a conclusion.
+- **For a team, use the usage and cost reports.** The [Claude Code Analytics API](https://platform.claude.com/docs/en/manage-claude/claude-code-analytics-api) gives estimated cost per user. The [Usage and Cost API](https://platform.claude.com/docs/en/manage-claude/usage-cost-api) breaks spend down by model and by cached versus uncached tokens.
+- **Try the effort ladder.** Run one hard task at medium and then at high. Run one mechanical task at low.
+
+### Reading a session
+
+Check three things in /usage at the end of a task.
+
+- **Cache share.** For a long session it should be high. If it's low, look for a long pause, a change of effort or model, or an MCP server connected partway through.
+- **Output against input.** A lot of output on a small change usually means the effort level is too high for the task, or the model is retrying.
+- **Total input against the size of the conversation.** If the total is many times the size of the conversation, the session took many turns, and the conversation is worth reading to find where the loop repeated.
+
+For a baseline, the Claude Code costs docs give an average across enterprise deployments of about $13 per developer per active day, and under $30 per active day for 90% of users. A session that costs well above your own normal level is worth reviewing.
+
+## Keep in mind
+
+- Use medium effort for well-scoped daily work.
+- Give the model a way to check its work, and start changes that span files in plan mode.
+- When medium stalls, raise effort to high. Change it at a break, since the change can cost a cache write.
+- If high hits the same problem twice, switch to Fable 5.1. Switch back once it's solved.
+- Put search and log-reading subagents on Sonnet or Haiku. Keep code edits on Opus 5.5.
+- Keep a long session moving, so its cache stays warm.
+- Use /clear between unrelated tasks, and /compact at a break with a note on what to keep.
+- **The one that matters most:** run one real task on each model and compare what /usage reports. Your own numbers are the ones to trust.
+
+I hope this post was helpful. If your limits don’t go further on Opus 5.5 than on Opus 5, tell us with /feedback. 
+
+Further reading: [Manage costs effectively](https://code.claude.com/docs/en/costs) · [Model configuration](https://code.claude.com/docs/en/model-config) · [Choosing a Claude model and effort level in Claude Code](https://claude.com/blog/claude-model-and-effort-level-in-claude-code) · [Effort](https://platform.claude.com/docs/en/build-with-claude/effort) · [Prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching) · [Maximizing the value of your Claude Code sessions](https://claude.com/blog/maximizing-the-value-of-your-claude-code-sessions)
+
+*With thanks to Michael Segner, Kacie Jenkins and Molly Vorwerck for their reviews.*</textarea>
+    </div>
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            <div class="hero-illo-wrap" style="background-color: var(--illo-cactus);">
+            <img class="hero-illo-img" src="/assets/illustrations/what-a-task-costs-on-opus-5-5.svg" alt="" loading="lazy">
+          </div>
+            <h1 class="article-title u-text-style-h1">What a task costs on Opus 5.5</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>Opus 5.5 costs less per token than Opus 5.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/blog/category/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/product/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">September 22, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/what-a-task-costs-on-opus-5-5/en.html">Copy link</button>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M15.5117 1.99707C15.9213 2.0091 16.3438 2.13396 16.6768 2.46679C17.0278 2.81814 17.1209 3.26428 17.0801 3.68261C17.0404 4.08745 16.8765 4.49344 16.6787 4.85058C16.3934 5.36546 15.9941 5.85569 15.6348 6.20898C15.7682 6.41421 15.8912 6.66414 15.9551 6.9453C16.0804 7.4977 15.9714 8.13389 15.4043 8.70116C14.8566 9.24884 13.974 9.54823 13.1943 9.71679C12.7628 9.81003 12.3303 9.86698 11.9473 9.90233C12.0596 10.2558 12.0902 10.7051 11.8779 11.2012L11.8223 11.3203C11.5396 11.8854 11.0275 12.2035 10.4785 12.3965C9.93492 12.5875 9.29028 12.6792 8.65332 12.75C7.99579 12.8231 7.34376 12.8744 6.70117 12.9775C6.14371 13.067 5.63021 13.1903 5.18652 13.3818L5.00585 13.4658C4.53515 14.2245 4.13745 14.9658 3.80957 15.6465C4.43885 15.2764 5.1935 15 5.99999 15C6.27614 15 6.49999 15.2238 6.49999 15.5C6.49999 15.7761 6.27613 16 5.99999 16C5.35538 16 4.71132 16.2477 4.15039 16.6103C3.58861 16.9736 3.14957 17.427 2.91601 17.7773C2.91191 17.7835 2.90568 17.788 2.90136 17.7939C2.88821 17.8119 2.8746 17.8289 2.85937 17.8447C2.85117 17.8533 2.84268 17.8612 2.83398 17.8691C2.81803 17.8835 2.80174 17.897 2.78417 17.9092C2.774 17.9162 2.76353 17.9225 2.75292 17.9287C2.73854 17.9372 2.72412 17.9451 2.70898 17.9521C2.69079 17.9605 2.6723 17.9675 2.65332 17.9736C2.6417 17.9774 2.63005 17.9805 2.61816 17.9834C2.60263 17.9872 2.5871 17.9899 2.57128 17.9922C2.55312 17.9948 2.53511 17.9974 2.5166 17.998C2.50387 17.9985 2.49127 17.9976 2.47851 17.9971C2.45899 17.9962 2.43952 17.9954 2.41992 17.9922C2.40511 17.9898 2.39062 17.9862 2.37597 17.9824C2.36477 17.9795 2.35294 17.9783 2.34179 17.9746C2.33697 17.973 2.33286 17.9695 2.32812 17.9678C2.31042 17.9612 2.29351 17.953 2.27636 17.9443C2.26332 17.9378 2.25053 17.9314 2.23828 17.9238C2.23339 17.9208 2.22747 17.9192 2.22265 17.916C2.21414 17.9103 2.20726 17.9026 2.19921 17.8965C2.18396 17.8849 2.16896 17.8735 2.15527 17.8603C2.14518 17.8507 2.13609 17.8404 2.12695 17.8301C2.11463 17.8161 2.10244 17.8023 2.09179 17.7871C2.08368 17.7756 2.07736 17.7631 2.07031 17.751C2.06168 17.7362 2.05297 17.7216 2.04589 17.706C2.03868 17.6901 2.03283 17.6738 2.02734 17.6572C2.0228 17.6436 2.01801 17.6302 2.01464 17.6162C2.01117 17.6017 2.009 17.587 2.00683 17.5722C2.00411 17.5538 2.00161 17.5354 2.00097 17.5166C2.00054 17.5039 2.00141 17.4912 2.00195 17.4785C2.00279 17.459 2.00364 17.4395 2.00683 17.4199C2.00902 17.4064 2.01327 17.3933 2.0166 17.3799C2.01973 17.3673 2.02123 17.3543 2.02539 17.3418C2.41772 16.1648 3.18163 14.466 4.30468 12.7012C4.31908 12.5557 4.34007 12.3582 4.36914 12.1201C4.43379 11.5907 4.53836 10.8564 4.69921 10.0381C5.0174 8.41955 5.56814 6.39783 6.50585 4.9912L6.73242 4.66894C7.27701 3.93277 7.93079 3.30953 8.61035 2.85156C9.3797 2.33311 10.2221 2 11.001 2C11.7951 2.00025 12.3531 2.35795 12.7012 2.70605C12.7723 2.77723 12.8348 2.84998 12.8896 2.91796C13.2829 2.66884 13.7917 2.39502 14.3174 2.21191C14.6946 2.08056 15.1094 1.98537 15.5117 1.99707ZM17.04 15.5537C17.1486 15.3 17.4425 15.1818 17.6963 15.29C17.95 15.3986 18.0683 15.6925 17.96 15.9463C17.4827 17.0612 16.692 18 15.5 18C14.6309 17.9999 13.9764 17.5003 13.5 16.7978C13.0236 17.5003 12.3691 18 11.5 18C10.6309 17.9999 9.97639 17.5003 9.49999 16.7978C9.02359 17.5003 8.36911 18 7.49999 18C7.22391 17.9999 7 17.7761 6.99999 17.5C6.99999 17.2239 7.22391 17 7.49999 17C8.07039 17 8.6095 16.5593 9.04003 15.5537L9.07421 15.4873C9.16428 15.3412 9.32494 15.25 9.49999 15.25C9.70008 15.25 9.88121 15.3698 9.95996 15.5537L10.042 15.7353C10.4581 16.6125 10.9652 16.9999 11.5 17C12.0704 17 12.6095 16.5593 13.04 15.5537L13.0742 15.4873C13.1643 15.3412 13.3249 15.25 13.5 15.25C13.7001 15.25 13.8812 15.3698 13.96 15.5537L14.042 15.7353C14.4581 16.6125 14.9652 16.9999 15.5 17C16.0704 17 16.6095 16.5593 17.04 15.5537ZM15.4824 2.99707C15.247 2.99022 14.9608 3.04682 14.6465 3.15624C14.0173 3.37541 13.389 3.76516 13.0498 4.01953C12.9277 4.11112 12.7697 4.14131 12.6221 4.10253C12.4745 4.06357 12.3522 3.9591 12.291 3.81933V3.81835C12.2892 3.81468 12.2861 3.80833 12.2822 3.80078C12.272 3.78092 12.2541 3.7485 12.2295 3.70898C12.1794 3.62874 12.1011 3.52019 11.9941 3.41308C11.7831 3.2021 11.4662 3.00024 11.001 2.99999C10.4904 2.99999 9.84173 3.22729 9.16894 3.68066C8.58685 4.07297 8.01568 4.61599 7.5371 5.26269L7.33789 5.54589C6.51634 6.77827 5.99475 8.63369 5.68066 10.2314C5.63363 10.4707 5.5913 10.7025 5.55371 10.9238C7.03031 9.01824 8.94157 7.19047 11.2812 6.05077C11.5295 5.92989 11.8283 6.03301 11.9492 6.28124C12.0701 6.52949 11.967 6.82829 11.7187 6.94921C9.33153 8.11208 7.38648 10.0746 5.91406 12.1103C6.12313 12.0632 6.33385 12.0238 6.54296 11.9902C7.21709 11.8821 7.92723 11.8243 8.54296 11.7558C9.17886 11.6852 9.72123 11.6025 10.1465 11.4531C10.5662 11.3056 10.8063 11.1158 10.9277 10.873L10.9795 10.7549C11.0776 10.487 11.0316 10.2723 10.9609 10.1123C10.918 10.0155 10.8636 9.93595 10.8203 9.88183C10.7996 9.85598 10.7822 9.83638 10.7715 9.82518L10.7607 9.81542L10.7627 9.8164L10.7646 9.81835C10.6114 9.67972 10.5597 9.46044 10.6338 9.26757C10.7082 9.07475 10.8939 8.94726 11.1006 8.94726C11.5282 8.94719 12.26 8.8956 12.9834 8.73925C13.7297 8.5779 14.3654 8.32602 14.6973 7.99413C15.0087 7.68254 15.0327 7.40213 14.9795 7.16698C14.9332 6.96327 14.8204 6.77099 14.707 6.62792L14.5957 6.50195C14.4933 6.39957 14.4401 6.25769 14.4502 6.11327C14.4605 5.96888 14.5327 5.83599 14.6484 5.74902C14.9558 5.51849 15.4742 4.96086 15.8037 4.3662C15.9675 4.07048 16.0637 3.80137 16.085 3.58593C16.1047 3.38427 16.0578 3.26213 15.9697 3.17382C15.8631 3.06726 15.7102 3.00377 15.4824 2.99707Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Author(s)</div>
+                  <div class="hero-detail-value u-text-style-body-3">Addy Osmani</div>
+                </div>
+              </li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><h2>The cost of a task, and the cost of a retry</h2><p>You don't set out to buy millions of tokens. You set out to build a feature, finish a migration, or run a task. The token count is whatever the model needed to get there.</p><p>Two models with the same cost per token can cost very different amounts on the same task. One reads the code once. The other reads it, tries a fix, and reads it again. Each of those steps is a turn, and each turn resends the conversation so far. So the model that needs more turns costs more, even at the same price.</p><p>By the end of this post you should be able to answer three questions about your own work:</p><ul role="list"><li>What do my typical tasks cost me on Opus 5.5?</li><li>Which settings change that, and by how much?</li><li>How do I check my own session usage?</li></ul><p>The tradeoff I want to share upfront is that every way to spend fewer tokens can also cost you a finished task. Lower effort, a smaller model, or less context can all certainly save tokens. A retry costs more than those savings. This post attempts to put a price on each tradeoff.</p><p>Some numbers here are list prices, and some are illustrations built from them. The figures are interactive, so change the inputs as you read. These are best effort illustrations, so be sure to check our docs and your own math.</p><h2>What does a task cost?</h2><p>A task in Claude Code is a loop. The model reads the conversation, calls a tool, reads the result, and goes round again until it's done. Each trip round the loop is one request. Four things set what the loop costs.</p><p><strong>Turns.</strong> Every turn resends the conversation so far. Fewer turns means less input processed.</p><p><strong>Cache reads.</strong> Most of what a turn resends is text the model saw on the previous turn. It's billed as a cache read, at a small fraction of the input price.</p><p><strong>Output token type.</strong> The most expensive tokens, at five times the input price. <a href="https://platform.claude.com/docs/en/build-with-claude/extended-thinking">Thinking</a> is billed as output, so a model that reasons less on the way to the answer costs less.</p><p><strong>Model. </strong>Each model has its own prices, listed on the pricing page, so the model you pick sets the price of every token.</p><p>Our examples use Opus 5.5 API list prices: $4 per million input tokens, $20 per million output tokens and $0.20 per million cache reads. Like the calculator further down, the examples bill cached input at the read price and everything else at the input price, and leave out cache writes. The token counts are illustrations.</p><h3>Turns</h3><p>Let’s say a task starts with 20K tokens of context and grows to 120K as the model reads files and tool results. At 40 turns, the average turn sends about 70K tokens. That's about 2.8M input tokens for the task, though the conversation never grew past 120K. With 90% read from cache, the input costs about $1.62. The same task in 25 turns processes about 1.75M tokens and costs about $1.02 in input.</p><p>A turn costs more than the tokens it adds, because it resends everything before it. So the cheapest turn is the one you don't need.&nbsp;</p><p>One habit that can cut turns is giving the model a way to check its work. For example, a test to run, a build, or a script that calls the endpoint. A model that can check its own work finds its mistakes earlier.</p><p>A model that gathers what it needs in one pass, and batches its tool calls, pays the resend fewer times too.</p><h3>Cache reads</h3><p>The same 2.8M input tokens cost $11.20 if none come from cache. At a 90% hit rate they cost $1.62, and at 96% about $0.99. No other setting moves input cost this much. A steady session keeps a high hit rate on its own. I cover some actions to avoid breaking your cache later in this post.&nbsp;</p><h3>Output tokens</h3><p>On Opus 5.5, an output token costs 100 times a cache read. The 60K output tokens of a typical task cost $1.20, the same as reading 6M tokens from cache. Output includes thinking. You pay for all of it, even when Claude Code only shows you a summary. That's why effort, which mostly changes how much the model thinks, moves the bill so much.</p><h3>Model</h3><p>A model with cheaper cache reads mostly helps long sessions. One with cheaper output mostly helps tasks that need a lot of reasoning.</p><h2>What changed in Opus 5.5</h2><p>Two things changed: the price, and how much work the model does.&nbsp;</p><p><strong>Every price line is lower.</strong> Input and output tokens are 20% cheaper than on Opus 5. Cache reads are 60% cheaper. The input price falls, and the read rate falls with it, from a tenth of the input price to a twentieth. Fig A compares the two models per million tokens. These are API list prices. On a Pro, Max or Team plan, the lower Opus 5.5 price is passed on to your limits, including cached context, so they go about 25% further than on Opus 5. The extra cut on cache reads is an API price change.</p><figure style="max-width:2000pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6ab2b188d841f059a960ac69_fig-a-price-per-million.png" loading="lazy"></div><figcaption><em>Fig A. Price per million tokens.</em></figcaption></figure><p>On an API key, the cache-read price cut matters most for Claude Code.&nbsp; A long agentic session spends most of its input on cache reads. In the session priced in Fig B below, the cache line falls from $1.00 to $0.40, the largest drop on the receipt.</p><p>How much you save depends on the shape of your work. A session that is mostly cache reads can save up to 60% on input. A short question with no cache and a long answer can save up to 20%, because output dominates it. Most Claude Code tasks sit between the two. The calculator below shows where yours sits.</p><p>Opus 5.5 can use more tokens on an answer, because it always thinks before it replies. We expect people to get more done on Opus 5.5, but it varies by task, so measure it on your own work.<strong> </strong>&nbsp;Fig C compares cost per task on the two models. This part depends on your work far more than the price does.</p><p>On a well-scoped task, both models finish in about the same number of turns, and the price cut is all you get. The gap should be biggest on open-ended tasks, where a model can spend many turns on the wrong idea. No single number holds for every codebase, so measure it (see the last section).</p><p><strong>Long runs end with a report.</strong> Opus 5.5 closes a long run with what it changed, what it found, and what it needs from you. That can save money too, because you rerun a session less often when you can see what happened.</p><h2>The same tasks side-by-side</h2><p>Fig B prices one session on both models with the same token counts. So the difference is the price change and nothing else. Switch models to compare. The token counts are illustrative.</p><div class="w-embed w-script"><!-- Fig B · One task, two models (receipt toggle). Self-contained Webflow embed. -->
+<div id="cf-hero">
+<style>
+#cf-hero{
+  /* tokens: remap these to site colors if needed */
+  --cf-surface:#fcfcfa;--cf-sunk:#ebe8e1;--cf-ink:#141414;--cf-muted:#65625d;--cf-rule:#d9d5cb;
+  --cf-opus:#c2c2b6;--cf-accent:#da7757;--cf-accent-text:#a9492c;--cf-focus:#2f5fb3;
+  --cf-mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  display:grid;gap:1.4rem;margin:1.75rem 0;padding:1.25rem;
+  background:var(--cf-surface);border:1px solid var(--cf-rule);border-radius:6px;
+  color:var(--cf-ink);font-size:16px;line-height:1.5;text-align:left;
+}
+#cf-hero,#cf-hero *{box-sizing:border-box}
+#cf-hero .cf-num{font-family:var(--cf-mono);font-variant-numeric:tabular-nums}
+#cf-hero .cf-note{font-size:.82rem;color:var(--cf-muted)}
+#cf-hero .cf-top{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+#cf-hero .cf-seg{display:inline-flex;border:1px solid var(--cf-rule);border-radius:999px;padding:3px;background:var(--cf-sunk);gap:2px}
+#cf-hero .cf-seg button{font-family:inherit;font-weight:500;font-size:.85rem;line-height:1.2;margin:0;border:0;background:transparent;color:var(--cf-muted);padding:.4rem .9rem;border-radius:999px;cursor:pointer}
+#cf-hero .cf-seg button[aria-pressed="true"]{background:var(--cf-surface);color:var(--cf-ink);box-shadow:0 1px 2px rgb(0 0 0 / .12)}
+#cf-hero .cf-seg button:focus-visible{outline:2px solid var(--cf-focus);outline-offset:2px}
+#cf-hero .cf-totalwrap{text-align:right}
+#cf-hero .cf-big{font-weight:650;font-size:clamp(2.2rem,6vw,3.4rem);line-height:1;letter-spacing:-.02em;color:var(--cf-accent-text);transition:color .4s}
+#cf-hero .cf-meter{height:38px;background:var(--cf-sunk);border-radius:4px;overflow:hidden;position:relative}
+#cf-hero .cf-fill{position:absolute;inset:0 auto 0 0;display:flex;transition:width .7s cubic-bezier(.3,.7,.2,1)}
+#cf-hero .cf-fill span{height:100%;transition:background .4s,width .7s cubic-bezier(.3,.7,.2,1)}
+#cf-hero .cf-ghost{position:absolute;top:0;bottom:0;left:calc(100% - 2px);border-right:2px dashed var(--cf-opus);transition:opacity .4s}
+#cf-hero .cf-receipt{display:grid;gap:.5rem}
+#cf-hero .cf-line{display:flex;align-items:baseline;gap:.5rem;font-size:.92rem}
+#cf-hero .cf-lbl{white-space:nowrap}
+#cf-hero .cf-dots{flex:1;border-bottom:1px dotted var(--cf-rule);transform:translateY(-4px);min-width:1rem}
+#cf-hero .cf-total{font-weight:600;border-top:1px solid var(--cf-rule);padding-top:.5rem;margin-top:.2rem}
+#cf-hero .cf-cap{font-size:.82rem;color:var(--cf-muted);margin:0}
+@media (prefers-reduced-motion:reduce){#cf-hero *{transition:none!important}}
+</style>
+  <div class="cf-top">
+    <div class="cf-seg" role="group" aria-label="Choose model">
+      <button type="button" data-cf-model="prev" aria-pressed="true">Same task on Opus 5</button>
+      <button type="button" data-cf-model="new" aria-pressed="false">On Opus 5.5</button>
+    </div>
+    <div class="cf-totalwrap">
+      <div class="cf-big cf-num" data-cf="total">$3.50</div>
+      <div class="cf-note" data-cf="delta">at Opus 5 list prices</div>
+    </div>
+  </div>
+  <div class="cf-meter" aria-hidden="true"><div class="cf-fill" data-cf="fill"></div><div class="cf-ghost" data-cf="ghost"></div></div>
+  <div class="cf-receipt" data-cf="receipt" aria-live="polite"></div>
+  <div class="cf-cap"><strong>Fig B.</strong> Illustrative session with the same tokens on both models, so this is the price change alone.</div>
+<script>
+(function () {
+  var root = document.getElementById("cf-hero");
+  if (!root || root.dataset.cfReady) return; root.dataset.cfReady = "1";
+  /* DATA: dollars per million tokens. Same numbers appear in the calculator embed. */
+  var NAMES  = { prev: "Opus 5", "new": "Opus 5.5" };
+  var PRICES = {
+    prev:  { input: 5, output: 25, cacheRead: 0.50 },
+    "new": { input: 4, output: 20, cacheRead: 0.20 }
+  };
+  var EXAMPLE = { cachedInput: 2000000, freshInput: 200000, output: 60000 };
+  var q = function (k) { return root.querySelector('[data-cf="' + k + '"]'); };
+  var usd = function (v) { return v >= 100 ? "$" + Math.round(v).toLocaleString("en-US") : "$" + v.toFixed(2); };
+  var tok = function (v) { return v >= 1e6 ? (v / 1e6).toFixed(v >= 1e7 ? 0 : 1) + "M" : Math.round(v / 1e3) + "K"; };
+  var rows = [
+    ["Read from cache", EXAMPLE.cachedInput, "cacheRead"],
+    ["Fresh input",     EXAMPLE.freshInput,  "input"],
+    ["Output",          EXAMPLE.output,      "output"]
+  ];
+  var cost = function (k, r) { return r[1] * PRICES[k][r[2]] / 1e6; };
+  var tot  = function (k) { return rows.reduce(function (s, r) { return s + cost(k, r); }, 0); };
+  var tPrev = tot("prev"), tNew = tot("new");
+  var fill = q("fill"), ghost = q("ghost"), shades = ["55%", "75%", "100%"];
+  var btns = root.querySelectorAll("[data-cf-model]");
+  rows.forEach(function () { fill.appendChild(document.createElement("span")); });
+  function show(k) {
+    var t = k === "prev" ? tPrev : tNew;
+    var col = k === "prev" ? "var(--cf-opus)" : "var(--cf-accent)";
+    var colText = k === "prev" ? "var(--cf-muted)" : "var(--cf-accent-text)";
+    fill.style.width = (t / tPrev * 100) + "%";
+    Array.prototype.forEach.call(fill.children, function (s, i) {
+      s.style.width = (cost(k, rows[i]) / t * 100) + "%";
+      s.style.background = "color-mix(in srgb, " + col + " " + shades[i] + ", var(--cf-sunk))";
+    });
+    ghost.style.opacity = k === "prev" ? 0 : 1;
+    q("total").textContent = usd(t);
+    q("total").style.color = colText;
+    q("delta").textContent = k === "prev"
+      ? "at " + NAMES.prev + " list prices"
+      : Math.round((1 - tNew / tPrev) * 100) + "% less than " + NAMES.prev + ", same tokens";
+    q("receipt").innerHTML = rows.map(function (r) {
+      return '<div class="cf-line"><span class="cf-lbl">' + r[0] + ' <span class="cf-note cf-num">' + tok(r[1]) +
+        '</span></span><span class="cf-dots"></span><span class="cf-num">' + usd(cost(k, r)) + '</span></div>';
+    }).join("") +
+      '<div class="cf-line cf-total"><span class="cf-lbl">Total, ' + NAMES[k] +
+      '</span><span class="cf-dots"></span><span class="cf-num">' + usd(t) + '</span></div>';
+    Array.prototype.forEach.call(btns, function (b) {
+      b.setAttribute("aria-pressed", String(b.getAttribute("data-cf-model") === k));
+    });
+  }
+  Array.prototype.forEach.call(btns, function (b) {
+    b.addEventListener("click", function () { show(b.getAttribute("data-cf-model")); });
+  });
+  show("prev");
+})();
+</script>
+</div></div><p><em>Fig B. Illustrative session with the same tokens on both models, so this is the price change alone.</em></p><p>The receipt has the three lines /usage shows for a session. Cache reads are the biggest line by tokens, at 2M. Output is the smallest by tokens and the biggest by cost. Fresh input sits between them. It covers the first read of each file and each new tool result.</p><p>Fig B gives both models the same token counts, so it shows the price change alone. Your own sessions can use more or fewer tokens on Opus 5.5.&nbsp; Priced that way, the session costs about 31% less.&nbsp;</p><p>A recorded run adds the second effect, the change in how much work the model does. On a task with a false start, the gap should widen. Try your own numbers</p><p>Set what one of your tasks uses, or start from a preset. The presets are pretty illustrative but I’d still recommend doing your own math. Cached input bills at the cache-read price and fresh input at the input price, so the cache slider shows how much of the gap comes from cache reads.</p><p>To fill the sliders from a real session, run /usage at the end of a task. The Session block gives input, output and cache figures. The last slider is your assumption about how much less work Opus 5.5 does on your tasks. Leave it at 0% for the price change alone. To set it from your own work, here's how: run the same task on Opus 5 and on Opus 5.5, and compare turns and output tokens. Measure it yourself walks through it, and Reading a session shows what to check in /usage.&nbsp;</p><div class="w-embed w-script"><!-- Try your own numbers (cost calculator). Self-contained Webflow embed. -->
+<div id="cf-calc">
+<style>
+#cf-calc{
+  /* tokens: remap these to site colors if needed */
+  --cf-paper:#f3f2ee;--cf-surface:#fcfcfa;--cf-ink:#141414;--cf-muted:#65625d;--cf-rule:#d9d5cb;
+  --cf-accent:#da7757;--cf-accent-text:#a9492c;--cf-accent-soft:#f4ddd3;--cf-focus:#2f5fb3;
+  --cf-mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  container-type:inline-size;
+  display:grid;gap:1.25rem;margin:1.75rem 0;padding:1.25rem;
+  background:var(--cf-surface);border:1px solid var(--cf-rule);border-radius:6px;
+  color:var(--cf-ink);font-size:16px;line-height:1.5;text-align:left;
+}
+#cf-calc,#cf-calc *{box-sizing:border-box}
+#cf-calc .cf-presets{display:flex;gap:.5rem;flex-wrap:wrap}
+#cf-calc .cf-chip{font-family:inherit;font-weight:500;font-size:.82rem;line-height:1.2;margin:0;border:1px solid var(--cf-rule);background:var(--cf-surface);color:var(--cf-ink);padding:.35rem .75rem;border-radius:999px;cursor:pointer}
+#cf-calc .cf-chip[aria-pressed="true"]{border-color:var(--cf-accent);background:var(--cf-accent-soft)}
+#cf-calc .cf-chip:focus-visible,#cf-calc input:focus-visible{outline:2px solid var(--cf-focus);outline-offset:2px}
+#cf-calc .cf-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:1.5rem}
+@container (max-width:640px){#cf-calc .cf-grid{grid-template-columns:1fr}}
+#cf-calc .cf-fields{display:grid;gap:1rem;align-content:start}
+#cf-calc .cf-field{display:grid;gap:.3rem}
+#cf-calc .cf-field label{display:flex;justify-content:space-between;gap:.5rem;font-size:.85rem;font-weight:400;margin:0}
+#cf-calc .cf-field output{font-family:var(--cf-mono);font-variant-numeric:tabular-nums;color:var(--cf-ink);white-space:nowrap}
+#cf-calc .cf-hint{font-size:.75rem;color:var(--cf-muted)}
+#cf-calc input[type=range]{width:100%;margin:0;accent-color:var(--cf-accent)}
+#cf-calc .cf-cards{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;align-content:start}
+#cf-calc .cf-card{border:1px solid var(--cf-rule);border-radius:6px;padding:.9rem;display:grid;gap:.25rem;background:var(--cf-paper);min-width:0}
+#cf-calc .cf-v{font-family:var(--cf-mono);font-weight:500;font-size:1.5rem;line-height:1.1;font-variant-numeric:tabular-nums}
+#cf-calc .cf-s{font-size:.78rem;color:var(--cf-muted)}
+#cf-calc .cf-card.cf-delta{grid-column:1/-1;display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:.5rem}
+#cf-calc .cf-card.cf-delta .cf-v{color:var(--cf-accent-text)}
+#cf-calc .cf-note{grid-column:1/-1;font-size:.82rem;color:var(--cf-muted);margin:0}
+</style>
+  <div class="cf-presets" data-cf="presets" role="group" aria-label="Presets"></div>
+  <div class="cf-grid">
+    <div class="cf-fields">
+      <div class="cf-field"><label for="cf-fIn">Input tokens per task <output data-cf="oIn"></output></label><input type="range" id="cf-fIn" min="10000" max="30000000" step="any"><span class="cf-hint">Everything sent to the model across all turns, cached or not.</span></div>
+      <div class="cf-field"><label for="cf-fCache">Read from cache <output data-cf="oCache"></output></label><input type="range" id="cf-fCache" min="0" max="0.99" step="any"></div>
+      <div class="cf-field"><label for="cf-fOut">Output tokens per task <output data-cf="oOut"></output></label><input type="range" id="cf-fOut" min="1000" max="1000000" step="any"><span class="cf-hint">Includes thinking, which is billed as output.</span></div>
+      <div class="cf-field"><label for="cf-fTasks">Tasks per day <output data-cf="oTasks"></output></label><input type="range" id="cf-fTasks" min="1" max="100" step="1"></div>
+      <div class="cf-field"><label for="cf-fEff">Fewer tokens on Opus 5.5 (your assumption) <output data-cf="oEff"></output></label><input type="range" id="cf-fEff" min="0" max="0.5" step="0.01"><span class="cf-hint">Leave at 0% for price alone. Opus 5.5 does more with fewer tokens, but measure that on your own tasks.</span></div>
+    </div>
+    <div class="cf-cards" aria-live="polite">
+      <div class="cf-card cf-o"><span class="cf-s">Opus 5 per task</span><span class="cf-v" data-cf="cO">–</span><span class="cf-s" data-cf="cOm">–</span></div>
+      <div class="cf-card cf-w"><span class="cf-s">Opus 5.5 per task</span><span class="cf-v" data-cf="cW">–</span><span class="cf-s" data-cf="cWm">–</span></div>
+      <div class="cf-card cf-delta"><span class="cf-s">Change per task</span><span class="cf-v" data-cf="cD">–</span><span class="cf-s" data-cf="cDm" style="flex-basis:100%">–</span></div>
+      <div class="cf-note">A month is <span data-cf="wd"></span> working days. List prices. No batch or volume discounts, and cache writes are not counted (see the caching section below).</div>
+    </div>
+  </div>
+<script>
+(function () {
+  var root = document.getElementById("cf-calc");
+  if (!root || root.dataset.cfReady) return; root.dataset.cfReady = "1";
+  /* DATA: dollars per million tokens. Same numbers appear in the receipt embed. */
+  var PRICES = {
+    prev:  { input: 5, output: 25, cacheRead: 0.50 },
+    "new": { input: 4, output: 20, cacheRead: 0.20 }
+  };
+  var WORKING_DAYS = 22;
+  var PRESETS = [
+    { id: "session",  label: "Typical Claude Code session", input: 2200000,  cacheShare: 0.9090909, output: 60000,  tasksPerDay: 10 },
+    { id: "small",    label: "Small edit",                  input: 150000,   cacheShare: 0.80,      output: 5000,   tasksPerDay: 30 },
+    { id: "refactor", label: "Large refactor",              input: 6000000,  cacheShare: 0.92,      output: 250000, tasksPerDay: 3 },
+    { id: "agentic",  label: "Long agentic run",            input: 20000000, cacheShare: 0.96,      output: 600000, tasksPerDay: 1 }
+  ];
+  var q = function (k) { return root.querySelector('[data-cf="' + k + '"]'); };
+  var set = function (k, v) { q(k).textContent = v; };
+  var usd = function (v) { return v >= 100 ? "$" + Math.round(v).toLocaleString("en-US") : "$" + v.toFixed(2); };
+  var tok = function (v) { return v >= 1e6 ? (v / 1e6).toFixed(v >= 1e7 ? 0 : 1) + "M" : Math.round(v / 1e3) + "K"; };
+  var pct = function (v) { return Math.round(v * 100) + "%"; };
+  var taskCost = function (p, input, share, output) {
+    return (input * (1 - share) * p.input + input * share * p.cacheRead + output * p.output) / 1e6;
+  };
+  var f = {
+    "in":  root.querySelector("#cf-fIn"),   cache: root.querySelector("#cf-fCache"),
+    out:   root.querySelector("#cf-fOut"),  tasks: root.querySelector("#cf-fTasks"),
+    eff:   root.querySelector("#cf-fEff")
+  };
+  var chips = [];
+  set("wd", WORKING_DAYS);
+  function render() {
+    var input = +f["in"].value, share = +f.cache.value, output = +f.out.value, tasks = +f.tasks.value, eff = +f.eff.value;
+    var o = taskCost(PRICES.prev, input, share, output);
+    var w = taskCost(PRICES["new"], input * (1 - eff), share, output * (1 - eff));
+    var m = tasks * WORKING_DAYS, om = o * m, wm = w * m, d = w / o - 1;
+    set("oIn", tok(input)); set("oCache", pct(share)); set("oOut", tok(output)); set("oTasks", tasks); set("oEff", pct(eff));
+    set("cO", usd(o)); set("cW", usd(w));
+    set("cOm", usd(om) + " a month"); set("cWm", usd(wm) + " a month");
+    set("cD", (d < 0 ? "−" : "+") + Math.abs(d * 100).toFixed(0) + "%");
+    set("cDm", usd(Math.abs(om - wm)) + (d < 0 ? " less" : " more") + " a month" +
+      (eff ? ", including your token assumption" : ", from price alone"));
+  }
+  function press(id) { chips.forEach(function (c) { c.setAttribute("aria-pressed", String(c.getAttribute("data-id") === id)); }); }
+  function load(p) {
+    f["in"].value = p.input; f.cache.value = p.cacheShare; f.out.value = p.output; f.tasks.value = p.tasksPerDay; f.eff.value = 0;
+    press(p.id); render();
+  }
+  PRESETS.forEach(function (p) {
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "cf-chip"; b.setAttribute("data-id", p.id); b.textContent = p.label;
+    b.addEventListener("click", function () { load(p); });
+    q("presets").appendChild(b); chips.push(b);
+  });
+  Object.keys(f).forEach(function (k) {
+    f[k].addEventListener("input", function () { press(null); render(); });
+  });
+  load(PRESETS[0]);
+})();
+</script>
+</div></div><h2>Tips for maximizing the value of your session</h2><p>Opus 5.5’s lower price makes each token cost less. How you run a session decides how many tokens you use, and these steps help.</p><h3><strong>Raise effort before you change models</strong></h3><p>Effort sets a general disposition for how many tokens the model spends on each turn: its thinking, the text it writes, and its tool calls. At lower effort it makes fewer tool calls and keeps them shorter. Opus 5.5 has four levels (low, medium, high and xhigh), plus max for a single session. Pick a level below to see when to use it and the command that sets it.</p><div class="w-embed w-script"><!-- Effort level picker with copyable commands. Self-contained Webflow embed. -->
+<div id="cf-effort">
+<style>
+#cf-effort{
+  /* tokens: remap these to site colors if needed */
+  --cf-paper:#f3f2ee;--cf-surface:#fcfcfa;--cf-sunk:#ebe8e1;--cf-ink:#141414;--cf-muted:#65625d;--cf-rule:#d9d5cb;
+  --cf-accent:#da7757;--cf-accent-soft:#f4ddd3;--cf-focus:#2f5fb3;
+  --cf-mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  container-type:inline-size;
+  display:grid;gap:1.1rem;margin:1.75rem 0;padding:1.25rem;
+  background:var(--cf-surface);border:1px solid var(--cf-rule);border-radius:6px;
+  color:var(--cf-ink);font-size:16px;line-height:1.5;text-align:left;
+}
+#cf-effort,#cf-effort *{box-sizing:border-box}
+#cf-effort .cf-levels{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.4rem}
+@container (max-width:520px){#cf-effort .cf-levels{grid-template-columns:repeat(3,minmax(0,1fr))}}
+#cf-effort .cf-levels button{font-family:var(--cf-mono);font-weight:500;font-size:.85rem;line-height:1.3;margin:0;border:1px solid var(--cf-rule);background:var(--cf-paper);color:var(--cf-ink);border-radius:6px;padding:.6rem .4rem;cursor:pointer;display:grid;gap:.15rem;text-align:center}
+#cf-effort .cf-levels button small{font-family:inherit;font-weight:400;font-size:.66rem;color:var(--cf-muted)}
+#cf-effort .cf-levels button[aria-pressed="true"]{border-color:var(--cf-accent);background:var(--cf-accent-soft)}
+#cf-effort button:focus-visible{outline:2px solid var(--cf-focus);outline-offset:2px}
+#cf-effort .cf-detail{display:grid;gap:.6rem;align-content:start}
+#cf-effort .cf-title{font-size:1.05rem;font-weight:500;line-height:1.2}
+#cf-effort .cf-body{font-size:.95rem}
+#cf-effort .cf-note{font-size:.82rem;color:var(--cf-muted)}
+#cf-effort .cf-cmds{display:grid;gap:.4rem}
+#cf-effort .cf-cmd{display:flex;align-items:center;justify-content:space-between;gap:.5rem;background:var(--cf-sunk);border-radius:6px;padding:.45rem .5rem .45rem .8rem;font-family:var(--cf-mono);font-size:.88rem;min-width:0}
+#cf-effort .cf-cmd code{font-family:inherit!important;font-size:inherit!important;background:none!important;border:0!important;border-radius:0!important;box-shadow:none!important;outline:0!important;padding:0!important;margin:0!important;color:inherit!important;overflow-x:auto;white-space:nowrap}
+#cf-effort .cf-cmd button{font-family:inherit;font-weight:500;font-size:.72rem;line-height:1.2;margin:0;border:1px solid var(--cf-rule);background:var(--cf-surface);color:var(--cf-ink);border-radius:4px;padding:.25rem .5rem;cursor:pointer;flex:none}
+</style>
+  <div class="cf-levels" data-cf="levels" role="group" aria-label="Effort level"></div>
+  <div class="cf-detail" aria-live="polite">
+    <div class="cf-title" data-cf="title"></div>
+    <div class="cf-body" data-cf="body"></div>
+    <div class="cf-note" data-cf="num"></div>
+    <div class="cf-note">Levels run from least to most thinking per turn.</div>
+  </div>
+  <div class="cf-cmds" data-cf="cmds"></div>
+<script>
+(function () {
+  var root = document.getElementById("cf-effort");
+  if (!root || root.dataset.cfReady) return; root.dataset.cfReady = "1";
+  var EFFORT = [
+    { level: "low",    tag: "mechanical",
+      title: "Low: for work where the plan is clear",
+      body: "Renames, applying a pattern across files, and changes you could describe in one line. It thinks least per turn.",
+      num: "Thinks least per turn, so each turn costs least." },
+    { level: "medium", tag: "everyday",
+      title: "Medium: for well-scoped daily work",
+      body: "Day-to-day work with a clear scope. It thinks less per turn than high, so each turn costs less.",
+      num: "Start here when the task is well scoped." },
+    { level: "high",   tag: "if it stalls",
+      title: "High: the first thing to try when medium stalls",
+      body: "Same model, more thinking per turn. It costs more per turn than medium and less than moving to a larger model. If a change spans two layers and medium fixes one, try high.",
+      num: "Costs more per turn than medium. Worth it when it saves a retry." },
+    { level: "xhigh",  tag: "hard problems",
+      title: "Xhigh: for problems high doesn't crack",
+      body: "More thinking again. If xhigh hits the same problem twice, move to Fable 5.1.",
+      num: "More output per turn, and slower replies." },
+    { level: "max",    tag: "one session",
+      title: "Max: for a single session",
+      body: "Available per session, not as a standing default. Use it for one hard task, then drop back.",
+      num: "The most output per turn. Use it for one task at a time." }
+  ];
+  var DEFAULT_LEVEL = "medium";
+  var cmdsFor = function (lv) { return ["/effort " + lv, "/effort status", "/model", "/usage"]; };
+  var q = function (k) { return root.querySelector('[data-cf="' + k + '"]'); };
+  var btns = [];
+  function pick(i) {
+    var e = EFFORT[i];
+    btns.forEach(function (b, j) { b.setAttribute("aria-pressed", String(i === j)); });
+    q("title").textContent = e.title; q("body").textContent = e.body; q("num").textContent = e.num;
+    var box = q("cmds"); box.innerHTML = "";
+    cmdsFor(e.level).forEach(function (c) {
+      var row = document.createElement("div"); row.className = "cf-cmd";
+      var code = document.createElement("code"); code.textContent = c;
+      var b = document.createElement("button"); b.type = "button"; b.setAttribute("aria-label", "Copy " + c); b.textContent = "Copy";
+      b.addEventListener("click", function () {
+        var done = function (t) { b.textContent = t; setTimeout(function () { b.textContent = "Copy"; }, 1400); };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(c).then(function () { done("Copied"); }, function () { done("Select and copy"); });
+        } else { done("Select and copy"); }
+      });
+      row.appendChild(code); row.appendChild(b); box.appendChild(row);
+    });
+  }
+  EFFORT.forEach(function (e, i) {
+    var b = document.createElement("button"); b.type = "button";
+    b.appendChild(document.createTextNode(e.level));
+    var s = document.createElement("small"); s.textContent = e.tag; b.appendChild(s);
+    b.addEventListener("click", function () { pick(i); });
+    q("levels").appendChild(b); btns.push(b);
+  });
+  var start = 0; EFFORT.forEach(function (e, i) { if (e.level === DEFAULT_LEVEL) start = i; });
+  pick(start);
+})();
+</script>
+</div></div><p>Claude Code sets a default level for each model, and /effort status shows yours. Try <strong>medium</strong> for well-scoped, day-to-day work. When medium stalls, try <strong>high</strong>. It spends more per turn than medium, but less than moving to a bigger model. Use <strong>low</strong> for mechanical work, like renames or applying a known pattern across files.</p><p>A rough way to think about effort pricing: say high adds 20K thinking tokens across a task. On Opus 5.5 that's $0.40. A retry loop of ten turns at 100K of cached context, with 10K output tokens in total, costs about the same. So high pays for itself on a task where it saves one retry. On a task medium would have finished the first time, it's wasted.</p><h4><strong>When medium fixes one layer</strong></h4><p>The clearest sign you need more effort is a fix that stops at one layer.</p><p>Say a field is renamed in an API handler. At medium, the model updates the handler, the handler's tests pass, and the client still sends the old field. It did what it was asked. It just didn't read far enough to find the second caller. At high, it spends more turns reading call sites before it writes, and it changes both layers in one pass.</p><p>A check can catch the same bug. If the model can run a test that goes through the client, the old field fails that test on the turn it was written, at medium. So before you raise effort, check whether the model has a way to check its work. A test run costs one turn and its output. More effort adds thinking to every turn.</p><p>If upgrading effort levels and adding checks doesn’t work, then switch to a bigger model.&nbsp;</p><h4><strong>Changing effort mid-session</strong></h4><p>In Claude Code, run /effort with a level, for example /effort high. /effort status prints the current level. You can change it mid-task, and the new level applies to the next request.</p><p>Changing effort or thinking settings clears the cached conversation, because those settings are part of the prompt the cache matches. The next request pays the cache-write price on the whole conversation.</p><h3><strong>Choose the right model for your work</strong></h3><p>Model choice sets the price of every token in a session, so it moves the bill more than effort does. It also reaches further. Every subagent that inherits the main model inherits its price too. Most days need three models: a small one for lookups, Opus 5.5 for&nbsp; work you supervise closely, and a bigger one for the hardest tasks.</p><figure style="max-width:2000px" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6ab2b335fc4bd44bfd949d5e_fig-model-ladder.png" loading="lazy"></div></figure><h4><strong>Opus 5.5 as the daily driver</strong></h4><p>Use Opus 5.5 for work you supervise: feature work across a few files, debugging, and code review with follow-up edits. You read what it does and step in when it drifts, so the loop stays short. Moving up to Fable 5.1</p><p><strong>Move up to Fable 5.1 when the result matters more than the token price. For example </strong>long runs you won't supervise, problems with no existing pattern in the codebase, and large changes that coordinate many subagents. Don't wait for a third failure. If Opus 5.5 on high hits the same problem twice, switch, and switch back once it's solved. For interactive work, Opus 5.5 is a better fit as it has lower latency and costs less.</p><p>Fable 5.1 lists at $10 per million input tokens and $50 per million output, two and a half times the Opus 5.5 price. Its cache reads cost $0.25 per million, only 1.25 times the Opus 5.5 rate, because they bill at 0.025 times its input price. So the gap is smallest on a long, cache-heavy run, and largest on a task that writes a lot.</p><p>Switch at a natural break. The cache belongs to the previous model, so expect the first turn on the new model to pay the write price on the whole conversation. Run /compact first, or start a fresh session with a short written plan, to make that turn smaller. Run <a href="https://code.claude.com/docs/en/model-config">/model</a> with an alias or a model name to switch. /model also saves your choice as the default for new sessions, so switch back when the hard part is done.</p><h4><strong>Moving down for lookups</strong></h4><p><strong>Move down to Sonnet or Haiku for lookups, not for writing code:</strong> subagents that search and summarize, reading logs and test output, and "where is this defined" questions. For a mechanical edit across many files, keep Opus 5.5 and set effort to low. The edit stays on the model that writes the rest of your code, at a lower cost per turn.</p><p>To put a <a href="https://code.claude.com/docs/en/sub-agents">subagent</a> on a smaller model, set model: haiku or model: sonnet in its definition. To put every subagent on one model, set the CLAUDE_CODE_SUBAGENT_MODEL environment variable. A model named in a subagent's definition overrides the variable. A subagent with no model setting runs on your main model, unless the variable is set.</p><p>Each subagent runs in its own context window and hands back a summary, so its file reads stay out of your main conversation. It still pays for its own tokens, so the model setting decides what that spend costs.</p><p>The tradeoff: a small model that misreads a search result sends the main model after the wrong file, and the main model pays for the detour. Keep the small model on work where a mistake is cheap to spot, like finding files, running tests and reading logs.&nbsp;</p><p>Keep judgment calls on the main model. The opusplan alias splits the work a different way: Opus plans in plan mode, and Sonnet carries out the plan. That puts the code edits on Sonnet, the opposite of the advice above. Measure it on your own tasks before you make it a default.</p><h3><strong>Check your prompts when you migrate</strong></h3><p>Instructions written for an older model can make Opus 5.5 write more and repeat tool calls. Run /claude-api prompt-audit in Claude Code to check your Claude Code setup, such as your skills and CLAUDE.md file, for these <a href="https://claude.com/blog/reducing-cost-and-improving-performance-with-claude-platform">prompting anti-patterns</a>. It also checks the code of an app you build on the Claude Platform.</p><p>We tested this on a migration from Opus 4.8 to Opus 5.5, using an internal customer support benchmark of 44 tickets whose prompt had several of these patterns. The move to Opus 5.5, at low effort, cut the benchmark's cost by about 18%. Running prompt-audit cut it by a further 9%, to about 25% below the Opus 4.8 starting point. The audit removed ritual instructions that made the model write more and repeat tool calls: a mandatory six-step procedure, a scratchpad rule, a verify-twice rule, and instructions that contradicted each other.</p><figure style="max-width:2000pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6ab2b2c575f4bb6ac9f4d52a_fig-d-prompt-audit_2.png" loading="lazy"></div><figcaption><em>Fig D. Migration from Opus 4.8 at default effort to Opus 5.5 at low effort, with prompt-audit, on the customer support benchmark.</em></figcaption></figure><p>That result comes from one benchmark, so treat it as an example rather than a number to expect. Run the audit, then compare /usage on a real task before and after (see Measure it yourself).</p><h3><strong>Caching and compaction</strong></h3><p>Claude Code handles caching and compaction for you. How you run a session decides how much they save.</p><h4><strong>How the cache works</strong></h4><p>Claude Code caches the parts of a request that repeat, such as the system prompt, tool definitions, and the conversation so far.</p><p>On Opus 5.5 a cached read costs 5% of a fresh input token. Writing to the cache costs more than a fresh read, at 1.25 times the input price for a five-minute cache and twice the input price for a one-hour cache, on today's pricing. Each hit resets the lifetime at no charge.</p><p>In Claude Code the lifetime depends on how you pay. On a Claude subscription it's an hour. On an API key or a cloud provider it's five minutes by default, and a subscription drops to five minutes once it's drawing on usage credits.</p><p>At 120K tokens of context, a five-minute write on Opus 5.5 costs about $0.60 and a read about $0.02. One write costs as much as 25 reads. On an API key, a six-minute coffee break turns the next $0.02 read into a $0.60 write. A one-hour write at the same size costs about $0.96, and on the API you can pay that premium to cover the gaps in your day.</p><h4><strong>Session shape and hit rate</strong></h4><p>The cache stores a prefix, so it can reuse only the part of a request that matches the previous one from the start.</p><p>A steady session appends to the end of the conversation on every turn and keeps its hit rate high. Anything that changes an earlier part of the request lowers it. Changing the tool definitions clears the whole cache, and a change to the system prompt clears it from that point on, which is almost everything.</p><p>In practice, expect a cache write when:</p><ul role="list"><li>You pause longer than the cache lifetime;</li><li>You change effort or thinking settings (see the effort section), which can clear the cached conversation;</li><li>You connect or disconnect an MCP server, which can change what loads at the start of each request;</li><li>You switch models, since the new model starts from an empty cache; and</li><li>The conversation is compacted, which rewrites the history the cache matched.</li></ul><p>So set these up when the session starts, and leave them alone while it works.</p><h4><strong>Why long sessions cost more per turn</strong></h4><p>Every turn resends the whole context, so a turn costs more as the context grows, even with a warm cache. At 20K tokens of context a turn's cache read costs about $0.004 on Opus 5.5. At 150K it costs about $0.03, and 30 turns at that size spend $0.90 on reads alone. The same 30 turns at 20K cost about $0.12. On Claude 4.6 and later models a bigger context window doesn't change the price per token, so the cost comes entirely from resending the conversation.</p><p>Much of that context is left over from earlier work: a stack trace from an hour ago, a file you've finished with, the output of a test run you've since fixed. It's all still sent on every turn.</p><h4><strong>Compaction, /compact and /clear</strong></h4><p>When a session gets close to its context limit, Claude Code summarizes older history so later turns send less. Run /autocompact with a token count to change how full the context gets before that happens.</p><p>Two commands let you do this yourself. /clear empties the conversation and costs nothing, so use it when you move to unrelated work. /compact keeps continuity and costs one request. It reads the conversation it summarizes, and you can say what to keep, for example /compact keep the failing test names and the schema change.</p><p>A rough price for compacting at 150K tokens is about $0.25. That's the read, a summary of a few thousand output tokens, and a new cache write on the shorter context. Each later turn saves about $0.025 in reads, so the compaction pays for itself within about ten turns. A compaction just before you finish costs more than it saves.</p><p>The summary also loses detail. A compaction in the middle of a debugging session can drop the one log line that mattered. Compact at a natural break, and when the next step depends on something specific, say so in the /compact instruction.</p><h4><strong>What loads before you type</strong></h4><p>Your <a href="https://code.claude.com/docs/en/memory">CLAUDE.md file</a> loads into the context at the start of every session, so each line in it is part of what every turn resends. The <a href="https://code.claude.com/docs/en/costs">costs docs</a> suggest keeping it under 200 lines. MCP tool definitions are deferred. Only tool names and server instructions load at the start, and a full definition loads when its tool is used. Run /mcp to see which servers are connected, and turn off the ones you aren't using.</p><h4><strong>The rest of the bill</strong></h4><p>The table lists the other billing rules that affect a Claude Code session, with a link to the docs where one exists.</p><figure style="max-width:1600pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6ab2ae80d2ca2fafb3d3bdf6_a5a12df0.png" loading="lazy"></div></figure><h2>Measure it yourself</h2><p>The figures in this post are illustrations. Your codebase, prompts and habits are different, so measure cost on your own tasks. Here's how to check.</p><ol role="list"><li><strong>In a session, run </strong><a href="https://code.claude.com/docs/en/costs"><strong>/usage</strong></a><strong>.</strong> /cost does the same thing. The Session block shows token use and an estimated dollar cost at list price. A prompt-cache line shows how much of your input came from cache. On a Pro, Max, Team or Enterprise plan, the same screen shows your plan usage bars. The dollar figure is computed on your machine at list price, so on a subscription it is a guide to how much work you did, not a bill.</li><li><strong>Run the same task twice.</strong> Pick something from your backlog, not a toy example. Use /model to switch between Opus 5 and Opus 5.5. Note turns, output tokens and cost for each run. Do three or four tasks before you draw a conclusion.</li><li><strong>For a team, use the usage and cost reports.</strong> The <a href="https://platform.claude.com/docs/en/manage-claude/claude-code-analytics-api">Claude Code Analytics API</a> gives estimated cost per user. The <a href="https://platform.claude.com/docs/en/manage-claude/usage-cost-api">Usage and Cost API</a> breaks spend down by model and by cached versus uncached tokens.</li><li><strong>Try the effort ladder.</strong> Run one hard task at medium and then at high. Run one mechanical task at low.</li></ol><h3>Reading a session</h3><p>Check three things in /usage at the end of a task.</p><ul role="list"><li><strong>Cache share.</strong> For a long session it should be high. If it's low, look for a long pause, a change of effort or model, or an MCP server connected partway through.</li><li><strong>Output against input.</strong> A lot of output on a small change usually means the effort level is too high for the task, or the model is retrying.</li><li><strong>Total input against the size of the conversation.</strong> If the total is many times the size of the conversation, the session took many turns, and the conversation is worth reading to find where the loop repeated.</li></ul><p>For a baseline, the Claude Code costs docs give an average across enterprise deployments of about $13 per developer per active day, and under $30 per active day for 90% of users. A session that costs well above your own normal level is worth reviewing.</p><h2>Keep in mind</h2><ul role="list"><li>Use medium effort for well-scoped daily work.</li><li>Give the model a way to check its work, and start changes that span files in plan mode.</li><li>When medium stalls, raise effort to high. Change it at a break, since the change can cost a cache write.</li><li>If high hits the same problem twice, switch to Fable 5.1. Switch back once it's solved.</li><li>Put search and log-reading subagents on Sonnet or Haiku. Keep code edits on Opus 5.5.</li><li>Keep a long session moving, so its cache stays warm.</li><li>Use /clear between unrelated tasks, and /compact at a break with a note on what to keep.</li><li><strong>The one that matters most:</strong> run one real task on each model and compare what /usage reports. Your own numbers are the ones to trust.</li></ul><p>I hope this post was helpful. If your limits don’t go further on Opus 5.5 than on Opus 5, tell us with /feedback.&nbsp;</p><p>Further reading: <a href="https://code.claude.com/docs/en/costs">Manage costs effectively</a> · <a href="https://code.claude.com/docs/en/model-config">Model configuration</a> · <a href="https://claude.com/blog/claude-model-and-effort-level-in-claude-code">Choosing a Claude model and effort level in Claude Code</a> · <a href="https://platform.claude.com/docs/en/build-with-claude/effort">Effort</a> · <a href="https://platform.claude.com/docs/en/build-with-claude/prompt-caching">Prompt caching</a> · <a href="https://claude.com/blog/maximizing-the-value-of-your-claude-code-sessions">Maximizing the value of your Claude Code sessions</a></p><p><em>With thanks to Michael Segner, Kacie Jenkins and Molly Vorwerck for their reviews.</em></p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/blog/what-a-task-costs-on-opus-5-5" target="_blank">View original</a></p>
+              <p><a href="/">← Back to home</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>Content from <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · Translation by AI</p>
+    </div>
+  </footer>
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
