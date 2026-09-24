@@ -6,7 +6,7 @@
     <description>Anthropic Claude 官方博客的中文翻译</description>
     <atom:link href="https://fanyangyang.github.io/claude-blog-cn/rss.xml" rel="self" type="application/rss+xml"/>
     <language>zh-CN</language>
-    <lastBuildDate>Thu, 24 Sep 2026 04:07:38 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 24 Sep 2026 16:22:36 GMT</lastBuildDate>
     <item>
       <title>How CodeRabbit, Power Digital, and ThoughtSpot scale with Snowflake and Vercel on Claude Marketplace</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/how-coderabbit-power-digital-and-thoughtspot-scale-with-snowflake-and-vercel-on-claude-marketplace/</link>
