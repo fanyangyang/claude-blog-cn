@@ -1,0 +1,36 @@
+{
+  "slug": "claude-marketplace",
+  "title": "Claude Marketplace: one place to discover plugins, agents, and services from our partners",
+  "date": "September 23, 2026",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/claude-marketplace",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/claude-marketplace.svg",
+  "illustrationBg": "Clay",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Platform"
+    ],
+    "usecase": [
+      "Business",
+      "Coding",
+      "Productivity",
+      "Startups",
+      "Work",
+      "Design",
+      "Financial services",
+      "Legal"
+    ]
+  },
+  "subtitle": "Find the tools and services to do more with Claude, or list what you've built to grow alongside Claude customers.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/platform/api",
+  "fetchedAt": "2026-09-24T04:04:14.763Z"
+}

@@ -1,6 +1,108 @@
 {
  "articles": [
   {
+   "slug": "how-coderabbit-power-digital-and-thoughtspot-scale-with-snowflake-and-vercel-on-claude-marketplace",
+   "title": "How CodeRabbit, Power Digital, and ThoughtSpot scale with Snowflake and Vercel on Claude Marketplace",
+   "date": "September 23, 2026",
+   "category": "Enterprise AI",
+   "url": "https://claude.com/blog/how-coderabbit-power-digital-and-thoughtspot-scale-with-snowflake-and-vercel-on-claude-marketplace",
+   "inHero": false,
+   "heroIndex": -1,
+   "inGrid": true,
+   "illustration": "assets/illustrations/how-coderabbit-power-digital-and-thoughtspot-scale-with-snowflake-and-vercel-on-claude-marketplace.svg",
+   "illustrationBg": "Heather",
+   "facets": {
+    "category": [
+     "Enterprise AI"
+    ],
+    "product": [
+     "Claude Platform"
+    ],
+    "usecase": [
+     "Business",
+     "Coding"
+    ]
+   },
+   "subtitle": "CodeRabbit expanded its Vercel plan through Claude Marketplace, and Power Digital and ThoughtSpot expanded their Snowflake capacity using their existing Anthropic commitment.",
+   "authors": [],
+   "readingMinutes": 5,
+   "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+   "productUrl": "https://claude.com/platform/api",
+   "fetchedAt": "2026-09-24T04:04:12.693Z",
+   "translated": true
+  },
+  {
+   "slug": "how-to-prepare-for-ai-driven-code-modernization-projects",
+   "title": "How to prepare for AI-driven code modernization projects",
+   "date": "September 23, 2026",
+   "category": "Enterprise AI",
+   "url": "https://claude.com/blog/how-to-prepare-for-ai-driven-code-modernization-projects",
+   "inHero": false,
+   "heroIndex": -1,
+   "inGrid": true,
+   "illustration": "assets/illustrations/how-to-prepare-for-ai-driven-code-modernization-projects.svg",
+   "illustrationBg": "Olive",
+   "facets": {
+    "category": [
+     "Enterprise AI",
+     "Claude Code"
+    ],
+    "product": [
+     "Claude Code"
+    ],
+    "usecase": [
+     "Coding"
+    ]
+   },
+   "subtitle": "How to organize AI-driven modernization projects for critical systems and regulated enterprises.",
+   "authors": [
+    "Jonah Ezekiel",
+    "Lexie Tonelli"
+   ],
+   "readingMinutes": 5,
+   "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+   "productUrl": "https://claude.com/product/claude-code",
+   "fetchedAt": "2026-09-24T04:04:13.835Z",
+   "translated": true
+  },
+  {
+   "slug": "claude-marketplace",
+   "title": "Claude Marketplace: one place to discover plugins, agents, and services from our partners",
+   "date": "September 23, 2026",
+   "category": "Product announcements",
+   "url": "https://claude.com/blog/claude-marketplace",
+   "inHero": false,
+   "heroIndex": -1,
+   "inGrid": true,
+   "illustration": "assets/illustrations/claude-marketplace.svg",
+   "illustrationBg": "Clay",
+   "facets": {
+    "category": [
+     "Product announcements"
+    ],
+    "product": [
+     "Claude Platform"
+    ],
+    "usecase": [
+     "Business",
+     "Coding",
+     "Productivity",
+     "Startups",
+     "Work",
+     "Design",
+     "Financial services",
+     "Legal"
+    ]
+   },
+   "subtitle": "Find the tools and services to do more with Claude, or list what you've built to grow alongside Claude customers.",
+   "authors": [],
+   "readingMinutes": 5,
+   "categoryUrl": "https://claude.com/blog/category/announcements",
+   "productUrl": "https://claude.com/platform/api",
+   "fetchedAt": "2026-09-24T04:04:14.763Z",
+   "translated": true
+  },
+  {
    "slug": "what-a-task-costs-on-opus-5-5",
    "title": "What a task costs on Opus 5.5",
    "date": "September 22, 2026",
@@ -8252,5 +8354,5 @@
    "productUrl": "https://claude.com/platform/api"
   }
  ],
- "lastFetched": "2026-09-23T04:04:26.431Z"
+ "lastFetched": "2026-09-24T04:04:22.807Z"
 }

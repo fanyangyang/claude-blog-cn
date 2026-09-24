@@ -6,7 +6,28 @@
     <description>Anthropic Claude 官方博客的中文翻译</description>
     <atom:link href="https://fanyangyang.github.io/claude-blog-cn/rss.xml" rel="self" type="application/rss+xml"/>
     <language>zh-CN</language>
-    <lastBuildDate>Wed, 23 Sep 2026 04:29:52 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 24 Sep 2026 04:07:38 GMT</lastBuildDate>
+    <item>
+      <title>How CodeRabbit, Power Digital, and ThoughtSpot scale with Snowflake and Vercel on Claude Marketplace</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/how-coderabbit-power-digital-and-thoughtspot-scale-with-snowflake-and-vercel-on-claude-marketplace/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/how-coderabbit-power-digital-and-thoughtspot-scale-with-snowflake-and-vercel-on-claude-marketplace/</guid>
+      <pubDate>Tue, 22 Sep 2026 16:00:00 GMT</pubDate>
+      <category>Enterprise AI</category>
+    </item>
+    <item>
+      <title>How to prepare for AI-driven code modernization projects</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/how-to-prepare-for-ai-driven-code-modernization-projects/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/how-to-prepare-for-ai-driven-code-modernization-projects/</guid>
+      <pubDate>Tue, 22 Sep 2026 16:00:00 GMT</pubDate>
+      <category>Enterprise AI</category>
+    </item>
+    <item>
+      <title>Claude Marketplace: one place to discover plugins, agents, and services from our partners</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-marketplace/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-marketplace/</guid>
+      <pubDate>Tue, 22 Sep 2026 16:00:00 GMT</pubDate>
+      <category>Product announcements</category>
+    </item>
     <item>
       <title>What a task costs on Opus 5.5</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/what-a-task-costs-on-opus-5-5/</link>

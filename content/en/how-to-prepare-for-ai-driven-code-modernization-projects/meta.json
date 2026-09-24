@@ -1,0 +1,33 @@
+{
+  "slug": "how-to-prepare-for-ai-driven-code-modernization-projects",
+  "title": "How to prepare for AI-driven code modernization projects",
+  "date": "September 23, 2026",
+  "category": "Enterprise AI",
+  "url": "https://claude.com/blog/how-to-prepare-for-ai-driven-code-modernization-projects",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/how-to-prepare-for-ai-driven-code-modernization-projects.svg",
+  "illustrationBg": "Olive",
+  "facets": {
+    "category": [
+      "Enterprise AI",
+      "Claude Code"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": [
+      "Coding"
+    ]
+  },
+  "subtitle": "How to organize AI-driven modernization projects for critical systems and regulated enterprises.",
+  "authors": [
+    "Jonah Ezekiel",
+    "Lexie Tonelli"
+  ],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/product/claude-code",
+  "fetchedAt": "2026-09-24T04:04:13.835Z"
+}
