@@ -1,6 +1,36 @@
 {
   "articles": [
     {
+      "slug": "build-plugins-for-claude",
+      "title": "Build plugins for Claude",
+      "date": "September 25, 2026",
+      "category": "Product announcements",
+      "url": "https://claude.com/blog/build-plugins-for-claude",
+      "inHero": false,
+      "heroIndex": -1,
+      "inGrid": true,
+      "illustration": "assets/illustrations/build-plugins-for-claude.svg",
+      "illustrationBg": "Clay",
+      "facets": {
+        "category": [
+          "Product announcements"
+        ],
+        "product": [
+          "Claude apps"
+        ],
+        "usecase": [
+          "Coding"
+        ]
+      },
+      "subtitle": "You can now submit plugins to the Claude directory through a new developer portal, track them through review, and see usage analytics once they’re live.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "",
+      "fetchedAt": "2026-09-26T10:15:43.887Z",
+      "translated": true
+    },
+    {
       "slug": "claude-tag-now-supports-personal-connectors-in-channels",
       "title": "Claude Tag now supports personal connectors in channels",
       "date": "September 24, 2026",
@@ -8417,5 +8447,5 @@
       "productUrl": "https://claude.com/platform/api"
     }
   ],
-  "lastFetched": "2026-09-25T10:04:18.365Z"
+  "lastFetched": "2026-09-26T10:15:52.143Z"
 }
