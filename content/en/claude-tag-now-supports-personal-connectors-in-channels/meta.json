@@ -1,0 +1,28 @@
+{
+  "slug": "claude-tag-now-supports-personal-connectors-in-channels",
+  "title": "Claude Tag now supports personal connectors in channels",
+  "date": "September 24, 2026",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/claude-tag-now-supports-personal-connectors-in-channels",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/claude-tag-now-supports-personal-connectors-in-channels.svg",
+  "illustrationBg": "Clay",
+  "facets": {
+    "category": [
+      "Product announcements",
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Tag"
+    ],
+    "usecase": []
+  },
+  "subtitle": "Claude Tag can now use your connectors for requests you make in a channel. Nobody else can use them, and you're in control of how to present the output.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/product/tag",
+  "fetchedAt": "2026-09-24T22:10:41.762Z"
+}

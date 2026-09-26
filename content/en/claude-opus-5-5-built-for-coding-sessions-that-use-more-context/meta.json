@@ -1,0 +1,33 @@
+{
+  "slug": "claude-opus-5-5-built-for-coding-sessions-that-use-more-context",
+  "title": "Coding sessions are longer and use more context. Claude Opus 5.5 is built with that in mind.",
+  "date": "September 24, 2026",
+  "category": "Claude Code",
+  "url": "https://claude.com/blog/claude-opus-5-5-built-for-coding-sessions-that-use-more-context",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/claude-opus-5-5-built-for-coding-sessions-that-use-more-context.svg",
+  "illustrationBg": "Sky",
+  "facets": {
+    "category": [
+      "Claude Code",
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Code",
+      "Claude Enterprise"
+    ],
+    "usecase": [
+      "Coding"
+    ]
+  },
+  "subtitle": "Our latest Opus model is priced and trained to optimize costs for how developers code now.",
+  "authors": [
+    "Michael Segner"
+  ],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/claude-code",
+  "productUrl": "https://claude.com/product/claude-code",
+  "fetchedAt": "2026-09-24T22:10:43.063Z"
+}
