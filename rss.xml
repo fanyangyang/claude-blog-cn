@@ -6,7 +6,7 @@
     <description>Anthropic Claude 官方博客的中文翻译</description>
     <atom:link href="https://fanyangyang.github.io/claude-blog-cn/rss.xml" rel="self" type="application/rss+xml"/>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 26 Sep 2026 10:36:24 GMT</lastBuildDate>
+    <lastBuildDate>Sun, 27 Sep 2026 04:29:25 GMT</lastBuildDate>
     <item>
       <title>Build plugins for Claude</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/build-plugins-for-claude/</link>
