@@ -1,6 +1,38 @@
 {
   "articles": [
     {
+      "slug": "giving-companies-more-control-over-their-ai-agents-with-nvidia",
+      "title": "Giving companies more control over their AI agents, with NVIDIA",
+      "date": "September 28, 2026",
+      "category": "Agents",
+      "url": "https://claude.com/blog/giving-companies-more-control-over-their-ai-agents-with-nvidia",
+      "inHero": false,
+      "heroIndex": -1,
+      "inGrid": true,
+      "illustration": "assets/illustrations/giving-companies-more-control-over-their-ai-agents-with-nvidia.svg",
+      "illustrationBg": "Cactus",
+      "facets": {
+        "category": [
+          "Agents"
+        ],
+        "product": [
+          "Claude Platform"
+        ],
+        "usecase": []
+      },
+      "subtitle": "Anthropic has collaborated with NVIDIA to bring additional layers of security and control to the agent stack of its Open Agent Safety Platform.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/agents",
+      "productUrl": "https://claude.com/platform/api",
+      "fetchedAt": "2026-09-28T22:04:08.825Z",
+      "translated": true,
+      "translatedTitle": "与 NVIDIA 合作，让企业对其 AI 智能体拥有更多控制权",
+      "translatedSubtitle": "Anthropic 与 NVIDIA 合作，为 Open Agent Safety Platform 的智能体栈带来额外的安全与控制层。",
+      "translatedAt": "2026-09-28T22:05:51.170Z",
+      "translateLang": "zh"
+    },
+    {
       "slug": "build-plugins-for-claude",
       "title": "Build plugins for Claude",
       "date": "September 25, 2026",
@@ -8447,5 +8479,5 @@
       "productUrl": "https://claude.com/platform/api"
     }
   ],
-  "lastFetched": "2026-09-28T16:04:27.086Z"
+  "lastFetched": "2026-09-28T22:04:16.971Z"
 }
