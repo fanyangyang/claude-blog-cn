@@ -1,0 +1,27 @@
+{
+  "slug": "claude-for-government-is-now-generally-available",
+  "title": "Claude for Government is now generally available",
+  "date": "September 30, 2026",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/claude-for-government-is-now-generally-available",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/claude-for-government-is-now-generally-available.svg",
+  "illustrationBg": "Clay",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [],
+    "usecase": [
+      "Government"
+    ]
+  },
+  "subtitle": "Claude Code CLI and Claude for Microsoft 365 also now available in early access.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "",
+  "fetchedAt": "2026-09-30T22:05:10.291Z"
+}
