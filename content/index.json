@@ -1,6 +1,41 @@
 {
   "articles": [
     {
+      "slug": "agents-you-can-coach-how-asana-builds-human-agent-teams-with-claude",
+      "title": "Agents you can coach: how Asana builds human-agent teams with Claude",
+      "date": "September 29, 2026",
+      "category": "Agents",
+      "url": "https://claude.com/blog/agents-you-can-coach-how-asana-builds-human-agent-teams-with-claude",
+      "inHero": false,
+      "heroIndex": -1,
+      "inGrid": true,
+      "illustration": "assets/illustrations/agents-you-can-coach-how-asana-builds-human-agent-teams-with-claude.svg",
+      "illustrationBg": "Mineral",
+      "facets": {
+        "category": [
+          "Agents"
+        ],
+        "product": [
+          "Claude Platform"
+        ],
+        "usecase": [
+          "Productivity"
+        ]
+      },
+      "subtitle": "Arnab Bose, Chief Product Officer at Asana, on how Asana runs AI agents as teammates with scoped roles, shared memory, and work that everyone can see.",
+      "authors": [
+        "Aleksandra Todorova",
+        "Kristen Swanson"
+      ],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/agents",
+      "productUrl": "https://claude.com/platform/api",
+      "fetchedAt": "2026-09-30T10:16:21.630Z",
+      "translated": true,
+      "translatedTitle": "可以辅导的智能体：Asana 如何用 Claude 构建人机智能体团队",
+      "translatedSubtitle": "Asana 首席产品官 Arnab Bose 分享 Asana 如何以限定角色、共享记忆和人人可见的工作方式，让 AI 智能体以队友身份运转。"
+    },
+    {
       "slug": "giving-companies-more-control-over-their-ai-agents-with-nvidia",
       "title": "Giving companies more control over their AI agents, with NVIDIA",
       "date": "September 28, 2026",
@@ -8479,5 +8514,5 @@
       "productUrl": "https://claude.com/platform/api"
     }
   ],
-  "lastFetched": "2026-09-28T22:04:16.971Z"
+  "lastFetched": "2026-09-30T10:16:21.630Z"
 }
