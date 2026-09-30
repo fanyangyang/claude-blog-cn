@@ -1,0 +1,31 @@
+{
+  "slug": "how-anthropics-sales-team-rebuilt-inbound-with-claude-managed-agents",
+  "title": "How Anthropic's sales team rebuilt inbound with Claude Managed Agents",
+  "date": "September 30, 2026",
+  "category": "Enterprise AI",
+  "url": "https://claude.com/blog/how-anthropics-sales-team-rebuilt-inbound-with-claude-managed-agents",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/how-anthropics-sales-team-rebuilt-inbound-with-claude-managed-agents.svg",
+  "illustrationBg": "Plum",
+  "facets": {
+    "category": [
+      "Enterprise AI"
+    ],
+    "product": [
+      "Claude Platform"
+    ],
+    "usecase": [
+      "Sales"
+    ]
+  },
+  "subtitle": "Carl Johnson, a sales development leader at Anthropic, shares how a Claude-powered buying agent now answers most inbound customers, and how that changed the way our sales team works.",
+  "authors": [
+    "Carl Johnson"
+  ],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/enterprise-ai",
+  "productUrl": "https://claude.com/platform/api",
+  "fetchedAt": "2026-09-30T16:04:13.374Z"
+}
