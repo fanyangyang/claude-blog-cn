@@ -1,0 +1,27 @@
+{
+  "slug": "claude-code-mods",
+  "title": "Customize Claude Code with mods",
+  "date": "October 1, 2026",
+  "category": "Product announcements",
+  "url": "https://claude.com/blog/claude-code-mods",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "assets/illustrations/claude-code-mods.svg",
+  "illustrationBg": "Clay",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Code"
+    ],
+    "usecase": []
+  },
+  "subtitle": "Change how Claude Code behaves and looks with a few lines of TypeScript.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/blog/category/announcements",
+  "productUrl": "https://claude.com/product/claude-code",
+  "fetchedAt": "2026-10-01T22:05:09.690Z"
+}

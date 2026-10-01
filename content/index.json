@@ -1,6 +1,36 @@
 {
   "articles": [
     {
+      "slug": "claude-code-mods",
+      "title": "Customize Claude Code with mods",
+      "date": "October 1, 2026",
+      "category": "Product announcements",
+      "url": "https://claude.com/blog/claude-code-mods",
+      "inHero": false,
+      "heroIndex": -1,
+      "inGrid": true,
+      "illustration": "assets/illustrations/claude-code-mods.svg",
+      "illustrationBg": "Clay",
+      "facets": {
+        "category": [
+          "Product announcements"
+        ],
+        "product": [
+          "Claude Code"
+        ],
+        "usecase": []
+      },
+      "subtitle": "Change how Claude Code behaves and looks with a few lines of TypeScript.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "https://claude.com/blog/category/announcements",
+      "productUrl": "https://claude.com/product/claude-code",
+      "fetchedAt": "2026-10-01T22:05:09.690Z",
+      "translated": true,
+      "translatedTitle": "用 Mods 定制 Claude Code",
+      "translatedSubtitle": "用几行 TypeScript 改变 Claude Code 的行为和外观。"
+    },
+    {
       "slug": "how-anthropics-sales-team-rebuilt-inbound-with-claude-managed-agents",
       "title": "How Anthropic's sales team rebuilt inbound with Claude Managed Agents",
       "date": "September 30, 2026",
@@ -8578,5 +8608,5 @@
       "productUrl": "https://claude.com/platform/api"
     }
   ],
-  "lastFetched": "2026-09-30T22:05:18.708Z"
+  "lastFetched": "2026-10-01T22:05:18.004Z"
 }
