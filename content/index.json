@@ -1,6 +1,33 @@
 {
   "articles": [
     {
+      "slug": "how-cresta-turned-cx-expertise-into-an-agent-builder-on-the-claude-agent-sdk",
+      "title": "How Cresta turned CX expertise into an agent builder on the Claude Agent SDK",
+      "date": "October 5, 2026",
+      "category": "General",
+      "url": "https://claude.com/blog/how-cresta-turned-cx-expertise-into-an-agent-builder-on-the-claude-agent-sdk",
+      "inHero": false,
+      "heroIndex": -1,
+      "inGrid": true,
+      "illustration": "assets/illustrations/how-cresta-turned-cx-expertise-into-an-agent-builder-on-the-claude-agent-sdk.svg",
+      "illustrationBg": "Heather",
+      "facets": {
+        "category": [],
+        "product": [],
+        "usecase": []
+      },
+      "subtitle": "See how Cresta built Conductor, an agent that builds other agents, on the Claude Agent SDK, and how the team evaluates it with every new Claude model.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "",
+      "productUrl": "",
+      "fetchedAt": "2026-10-05T16:04:10.614Z",
+      "translated": true,
+      "translatedTitle": "Cresta 如何将 CX 专业能力变成基于 Claude Agent SDK 的智能体构建器",
+      "translatedAt": "2026-10-06T00:10:00.000Z",
+      "translateLang": "zh-CN"
+    },
+    {
       "slug": "claude-code-mods",
       "title": "Customize Claude Code with mods",
       "date": "October 1, 2026",
@@ -8608,5 +8635,5 @@
       "productUrl": "https://claude.com/platform/api"
     }
   ],
-  "lastFetched": "2026-10-03T22:05:19.487Z"
+  "lastFetched": "2026-10-05T16:04:18.863Z"
 }

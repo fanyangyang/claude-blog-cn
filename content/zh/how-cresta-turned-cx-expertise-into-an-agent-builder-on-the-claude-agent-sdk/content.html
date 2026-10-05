@@ -1,0 +1,86 @@
+<div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p><em>在我们的系列文章</em><strong><em>「创业公司如何用 Claude 构建产品」</em></strong><em>中，我们关注 AI 产品背后的决策。这一次，我们来看看 </em><a href="https://cresta.com/"><em>Cresta</em></a><em> 如何将其构建 AI 原生客户体验的专业能力带入 </em><a href="https://cresta.com/blog/cresta-conductor-the-agent-for-ai-agent-development"><em>Conductor</em></a><em>——一个帮助开发者构建和改进其他智能体的智能体。</em></p><div class="w-embed"><figure>
+  <div role="region" tabindex="0">
+    <table>
+      <thead>
+        <tr>
+          <th colspan="2" scope="colgroup">快速概览</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">公司</th>
+          <td>Cresta</td>
+        </tr>
+        <tr>
+          <th scope="row">成立时间</th>
+          <td>2017 年</td>
+        </tr>
+        <tr>
+          <th scope="row">CEO</th>
+          <td>Ping Wu</td>
+        </tr>
+        <tr>
+          <th scope="row">发展情况</th>
+          <td>已融资超 2.7 亿美元，ARR 超 1 亿美元，帮助 United Airlines、CVS Health、Marriott 等企业提供卓越的客户体验</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</figure></div><p>为客户体验场景构建企业级 AI 智能体，需要理解广泛分布于各类客户交互中的上下文。例如，客户可能会：</p><ul role="list"><li>要求退款，却没有说明指的是哪一笔购买；</li><li>在同一条消息里同时报告账单问题和登录问题；或者</li><li>在退货窗口关闭之后申请退款。</li></ul><p>要正确应对这些情况，智能体可能需要查询客户购买了什么、退款政策、账户历史或支付状态。</p><p>Cresta 能以规模化方式处理这些交互。其平台支撑着客户体验：AI 智能体自主处理对话，为并肩工作的人类客服提供实时指引，并输出对话智能洞察，帮助业务方看到该在何处改进。&nbsp;</p><p>构建和维护客户体验智能体，要求组织在运营需求上做出关键决策：智能体需要知道什么、必须访问哪些系统，以及它的行为在哪些地方应当灵活、哪些地方应当确定。Cresta 希望让更多团队也能拥有这种判断能力，而不必每次都从零开始。&nbsp;</p><p>Conductor 正是这一想法的产物：一个自然语言智能体构建器，帮助团队把复杂的业务上下文转化为可投入生产的智能体。用户描述他们想构建什么，Conductor 便会从有依据的蓝图出发，引导完成实现、评估和优化全流程。</p><p>Cresta 最初使用 Claude Sonnet 和 Claude Opus 构建了 Conductor 的早期版本，用于帮助内部团队支撑客户部署。当时悬而未决的问题是：Cresta 能否把这套系统变成一款产品，让客户直接在平台<em>内</em>用它构建智能体。<br><br>为了承担开放式开发工作，Conductor 将 Claude Agent SDK 用作通用型执行框架，用于收集上下文、调用工具、编写并运行代码，并根据结果进行调整。</p><p>「我们在内部把 Claude Code 当作开发工具来用，因为它在构建智能体所涉及的软件开发方面非常高效，」Cresta Conductor 工程负责人 Renjie Li 表示。「Claude Agent SDK 让我们能以编程方式使用同一套智能体开发框架。借助 Conductor，我们将它与 Cresta 深厚的对话智能、CX 专业能力、评估体系和运行时连接起来，为用户提供我们当初就希望拥有的智能体构建体验。」</p><p>据 Cresta 报告，在 Cresta 及其合作伙伴的早期用例中，Conductor 将初始部署时间大约缩短了一半。&nbsp;</p><figure style="max-width:2024pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6ac3a966e07da0d8501b6945_cresta-conductor-architecture-original-style.png" loading="lazy"></div></figure><h2><strong>一个帮助构建下一代智能体的元智能体</strong></h2><p>Conductor 是一个自我改进的元智能体，建立在 CX 智能体开发的成熟最佳实践之上。随着团队用它构建并打磨更多智能体，他们沉淀出自己验证过的模式、工作流和专家判断。这就形成了一个知识飞轮，让后续开发更快、更一致。</p><p>上线之后，生产环境的交互、工作流结果和反馈都会成为下一次改进的新信号。&nbsp;</p><p>Conductor 帮助构建者把一次智能体构建中学到的东西转化为可复用的记忆产物，沉淀其中的模式、业务规则和评估方法。然后，他们可以把它作为技能分享给团队其他成员，让其他人也能基于同一套经过验证的实践来构建。</p><h3><strong>让关键决策更容易</strong></h3><p>写出第一条提示词只是构建一个有用智能体的开始。更难的抉择在于：对话的哪些部分应保持灵活，哪些部分需要明确的业务规则和受控的工具行为。</p><p>「你不希望做得太确定化，否则你会造出一棵巨大的决策树，试图覆盖每一个可能的分支……但确实有一些企业关键工作流必须保证始终正常运转，尤其是对于风险容忍度低的高度受监管行业，」Renjie 说。「Conductor 帮助发现并固化这些确定性需求及其实现，同时保留足够的灵活性来改善整体体验。」</p><p>Conductor 会参考历史对话，帮助团队判断哪些环节应保留人工介入、哪些环节可以放手让模型自主调整。一旦这些边界被确定下来，开发者仍需要针对这些确定性部分做测试，验证其是否满足要执行的业务规则，并在底层业务规则变化时修订这些测试。&nbsp;</p><h2><strong>Cresta 如何评估 Conductor</strong></h2><p>Conductor 的衡量标准是它构建智能体的好坏。为此，Cresta 会让 Conductor 完成一组构建任务：</p><ul role="list"><li>构建一个新的智能体</li><li>为某个智能体编写测试用例</li><li>修改一个已有的智能体</li><li>执行根因分析</li></ul><p>完成任务并非唯一标准。团队还会审视结果、Conductor 的实现路径，以及它在过程中使用了什么。</p><div class="w-embed"><figure>
+  <div role="region" tabindex="0">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">评估维度</th>
+          <th scope="col">它回答的问题</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">结果</th>
+          <td>Conductor 是否产出了所要求的、可用的产物？</td>
+        </tr>
+        <tr>
+          <th scope="row">执行路径</th>
+          <td>它是否使用了合适的工具和所需的上下文？</td>
+        </tr>
+        <tr>
+          <th scope="row">质量</th>
+          <td>结果与精心整理的参考相比如何？</td>
+        </tr>
+        <tr>
+          <th scope="row">资源使用</th>
+          <td>该任务耗费了多少时间和模型用量？</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</figure></div><p>同样的任务也充当安全网。每当有新的 Claude 模型发布或 Conductor 框架更新，Cresta 都会重跑评估。它使用相同的任务和相同的评分标准，在任何人采用变更之前，识别出哪些方面有改进、哪些仍需打磨。</p><figure style="max-width:2024pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6ac3a91f9f5ee36b2b3dcc52_cresta-eval-1-what-we-evaluate.png" loading="lazy"></div></figure><figure style="max-width:2024pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6ac3a92f9c523d9a223f3798_cresta-eval-2-how-each-scenario-is-executed.png" loading="lazy"></div></figure><figure style="max-width:2024pxpx" class="w-richtext-align-fullwidth w-richtext-figure-type-image"><div><img alt="" src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6ac3a9409092cb2380e00bda_cresta-eval-3-how-we-expose-the-run-data.png" loading="lazy"></div></figure><p>同样的评估纪律也内置于 Conductor 中，让用户能够检查并确认自己的智能体是否按预期运行。Conductor 会把构建阶段捕获的需求和边界场景转化为评估模块中的测试。&nbsp;</p><p>当策略、连接系统和对话模式发生变化时，团队可以持续监控那些必须每次都能正常运转的工作流。这为他们提供了一种务实的方式，在业务变化时更新智能体，同时不牺牲已经固化下来的工作流的可靠性。</p><h2><strong>基于 Claude Agent SDK 构建 Conductor</strong></h2><p>Cresta 将 Conductor 设计为面向智能体开发的 CX 专属控制平面。它汇聚了对话数据、领域专业知识和开发实践，并通过策略、可观测性、验证和反馈驱动的改进来管控每一次智能体运行。</p><p>Claude Agent SDK 位于 Conductor 之下，充当通用执行框架。它负责收集上下文、调用工具、编写并运行代码等工作；Conductor 则在其上叠加 Cresta 的 CX 工作流、工具和领域上下文。</p><p>团队针对 Conductor 实际需要完成的工作评估了 SDK：多步骤任务、大量上下文和重复的工具调用。评估覆盖了数据隐私、租户架构、组织级密钥分发、控制措施以及整个实现过程中的可观测性。</p><p>「Anthropic 为智能体软件开发提供了强大而通用的基础，这让我们能把工程投入放在 Cresta 最能创造持久客户价值的地方，」Cresta 工程副总裁 Xiangru Chen 表示。</p><h2><strong>把 Cresta 的工程专业能力直接交到客户手中</strong></h2><p>Conductor 起步于 Cresta 内部，帮助其前向部署团队了解哪些开发任务可以变得可复用、上下文在哪些地方最重要，以及构建者一路上需要检查什么。它在内部工作中取得的成功，让团队有信心把同样的能力带给客户和合作伙伴。</p><p>对于任何产品部署定制智能体的速度超过工程师手工构建速度的团队来说，Cresta 的做法是一个很好的参考：无论智能体还是元智能体，初次构建之后的工作往往才是最困难的部分。</p><p>看看 <a href="https://cresta.com/blog/cresta-conductor-the-agent-for-ai-agent-development">Conductor</a> 如何把业务上下文转化为更好的智能体设计、实现和持续改进。</p><div class="w-embed"><figure>
+  <div role="region" tabindex="0">
+    <table>
+      <thead>
+        <tr>
+          <th colspan="2" scope="colgroup">来自 Cresta 团队的最佳实践</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">用自家产品「吃自己的狗粮」</th>
+          <td>Conductor 最初是一款内部工具，只有当它的产出能与深谙 AI 的工程师亲手构建的结果相媲美时，才变成产品。</td>
+        </tr>
+        <tr>
+          <th scope="row">专注于你的独特优势</th>
+          <td>Cresta 在只有自己才能带来的专业能力（他们的对话数据和对客户体验的理解）与可以直接从 Agent SDK 现成获取的能力之间划出清晰的界线，并且拒绝构建任何越界的东西。</td>
+        </tr>
+        <tr>
+          <th scope="row">明确你的智能体哪些部分需要确定性</th>
+          <td>把绝不允许出错的企业关键工作流固化下来，其余部分保持灵活，否则你无法得到想要的交互式智能体体验。</td>
+        </tr>
+        <tr>
+          <th scope="row">上线只是最简单的部分</th>
+          <td>初次构建大约只占全部工作的 20%，另外 80% 是随后的测试、优化和持续改进，所以要围绕迭代循环来设计你的工具，而不是围绕发布。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</figure></div></div>
