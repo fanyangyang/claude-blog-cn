@@ -2,13 +2,13 @@
   "slug": "claude-opus-5-5-built-for-coding-sessions-that-use-more-context",
   "title": "Coding sessions are longer and use more context. Claude Opus 5.5 is built with that in mind.",
   "date": "September 24, 2026",
-  "category": "Claude Code",
-  "url": "https://claude.com/blog/claude-opus-5-5-built-for-coding-sessions-that-use-more-context",
+  "category": "Best practices",
+  "url": "https://claude.com/resources/articles/claude-opus-5-5-built-for-coding-sessions-that-use-more-context",
   "inHero": false,
   "heroIndex": -1,
   "inGrid": true,
   "illustration": "assets/illustrations/claude-opus-5-5-built-for-coding-sessions-that-use-more-context.svg",
-  "illustrationBg": "Sky",
+  "illustrationBg": "heather",
   "facets": {
     "category": [
       "Claude Code",

@@ -3,12 +3,12 @@
   "title": "Claude Cowork and chat are now one Claude",
   "date": "September 16, 2026",
   "category": "Product announcements",
-  "url": "https://claude.com/blog/cowork-is-now-claude",
-  "inHero": true,
-  "heroIndex": 0,
+  "url": "https://claude.com/resources/articles/cowork-is-now-claude",
+  "inHero": false,
+  "heroIndex": -1,
   "inGrid": true,
   "illustration": "assets/illustrations/cowork-is-now-claude.svg",
-  "illustrationBg": "Clay",
+  "illustrationBg": "peach",
   "facets": {
     "category": [
       "Product announcements"

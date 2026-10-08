@@ -2,13 +2,13 @@
   "slug": "agents-you-can-coach-how-asana-builds-human-agent-teams-with-claude",
   "title": "Agents you can coach: how Asana builds human-agent teams with Claude",
   "date": "September 29, 2026",
-  "category": "Agents",
-  "url": "https://claude.com/blog/agents-you-can-coach-how-asana-builds-human-agent-teams-with-claude",
+  "category": "Best practices",
+  "url": "https://claude.com/resources/articles/agents-you-can-coach-how-asana-builds-human-agent-teams-with-claude",
   "inHero": false,
   "heroIndex": -1,
   "inGrid": true,
   "illustration": "assets/illustrations/agents-you-can-coach-how-asana-builds-human-agent-teams-with-claude.svg",
-  "illustrationBg": "Mineral",
+  "illustrationBg": "cactus",
   "facets": {
     "category": [
       "Agents"

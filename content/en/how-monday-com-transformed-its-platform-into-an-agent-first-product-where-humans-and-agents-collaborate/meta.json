@@ -2,8 +2,8 @@
   "slug": "how-monday-com-transformed-its-platform-into-an-agent-first-product-where-humans-and-agents-collaborate",
   "title": "How monday.com transformed its platform into an agent-first product where humans and agents collaborate",
   "date": "August 20, 2026",
-  "category": "Agents",
-  "url": "https://claude.com/blog/how-monday-com-transformed-its-platform-into-an-agent-first-product-where-humans-and-agents-collaborate",
+  "category": "Best practices",
+  "url": "https://claude.com/resources/articles/how-monday-com-transformed-its-platform-into-an-agent-first-product-where-humans-and-agents-collaborate",
   "fetchedAt": "2026-09-01T11:10:36.575Z",
   "translated": true,
   "translatedTitle": "monday.com 如何把平台重塑为人与 agent 协作的 agent 优先产品",
@@ -13,7 +13,7 @@
   "heroIndex": -1,
   "inGrid": true,
   "illustration": "assets/illustrations/how-monday-com-transformed-its-platform-into-an-agent-first-product-where-humans-and-agents-collaborate.svg",
-  "illustrationBg": "Mineral",
+  "illustrationBg": "cactus",
   "facets": {
     "category": [
       "Agents"

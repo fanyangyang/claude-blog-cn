@@ -5,6 +5,8 @@ const path = require('path');
 const cheerio = require('cheerio');
 
 const BASE_URL = 'https://claude.com/blog';
+const RESOURCES_URL = 'https://claude.com/resources/articles';
+const SEARCH_API = 'https://claude.com/api/resources/search';
 const CONTENT_DIR = path.join(__dirname, '..', 'content', 'en');
 const META_FILE = path.join(__dirname, '..', 'content', 'index.json');
 const ILLUSTRATION_DIR = path.join(__dirname, '..', 'assets', 'illustrations');
@@ -558,6 +560,102 @@ function illustrationExtension(url) {
   return ext && /^\.[a-z0-9]{2,5}$/.test(ext) ? ext : '.svg';
 }
 
+/* ===== New site (Next.js /resources/articles) =====
+ * claude.com/blog was migrated to /resources/articles, a Next.js app.
+ * Listing data comes from the JSON search API; article pages use a new
+ * DOM (div.text-rich-text--article.w-richtext body, JSON-LD metadata).
+ * These helpers detect and ingest the new structure while the legacy
+ * Webflow path above remains for old cached pages. */
+
+function extractArticleBodyNew(html) {
+  const $ = cheerio.load(html);
+  const body = $('div.text-rich-text--article.w-richtext').first();
+  if (!body.length) return null;
+  const inner = body.html();
+  if (!inner || body.text().replace(/\s+/g, ' ').trim().length <= 40) return null;
+  return `<div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext">${inner}</div>`;
+}
+
+function extractArticleMetaNew(html) {
+  const $ = cheerio.load(html);
+  const meta = {};
+  let ld = null;
+  $('script[type="application/ld+json"]').each((i, el) => {
+    if (ld) return;
+    try {
+      const parsed = JSON.parse($(el).text());
+      const graph = Array.isArray(parsed) ? parsed : parsed['@graph'] || [parsed];
+      const posting = graph.find((n) => n && n['@type'] === 'BlogPosting');
+      if (posting) ld = posting;
+    } catch (e) { /* ignore unparseable blocks */ }
+  });
+  if (ld) {
+    meta.title = ld.headline || '';
+    meta.date = isoToLongDate(ld.datePublished || '');
+    meta.subtitle = ld.description || '';
+    meta.url = ld.url || '';
+  }
+  // Read time from sidebar ("N min").
+  const rt = $('.DetailSidebar-module-scss-module__3RcHtG__value').filter((i, el) => /min/i.test($(el).text())).first().text().trim();
+  const m = rt.match(/(\d+)\s*min/i);
+  if (m) meta.readingMinutes = Number(m[1]);
+  return meta;
+}
+
+function isoToLongDate(value) {
+  if (!value) return '';
+  const m = String(value).match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (!m) return value;
+  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const n = Number(m[2]);
+  if (n < 1 || n > 12) return value;
+  return `${MONTHS[n - 1]} ${Number(m[3])}, ${m[1]}`;
+}
+
+function extractNewListingFromApi(payload) {
+  const items = Array.isArray(payload.items) ? payload.items : [];
+  const articles = new Map();
+  for (const item of items) {
+    if (item._type !== 'blogPost' || !item.slug) continue;
+    const category = item.category && item.category.name ? item.category.name : '';
+    articles.set(item.slug, {
+      slug: item.slug,
+      title: item.title || '',
+      date: isoToLongDate(item.date || ''),
+      category,
+      inHero: false,
+      inGrid: true,
+      heroIndex: -1,
+      illustrationUrl: item.illustration || '',
+      illustrationBg: item.illustrationBackground || '',
+      facets: {
+        category: Array.isArray(item.categorySlugs) ? item.categorySlugs : (category ? [category] : []),
+        product: Array.isArray(item.products) ? item.products.map((p) => p.name || p.slug).filter(Boolean) : [],
+        usecase: [],
+      },
+      subtitle: item.excerpt || '',
+      readingMinutes: item.readTime || 0,
+      productUrl: Array.isArray(item.products) && item.products[0] && item.products[0].slug
+        ? `https://claude.com/product/${item.products[0].slug}`
+        : '',
+    });
+  }
+  return { articles, total: payload.total || items.length };
+}
+
+async function fetchSearchPage(page) {
+  const res = await fetch(`${SEARCH_API}?types=article&language=en&page=${page}`);
+  return JSON.parse(res);
+}
+
+function isNewSiteListing(html) {
+  return html.includes('text-rich-text--article') || html.includes('resources/articles') || html.includes('_next/static');
+}
+
+function isNewSiteArticle(html) {
+  return html.includes('text-rich-text--article') || html.includes('DetailHero-module-scss-module');
+}
+
 const illoStats = { downloaded: 0, skipped: 0, failed: 0 };
 
 async function downloadIllustration(slug, url) {
@@ -606,6 +704,31 @@ async function main() {
   const grid = extractGridArticles($listing);
   const hero = extractHeroArticles($listing);
   console.log(`  Found ${grid.size} grid articles and ${hero.length} hero articles on page 1`);
+
+  // New site (Next.js /resources/articles): the legacy Webflow grid/hero
+  // parsers find nothing, so ingest the listing from the JSON search API.
+  let usedApi = false;
+  if (grid.size === 0 && hero.length === 0 && isNewSiteListing(listingHtml)) {
+    usedApi = true;
+    console.log('  Detected new /resources/articles site; fetching listing from search API...');
+    for (let page = 1; page <= MAX_PAGES; page++) {
+      let payload;
+      try {
+        payload = await fetchSearchPage(page);
+      } catch (err) {
+        console.warn(`  ⚠ Search API page ${page} failed: ${err.message}`);
+        break;
+      }
+      const { articles: pageArticles, total } = extractNewListingFromApi(payload);
+      let newCount = 0;
+      for (const [slug, card] of pageArticles) {
+        if (!grid.has(slug)) { grid.set(slug, card); newCount++; }
+      }
+      console.log(`  API page ${page}: ${pageArticles.size} articles, ${newCount} new (total ${total})`);
+      if (newCount === 0 || grid.size >= total || pageArticles.size === 0) break;
+      await sleep(1200);
+    }
+  }
 
   // Pagination: the Webflow CMS uses a hash-prefixed param
   // (?<hash>_page=N). The hash is extracted dynamically from the grid's
@@ -721,7 +844,10 @@ async function main() {
       articleHtml = fs.readFileSync(htmlFile, 'utf-8');
     } else {
       try {
-        articleHtml = await fetch(`https://claude.com/blog/${article.slug}`);
+        const articleUrl = usedApi
+          ? `https://claude.com/resources/articles/${article.slug}`
+          : `https://claude.com/blog/${article.slug}`;
+        articleHtml = await fetch(articleUrl);
         fs.mkdirSync(articleDir, { recursive: true });
         fs.writeFileSync(htmlFile, articleHtml, 'utf-8');
       } catch (err) {
@@ -733,7 +859,26 @@ async function main() {
     // blocks (testimonials, a second Getting started richtext, real FAQs)
     // are not lost. Only rewrite when the extracted text actually changed.
     if (articleHtml) {
-      const extracted = writeExtractedContent(articleDir, articleHtml);
+      let extracted;
+      if (isNewSiteArticle(articleHtml)) {
+        const bodyHtml = extractArticleBodyNew(articleHtml);
+        if (bodyHtml) {
+          const dest = path.join(articleDir, 'content.html');
+          const prev = fs.existsSync(dest) ? fs.readFileSync(dest, 'utf-8') : '';
+          const prevText = normalizedBodyText(prev);
+          const nextText = normalizedBodyText(bodyHtml);
+          if (prevText !== nextText) {
+            fs.writeFileSync(dest, bodyHtml, 'utf-8');
+            extracted = { written: true, prevChars: prevText.length, nextChars: nextText.length };
+          } else {
+            extracted = { written: false, prevChars: prevText.length, nextChars: nextText.length };
+          }
+        } else {
+          extracted = { written: false, prevChars: 0, nextChars: 0 };
+        }
+      } else {
+        extracted = writeExtractedContent(articleDir, articleHtml);
+      }
       if (extracted.written) {
         contentRefreshed++;
         const zhFile = path.join(__dirname, '..', 'content', 'zh', article.slug, 'content.html');
@@ -745,9 +890,15 @@ async function main() {
       }
     }
 
+    // New-site meta fallback: JSON-LD title/date/subtitle/readtime.
+    let newMeta = {};
+    if (articleHtml && isNewSiteArticle(articleHtml)) {
+      newMeta = extractArticleMetaNew(articleHtml);
+    }
+
     // Category: the listing page is the single source of truth. Only hero-only
     // articles fall back to their own (already stored) article page.
-    let category = article.category || '';
+    let category = article.category || newMeta.category || '';
     if (!category && articleHtml) {
       category = extractCategoryFromArticlePage(articleHtml);
     }
@@ -758,9 +909,22 @@ async function main() {
     // Facets: the listing page only exposes category; product/usecase live on
     // the article's own page. Extract all three when the page is available,
     // otherwise keep the stored facets unchanged.
-    const facets = articleHtml
+    let facets = articleHtml
       ? extractFacetsFromArticlePage(articleHtml)
       : (existing && existing.facets) || null;
+    if (usedApi && facets && existing && existing.facets) {
+      // The new-site API only carries a single category; keep richer stored
+      // facets (products/usecase) instead of dropping them.
+      const freshCat = Array.isArray(facets.category) ? facets.category : [];
+      const freshProd = Array.isArray(facets.product) ? facets.product : [];
+      if (freshCat.length === 0 && existing.facets.category && existing.facets.category.length) {
+        facets.category = existing.facets.category;
+      }
+      if (freshProd.length === 0 && existing.facets.product && existing.facets.product.length) {
+        facets.product = existing.facets.product;
+      }
+      if (!facets.usecase && existing.facets.usecase) facets.usecase = existing.facets.usecase;
+    }
 
     // Hero sidebar meta (subtitle, authors, reading time, detail URLs).
     // Prefer a fresh parse; keep previously stored values when the page is
@@ -783,19 +947,21 @@ async function main() {
     // Build the listing-derived record. heroIndex: -1 when not in the hero.
     const listingRecord = {
       slug: article.slug,
-      title: article.title || (existing && existing.title) || article.slug,
-      date: article.date || (existing && existing.date) || '',
+      title: article.title || newMeta.title || (existing && existing.title) || article.slug,
+      date: article.date || newMeta.date || (existing && existing.date) || '',
       category,
-      url: `https://claude.com/blog/${article.slug}`,
+      url: usedApi
+        ? `https://claude.com/resources/articles/${article.slug}`
+        : `https://claude.com/blog/${article.slug}`,
       inHero: Boolean(article.inHero),
       heroIndex: typeof article.heroIndex === 'number' ? article.heroIndex : -1,
       inGrid: Boolean(article.inGrid),
       illustration: illustrationPath,
       illustrationBg: article.illustrationBg || '',
       facets,
-      subtitle: heroMeta.subtitle || '',
+      subtitle: heroMeta.subtitle || newMeta.subtitle || article.subtitle || '',
       authors: Array.isArray(heroMeta.authors) ? heroMeta.authors : [],
-      readingMinutes: heroMeta.readingMinutes || 0,
+      readingMinutes: heroMeta.readingMinutes || newMeta.readingMinutes || 0,
       categoryUrl: heroMeta.categoryUrl || '',
       productUrl: heroMeta.productUrl || '',
     };

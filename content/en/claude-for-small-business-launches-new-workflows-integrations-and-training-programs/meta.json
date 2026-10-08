@@ -3,12 +3,12 @@
   "title": "Claude for Small Business launches new workflows, integrations, and training programs",
   "date": "September 15, 2026",
   "category": "Product announcements",
-  "url": "https://claude.com/blog/claude-for-small-business-launches-new-workflows-integrations-and-training-programs",
-  "inHero": true,
-  "heroIndex": 1,
+  "url": "https://claude.com/resources/articles/claude-for-small-business-launches-new-workflows-integrations-and-training-programs",
+  "inHero": false,
+  "heroIndex": -1,
   "inGrid": true,
   "illustration": "assets/illustrations/claude-for-small-business-launches-new-workflows-integrations-and-training-programs.svg",
-  "illustrationBg": "Clay",
+  "illustrationBg": "peach",
   "facets": {
     "category": [
       "Product announcements"

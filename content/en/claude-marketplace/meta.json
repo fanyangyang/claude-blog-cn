@@ -3,12 +3,12 @@
   "title": "Claude Marketplace: one place to discover plugins, agents, and services from our partners",
   "date": "September 23, 2026",
   "category": "Product announcements",
-  "url": "https://claude.com/blog/claude-marketplace",
+  "url": "https://claude.com/resources/articles/claude-marketplace",
   "inHero": false,
   "heroIndex": -1,
   "inGrid": true,
   "illustration": "assets/illustrations/claude-marketplace.svg",
-  "illustrationBg": "Clay",
+  "illustrationBg": "peach",
   "facets": {
     "category": [
       "Product announcements"

@@ -1,0 +1,27 @@
+{
+  "slug": "claude-now-works-in-google-docs-sheets-and-slides",
+  "title": "Claude now works with Google Docs, Sheets, and Slides",
+  "date": "October 6, 2026",
+  "category": "Product announcements",
+  "url": "https://claude.com/resources/articles/claude-now-works-in-google-docs-sheets-and-slides",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "",
+  "illustrationBg": "peach",
+  "facets": {
+    "category": [
+      "Product announcements"
+    ],
+    "product": [
+      "Claude Enterprise"
+    ],
+    "usecase": []
+  },
+  "subtitle": "With our new Claude for Google Workspace add-on and connectors (in beta), bring Claude into your Google files or work on your files directly from Claude.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "https://claude.com/resources/articles",
+  "productUrl": "https://claude.com/product/claude-enterprise",
+  "fetchedAt": "2026-10-08T10:12:53.731Z"
+}

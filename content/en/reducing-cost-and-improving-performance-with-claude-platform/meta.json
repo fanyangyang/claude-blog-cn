@@ -2,13 +2,13 @@
   "slug": "reducing-cost-and-improving-performance-with-claude-platform",
   "title": "Reducing cost and improving performance with Claude Platform",
   "date": "September 8, 2026",
-  "category": "Agents",
-  "url": "https://claude.com/blog/reducing-cost-and-improving-performance-with-claude-platform",
+  "category": "Best practices",
+  "url": "https://claude.com/resources/articles/reducing-cost-and-improving-performance-with-claude-platform",
   "inHero": false,
   "heroIndex": -1,
   "inGrid": true,
   "illustration": "assets/illustrations/reducing-cost-and-improving-performance-with-claude-platform.svg",
-  "illustrationBg": "Mineral",
+  "illustrationBg": "cactus",
   "facets": {
     "category": [
       "Agents"

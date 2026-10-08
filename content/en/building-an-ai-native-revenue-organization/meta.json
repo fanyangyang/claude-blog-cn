@@ -2,13 +2,13 @@
   "slug": "building-an-ai-native-revenue-organization",
   "title": "Building an AI-native revenue organization",
   "date": "September 15, 2026",
-  "category": "Enterprise AI",
-  "url": "https://claude.com/blog/building-an-ai-native-revenue-organization",
+  "category": "Best practices",
+  "url": "https://claude.com/resources/articles/building-an-ai-native-revenue-organization",
   "inHero": false,
   "heroIndex": -1,
   "inGrid": true,
   "illustration": "assets/illustrations/building-an-ai-native-revenue-organization.svg",
-  "illustrationBg": "Peach",
+  "illustrationBg": "peach",
   "facets": {
     "category": [
       "Enterprise AI"

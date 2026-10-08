@@ -1,14 +1,14 @@
 {
   "slug": "giving-companies-more-control-over-their-ai-agents-with-nvidia",
-  "title": "Giving companies more control over their AI agents, with NVIDIA",
+  "title": "A new approach to agent security with Claude Managed Agents and NVIDIA",
   "date": "September 28, 2026",
-  "category": "Agents",
-  "url": "https://claude.com/blog/giving-companies-more-control-over-their-ai-agents-with-nvidia",
+  "category": "Product announcements",
+  "url": "https://claude.com/resources/articles/giving-companies-more-control-over-their-ai-agents-with-nvidia",
   "inHero": false,
   "heroIndex": -1,
   "inGrid": true,
   "illustration": "assets/illustrations/giving-companies-more-control-over-their-ai-agents-with-nvidia.svg",
-  "illustrationBg": "Cactus",
+  "illustrationBg": "cactus",
   "facets": {
     "category": [
       "Agents"

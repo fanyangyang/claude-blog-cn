@@ -2,8 +2,8 @@
   "slug": "preparing-your-security-program-for-ai-accelerated-offense",
   "title": "Preparing your security program for AI-accelerated offense",
   "date": "April 10, 2026",
-  "category": "Agents",
-  "url": "https://claude.com/blog/preparing-your-security-program-for-ai-accelerated-offense",
+  "category": "Best practices",
+  "url": "https://claude.com/resources/articles/preparing-your-security-program-for-ai-accelerated-offense",
   "fetchedAt": "2026-09-01T22:58:06.803Z",
   "translated": true,
   "translatedTitle": "为 AI 加速的攻击面做好准备：安全项目应对指南",
@@ -13,7 +13,7 @@
   "heroIndex": -1,
   "inGrid": true,
   "illustration": "assets/illustrations/preparing-your-security-program-for-ai-accelerated-offense.svg",
-  "illustrationBg": "Olive",
+  "illustrationBg": "cactus",
   "facets": {
     "category": [
       "Agents"

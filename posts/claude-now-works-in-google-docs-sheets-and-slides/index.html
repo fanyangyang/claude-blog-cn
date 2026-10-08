@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude 现已支持 Google Docs、Sheets 和 Slides — Claude Blog 中文翻译</title>
+  <meta name="description" content="使用 Google Workspace 的团队现在可以把 Claude 带入他们的文件，或直接从 Claude 中处理文件——全新的插件以及 Google Docs、Sheets 和 Slides 连接器（测试版）现已推出。">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>Claude 现已支持 Google Docs、Sheets 和 Slides</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/resources/articles/claude-now-works-in-google-docs-sheets-and-slides" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/claude-now-works-in-google-docs-sheets-and-slides/en.html">阅读英文原文 →</a>
+      </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># Claude 现已支持 Google Docs、Sheets 和 Slides
+
+使用 Google Workspace 的团队现在可以把 Claude 带入他们的文件，或直接从 Claude 中处理文件——全新的插件以及 Google Docs、Sheets 和 Slides 连接器（测试版）现已推出。
+
+适用于 Google Workspace 的 Claude for Google Workspace™ 现已在所有付费 Claude 套餐中公开测试。它把 Claude 带到了 Google Docs、Sheets 和 Slides 中，让你可以直接在打开的文件里与 Claude 协作。此外，我们还发布了全新的 Google Docs、Sheets 和 Slides 连接器（测试版），让 Claude 可以直接从 Claude 中创建和编辑 Google 文件。
+
+## Claude 在你工作的地方工作
+
+安装插件后，Claude 会打开在你文件旁的侧边栏中，工作时无需在应用或浏览器标签页之间来回切换。Claude 可以读取你打开的文档、表格或演示文稿，看到你选中的文本、单元格或幻灯片，并直接在文件中进行修改。
+
+**在 Docs 中**，例如，Claude 可以直接修改某个句子或重排标题样式，而不影响周围的格式。对于较大的改写，它可以以侧边栏中的建议卡片形式提出修改。每张卡片都会高亮显示将要修改的段落，你可以选择应用或忽略。你可以让 Claude 精简产品需求文档的执行摘要，并把后续步骤转为表格，Claude 会在文档中直接完成这两项工作。
+
+**在 Sheets 中**，Claude 可以编写公式、构建数据透视表和原生 Sheets 图表，并添加新的标签页。对于数据合并或清洗，它可以把某个区域的数据拉入 Python 处理，再把结果写回表格。你可以从一张空白表格开始，附上源文件，要求生成一份按团队分页并带汇总图表的 Q3 预算与实际对比报告，Claude 还能标记出任何超预算的项目。
+
+**在 Slides 中**，Claude 可以根据你演示文稿的版式和主题构建新幻灯片，使其与其余页面保持一致。随后它可以检查自己的工作，标记出重叠或超出幻灯片边界的元素，以及难以阅读的文本。
+
+由你决定 Claude 在多大程度上自主完成工作。在默认的“编辑前询问”（Ask before edits）模式下，每次修改都会以带有摘要的批准卡片形式出现，Claude 会等待你批准后再执行编辑。在“接受所有编辑”（Accept all edits）模式下，Claude 会一气呵成地完成任务并应用所有更改，不会中途停顿。
+
+## 你的连接器、技能和企业管控随你同行
+
+当你登录 Claude 账号后，侧边栏会带有你在 Claude 中使用的相同模型、[连接器 （在新标签页中打开）](https://claude.com/marketplace/connectors-plugins)和[技能 （在新标签页中打开）](https://claude.com/skills)。例如，如果你要为客户制作季度业务回顾（QBR）演示文稿，Claude 可以通过你的 Google Drive 连接器调取 Salesforce 中的账户历史和最近的通话记录。如果你把 QBR 模板保存为技能，你的团队就能按照相同的格式和步骤制作下一份演示文稿。
+
+在 Enterprise 套餐中，Compliance API、客户管理加密密钥（CMEK）和 OpenTelemetry 审计导出等管控同样适用于该插件。
+
+## 从 Claude 中编辑 Google 文件
+
+借助同样处于测试版的[Google Docs、Sheets 和 Slides 连接器 （在新标签页中打开）](https://support.claude.com/en/articles/10166901-use-google-workspace-connectors)，你可以从 Claude 开始，直接在对话中创建和编辑你的 Google 文件。粘贴一个 Google 文件链接，或要求生成一个 Google 文档、表格或演示文稿，在支持的配置下，它会打开在对话旁的窗格中。当你需要新文件或工作涉及多个文件时，从 Claude 开始最合适。Claude 的访问权限与你现有的 Google 共享权限保持一致。
+
+## 快速上手
+
+[Claude for Google Workspace （在新标签页中打开）](https://claude.com/claude-for-google-workspace) 在所有付费套餐中处于测试阶段。
+
+你可以从[Google Workspace Marketplace （在新标签页中打开）](https://workspace.google.com/marketplace/app/claude/12459801340)安装它，然后打开一个文件，进入“扩展程序（Extensions）&gt; Claude &gt; 打开 Claude（Open Claude）”。管理员可以从 Google Admin 控制台把它部署到整个域或特定用户组。[帮助中心指南涵盖了安装配置步骤 （在新标签页中打开）](https://support.claude.com/en/articles/16951679-use-claude-in-google-docs-sheets-and-slides)。
+
+要从 Claude 中编辑 Google 文件，请开启[Google Docs、Sheets 和 Slides 连接器 （在新标签页中打开）](https://support.claude.com/en/articles/10166901-use-google-workspace-connectors)。在 Team 和 Enterprise 套餐中，需要所有者或主要所有者先启用连接器。</textarea>
+    </div>
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            
+            <h1 class="article-title u-text-style-h1">Claude 现已支持 Google Docs、Sheets 和 Slides</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>使用 Google Workspace 的团队现在可以把 Claude 带入他们的文件，或直接从 Claude 中处理文件——全新的插件以及 Google Docs、Sheets 和 Slides 连接器（测试版）现已推出。</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/resources/articles" target="_blank" rel="noopener noreferrer">Product announcements</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 3C13.3284 3 14 3.67157 14 4.5V6H14.5C16.433 6 18 7.567 18 9.5V15.5C18 16.3284 17.3284 17 16.5 17H3.5C2.72334 17 2.08461 16.4097 2.00781 15.6533L2 15.5V9.5C2 7.567 3.567 6 5.5 6H6V4.5C6 3.67157 6.67157 3 7.5 3H12.5ZM3 15.5L3.00977 15.6006C3.05629 15.8286 3.25829 16 3.5 16H16.5C16.7761 16 17 15.7761 17 15.5V12H13V12.5C13 12.7761 12.7761 13 12.5 13C12.2239 13 12 12.7761 12 12.5V12H8V12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5V12H3V15.5ZM5.5 7C4.11929 7 3 8.11929 3 9.5V11H7V10.5C7 10.2239 7.22386 10 7.5 10C7.77614 10 8 10.2239 8 10.5V11H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V11H17V9.5C17 8.11929 15.8807 7 14.5 7H5.5ZM7.5 4C7.22386 4 7 4.22386 7 4.5V6H13V4.5C13 4.22386 12.7761 4 12.5 4H7.5Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Product</div>
+                  <a class="hero-detail-value is-link u-text-style-body-3 u-rich-text" href="https://claude.com/product/claude-enterprise" target="_blank" rel="noopener noreferrer">Claude Enterprise</a>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">October 6, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/claude-now-works-in-google-docs-sheets-and-slides/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>适用于 Google Workspace 的 Claude for Google Workspace™ 现已在所有付费 Claude 套餐中公开测试。它把 Claude 带到了 Google Docs、Sheets 和 Slides 中，让你可以直接在打开的文件里与 Claude 协作。此外，我们还发布了全新的 Google Docs、Sheets 和 Slides 连接器（测试版），让 Claude 可以直接从 Claude 中创建和编辑 Google 文件。</p><figure><div class="Video-module-scss-module__miVj5a__video Video-module-scss-module__miVj5a__youtubeEmbed Media-module-scss-module__7ZZCyW__video" data-youtube-id="idJQMJwHtyM"><iframe src="https://www.youtube-nocookie.com/embed/idJQMJwHtyM?enablejsapi=1&amp;rel=0&amp;playsinline=1&amp;modestbranding=1" title="This video shows Claude working inside Google Docs, Sheets, and Slides." allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" sandbox="allow-scripts allow-same-origin allow-presentation allow-popups" allowFullScreen="" class="Video-module-scss-module__miVj5a__player"></iframe></div></figure><h2 id="claude-works-where-you-work">Claude 在你工作的地方工作</h2><p>安装插件后，Claude 会打开在你文件旁的侧边栏中，工作时无需在应用或浏览器标签页之间来回切换。Claude 可以读取你打开的文档、表格或演示文稿，看到你选中的文本、单元格或幻灯片，并直接在文件中进行修改。</p><p><strong>在 Docs 中</strong>，例如，Claude 可以直接修改某个句子或重排标题样式，而不影响周围的格式。对于较大的改写，它可以以侧边栏中的建议卡片形式提出修改。每张卡片都会高亮显示将要修改的段落，你可以选择应用或忽略。你可以让 Claude 精简产品需求文档的执行摘要，并把后续步骤转为表格，Claude 会在文档中直接完成这两项工作。</p><p><strong>在 Sheets 中</strong>，Claude 可以编写公式、构建数据透视表和原生 Sheets 图表，并添加新的标签页。对于数据合并或清洗，它可以把某个区域的数据拉入 Python 处理，再把结果写回表格。你可以从一张空白表格开始，附上源文件，要求生成一份按团队分页并带汇总图表的 Q3 预算与实际对比报告，Claude 还能标记出任何超预算的项目。</p><p><strong>在 Slides 中</strong>，Claude 可以根据你演示文稿的版式和主题构建新幻灯片，使其与其余页面保持一致。随后它可以检查自己的工作，标记出重叠或超出幻灯片边界的元素，以及难以阅读的文本。</p><p>由你决定 Claude 在多大程度上自主完成工作。在默认的“编辑前询问”（Ask before edits）模式下，每次修改都会以带有摘要的批准卡片形式出现，Claude 会等待你批准后再执行编辑。在“接受所有编辑”（Accept all edits）模式下，Claude 会一气呵成地完成任务并应用所有更改，不会中途停顿。</p><h2 id="your-connectors-skills-and-enterprise-controls-come-with-you">你的连接器、技能和企业管控随你同行</h2><p>当你登录 Claude 账号后，侧边栏会带有你在 Claude 中使用的相同模型、<a href="https://claude.com/marketplace/connectors-plugins" target="_blank" rel="noopener noreferrer">连接器<span class="sr-only" lang="en" data-export-skip=""> （在新标签页中打开）</span></a>和<a href="https://claude.com/skills" target="_blank" rel="noopener noreferrer">技能<span class="sr-only" lang="en" data-export-skip=""> （在新标签页中打开）</span></a>。例如，如果你要为客户制作季度业务回顾（QBR）演示文稿，Claude 可以通过你的 Google Drive 连接器调取 Salesforce 中的账户历史和最近的通话记录。如果你把 QBR 模板保存为技能，你的团队就能按照相同的格式和步骤制作下一份演示文稿。</p><p>在 Enterprise 套餐中，Compliance API、客户管理加密密钥（CMEK）和 OpenTelemetry 审计导出等管控同样适用于该插件。</p><h2 id="edit-google-files-from-claude">从 Claude 中编辑 Google 文件</h2><p>借助同样处于测试版的<a href="https://support.claude.com/en/articles/10166901-use-google-workspace-connectors" target="_blank" rel="noopener noreferrer">Google Docs、Sheets 和 Slides 连接器<span class="sr-only" lang="en" data-export-skip=""> （在新标签页中打开）</span></a>，你可以从 Claude 开始，直接在对话中创建和编辑你的 Google 文件。粘贴一个 Google 文件链接，或要求生成一个 Google 文档、表格或演示文稿，在支持的配置下，它会打开在对话旁的窗格中。当你需要新文件或工作涉及多个文件时，从 Claude 开始最合适。Claude 的访问权限与你现有的 Google 共享权限保持一致。</p><h2 id="getting-started">快速上手</h2><p><a href="https://claude.com/claude-for-google-workspace" target="_blank" rel="noopener noreferrer">Claude for Google Workspace<span class="sr-only" lang="en" data-export-skip=""> （在新标签页中打开）</span></a> 在所有付费套餐中处于测试阶段。</p><p>你可以从<a href="https://workspace.google.com/marketplace/app/claude/12459801340" target="_blank" rel="noopener noreferrer">Google Workspace Marketplace<span class="sr-only" lang="en" data-export-skip=""> （在新标签页中打开）</span></a>安装它，然后打开一个文件，进入“扩展程序（Extensions）&gt; Claude &gt; 打开 Claude（Open Claude）”。管理员可以从 Google Admin 控制台把它部署到整个域或特定用户组。<a href="https://support.claude.com/en/articles/16951679-use-claude-in-google-docs-sheets-and-slides" target="_blank" rel="noopener noreferrer">帮助中心指南涵盖了安装配置步骤<span class="sr-only" lang="en" data-export-skip=""> （在新标签页中打开）</span></a>。</p><p>要从 Claude 中编辑 Google 文件，请开启<a href="https://support.claude.com/en/articles/10166901-use-google-workspace-connectors" target="_blank" rel="noopener noreferrer">Google Docs、Sheets 和 Slides 连接器<span class="sr-only" lang="en" data-export-skip=""> （在新标签页中打开）</span></a>。在 Team 和 Enterprise 套餐中，需要所有者或主要所有者先启用连接器。</p></div>
+
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/resources/articles/claude-now-works-in-google-docs-sheets-and-slides" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/10/8 18:19:04</p>
+    </div>
+  </footer>
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

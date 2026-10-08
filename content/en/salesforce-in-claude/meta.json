@@ -2,13 +2,13 @@
   "slug": "salesforce-in-claude",
   "title": "Bringing Salesforce into Claude",
   "date": "September 15, 2026",
-  "category": "Enterprise AI",
-  "url": "https://claude.com/blog/salesforce-in-claude",
+  "category": "Product announcements",
+  "url": "https://claude.com/resources/articles/salesforce-in-claude",
   "inHero": false,
   "heroIndex": -1,
   "inGrid": true,
   "illustration": "assets/illustrations/salesforce-in-claude.svg",
-  "illustrationBg": "Mineral",
+  "illustrationBg": "cactus",
   "facets": {
     "category": [
       "Enterprise AI"

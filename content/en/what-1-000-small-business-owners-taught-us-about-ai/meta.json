@@ -2,13 +2,13 @@
   "slug": "what-1-000-small-business-owners-taught-us-about-ai",
   "title": "What 1,000 small business owners taught us about AI",
   "date": "September 10, 2026",
-  "category": "Enterprise AI",
-  "url": "https://claude.com/blog/what-1-000-small-business-owners-taught-us-about-ai",
+  "category": "Perspectives",
+  "url": "https://claude.com/resources/articles/what-1-000-small-business-owners-taught-us-about-ai",
   "inHero": false,
   "heroIndex": -1,
   "inGrid": true,
   "illustration": "assets/illustrations/what-1-000-small-business-owners-taught-us-about-ai.svg",
-  "illustrationBg": "Cactus",
+  "illustrationBg": "cactus",
   "facets": {
     "category": [
       "Enterprise AI"

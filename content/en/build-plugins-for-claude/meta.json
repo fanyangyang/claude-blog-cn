@@ -3,12 +3,12 @@
   "title": "Build plugins for Claude",
   "date": "September 25, 2026",
   "category": "Product announcements",
-  "url": "https://claude.com/blog/build-plugins-for-claude",
+  "url": "https://claude.com/resources/articles/build-plugins-for-claude",
   "inHero": false,
   "heroIndex": -1,
   "inGrid": true,
   "illustration": "assets/illustrations/build-plugins-for-claude.svg",
-  "illustrationBg": "Clay",
+  "illustrationBg": "peach",
   "facets": {
     "category": [
       "Product announcements"

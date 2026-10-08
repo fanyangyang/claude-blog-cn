@@ -1,0 +1,25 @@
+{
+  "slug": "how-comcast-booz-allen-use-claude-mythos-to-secure-their-codebases",
+  "title": "How Comcast and Booz Allen use Claude Mythos to find exploit chains and secure their codebases",
+  "date": "October 6, 2026",
+  "category": "Perspectives",
+  "url": "https://claude.com/resources/articles/how-comcast-booz-allen-use-claude-mythos-to-secure-their-codebases",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "",
+  "illustrationBg": "heather",
+  "facets": {
+    "category": [
+      "Perspectives"
+    ],
+    "product": [],
+    "usecase": []
+  },
+  "subtitle": "Security teams at Comcast and Booz Allen used Claude Mythos-class models through Project Glasswing to find, validate, and fix vulnerabilities their existing scanners missed.",
+  "authors": [],
+  "readingMinutes": 9,
+  "categoryUrl": "https://claude.com/resources/articles",
+  "productUrl": "",
+  "fetchedAt": "2026-10-08T10:12:54.728Z"
+}

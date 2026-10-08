@@ -3,12 +3,12 @@
   "title": "Claude for Financial Advisors",
   "date": "September 14, 2026",
   "category": "Product announcements",
-  "url": "https://claude.com/blog/claude-for-financial-advisors",
+  "url": "https://claude.com/resources/articles/claude-for-financial-advisors",
   "inHero": false,
   "heroIndex": -1,
   "inGrid": true,
   "illustration": "assets/illustrations/claude-for-financial-advisors.svg",
-  "illustrationBg": "Clay",
+  "illustrationBg": "peach",
   "facets": {
     "category": [
       "Product announcements"
