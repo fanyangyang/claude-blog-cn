@@ -1,6 +1,62 @@
 {
   "articles": [
     {
+      "slug": "how-block-orchestrates-claude-fable-across-thousands-of-pull-requests",
+      "title": "How Block orchestrates Claude Fable across thousands of pull requests",
+      "date": "October 8, 2026",
+      "category": "Perspectives",
+      "url": "https://claude.com/resources/articles/how-block-orchestrates-claude-fable-across-thousands-of-pull-requests",
+      "inHero": false,
+      "heroIndex": -1,
+      "inGrid": true,
+      "illustration": "",
+      "illustrationBg": "peach",
+      "facets": {
+        "category": [],
+        "product": [],
+        "usecase": []
+      },
+      "subtitle": "Bradley Axen on how Anthropic's Claude Fable 5 orchestrates company-wide code migrations at Block.",
+      "authors": [],
+      "readingMinutes": 11,
+      "categoryUrl": "",
+      "productUrl": "",
+      "fetchedAt": "2026-10-09T01:34:40.938Z",
+      "translated": true,
+      "translatedTitle": "Block 如何借助 Claude Fable 编排数千个 pull request",
+      "translatedSubtitle": "Bradley Axen 谈 Anthropic 的 Claude Fable 5 如何在 Block 编排全公司的代码迁移。",
+      "translatedAt": "2026-10-09T01:36:51.230Z",
+      "translateLang": "zh"
+    },
+    {
+      "slug": "dashboards-and-motion",
+      "title": "Build live dashboards and animate explainers with Claude ",
+      "date": "October 8, 2026",
+      "category": "Product announcements",
+      "url": "https://claude.com/resources/articles/dashboards-and-motion",
+      "inHero": false,
+      "heroIndex": -1,
+      "inGrid": true,
+      "illustration": "",
+      "illustrationBg": "peach",
+      "facets": {
+        "category": [],
+        "product": [],
+        "usecase": []
+      },
+      "subtitle": "Starting today, Claude Dashboards and Claude Motion are in beta. Docs, Slides, and Design are out of beta and on every Claude plan, including Free.",
+      "authors": [],
+      "readingMinutes": 6,
+      "categoryUrl": "",
+      "productUrl": "",
+      "fetchedAt": "2026-10-09T01:34:40.996Z",
+      "translated": true,
+      "translatedTitle": "用 Claude 构建实时仪表盘、制作动态讲解视频",
+      "translatedSubtitle": "从今天起，Claude Dashboards 和 Claude Motion 进入测试阶段。Docs、Slides 和 Design 已结束测试，适用于所有 Claude 套餐，包括免费版。",
+      "translatedAt": "2026-10-09T01:36:51.204Z",
+      "translateLang": "zh"
+    },
+    {
       "slug": "claude-now-works-in-google-docs-sheets-and-slides",
       "title": "Claude now works with Google Docs, Sheets, and Slides",
       "date": "October 6, 2026",
@@ -23,8 +79,8 @@
       "subtitle": "With our new Claude for Google Workspace add-on and connectors (in beta), bring Claude into your Google files or work on your files directly from Claude.",
       "authors": [],
       "readingMinutes": 5,
-      "categoryUrl": "https://claude.com/resources/articles",
-      "productUrl": "https://claude.com/product/claude-enterprise",
+      "categoryUrl": "",
+      "productUrl": "",
       "fetchedAt": "2026-10-08T10:12:53.732Z",
       "translated": true,
       "translatedTitle": "Claude 现已支持 Google Docs、Sheets 和 Slides",
@@ -53,7 +109,7 @@
       "subtitle": "Security teams at Comcast and Booz Allen used Claude Mythos-class models through Project Glasswing to find, validate, and fix vulnerabilities their existing scanners missed.",
       "authors": [],
       "readingMinutes": 9,
-      "categoryUrl": "https://claude.com/resources/articles",
+      "categoryUrl": "",
       "productUrl": "",
       "fetchedAt": "2026-10-08T10:12:54.728Z",
       "translated": true,
@@ -80,10 +136,10 @@
         "product": [],
         "usecase": []
       },
-      "subtitle": "Claude Startups members can now get a free year of Claude Team, $1,000 in API credits, and access to the Claude Startup Stack with benefits worth up to $45,000.",
+      "subtitle": "A year of the Claude Team plan, API credits, special offers on tools that help with running an AI-native company, and more.",
       "authors": [],
       "readingMinutes": 5,
-      "categoryUrl": "https://claude.com/resources/articles",
+      "categoryUrl": "",
       "productUrl": "",
       "fetchedAt": "2026-10-08T10:12:55.350Z",
       "translated": true,
@@ -129,7 +185,7 @@
       "heroIndex": -1,
       "inGrid": true,
       "illustration": "assets/illustrations/claude-code-mods.svg",
-      "illustrationBg": "Clay",
+      "illustrationBg": "gray",
       "facets": {
         "category": [
           "Product announcements"
@@ -159,7 +215,7 @@
       "heroIndex": -1,
       "inGrid": true,
       "illustration": "assets/illustrations/how-anthropics-sales-team-rebuilt-inbound-with-claude-managed-agents.svg",
-      "illustrationBg": "Plum",
+      "illustrationBg": "gray",
       "facets": {
         "category": [
           "Enterprise AI"
@@ -990,7 +1046,7 @@
       "heroIndex": -1,
       "inGrid": true,
       "illustration": "assets/illustrations/claude-for-commerce-agents.svg",
-      "illustrationBg": "Clay",
+      "illustrationBg": "gray",
       "fetchedAt": "2026-09-02T16:11:20.522Z",
       "translated": true,
       "translatedAt": "2026-09-03T10:20:00.000Z",
@@ -2321,7 +2377,7 @@
       "heroIndex": -1,
       "inGrid": true,
       "illustration": "assets/illustrations/how-anthropic-secures-its-ai-native-software-development-lifecycle.svg",
-      "illustrationBg": "Sky",
+      "illustrationBg": "gray",
       "fetchedAt": "2026-09-02T03:50:17.788Z",
       "translated": true,
       "translatedTitle": "Anthropic 如何保障其 AI 原生软件开发生命周期的安全",
@@ -2795,7 +2851,7 @@
       "heroIndex": -1,
       "inGrid": true,
       "illustration": "assets/illustrations/cowork-web-mobile.svg",
-      "illustrationBg": "Clay",
+      "illustrationBg": "gray",
       "fetchedAt": "2026-09-02T03:50:17.784Z",
       "translated": true,
       "translatedTitle": "Claude Cowork 登陆移动端和 Web 端",
@@ -4651,7 +4707,7 @@
       "slug": "new-guide-deploying-claude-across-the-enterprise-with-claude-cowork",
       "title": "Deploying agentic AI across the enterprise with Claude Cowork",
       "date": "April 29, 2026",
-      "category": "General",
+      "category": "Best practices",
       "url": "https://claude.com/resources/articles/new-guide-deploying-claude-across-the-enterprise-with-claude-cowork",
       "inHero": false,
       "heroIndex": -1,
@@ -4724,7 +4780,7 @@
       "heroIndex": -1,
       "inGrid": true,
       "illustration": "assets/illustrations/product-development-in-the-agentic-era.svg",
-      "illustrationBg": "Cactus",
+      "illustrationBg": "gray",
       "fetchedAt": "2026-09-02T03:50:17.776Z",
       "translated": true,
       "translatedTitle": "智能体时代的产品开发",
@@ -5946,7 +6002,7 @@
       "slug": "behind-model-launch-what-customers-discovered-testing-claude-opus-4-6-early",
       "title": "Behind the model launch: What customers discovered testing Claude Opus 4.6 early",
       "date": "February 9, 2026",
-      "category": "Enterprise AI",
+      "category": "Perspectives",
       "url": "https://claude.com/resources/articles/behind-model-launch-what-customers-discovered-testing-claude-opus-4-6-early",
       "inHero": false,
       "heroIndex": -1,
@@ -6110,7 +6166,7 @@
       "slug": "how-leading-retailers-are-turning-ai-pilots-into-enterprise-wide-transformation",
       "title": "How leading retailers are turning AI pilots into enterprise-wide transformation",
       "date": "January 28, 2026",
-      "category": "Enterprise AI",
+      "category": "Best practices",
       "url": "https://claude.com/resources/articles/how-leading-retailers-are-turning-ai-pilots-into-enterprise-wide-transformation",
       "inHero": false,
       "heroIndex": -1,
@@ -7360,7 +7416,7 @@
       "slug": "driving-ai-transformation-with-claude",
       "title": "How enterprises are driving AI transformation with Claude",
       "date": "October 1, 2025",
-      "category": "Enterprise AI",
+      "category": "Perspectives",
       "url": "https://claude.com/resources/articles/driving-ai-transformation-with-claude",
       "inHero": false,
       "heroIndex": -1,
@@ -8727,5 +8783,5 @@
       "productUrl": "https://claude.com/platform/api"
     }
   ],
-  "lastFetched": "2026-10-08T10:19:04.998Z"
+  "lastFetched": "2026-10-09T01:34:48.605Z"
 }

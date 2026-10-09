@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Block 如何借助 Claude Fable 编排数千个 pull request — Claude Blog 中文翻译</title>
+  <meta name="description" content="Bradley Axen 谈 Anthropic 的 Claude Fable 5 如何在 Block 编排全公司的代码迁移。">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>Block 如何借助 Claude Fable 编排数千个 pull request</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/resources/articles/how-block-orchestrates-claude-fable-across-thousands-of-pull-requests" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/how-block-orchestrates-claude-fable-across-thousands-of-pull-requests/en.html">阅读英文原文 →</a>
+      </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># Block 如何借助 Claude Fable 编排数千个 pull request
+
+Bradley Axen 谈 Anthropic 的 Claude Fable 5 如何在 Block 编排全公司的代码迁移。
+
+Block 构建帮助企业和个人参与经济活动的工具，包括面向卖家的 Square 和面向消费者的 Cash App。Bradley Axen 在 Block 领导 AI 能力建设，他的团队构建端到端的 AI 产品，包括 Buzz——一个面向[人机协作团队 （在新标签页中打开）](https://claude.com/blog/building-effective-human-agent-teams)的开源工作空间，并与 Square 和 Cash App 团队合作构建面向客户的 AI 功能。Brad 与 Anthropic 探讨了 Claude Opus 5 和 Claude Fable 5 等前沿模型如何改变了工程师的工作方式、Block 如何将代理编排模式应用于 Fable，以及当每位员工都能使用前沿模型时保障措施的作用。
+
+## **前沿模型在 2026 年取得了重大进展。这项技术对你的工作方式产生了什么影响？**
+
+AI 对我们在 Block 的工作最大的影响在于我们如何构建产品，而且这种影响怎么说都不为过。我们在 2025 年借助 Claude Code 等工具看到了它的开端，当时这些工具还需要大量人工干预。随着模型变得越来越智能，设计和工程工作已经转向设计迁移本身、审查代理行为以及构建更多面向客户的功能——这一直是我们的目标。
+
+下一阶段是通过 Block 的产品把这些变革性技术带给客户。AI 同样能帮助小企业处理那些不想花时间打理的运营后台事务，或帮助 Cash App 客户管理财务。借助 Claude，我们在技术上有了一个全新的杠杆，可以改变人们对软件能为他们做什么的期待。想象一下，如果 AI 能响应客户需求并即时构建新的界面？我越来越觉得，我们的产品将由 AI 按需构建，以解决特定的问题。
+
+## **随着前沿智能的演进，你的团队现在能做什么几个月前做不到的事？**
+
+Claude 新一代前沿模型带来最大的变化是我们构建软件的规模。编写代码仍然是核心环节，但现在我们会用 AI 进行全公司范围的迁移。这个梦想我们做了很久，而在 2025 年它很少能实现。在 Claude Fable 5 之前，你需要把问题特别规整，前沿模型才能真正发挥威力。
+
+到 2026 年，AI 已成为我们开展所有大规模代码迁移的主要方式。对我们来说，一次迁移可能意味着跨多个仓库的成百上千个独立 pull request，涉及数百万行代码。过去，这些工作需要人类协调，模型一次只能处理一个或几个 PR。有了 Fable，我们看到它可以跨多个会话编排这些工作。人类工程师负责掌舵，Fable 专注于更高层的设计工作：数据模型、API 规范、算法。然后它指挥多达数十个更小、更经济的模型（如 Opus 或 Sonnet）去执行具体任务，比如实际的文件编辑和运行测试。
+
+经济账算得过来。早期结果显示，编排器会先用前沿 token 做复杂的预先规划，然后把更高比例的 token 分配给更小的 worker 模型，质量没有下降。整个体系运行在 Buzz 上——我们的开源协作工作空间，人类和 AI 代理在共享频道和线程中并肩工作，让我们对团队的进展有很好的可见性。
+
+在任何一次迁移中，我们可能合并由 Fable 编排的一千个 pull request。这让工程师可以把精力放在艰难的设计决策上，而不是机械性的工作。
+
+## **你什么时候选择 Claude Fable 模型而不是其他方案？**
+
+很多模型后来都在缩小差距，Opus 也非常出色，但 Fable 刚推出时，在单次可处理的问题规模上是一个巨大的阶跃式变化。Block 的团队被这一点吸引，开始摸索在抽象层级和规模上再上一步意味着什么。
+
+如今，我们很多讨论都围绕模型效率展开。这正是模型编排发挥作用的地方：Fable 的前沿智能在用它攻克大问题时价值最大，然后我们让更小的模型去填充代码变更中的大量细节。这是我记忆中自从我们开始用 LLM 写代码以来，第一次答案不是“100% 的时间都用最前沿的模型”。
+
+模型编排是我们今天构建产品的重要部分，这也意味着我们需要新工具。有些工具非常聚焦单会话，界面跟不上你同时与 45 个代理协作的节奏。这正是 Buzz 的另一个用武之地。我们在 Buzz 中有多代理工作流，我们真的认为未来是多人同时与众多代理对话，组织为常规任务选择高效的模型，为更大的问题选择前沿模型。
+
+## **你交给 Fable 最棘手的问题是什么？**
+
+第一个是大型迁移：数千个 PR 的迁移，Fable 编排了整个执行系统。
+
+第二个是处理大型代码库——大约一百万行代码的规模，并确保它不会每天积累新的技术债。我们交付的 PR 比以往任何时候都多。人们发布的功能和改动越来越多，所以我们的系统积累技术债的速度比以往更快，而我们也一直缺少对应的、能加快我们维护能力的东西。现在这终于实现了。我们有代理对整个代码库进行每日或每周巡检，询问：“这里情况如何？我们需要清理和整合什么？”
+
+## **在广泛开放访问的情况下，你如何推动前沿模型的高效使用？**
+
+我们让任何技术岗位的人都能完全访问最前沿的模型，因为我们战略的很大一部分就是始终工作在可能性的边缘。
+
+用 Fable 去修 README 里的一个错字是对资源的极大浪费。所以我们需要更好的系统来为特定任务建议该用哪个模型。为此，我们一直在构建一个自动选择器，帮助员工决定何时使用哪个模型。由更大和更小的前沿模型混合驱动的多代理系统也有帮助。
+
+我们公司目标的一个重要部分是默认高效运作，这正是我们现在正在培养的能力。我们有大量优秀的模型可供选择。如果每个人都能擅长为正确的任务选择正确的模型，我们的成本效益会大大提升，而且不会拖慢速度。
+
+## **你会建议具体的优化策略吗，比如 effort 级别？**
+
+即使是一个整天和 LLM 打交道的人，我也几乎觉得 xhigh effort 下的模型和 medium 下的同一个模型像是两个不同的模型。我不把 effort 级别看作一条可以沿路行走的频谱。低 effort 的 Fable 可能就比另一个模型在高 effort 下更好。所以我把它看作一个需要优化的更大的网格。我们基准测试的每一个用例，不仅要检查每一个模型，还要检查每一个模型的每一个 effort 级别。
+
+作为中央负责我们 AI 工作方式的人，我想要非常清晰的建议，比如：“这类任务默认用这个模型的高级别。”我们必须尽可能让工具自动完成这些事，然后让专家在想探索的时候去探索。
+
+## **你如何考虑为当今的前沿模型加入保障措施？**
+
+有些事情太关键了，你需要有保证，我们还没准备好让 LLM 在我们的代码库上自由行动。合并到主分支和部署到生产环境，以及功能开关等相关变更，我们始终留给人类来做。代理可以修改代码，但这些变更必须通过我们的安全检查，然后需要两个人类批准部署。这层双重批准机制让 LLM 不可能独自推动这类变更。
+
+在更低的层面上，一个人在不留意的情况下能在自己的笔记本电脑上做多少事，这很令人惊讶——那些你以为人类不会做、因为他们知道不该做的事。这把我们推向一些有趣的方向。我认为未来工作中很大一部分是远程工作站，因为它们更容易加固（而且还能帮助解决 LLM 带来的其他问题，比如占满磁盘空间）。我们安全体系的重要一环是构建默认安全的系统：用网络允许名单而不是拒绝名单，诸如此类，以阻止最严重的那类问题。
+
+我们还尽量让模型少介入循环。我们的很多安全护栏都是非常便宜、高效的检查，运行时不需模型参与。我们把这些检查构建在人们工作所用的界面里。有时甚至只是一个正则表达式。越来越常见的是，较小的分类器也参与其中。
+
+在日常工作中，还有一整类事情是你希望放开的，好让人们高效工作，而封锁并不值得。我们有意让模型可以开 PR、审查代码、查询我们的日志系统和分析数据库，这些都是为了帮助人们更快前进。
+
+这正是模型内置保障措施真正关键的地方。我指的是 Fable 和其他前沿模型经过调校不会参与危险活动，再加上[Anthropic 自己的安全分类器 （在新标签页中打开）](https://www.anthropic.com/news/claude-fable-5-mythos-5)。在我们的测试中，即使有人让 Claude “绕过”我们的双重批准系统，它也会拒绝尝试绕过。这也是我们会基准测试的内容。
+
+## **对其他与前沿模型打交道的工程团队有什么建议？**
+
+我们有数千人在使用 AI 工作，他们正在推动 AI 能力的边界。他们作为个人在学习什么有效，也在改进身边的系统。比如，我的笔记本电脑上有一堆本地技能，让我即使不是专业前端开发者，也能在我们的 Square 前端工作。当所有这些背景和组织知识被记在系统层面而非个人层面时，组织的成熟度就来了。
+
+我们的目标是把我们从做事的人身上学到的一切记录下来，放进一个让所有人都受益的系统中，这样每次运行代理时，它都带着可用的最佳上下文为你的工作做出贡献。
+
+*立即开始使用 [Claude Fable 5.1 （在新标签页中打开）](https://www.anthropic.com/claude/fable)。*</textarea>
+    </div>
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            
+            <h1 class="article-title u-text-style-h1">Block 如何借助 Claude Fable 编排数千个 pull request</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>Bradley Axen 谈 Anthropic 的 Claude Fable 5 如何在 Block 编排全公司的代码迁移。</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <div class="hero-detail-value u-text-style-body-3">Perspectives</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">October 8, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>11</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/how-block-orchestrates-claude-fable-across-thousands-of-pull-requests/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>Block 构建帮助企业和个人参与经济活动的工具，包括面向卖家的 Square 和面向消费者的 Cash App。Bradley Axen 在 Block 领导 AI 能力建设，他的团队构建端到端的 AI 产品，包括 Buzz——一个面向<a href="https://claude.com/blog/building-effective-human-agent-teams" target="_blank" rel="noopener noreferrer">人机协作团队<span class="sr-only" lang="en" data-export-skip=""> （在新标签页中打开）</span></a>的开源工作空间，并与 Square 和 Cash App 团队合作构建面向客户的 AI 功能。Brad 与 Anthropic 探讨了 Claude Opus 5 和 Claude Fable 5 等前沿模型如何改变了工程师的工作方式、Block 如何将代理编排模式应用于 Fable，以及当每位员工都能使用前沿模型时保障措施的作用。</p><h2 id="frontier-models-have-made-meaningful-progress-in-2026-how-has-this-technology-impacted-how-you-work"><strong>前沿模型在 2026 年取得了重大进展。这项技术对你的工作方式产生了什么影响？</strong></h2><p>AI 对我们在 Block 的工作最大的影响在于我们如何构建产品，而且这种影响怎么说都不为过。我们在 2025 年借助 Claude Code 等工具看到了它的开端，当时这些工具还需要大量人工干预。随着模型变得越来越智能，设计和工程工作已经转向设计迁移本身、审查代理行为以及构建更多面向客户的功能——这一直是我们的目标。</p><p>下一阶段是通过 Block 的产品把这些变革性技术带给客户。AI 同样能帮助小企业处理那些不想花时间打理的运营后台事务，或帮助 Cash App 客户管理财务。借助 Claude，我们在技术上有了一个全新的杠杆，可以改变人们对软件能为他们做什么的期待。想象一下，如果 AI 能响应客户需求并即时构建新的界面？我越来越觉得，我们的产品将由 AI 按需构建，以解决特定的问题。</p><h2 id="as-frontier-intelligence-evolves-what-can-your-team-do-now-that-it-couldn-t-do-a-few-months-ago"><strong>随着前沿智能的演进，你的团队现在能做什么几个月前做不到的事？</strong></h2><p>Claude 新一代前沿模型带来最大的变化是我们构建软件的规模。编写代码仍然是核心环节，但现在我们会用 AI 进行全公司范围的迁移。这个梦想我们做了很久，而在 2025 年它很少能实现。在 Claude Fable 5 之前，你需要把问题特别规整，前沿模型才能真正发挥威力。</p><p>到 2026 年，AI 已成为我们开展所有大规模代码迁移的主要方式。对我们来说，一次迁移可能意味着跨多个仓库的成百上千个独立 pull request，涉及数百万行代码。过去，这些工作需要人类协调，模型一次只能处理一个或几个 PR。有了 Fable，我们看到它可以跨多个会话编排这些工作。人类工程师负责掌舵，Fable 专注于更高层的设计工作：数据模型、API 规范、算法。然后它指挥多达数十个更小、更经济的模型（如 Opus 或 Sonnet）去执行具体任务，比如实际的文件编辑和运行测试。</p><p>经济账算得过来。早期结果显示，编排器会先用前沿 token 做复杂的预先规划，然后把更高比例的 token 分配给更小的 worker 模型，质量没有下降。整个体系运行在 Buzz 上——我们的开源协作工作空间，人类和 AI 代理在共享频道和线程中并肩工作，让我们对团队的进展有很好的可见性。</p><p>在任何一次迁移中，我们可能合并由 Fable 编排的一千个 pull request。这让工程师可以把精力放在艰难的设计决策上，而不是机械性的工作。</p><h2 id="when-do-you-use-claude-fable-models-over-other-options"><strong>你什么时候选择 Claude Fable 模型而不是其他方案？</strong></h2><p>很多模型后来都在缩小差距，Opus 也非常出色，但 Fable 刚推出时，在单次可处理的问题规模上是一个巨大的阶跃式变化。Block 的团队被这一点吸引，开始摸索在抽象层级和规模上再上一步意味着什么。</p><p>如今，我们很多讨论都围绕模型效率展开。这正是模型编排发挥作用的地方：Fable 的前沿智能在用它攻克大问题时价值最大，然后我们让更小的模型去填充代码变更中的大量细节。这是我记忆中自从我们开始用 LLM 写代码以来，第一次答案不是“100% 的时间都用最前沿的模型”。</p><p>模型编排是我们今天构建产品的重要部分，这也意味着我们需要新工具。有些工具非常聚焦单会话，界面跟不上你同时与 45 个代理协作的节奏。这正是 Buzz 的另一个用武之地。我们在 Buzz 中有多代理工作流，我们真的认为未来是多人同时与众多代理对话，组织为常规任务选择高效的模型，为更大的问题选择前沿模型。</p><h2 id="what-s-the-hardest-problem-you-ve-thrown-at-fable"><strong>你交给 Fable 最棘手的问题是什么？</strong></h2><p>第一个是大型迁移：数千个 PR 的迁移，Fable 编排了整个执行系统。</p><p>第二个是处理大型代码库——大约一百万行代码的规模，并确保它不会每天积累新的技术债。我们交付的 PR 比以往任何时候都多。人们发布的功能和改动越来越多，所以我们的系统积累技术债的速度比以往更快，而我们也一直缺少对应的、能加快我们维护能力的东西。现在这终于实现了。我们有代理对整个代码库进行每日或每周巡检，询问：“这里情况如何？我们需要清理和整合什么？”</p><h2 id="with-broad-access-how-do-you-drive-efficient-use-of-frontier-models"><strong>在广泛开放访问的情况下，你如何推动前沿模型的高效使用？</strong></h2><p>我们让任何技术岗位的人都能完全访问最前沿的模型，因为我们战略的很大一部分就是始终工作在可能性的边缘。</p><p>用 Fable 去修 README 里的一个错字是对资源的极大浪费。所以我们需要更好的系统来为特定任务建议该用哪个模型。为此，我们一直在构建一个自动选择器，帮助员工决定何时使用哪个模型。由更大和更小的前沿模型混合驱动的多代理系统也有帮助。</p><p>我们公司目标的一个重要部分是默认高效运作，这正是我们现在正在培养的能力。我们有大量优秀的模型可供选择。如果每个人都能擅长为正确的任务选择正确的模型，我们的成本效益会大大提升，而且不会拖慢速度。</p><h2 id="do-you-advise-specific-optimization-strategies-like-effort-levels"><strong>你会建议具体的优化策略吗，比如 effort 级别？</strong></h2><p>即使是一个整天和 LLM 打交道的人，我也几乎觉得 xhigh effort 下的模型和 medium 下的同一个模型像是两个不同的模型。我不把 effort 级别看作一条可以沿路行走的频谱。低 effort 的 Fable 可能就比另一个模型在高 effort 下更好。所以我把它看作一个需要优化的更大的网格。我们基准测试的每一个用例，不仅要检查每一个模型，还要检查每一个模型的每一个 effort 级别。</p><p>作为中央负责我们 AI 工作方式的人，我想要非常清晰的建议，比如：“这类任务默认用这个模型的高级别。”我们必须尽可能让工具自动完成这些事，然后让专家在想探索的时候去探索。</p><h2 id="how-are-you-thinking-about-incorporating-safeguards-with-today-s-frontier-models"><strong>你如何考虑为当今的前沿模型加入保障措施？</strong></h2><p>有些事情太关键了，你需要有保证，我们还没准备好让 LLM 在我们的代码库上自由行动。合并到主分支和部署到生产环境，以及功能开关等相关变更，我们始终留给人类来做。代理可以修改代码，但这些变更必须通过我们的安全检查，然后需要两个人类批准部署。这层双重批准机制让 LLM 不可能独自推动这类变更。</p><p>在更低的层面上，一个人在不留意的情况下能在自己的笔记本电脑上做多少事，这很令人惊讶——那些你以为人类不会做、因为他们知道不该做的事。这把我们推向一些有趣的方向。我认为未来工作中很大一部分是远程工作站，因为它们更容易加固（而且还能帮助解决 LLM 带来的其他问题，比如占满磁盘空间）。我们安全体系的重要一环是构建默认安全的系统：用网络允许名单而不是拒绝名单，诸如此类，以阻止最严重的那类问题。</p><p>我们还尽量让模型少介入循环。我们的很多安全护栏都是非常便宜、高效的检查，运行时不需模型参与。我们把这些检查构建在人们工作所用的界面里。有时甚至只是一个正则表达式。越来越常见的是，较小的分类器也参与其中。</p><p>在日常工作中，还有一整类事情是你希望放开的，好让人们高效工作，而封锁并不值得。我们有意让模型可以开 PR、审查代码、查询我们的日志系统和分析数据库，这些都是为了帮助人们更快前进。</p><p>这正是模型内置保障措施真正关键的地方。我指的是 Fable 和其他前沿模型经过调校不会参与危险活动，再加上<a href="https://www.anthropic.com/news/claude-fable-5-mythos-5" target="_blank" rel="noopener noreferrer">Anthropic 自己的安全分类器<span class="sr-only" lang="en" data-export-skip=""> （在新标签页中打开）</span></a>。在我们的测试中，即使有人让 Claude “绕过”我们的双重批准系统，它也会拒绝尝试绕过。这也是我们会基准测试的内容。</p><h2 id="any-advice-for-other-engineering-teams-working-with-frontier-models"><strong>对其他与前沿模型打交道的工程团队有什么建议？</strong></h2><p>我们有数千人在使用 AI 工作，他们正在推动 AI 能力的边界。他们作为个人在学习什么有效，也在改进身边的系统。比如，我的笔记本电脑上有一堆本地技能，让我即使不是专业前端开发者，也能在我们的 Square 前端工作。当所有这些背景和组织知识被记在系统层面而非个人层面时，组织的成熟度就来了。</p><p>我们的目标是把我们从做事的人身上学到的一切记录下来，放进一个让所有人都受益的系统中，这样每次运行代理时，它都带着可用的最佳上下文为你的工作做出贡献。</p><p><em>立即开始使用 <a href="https://www.anthropic.com/claude/fable" target="_blank" rel="noopener noreferrer">Claude Fable 5.1<span class="sr-only" lang="en" data-export-skip=""> （在新标签页中打开）</span></a>。</em></p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/resources/articles/how-block-orchestrates-claude-fable-across-thousands-of-pull-requests" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/10/9 09:34:48</p>
+    </div>
+  </footer>
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

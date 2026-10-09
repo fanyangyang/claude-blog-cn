@@ -1,0 +1,23 @@
+{
+  "slug": "how-block-orchestrates-claude-fable-across-thousands-of-pull-requests",
+  "title": "How Block orchestrates Claude Fable across thousands of pull requests",
+  "date": "October 8, 2026",
+  "category": "Perspectives",
+  "url": "https://claude.com/resources/articles/how-block-orchestrates-claude-fable-across-thousands-of-pull-requests",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "",
+  "illustrationBg": "peach",
+  "facets": {
+    "category": [],
+    "product": [],
+    "usecase": []
+  },
+  "subtitle": "Bradley Axen on how Anthropic's Claude Fable 5 orchestrates company-wide code migrations at Block.",
+  "authors": [],
+  "readingMinutes": 11,
+  "categoryUrl": "",
+  "productUrl": "",
+  "fetchedAt": "2026-10-09T01:34:40.938Z"
+}

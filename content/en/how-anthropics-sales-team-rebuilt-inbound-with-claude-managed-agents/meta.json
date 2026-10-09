@@ -8,7 +8,7 @@
   "heroIndex": -1,
   "inGrid": true,
   "illustration": "assets/illustrations/how-anthropics-sales-team-rebuilt-inbound-with-claude-managed-agents.svg",
-  "illustrationBg": "Plum",
+  "illustrationBg": "gray",
   "facets": {
     "category": [
       "Enterprise AI"

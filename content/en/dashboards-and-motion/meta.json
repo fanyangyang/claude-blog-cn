@@ -1,0 +1,23 @@
+{
+  "slug": "dashboards-and-motion",
+  "title": "Build live dashboards and animate explainers with Claude ",
+  "date": "October 8, 2026",
+  "category": "Product announcements",
+  "url": "https://claude.com/resources/articles/dashboards-and-motion",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "",
+  "illustrationBg": "peach",
+  "facets": {
+    "category": [],
+    "product": [],
+    "usecase": []
+  },
+  "subtitle": "Starting today, Claude Dashboards and Claude Motion are in beta. Docs, Slides, and Design are out of beta and on every Claude plan, including Free.",
+  "authors": [],
+  "readingMinutes": 6,
+  "categoryUrl": "",
+  "productUrl": "",
+  "fetchedAt": "2026-10-08T22:08:07.757Z"
+}

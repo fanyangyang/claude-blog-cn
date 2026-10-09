@@ -8,7 +8,7 @@
   "heroIndex": -1,
   "inGrid": true,
   "illustration": "assets/illustrations/how-anthropic-secures-its-ai-native-software-development-lifecycle.svg",
-  "illustrationBg": "Sky",
+  "illustrationBg": "gray",
   "fetchedAt": "2026-09-02T03:50:17.788Z",
   "translatedTitle": "Anthropic 如何保障其 AI 原生软件开发生命周期的安全",
   "translated": true,

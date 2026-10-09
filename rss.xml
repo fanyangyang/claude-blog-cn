@@ -6,7 +6,21 @@
     <description>Anthropic Claude 官方博客的中文翻译</description>
     <atom:link href="https://fanyangyang.github.io/claude-blog-cn/rss.xml" rel="self" type="application/rss+xml"/>
     <language>zh-CN</language>
-    <lastBuildDate>Thu, 08 Oct 2026 10:21:08 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 09 Oct 2026 01:37:00 GMT</lastBuildDate>
+    <item>
+      <title>Block 如何借助 Claude Fable 编排数千个 pull request</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/how-block-orchestrates-claude-fable-across-thousands-of-pull-requests/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/how-block-orchestrates-claude-fable-across-thousands-of-pull-requests/</guid>
+      <pubDate>Wed, 07 Oct 2026 16:00:00 GMT</pubDate>
+      <category>Perspectives</category>
+    </item>
+    <item>
+      <title>用 Claude 构建实时仪表盘、制作动态讲解视频</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/dashboards-and-motion/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/dashboards-and-motion/</guid>
+      <pubDate>Wed, 07 Oct 2026 16:00:00 GMT</pubDate>
+      <category>Product announcements</category>
+    </item>
     <item>
       <title>Claude 现已支持 Google Docs、Sheets 和 Slides</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-now-works-in-google-docs-sheets-and-slides/</link>
@@ -985,7 +999,7 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/new-guide-deploying-claude-across-the-enterprise-with-claude-cowork/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/new-guide-deploying-claude-across-the-enterprise-with-claude-cowork/</guid>
       <pubDate>Tue, 28 Apr 2026 16:00:00 GMT</pubDate>
-      <category>General</category>
+      <category>Best practices</category>
     </item>
     <item>
       <title>Claude API skill 现已登陆 CodeRabbit、JetBrains、Resolve AI 和 Warp</title>
@@ -1258,7 +1272,7 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/behind-model-launch-what-customers-discovered-testing-claude-opus-4-6-early/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/behind-model-launch-what-customers-discovered-testing-claude-opus-4-6-early/</guid>
       <pubDate>Sun, 08 Feb 2026 16:00:00 GMT</pubDate>
-      <category>Enterprise AI</category>
+      <category>Perspectives</category>
     </item>
     <item>
       <title>用 Claude Opus 4.6 推进金融行业</title>
@@ -1293,7 +1307,7 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/how-leading-retailers-are-turning-ai-pilots-into-enterprise-wide-transformation/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/how-leading-retailers-are-turning-ai-pilots-into-enterprise-wide-transformation/</guid>
       <pubDate>Tue, 27 Jan 2026 16:00:00 GMT</pubDate>
-      <category>Enterprise AI</category>
+      <category>Best practices</category>
     </item>
     <item>
       <title>Claude Team 计划更新</title>
@@ -1559,7 +1573,7 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/driving-ai-transformation-with-claude/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/driving-ai-transformation-with-claude/</guid>
       <pubDate>Tue, 30 Sep 2025 16:00:00 GMT</pubDate>
-      <category>Enterprise AI</category>
+      <category>Perspectives</category>
     </item>
     <item>
       <title>Claude 与 Slack</title>

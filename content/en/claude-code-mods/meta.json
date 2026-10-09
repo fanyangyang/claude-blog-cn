@@ -8,7 +8,7 @@
   "heroIndex": -1,
   "inGrid": true,
   "illustration": "assets/illustrations/claude-code-mods.svg",
-  "illustrationBg": "Clay",
+  "illustrationBg": "gray",
   "facets": {
     "category": [
       "Product announcements"
