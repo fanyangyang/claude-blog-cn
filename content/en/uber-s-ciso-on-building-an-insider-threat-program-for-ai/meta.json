@@ -1,0 +1,23 @@
+{
+  "slug": "uber-s-ciso-on-building-an-insider-threat-program-for-ai",
+  "title": "Uber's CISO on building an insider threat program for AI",
+  "date": "October 13, 2026",
+  "category": "Perspectives",
+  "url": "https://claude.com/resources/articles/uber-s-ciso-on-building-an-insider-threat-program-for-ai",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "",
+  "illustrationBg": "cactus",
+  "facets": {
+    "category": [],
+    "product": [],
+    "usecase": []
+  },
+  "subtitle": "The importance of monitoring and observability for AI agents, and how Uber's open-source tooling works alongside Anthropic's Enterprise Frontier Safeguards.",
+  "authors": [],
+  "readingMinutes": 7,
+  "categoryUrl": "",
+  "productUrl": "",
+  "fetchedAt": "2026-10-13T22:07:16.057Z"
+}
