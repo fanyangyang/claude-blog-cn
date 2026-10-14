@@ -1,0 +1,23 @@
+{
+  "slug": "agent-observability-on-the-claude-platform",
+  "title": "Agent observability on the Claude Platform",
+  "date": "October 14, 2026",
+  "category": "General",
+  "url": "https://claude.com/resources/articles/agent-observability-on-the-claude-platform",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "",
+  "illustrationBg": "",
+  "facets": {
+    "category": [],
+    "product": [],
+    "usecase": []
+  },
+  "subtitle": "Announcing OpenTelemetry traces from Claude Managed Agents, the Messages API, and Claude SDKs on the Claude Platform.",
+  "authors": [],
+  "readingMinutes": 3,
+  "categoryUrl": "",
+  "productUrl": "",
+  "fetchedAt": "2026-10-14T22:04:44.703Z"
+}

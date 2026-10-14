@@ -1,6 +1,30 @@
 {
   "articles": [
     {
+      "slug": "agent-observability-on-the-claude-platform",
+      "title": "Agent observability on the Claude Platform",
+      "date": "October 14, 2026",
+      "category": "General",
+      "url": "https://claude.com/resources/articles/agent-observability-on-the-claude-platform",
+      "inHero": false,
+      "heroIndex": -1,
+      "inGrid": true,
+      "illustration": "",
+      "illustrationBg": "",
+      "facets": {
+        "category": [],
+        "product": [],
+        "usecase": []
+      },
+      "subtitle": "Announcing OpenTelemetry traces from Claude Managed Agents, the Messages API, and Claude SDKs on the Claude Platform.",
+      "authors": [],
+      "readingMinutes": 3,
+      "categoryUrl": "",
+      "productUrl": "",
+      "fetchedAt": "2026-10-14T22:04:44.703Z",
+      "translated": true
+    },
+    {
       "slug": "uber-s-ciso-on-building-an-insider-threat-program-for-ai",
       "title": "Uber's CISO on building an insider threat program for AI",
       "date": "October 13, 2026",
@@ -8807,5 +8831,5 @@
       "productUrl": "https://claude.com/platform/api"
     }
   ],
-  "lastFetched": "2026-10-13T22:07:23.612Z"
+  "lastFetched": "2026-10-14T22:04:52.246Z"
 }
