@@ -1,6 +1,30 @@
 {
   "articles": [
     {
+      "slug": "code-review-is-now-generally-available",
+      "title": "Code Review is now generally available",
+      "date": "October 15, 2026",
+      "category": "Product announcements",
+      "url": "https://claude.com/resources/articles/code-review-is-now-generally-available",
+      "inHero": false,
+      "heroIndex": -1,
+      "inGrid": true,
+      "illustration": "",
+      "illustrationBg": "peach",
+      "facets": {
+        "category": [],
+        "product": [],
+        "usecase": []
+      },
+      "subtitle": "Catch more bugs before they reach production. Code Review is generally available for Claude Team and Enterprise organizations.",
+      "authors": [],
+      "readingMinutes": 3,
+      "categoryUrl": "",
+      "productUrl": "",
+      "fetchedAt": "2026-10-15T22:04:54.121Z",
+      "translated": true
+    },
+    {
       "slug": "agent-observability-on-the-claude-platform",
       "title": "Agent observability on the Claude Platform",
       "date": "October 14, 2026",
@@ -8831,5 +8855,5 @@
       "productUrl": "https://claude.com/platform/api"
     }
   ],
-  "lastFetched": "2026-10-14T22:04:52.246Z"
+  "lastFetched": "2026-10-15T22:05:02.145Z"
 }
