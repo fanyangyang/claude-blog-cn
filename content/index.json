@@ -1,6 +1,30 @@
 {
   "articles": [
     {
+      "slug": "how-an-anthropic-japan-business-development-representative-runs-his-day",
+      "title": "How an Anthropic Japan BDR runs his day with a fleet of Claude agents",
+      "date": "October 16, 2026",
+      "category": "Best practices",
+      "url": "https://claude.com/resources/articles/how-an-anthropic-japan-business-development-representative-runs-his-day",
+      "inHero": false,
+      "heroIndex": -1,
+      "inGrid": true,
+      "illustration": "",
+      "illustrationBg": "heather",
+      "facets": {
+        "category": [],
+        "product": [],
+        "usecase": []
+      },
+      "subtitle": "How one business development representative clears his inbound queue and drafts bilingual customer emails with Claude Managed Agents and Claude Tag.",
+      "authors": [],
+      "readingMinutes": 14,
+      "categoryUrl": "",
+      "productUrl": "",
+      "fetchedAt": "2026-10-16T16:05:00.706Z",
+      "translated": true
+    },
+    {
       "slug": "code-review-is-now-generally-available",
       "title": "Code Review is now generally available",
       "date": "October 15, 2026",
@@ -8855,5 +8879,5 @@
       "productUrl": "https://claude.com/platform/api"
     }
   ],
-  "lastFetched": "2026-10-15T22:05:02.145Z"
+  "lastFetched": "2026-10-16T16:05:08.249Z"
 }

@@ -6,7 +6,14 @@
     <description>Anthropic Claude 官方博客的中文翻译</description>
     <atom:link href="https://fanyangyang.github.io/claude-blog-cn/rss.xml" rel="self" type="application/rss+xml"/>
     <language>zh-CN</language>
-    <lastBuildDate>Thu, 15 Oct 2026 22:05:34 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 16 Oct 2026 16:07:11 GMT</lastBuildDate>
+    <item>
+      <title>How an Anthropic Japan BDR runs his day with a fleet of Claude agents</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/how-an-anthropic-japan-business-development-representative-runs-his-day/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/how-an-anthropic-japan-business-development-representative-runs-his-day/</guid>
+      <pubDate>Thu, 15 Oct 2026 16:00:00 GMT</pubDate>
+      <category>Best practices</category>
+    </item>
     <item>
       <title>Code Review is now generally available</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/code-review-is-now-generally-available/</link>

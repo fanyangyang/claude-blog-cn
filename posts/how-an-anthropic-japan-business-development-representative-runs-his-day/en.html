@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How an Anthropic Japan BDR runs his day with a fleet of Claude agents — Claude Blog CN</title>
+  <meta name="description" content="How one business development representative clears his inbound queue and drafts bilingual customer emails with Claude Managed Agents and Claude Tag.">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>How an Anthropic Japan BDR runs his day with a fleet of Claude agents</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/resources/articles/how-an-anthropic-japan-business-development-representative-runs-his-day" target="_blank" rel="noopener noreferrer">Ask questions about this page</a>
+        <button type="button" class="explore-item" data-copy-markdown>Copy as markdown</button>
+        <a class="explore-item" href="/posts/how-an-anthropic-japan-business-development-representative-runs-his-day/">阅读中文翻译 →</a>
+      </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># How an Anthropic Japan BDR runs his day with a fleet of Claude agents
+
+How one business development representative clears his inbound queue and drafts bilingual customer emails with Claude Managed Agents and Claude Tag.
+
+As a business development representative on Anthropic's Japan team, my job is to show Japanese companies how Claude can simplify and automate their workflows, but until earlier this year, most of mine were still manual. I was spending a couple of hours each morning routing and qualifying leads, then writing emails in Japanese or English. In the time I had left, I was updating our CRM, often a day or more behind. Now my agents prepare most of that before my day starts, and I review it.
+
+The first Claude-run workflow I built was pretty scrappy, but it did the job. I'd hand Claude one piece of my work at a time, correct what it got wrong, and save those corrections. Over time, that grew into a handful of agents, each covering a different routine.
+
+Word got around quickly, and teammates started asking for my prompts and skills so they could build their own. All I could send them was a zip file with my skills and a few Markdown files from the knowledge base, which they had to upload to Claude and then answer a round of setup questions before anything worked. My own setup was getting harder to keep track of, too. Each agent was a skill, a scheduled task and a shared folder, and I changed them by asking Claude in whatever chat I had open, so the same skill was being edited from lots of different conversations.
+
+I wanted to define each agent once, in one place, and be able to see every change I'd made to it. So I decided to try [Claude Managed Agents (opens in new tab)](https://platform.claude.com/docs/en/managed-agents/overview) (beta), our managed agent infrastructure on the Claude Platform.
+
+I was hesitant to try it at first. The docs talk about schedules, tools, and credential vaults, and I'm a sales rep, so I assumed Managed Agents was for developers who can build and maintain the necessary infrastructure. I tried it anyway because my agents already existed, and I only had to move them over.
+
+It turned out I didn't need to be a developer. I described each agent's job in plain language, Claude wrote a few short setup scripts, and I ran them from the terminal on my laptop. (If you're starting from scratch, the Console also has a [quickstart](https://platform.claude.com/workspaces/default/agent-quickstart) with ready-made agent templates.) Since then, there has been no infrastructure for me to look after.
+
+In this post, I'll walk through how I designed and prototyped the fleet, why I moved it to Managed Agents, how Claude Tag picks up anything that falls outside the routine, how it all changed my week, and what I'd tell sellers who want to build their own agents to automate manual, repetitive workflows.
+
+## Designing my fleet of agents
+
+I divided up my workflow across several agents and gave every agent one clear job. A single responsibility keeps each one easy to reason about and easy to track, especially when something is off. I also gave every agent a Japanese name, because they mostly work in Japanese. Together they're called the *Nakama*, &quot;the crew,&quot; or more literally, the companions you work with:
+
+- ***Furiwake*** (&quot;sorting&quot;) kicks off first: it reads the daily inbound queue and routes each lead to the right rep on the team, balancing the number of leads and the priority of each one and checking who's in that day, so every lead has an owner before any of us start our day. At the end of each run it posts a report to a dedicated Slack channel (every lead in, every lead assigned) so I can track the handoff.
+- ***Sabaki* **(&quot;handling&quot;) triages the leads that are assigned to me: it qualifies each lead, categorizes it against pre-set criteria, takes the defined next step for that category (draft a reply pointing them to to self-serve, craft a customized first email), updates the lead record in Salesforce, and drafts the first-touch email. It sources the draft's contents from the *Nakama*'s shared knowledge base, a [memory store (opens in new tab)](https://claude.com/blog/claude-managed-agents-memory) every agent reads and writes (more on this below).
+- ***Henji* **(&quot;reply&quot;) scans my inbox hourly for customer emails that need a response and prepares a draft reply in Japanese or English, depending on the thread, drawing on the same knowledge base as *Sabaki*. I can review, edit, and send the draft.
+- ***Shoudan*** (&quot;opportunity&quot;) reads recent customer interactions and pushes updates into Salesforce, so opportunity records stay current without manual data entry.
+- ***Nokori* **(&quot;what remains&quot;) runs at the end of the day: it scans my calendar, reads the attached meeting transcripts, summarizes each meeting, and drafts the follow-ups, again from the same knowledge base.
+
+Each agent runs on a [schedule](https://claude.com/blog/whats-new-in-claude-managed-agents). A sixth agent, the Nakama's coordinator, is the fleet’s operations manager. It updates the agents’ instructions and the shared knowledge base between runs. When I want to change how an agent works, I write what I want in plain language in the Nakama’s Slack channel. Only I can post requests for changes to agents’ instructions and system prompts. The coordinator checks that channel every 15 minutes or so, picks up the request, and makes the update.
+
+## Prototyping the fleet in Claude
+
+You don't need Managed Agents to start. I prototyped the whole fleet in Claude first, using the following pieces:
+
+- A skill per agent: the instructions for one job.
+- A scheduled task for each skill, so I don’t need to run it manually.
+- A shared folder on my laptop as the knowledge base every skill writes its learnings back into: the difference between what it drafted and what I sent, plus anything new it dug up along the way.
+
+On Managed Agents, the skill became the agent's system prompt, the scheduled task became a [schedule on the agent's deployment (opens in new tab)](https://platform.claude.com/docs/en/managed-agents/scheduled-deployments), and the shared folder became a memory store. I still ask for changes in plain language, but now I do it all in one Slack channel, and each change to an agent's instructions is saved as a new version, so each agent keeps a numbered history of its instructions. I'd suggest starting in Claude and moving your agents to Managed Agents once you have more than you can comfortably keep track of.
+
+## Running the fleet on Claude Managed Agents
+
+Three things I got on Managed Agents that mattered most for my workflow:
+
+**The agents can run in the background**
+
+The agents run on their schedule whether my laptop is open or not, even when it's offline. The schedule is part of each agent's deployment. I could schedule skills in Claude too, but each of those schedules was a task set up in my own app. On Managed Agents, I set the cadence and timezone in the Console, next to the deployed agent's instructions and tools, and I have no cron jobs to maintain on the side. If a run goes wrong, I can open it in the Console and see each step the agent took. And while I'm trying out a change to an agent, the scheduled runs keep using the version that’s deployed, so a half-finished edit doesn't end up in tomorrow's run.
+
+**The Nakama shares one memory and learns from my edits**
+
+Every agent reads and writes the same [memory store (opens in new tab)](https://claude.com/blog/claude-managed-agents-memory), so any agent can use the others’ learnings. The agents compare the drafts they wrote with the emails I sent, and they save each difference as a note on how I'd phrase it. They also keep whatever new information they dig up while researching an answer, from our internal docs and our official websites. I fix a phrasing once in Henji's drafts, and Sabaki and Nokori stop making the same mistake.
+
+**Credentials live in a managed vault with scoped permissions**
+
+My agents have access to my email and our Salesforce records, but since these are customer conversations and company records, I wanted that access under control. The credentials live in [managed vaults (opens in new tab)](https://platform.claude.com/docs/en/managed-agents/vaults), which protect credentials agents use to log in to outside services, such as OAuth access and refresh tokens, API keys, and personal access tokens. Each agent’s deployment uses only the vaults its job needs, it never sees the credentials, and I can revoke access in one step.
+
+## Handing the next steps to Claude Tag
+
+For most of what the Nakama produces, I only need to read a draft in my inbox and send it, or glance at an updated Salesforce record. But some items need a follow-up step, such as figuring out an upgrade path or a purchasing route, or escalating an issue to another team.
+
+For those, the agents don't stop and wait for me. They hand the item to [Claude Tag (opens in new tab)](https://www.anthropic.com/news/introducing-claude-tag) (in beta). Claude Tag is Claude set up as a member of our Slack workspace: anyone in a channel it has joined, a person or one of my agents, can tag @Claude with a request and it picks the request up and works on it in the thread. Once it's configured in your workspace there is nothing new to learn. You tag Claude the way you would a colleague.
+
+In my setup it works like this. An agent posts the action item to the Nakama's Slack channel and tags Claude. Claude reads the thread, checks our rules and the terms that apply, lays out the options, and drafts what's needed. It tags me when a step needs my review or sign-off. When a customer or another team needs to reply first, Claude sets a reminder for itself to check back on a set day. In the thread below, it set a reminder for Tuesday to check whether the customer had replied and whether the deal desk had answered the ticket. When the reminder comes due, Claude checks both and posts where things stand in the same thread. If someone needs a nudge, it drafts the message and tags me to send it.
+
+Claude also posts a morning brief of product and pricing updates. The Nakama coordinator picks up that brief and writes the necessary changes into the shared knowledge base.
+
+## What changed in my week
+
+Now that Claude prepares inbound replies and keeps CRM records current (mostly) without my manual input, my role is to review anything that requires human judgment. A written rulebook defines each agent's lane and items like pricing questions, sensitive accounts, or ambiguous asks route to me. Every email draft from Henji, Sabaki, or Nokori arrives with a short summary at the top of what's going on, so I don't have to trace the whole thread to understand the context: I read the summary, confirm, make revisions, and send.
+
+Looking at the weekly log of what the Nakama gets through and counting each task as the time it would have taken me to do manually, the fleet saves me around 60 hours of work. I spend the time that frees up on work that agents can't effectively do (yet): conversations with customers, outbound strategy, cross-functional projects, and helping teammates build their own fleets.
+
+## Designing agents to be more efficient
+
+Scheduled agents run every day whether I'm watching or not, so waste can add up, in cost and reliability. Some of the most common mistakes include adding to existing instructions rather than updating them, giving agents more context than they need for their tasks, and running every job on the biggest model at the highest effort level.
+
+Most of what keeps the agents efficient is how I designed the fleet: each agent has one job, so its instructions stay focused on that job; each working agent runs on a schedule, so it wakes up, does its pass, and stops; and the agents share memory, so a correction made once is reused everywhere.
+
+The other big factor is which model each agent runs on. Once an agent's job is well defined, it may not need our most capable model. Furiwake and Shoudan follow a written rulebook, so they run on Sonnet, our smaller model. Sabaki, Nokori and the coordinator run on Opus, our larger model, because their work needs more judgment. The coordinator needs it most, since it edits the other agents' instructions and one bad edit would reach every agent. Henji needs as much judgment as Sabaki, because every customer's email is different, but it also runs more often than any other agent, all through the working day. Running it on Opus every time would be the most expensive option, so I use the [advisor strategy (opens in new tab)](https://claude.com/blog/the-advisor-strategy) in Managed Agents: Henji runs on Sonnet, and when it reaches a decision it can't make on its own, it asks Opus for advice. The advisor reads what Henji has done so far and sends back a plan, a correction, or a stop signal, and Henji then finishes the draft for my review. I also set each agent's effort level (how long the model thinks before it answers) separately from its model, and I raise it only where the reasoning is hard, as with Henji's replies.
+
+## What I learned
+
+Three things I'd pass on to anyone building their own fleet.
+
+- **You don't need a detailed prompt every time.** Describe the job once, let Claude draft, fix the draft, and let it keep the fix.
+- **The knowledge base matters more than the prompt.** Every correction and past interaction is saved where all the agents can read it and write to it, so Claude takes its context from there instead of from a longer prompt. It took a few hundred cheap rounds of drafting, fixing, and saving to get the drafts to sound like me.
+- **Give Claude more room, sooner.** At first I kept doing the tasks that I assumed needed me: updating the knowledge base, or editing each agent's instructions by hand. Both worked fine once I let go of them. The agents now write what they learn into the knowledge base themselves, and the coordinator updates the other agents' instructions when I ask in plain English. I had been too cautious with work I could trust the agents to do.
+
+[Get started with Claude Managed Agents (opens in new tab)](https://platform.claude.com/workspaces/default/agent-quickstart)</textarea>
+    </div>
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            
+            <h1 class="article-title u-text-style-h1">How an Anthropic Japan BDR runs his day with a fleet of Claude agents</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>How one business development representative clears his inbound queue and drafts bilingual customer emails with Claude Managed Agents and Claude Tag.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <div class="hero-detail-value u-text-style-body-3">Best practices</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">October 16, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>14</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/how-an-anthropic-japan-business-development-representative-runs-his-day/en.html">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>As a business development representative on Anthropic's Japan team, my job is to show Japanese companies how Claude can simplify and automate their workflows, but until earlier this year, most of mine were still manual. I was spending a couple of hours each morning routing and qualifying leads, then writing emails in Japanese or English. In the time I had left, I was updating our CRM, often a day or more behind. Now my agents prepare most of that before my day starts, and I review it.</p><p>The first Claude-run workflow I built was pretty scrappy, but it did the job. I'd hand Claude one piece of my work at a time, correct what it got wrong, and save those corrections. Over time, that grew into a handful of agents, each covering a different routine.</p><p>Word got around quickly, and teammates started asking for my prompts and skills so they could build their own. All I could send them was a zip file with my skills and a few Markdown files from the knowledge base, which they had to upload to Claude and then answer a round of setup questions before anything worked. My own setup was getting harder to keep track of, too. Each agent was a skill, a scheduled task and a shared folder, and I changed them by asking Claude in whatever chat I had open, so the same skill was being edited from lots of different conversations.</p><p>I wanted to define each agent once, in one place, and be able to see every change I'd made to it. So I decided to try <a href="https://platform.claude.com/docs/en/managed-agents/overview" target="_blank" rel="noopener noreferrer">Claude Managed Agents<span class="sr-only" lang="en" data-export-skip=""> (opens in new tab)</span></a> (beta), our managed agent infrastructure on the Claude Platform.</p><p>I was hesitant to try it at first. The docs talk about schedules, tools, and credential vaults, and I'm a sales rep, so I assumed Managed Agents was for developers who can build and maintain the necessary infrastructure. I tried it anyway because my agents already existed, and I only had to move them over.</p><p>It turned out I didn't need to be a developer. I described each agent's job in plain language, Claude wrote a few short setup scripts, and I ran them from the terminal on my laptop. (If you're starting from scratch, the Console also has a <a href="https://platform.claude.com/workspaces/default/agent-quickstart">quickstart</a> with ready-made agent templates.) Since then, there has been no infrastructure for me to look after.</p><p>In this post, I'll walk through how I designed and prototyped the fleet, why I moved it to Managed Agents, how Claude Tag picks up anything that falls outside the routine, how it all changed my week, and what I'd tell sellers who want to build their own agents to automate manual, repetitive workflows.</p><h2 id="designing-my-fleet-of-agents">Designing my fleet of agents</h2><p>I divided up my workflow across several agents and gave every agent one clear job. A single responsibility keeps each one easy to reason about and easy to track, especially when something is off. I also gave every agent a Japanese name, because they mostly work in Japanese. Together they're called the <em>Nakama</em>, "the crew," or more literally, the companions you work with:</p><ul><li><strong><em>Furiwake</em></strong> ("sorting") kicks off first: it reads the daily inbound queue and routes each lead to the right rep on the team, balancing the number of leads and the priority of each one and checking who's in that day, so every lead has an owner before any of us start our day. At the end of each run it posts a report to a dedicated Slack channel (every lead in, every lead assigned) so I can track the handoff.</li><li><strong><em>Sabaki</em> </strong>("handling") triages the leads that are assigned to me: it qualifies each lead, categorizes it against pre-set criteria, takes the defined next step for that category (draft a reply pointing them to to self-serve, craft a customized first email), updates the lead record in Salesforce, and drafts the first-touch email. It sources the draft's contents from the <em>Nakama</em>'s shared knowledge base, a <a href="https://claude.com/blog/claude-managed-agents-memory" target="_blank" rel="noopener noreferrer">memory store<span class="sr-only" lang="en" data-export-skip=""> (opens in new tab)</span></a> every agent reads and writes (more on this below).</li><li><strong><em>Henji</em> </strong>("reply") scans my inbox hourly for customer emails that need a response and prepares a draft reply in Japanese or English, depending on the thread, drawing on the same knowledge base as <em>Sabaki</em>. I can review, edit, and send the draft.</li><li><strong><em>Shoudan</em></strong> ("opportunity") reads recent customer interactions and pushes updates into Salesforce, so opportunity records stay current without manual data entry.</li><li><strong><em>Nokori</em> </strong>("what remains") runs at the end of the day: it scans my calendar, reads the attached meeting transcripts, summarizes each meeting, and drafts the follow-ups, again from the same knowledge base.</li></ul><p>Each agent runs on a <a href="https://claude.com/blog/whats-new-in-claude-managed-agents">schedule</a>. A sixth agent, the Nakama's coordinator, is the fleet’s operations manager. It updates the agents’ instructions and the shared knowledge base between runs. When I want to change how an agent works, I write what I want in plain language in the Nakama’s Slack channel. Only I can post requests for changes to agents’ instructions and system prompts. The coordinator checks that channel every 15 minutes or so, picks up the request, and makes the update.</p><figure style="--media-natural-width:1999px"><img referrerpolicy="strict-origin-when-cross-origin" src="https://assets.claude.com/1fabdce2187d0997e43f9b0518820c25606a0f1d.png" width="1999" height="890" alt="A graphic showing the agents and their roles" loading="lazy" decoding="async" class="Media-module-scss-module__7ZZCyW__image"></figure><h2 id="prototyping-the-fleet-in-claude">Prototyping the fleet in Claude</h2><p>You don't need Managed Agents to start. I prototyped the whole fleet in Claude first, using the following pieces:</p><ul><li>A skill per agent: the instructions for one job.</li><li>A scheduled task for each skill, so I don’t need to run it manually.</li><li>A shared folder on my laptop as the knowledge base every skill writes its learnings back into: the difference between what it drafted and what I sent, plus anything new it dug up along the way.</li></ul><p>On Managed Agents, the skill became the agent's system prompt, the scheduled task became a <a href="https://platform.claude.com/docs/en/managed-agents/scheduled-deployments" target="_blank" rel="noopener noreferrer">schedule on the agent's deployment<span class="sr-only" lang="en" data-export-skip=""> (opens in new tab)</span></a>, and the shared folder became a memory store. I still ask for changes in plain language, but now I do it all in one Slack channel, and each change to an agent's instructions is saved as a new version, so each agent keeps a numbered history of its instructions. I'd suggest starting in Claude and moving your agents to Managed Agents once you have more than you can comfortably keep track of.</p><figure style="--media-natural-width:1999px"><img referrerpolicy="strict-origin-when-cross-origin" src="https://assets.claude.com/a04a480dffb7c328be71e45d708df2ccb10c3e30.png" width="1999" height="1346" alt="graphic showing how the agents were deployed on Claude Managed Agents" loading="lazy" decoding="async" class="Media-module-scss-module__7ZZCyW__image"></figure><h2 id="running-the-fleet-on-claude-managed-agents">Running the fleet on Claude Managed Agents</h2><p>Three things I got on Managed Agents that mattered most for my workflow:</p><p><strong>The agents can run in the background</strong></p><p>The agents run on their schedule whether my laptop is open or not, even when it's offline. The schedule is part of each agent's deployment. I could schedule skills in Claude too, but each of those schedules was a task set up in my own app. On Managed Agents, I set the cadence and timezone in the Console, next to the deployed agent's instructions and tools, and I have no cron jobs to maintain on the side. If a run goes wrong, I can open it in the Console and see each step the agent took. And while I'm trying out a change to an agent, the scheduled runs keep using the version that’s deployed, so a half-finished edit doesn't end up in tomorrow's run.</p><p><strong>The Nakama shares one memory and learns from my edits</strong></p><p>Every agent reads and writes the same <a href="https://claude.com/blog/claude-managed-agents-memory" target="_blank" rel="noopener noreferrer">memory store<span class="sr-only" lang="en" data-export-skip=""> (opens in new tab)</span></a>, so any agent can use the others’ learnings. The agents compare the drafts they wrote with the emails I sent, and they save each difference as a note on how I'd phrase it. They also keep whatever new information they dig up while researching an answer, from our internal docs and our official websites. I fix a phrasing once in Henji's drafts, and Sabaki and Nokori stop making the same mistake.</p><p><strong>Credentials live in a managed vault with scoped permissions</strong></p><p>My agents have access to my email and our Salesforce records, but since these are customer conversations and company records, I wanted that access under control. The credentials live in <a href="https://platform.claude.com/docs/en/managed-agents/vaults" target="_blank" rel="noopener noreferrer">managed vaults<span class="sr-only" lang="en" data-export-skip=""> (opens in new tab)</span></a>, which protect credentials agents use to log in to outside services, such as OAuth access and refresh tokens, API keys, and personal access tokens. Each agent’s deployment uses only the vaults its job needs, it never sees the credentials, and I can revoke access in one step.</p><h2 id="handing-the-next-steps-to-claude-tag">Handing the next steps to Claude Tag</h2><p>For most of what the Nakama produces, I only need to read a draft in my inbox and send it, or glance at an updated Salesforce record. But some items need a follow-up step, such as figuring out an upgrade path or a purchasing route, or escalating an issue to another team.</p><p>For those, the agents don't stop and wait for me. They hand the item to <a href="https://www.anthropic.com/news/introducing-claude-tag" target="_blank" rel="noopener noreferrer">Claude Tag<span class="sr-only" lang="en" data-export-skip=""> (opens in new tab)</span></a> (in beta). Claude Tag is Claude set up as a member of our Slack workspace: anyone in a channel it has joined, a person or one of my agents, can tag @Claude with a request and it picks the request up and works on it in the thread. Once it's configured in your workspace there is nothing new to learn. You tag Claude the way you would a colleague.</p><p>In my setup it works like this. An agent posts the action item to the Nakama's Slack channel and tags Claude. Claude reads the thread, checks our rules and the terms that apply, lays out the options, and drafts what's needed. It tags me when a step needs my review or sign-off. When a customer or another team needs to reply first, Claude sets a reminder for itself to check back on a set day. In the thread below, it set a reminder for Tuesday to check whether the customer had replied and whether the deal desk had answered the ticket. When the reminder comes due, Claude checks both and posts where things stand in the same thread. If someone needs a nudge, it drafts the message and tags me to send it.</p><figure style="--media-natural-width:1999px"><img referrerpolicy="strict-origin-when-cross-origin" src="https://assets.claude.com/407d1a67eadd3ebd1d4ec34fd1fabebb42b64829.png" width="1999" height="1592" alt="A screenshot mock of a conversation between a human, Claude, and an agent" loading="lazy" decoding="async" class="Media-module-scss-module__7ZZCyW__image"></figure><p>Claude also posts a morning brief of product and pricing updates. The Nakama coordinator picks up that brief and writes the necessary changes into the shared knowledge base.</p><h2 id="what-changed-in-my-week">What changed in my week</h2><p>Now that Claude prepares inbound replies and keeps CRM records current (mostly) without my manual input, my role is to review anything that requires human judgment. A written rulebook defines each agent's lane and items like pricing questions, sensitive accounts, or ambiguous asks route to me. Every email draft from Henji, Sabaki, or Nokori arrives with a short summary at the top of what's going on, so I don't have to trace the whole thread to understand the context: I read the summary, confirm, make revisions, and send.</p><figure style="--media-natural-width:1999px"><img referrerpolicy="strict-origin-when-cross-origin" src="https://assets.claude.com/209fde33711300fd8cfb2f1fc7005f21bca2a20d.png" width="1999" height="1690" alt="A screenshot of an email drafted by Claude, for review by the human." loading="lazy" decoding="async" class="Media-module-scss-module__7ZZCyW__image"></figure><p>Looking at the weekly log of what the Nakama gets through and counting each task as the time it would have taken me to do manually, the fleet saves me around 60 hours of work. I spend the time that frees up on work that agents can't effectively do (yet): conversations with customers, outbound strategy, cross-functional projects, and helping teammates build their own fleets.</p><h2 id="designing-agents-to-be-more-efficient">Designing agents to be more efficient</h2><p>Scheduled agents run every day whether I'm watching or not, so waste can add up, in cost and reliability. Some of the most common mistakes include adding to existing instructions rather than updating them, giving agents more context than they need for their tasks, and running every job on the biggest model at the highest effort level.</p><p>Most of what keeps the agents efficient is how I designed the fleet: each agent has one job, so its instructions stay focused on that job; each working agent runs on a schedule, so it wakes up, does its pass, and stops; and the agents share memory, so a correction made once is reused everywhere.</p><p>The other big factor is which model each agent runs on. Once an agent's job is well defined, it may not need our most capable model. Furiwake and Shoudan follow a written rulebook, so they run on Sonnet, our smaller model. Sabaki, Nokori and the coordinator run on Opus, our larger model, because their work needs more judgment. The coordinator needs it most, since it edits the other agents' instructions and one bad edit would reach every agent. Henji needs as much judgment as Sabaki, because every customer's email is different, but it also runs more often than any other agent, all through the working day. Running it on Opus every time would be the most expensive option, so I use the <a href="https://claude.com/blog/the-advisor-strategy" target="_blank" rel="noopener noreferrer">advisor strategy<span class="sr-only" lang="en" data-export-skip=""> (opens in new tab)</span></a> in Managed Agents: Henji runs on Sonnet, and when it reaches a decision it can't make on its own, it asks Opus for advice. The advisor reads what Henji has done so far and sends back a plan, a correction, or a stop signal, and Henji then finishes the draft for my review. I also set each agent's effort level (how long the model thinks before it answers) separately from its model, and I raise it only where the reasoning is hard, as with Henji's replies.</p><figure style="--media-natural-width:1999px"><img referrerpolicy="strict-origin-when-cross-origin" src="https://assets.claude.com/f9f71df9bc447aba6114949e002ce0fb8dd34ba2.png" width="1999" height="1461" alt="A graphic showing which models the different agents use for their jobs" loading="lazy" decoding="async" class="Media-module-scss-module__7ZZCyW__image"></figure><h2 id="what-i-learned">What I learned</h2><p>Three things I'd pass on to anyone building their own fleet.</p><ol><li><strong>You don't need a detailed prompt every time.</strong> Describe the job once, let Claude draft, fix the draft, and let it keep the fix.</li><li><strong>The knowledge base matters more than the prompt.</strong> Every correction and past interaction is saved where all the agents can read it and write to it, so Claude takes its context from there instead of from a longer prompt. It took a few hundred cheap rounds of drafting, fixing, and saving to get the drafts to sound like me.</li><li><strong>Give Claude more room, sooner.</strong> At first I kept doing the tasks that I assumed needed me: updating the knowledge base, or editing each agent's instructions by hand. Both worked fine once I let go of them. The agents now write what they learn into the knowledge base themselves, and the coordinator updates the other agents' instructions when I ask in plain English. I had been too cautious with work I could trust the agents to do.</li></ol><p><a href="https://platform.claude.com/workspaces/default/agent-quickstart" target="_blank" rel="noopener noreferrer">Get started with Claude Managed Agents<span class="sr-only" lang="en" data-export-skip=""> (opens in new tab)</span></a></p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/resources/articles/how-an-anthropic-japan-business-development-representative-runs-his-day" target="_blank">View original</a></p>
+              <p><a href="/">← Back to home</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>Content from <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · Translation by AI</p>
+    </div>
+  </footer>
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
