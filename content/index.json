@@ -2,7 +2,7 @@
   "articles": [
     {
       "slug": "how-an-anthropic-japan-business-development-representative-runs-his-day",
-      "title": "How an Anthropic Japan BDR runs his day with a fleet of Claude agents",
+      "title": "How an Anthropic BDR in Japan runs his day with Claude Managed Agents",
       "date": "October 16, 2026",
       "category": "Best practices",
       "url": "https://claude.com/resources/articles/how-an-anthropic-japan-business-development-representative-runs-his-day",
@@ -8879,5 +8879,5 @@
       "productUrl": "https://claude.com/platform/api"
     }
   ],
-  "lastFetched": "2026-10-16T16:05:08.249Z"
+  "lastFetched": "2026-10-18T16:05:14.464Z"
 }
