@@ -1,0 +1,7 @@
+{
+  "slug": "claude-security-now-scans-continuously-and-tracks-fixes",
+  "translatedTitle": "Claude Security 现已支持持续扫描并追踪修复",
+  "translatedAt": "2026-10-21T22:30:00.000Z",
+  "lang": "zh",
+  "translatedSubtitle": "Claude Security 现在会随着代码变化持续监控你的代码仓库，追踪发现项直至修复完成，从团队添加的上下文中学习，并通过 API 和 MCP 连接到你的工具。现已面向 Claude Enterprise 客户提供公开测试版。"
+}

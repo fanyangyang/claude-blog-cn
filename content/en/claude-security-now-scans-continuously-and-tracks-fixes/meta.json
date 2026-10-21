@@ -1,0 +1,23 @@
+{
+  "slug": "claude-security-now-scans-continuously-and-tracks-fixes",
+  "title": "Claude Security now scans continuously and tracks fixes",
+  "date": "October 21, 2026",
+  "category": "Product announcements",
+  "url": "https://claude.com/resources/articles/claude-security-now-scans-continuously-and-tracks-fixes",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "",
+  "illustrationBg": "peach",
+  "facets": {
+    "category": [],
+    "product": [],
+    "usecase": []
+  },
+  "subtitle": "Claude Security now watches your repositories as code changes, tracks findings until they’re fixed, learns from the context your team adds, and connects to your tools through an API and MCP. Available in public beta for Claude Enterprise customers.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "",
+  "productUrl": "",
+  "fetchedAt": "2026-10-21T22:05:15.383Z"
+}

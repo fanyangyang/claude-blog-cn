@@ -1,0 +1,23 @@
+{
+  "slug": "claude-duet",
+  "title": "Introducing Claude Duet",
+  "date": "October 21, 2026",
+  "category": "Product announcements",
+  "url": "https://claude.com/resources/articles/claude-duet",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "",
+  "illustrationBg": "heather",
+  "facets": {
+    "category": [],
+    "product": [],
+    "usecase": []
+  },
+  "subtitle": "Claude Duet is a new app where Claude works as a proactive agent. The research preview opens by waitlist today for Pro and Max subscribers in the US.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "",
+  "productUrl": "",
+  "fetchedAt": "2026-10-21T22:05:14.867Z"
+}

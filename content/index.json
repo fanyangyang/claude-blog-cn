@@ -1,6 +1,84 @@
 {
   "articles": [
     {
+      "slug": "hcltech-joins-claude-partner-network",
+      "title": "HCLTech joins the Claude Partner Network as a Global Premier partner",
+      "date": "October 21, 2026",
+      "category": "Product announcements",
+      "url": "https://claude.com/resources/articles/hcltech-joins-claude-partner-network",
+      "inHero": false,
+      "heroIndex": -1,
+      "inGrid": true,
+      "illustration": "",
+      "illustrationBg": "heather",
+      "facets": {
+        "category": [],
+        "product": [],
+        "usecase": []
+      },
+      "subtitle": "HCLTech is partnering with Anthropic to bring Claude and Claude Code into the IT systems it runs for banks, hospitals, telecoms, and manufacturers",
+      "authors": [],
+      "readingMinutes": 4,
+      "categoryUrl": "",
+      "productUrl": "",
+      "fetchedAt": "2026-10-21T22:05:14.333Z",
+      "translated": true,
+      "translatedTitle": "HCLTech 加入 Claude 合作伙伴网络，成为全球首要合作伙伴",
+      "translatedSubtitle": "HCLTech 将与 Anthropic 合作，把 Claude 和 Claude Code 引入其为银行、医院、电信公司和制造商运行的 IT 系统"
+    },
+    {
+      "slug": "claude-duet",
+      "title": "Introducing Claude Duet",
+      "date": "October 21, 2026",
+      "category": "Product announcements",
+      "url": "https://claude.com/resources/articles/claude-duet",
+      "inHero": false,
+      "heroIndex": -1,
+      "inGrid": true,
+      "illustration": "",
+      "illustrationBg": "heather",
+      "facets": {
+        "category": [],
+        "product": [],
+        "usecase": []
+      },
+      "subtitle": "Claude Duet is a new app where Claude works as a proactive agent. The research preview opens by waitlist today for Pro and Max subscribers in the US.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "",
+      "productUrl": "",
+      "fetchedAt": "2026-10-21T22:05:14.867Z",
+      "translated": true,
+      "translatedTitle": "Claude Duet 正式亮相",
+      "translatedSubtitle": "Claude Duet 是一款新应用，让 Claude 以主动式智能体的方式工作。研究预览版即日起面向美国地区的 Pro 和 Max 订阅用户开放候补名单。"
+    },
+    {
+      "slug": "claude-security-now-scans-continuously-and-tracks-fixes",
+      "title": "Claude Security now scans continuously and tracks fixes",
+      "date": "October 21, 2026",
+      "category": "Product announcements",
+      "url": "https://claude.com/resources/articles/claude-security-now-scans-continuously-and-tracks-fixes",
+      "inHero": false,
+      "heroIndex": -1,
+      "inGrid": true,
+      "illustration": "",
+      "illustrationBg": "peach",
+      "facets": {
+        "category": [],
+        "product": [],
+        "usecase": []
+      },
+      "subtitle": "Claude Security now watches your repositories as code changes, tracks findings until they’re fixed, learns from the context your team adds, and connects to your tools through an API and MCP. Available in public beta for Claude Enterprise customers.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "",
+      "productUrl": "",
+      "fetchedAt": "2026-10-21T22:05:15.383Z",
+      "translated": true,
+      "translatedTitle": "Claude Security 现已支持持续扫描并追踪修复",
+      "translatedSubtitle": "Claude Security 现在会随着代码变化持续监控你的代码仓库，追踪发现项直至修复完成，从团队添加的上下文中学习，并通过 API 和 MCP 连接到你的工具。现已面向 Claude Enterprise 客户提供公开测试版。"
+    },
+    {
       "slug": "how-an-anthropic-japan-business-development-representative-runs-his-day",
       "title": "How an Anthropic BDR in Japan runs his day with Claude Managed Agents",
       "date": "October 16, 2026",
@@ -8879,5 +8957,5 @@
       "productUrl": "https://claude.com/platform/api"
     }
   ],
-  "lastFetched": "2026-10-19T04:05:11.071Z"
+  "lastFetched": "2026-10-21T22:05:22.726Z"
 }
