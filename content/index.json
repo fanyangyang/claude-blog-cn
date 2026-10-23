@@ -1,6 +1,58 @@
 {
   "articles": [
     {
+      "slug": "unified-claude-enterprise",
+      "title": "Claude Cowork and chat come together for Enterprise",
+      "date": "October 23, 2026",
+      "category": "Product announcements",
+      "url": "https://claude.com/resources/articles/unified-claude-enterprise",
+      "inHero": false,
+      "heroIndex": -1,
+      "inGrid": true,
+      "illustration": "",
+      "illustrationBg": "peach",
+      "facets": {
+        "category": [],
+        "product": [],
+        "usecase": []
+      },
+      "subtitle": "Chat and Cowork first came together for Pro and Max plans in September. The same unified experience is now generally available for Claude Enterprise plans.",
+      "authors": [],
+      "readingMinutes": 2,
+      "categoryUrl": "",
+      "productUrl": "",
+      "fetchedAt": "2026-10-23T22:04:50.637Z",
+      "translated": true,
+      "translatedTitle": "Claude Cowork 与聊天在 Enterprise 中合二为一",
+      "translatedSubtitle": "聊天和 Cowork 最早在九月为 Pro 和 Max 套餐走到了一起。如今，同一个统一的 Claude 体验已面向 Claude Enterprise 套餐全面开放。"
+    },
+    {
+      "slug": "claude-duet-safety-privacy-and-security",
+      "title": "Claude Duet Safety, Privacy, and Security",
+      "date": "October 23, 2026",
+      "category": "Product announcements",
+      "url": "https://claude.com/resources/articles/claude-duet-safety-privacy-and-security",
+      "inHero": false,
+      "heroIndex": -1,
+      "inGrid": true,
+      "illustration": "",
+      "illustrationBg": "peach",
+      "facets": {
+        "category": [],
+        "product": [],
+        "usecase": []
+      },
+      "subtitle": "These are the protections we built into Claude Duet for working across your accounts and acting on your behalf.",
+      "authors": [],
+      "readingMinutes": 12,
+      "categoryUrl": "",
+      "productUrl": "",
+      "fetchedAt": "2026-10-23T22:04:51.093Z",
+      "translated": true,
+      "translatedTitle": "Claude Duet 的安全、隐私与防护",
+      "translatedSubtitle": "这些是我们为 Claude Duet 内置的保护措施，用于跨账户工作并代表你采取行动。"
+    },
+    {
       "slug": "building-agents-when-to-fold-subagents-into-your-main-agent-loop",
       "title": "Building agents: When to fold subagents into your main agent loop ",
       "date": "October 22, 2026",
@@ -9005,5 +9057,5 @@
       "productUrl": "https://claude.com/platform/api"
     }
   ],
-  "lastFetched": "2026-10-23T01:38:07.367Z"
+  "lastFetched": "2026-10-23T22:04:58.756Z"
 }

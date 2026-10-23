@@ -1,0 +1,23 @@
+{
+  "slug": "unified-claude-enterprise",
+  "title": "Claude Cowork and chat come together for Enterprise",
+  "date": "October 23, 2026",
+  "category": "Product announcements",
+  "url": "https://claude.com/resources/articles/unified-claude-enterprise",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "",
+  "illustrationBg": "peach",
+  "facets": {
+    "category": [],
+    "product": [],
+    "usecase": []
+  },
+  "subtitle": "Chat and Cowork first came together for Pro and Max plans in September. The same unified experience is now generally available for Claude Enterprise plans.",
+  "authors": [],
+  "readingMinutes": 2,
+  "categoryUrl": "",
+  "productUrl": "",
+  "fetchedAt": "2026-10-23T22:04:50.637Z"
+}

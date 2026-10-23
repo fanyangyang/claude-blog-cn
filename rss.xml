@@ -6,7 +6,21 @@
     <description>Anthropic Claude 官方博客的中文翻译</description>
     <atom:link href="https://fanyangyang.github.io/claude-blog-cn/rss.xml" rel="self" type="application/rss+xml"/>
     <language>zh-CN</language>
-    <lastBuildDate>Fri, 23 Oct 2026 01:41:04 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 23 Oct 2026 22:07:35 GMT</lastBuildDate>
+    <item>
+      <title>Claude Cowork 与聊天在 Enterprise 中合二为一</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/unified-claude-enterprise/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/unified-claude-enterprise/</guid>
+      <pubDate>Thu, 22 Oct 2026 16:00:00 GMT</pubDate>
+      <category>Product announcements</category>
+    </item>
+    <item>
+      <title>Claude Duet 的安全、隐私与防护</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-duet-safety-privacy-and-security/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-duet-safety-privacy-and-security/</guid>
+      <pubDate>Thu, 22 Oct 2026 16:00:00 GMT</pubDate>
+      <category>Product announcements</category>
+    </item>
     <item>
       <title>Building agents: When to fold subagents into your main agent loop </title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/building-agents-when-to-fold-subagents-into-your-main-agent-loop/</link>

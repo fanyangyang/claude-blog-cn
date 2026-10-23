@@ -1,0 +1,23 @@
+{
+  "slug": "claude-duet-safety-privacy-and-security",
+  "title": "Claude Duet Safety, Privacy, and Security",
+  "date": "October 23, 2026",
+  "category": "Product announcements",
+  "url": "https://claude.com/resources/articles/claude-duet-safety-privacy-and-security",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "",
+  "illustrationBg": "peach",
+  "facets": {
+    "category": [],
+    "product": [],
+    "usecase": []
+  },
+  "subtitle": "These are the protections we built into Claude Duet for working across your accounts and acting on your behalf.",
+  "authors": [],
+  "readingMinutes": 12,
+  "categoryUrl": "",
+  "productUrl": "",
+  "fetchedAt": "2026-10-23T22:04:51.093Z"
+}
