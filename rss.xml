@@ -6,7 +6,21 @@
     <description>Anthropic Claude 官方博客的中文翻译</description>
     <atom:link href="https://fanyangyang.github.io/claude-blog-cn/rss.xml" rel="self" type="application/rss+xml"/>
     <language>zh-CN</language>
-    <lastBuildDate>Wed, 21 Oct 2026 22:07:47 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 23 Oct 2026 01:41:04 GMT</lastBuildDate>
+    <item>
+      <title>Building agents: When to fold subagents into your main agent loop </title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/building-agents-when-to-fold-subagents-into-your-main-agent-loop/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/building-agents-when-to-fold-subagents-into-your-main-agent-loop/</guid>
+      <pubDate>Wed, 21 Oct 2026 16:00:00 GMT</pubDate>
+      <category>Best practices</category>
+    </item>
+    <item>
+      <title>The full Claude Platform, available on Google Cloud</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-models-on-google-cloud-anthropic-managed/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-models-on-google-cloud-anthropic-managed/</guid>
+      <pubDate>Wed, 21 Oct 2026 16:00:00 GMT</pubDate>
+      <category>Product announcements</category>
+    </item>
     <item>
       <title>HCLTech 加入 Claude 合作伙伴网络，成为全球首要合作伙伴</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/hcltech-joins-claude-partner-network/</link>

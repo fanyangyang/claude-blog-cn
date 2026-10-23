@@ -1,6 +1,54 @@
 {
   "articles": [
     {
+      "slug": "building-agents-when-to-fold-subagents-into-your-main-agent-loop",
+      "title": "Building agents: When to fold subagents into your main agent loop ",
+      "date": "October 22, 2026",
+      "category": "Best practices",
+      "url": "https://claude.com/resources/articles/building-agents-when-to-fold-subagents-into-your-main-agent-loop",
+      "inHero": false,
+      "heroIndex": -1,
+      "inGrid": true,
+      "illustration": "",
+      "illustrationBg": "cactus",
+      "facets": {
+        "category": [],
+        "product": [],
+        "usecase": []
+      },
+      "subtitle": "When to consider using fewer subagents and how to migrate the into your main loop.",
+      "authors": [],
+      "readingMinutes": 18,
+      "categoryUrl": "",
+      "productUrl": "",
+      "fetchedAt": "2026-10-23T01:37:59.604Z",
+      "translated": true
+    },
+    {
+      "slug": "claude-models-on-google-cloud-anthropic-managed",
+      "title": "The full Claude Platform, available on Google Cloud",
+      "date": "October 22, 2026",
+      "category": "Product announcements",
+      "url": "https://claude.com/resources/articles/claude-models-on-google-cloud-anthropic-managed",
+      "inHero": false,
+      "heroIndex": -1,
+      "inGrid": true,
+      "illustration": "",
+      "illustrationBg": "gray",
+      "facets": {
+        "category": [],
+        "product": [],
+        "usecase": []
+      },
+      "subtitle": "Use Claude Models on Google Cloud (Anthropic managed) to access Claude Platform features with Google Cloud authentication, billing, and commitment retirement.",
+      "authors": [],
+      "readingMinutes": 2,
+      "categoryUrl": "",
+      "productUrl": "",
+      "fetchedAt": "2026-10-23T01:37:59.661Z",
+      "translated": true
+    },
+    {
       "slug": "hcltech-joins-claude-partner-network",
       "title": "HCLTech joins the Claude Partner Network as a Global Premier partner",
       "date": "October 21, 2026",
@@ -8957,5 +9005,5 @@
       "productUrl": "https://claude.com/platform/api"
     }
   ],
-  "lastFetched": "2026-10-21T22:05:22.726Z"
+  "lastFetched": "2026-10-23T01:38:07.367Z"
 }

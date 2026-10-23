@@ -1,0 +1,23 @@
+{
+  "slug": "building-agents-when-to-fold-subagents-into-your-main-agent-loop",
+  "title": "Building agents: When to fold subagents into your main agent loop ",
+  "date": "October 22, 2026",
+  "category": "Best practices",
+  "url": "https://claude.com/resources/articles/building-agents-when-to-fold-subagents-into-your-main-agent-loop",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "",
+  "illustrationBg": "cactus",
+  "facets": {
+    "category": [],
+    "product": [],
+    "usecase": []
+  },
+  "subtitle": "When to consider using fewer subagents and how to migrate the into your main loop.",
+  "authors": [],
+  "readingMinutes": 18,
+  "categoryUrl": "",
+  "productUrl": "",
+  "fetchedAt": "2026-10-22T22:42:48.957Z"
+}

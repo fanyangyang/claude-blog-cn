@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Building agents: When to fold subagents into your main agent loop  — Claude Blog 中文翻译</title>
+  <meta name="description" content="When to consider using fewer subagents and how to migrate the into your main loop.">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>Building agents: When to fold subagents into your main agent loop </span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/resources/articles/building-agents-when-to-fold-subagents-into-your-main-agent-loop" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/building-agents-when-to-fold-subagents-into-your-main-agent-loop/en.html">阅读英文原文 →</a>
+      </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># Building agents: When to fold subagents into your main agent loop 
+
+When to consider using fewer subagents and how to migrate the into your main loop.
+
+*如果你在 Claude Platform 中构建的智能体包含多个子智能体，可以使用我们的[迁移工具包](https://github.com/anthropics/single-agent-loop-kit)来判断哪些适合折叠进主智能体循环。它会运行一个引导式工作流来识别你的模式、评估备选方案并验证最佳方案。它包含一个演示，你可以在正式应用于你的智能体之前先在模拟系统上试用。*
+
+子智能体——拥有自己的上下文窗口、工具和指令、由协调器编排的智能体——是智能体设计的核心组成部分。它们在验证、并行工作和模块化权限管理方面非常有效。我们在许多使用 Claude Platform 构建的智能体中都使用了它们，例如我们的[多智能体研究系统](https://www.anthropic.com/engineering/multi-agent-research-system)。
+
+然而，最近 Applied AI 团队发现，在企业智能体部署中，将路由器、规划器和领域子智能体折叠进主智能体循环的做法让很多部署受益。在[我们对多个企业部署的对比研究](https://claude.com/blog/the-anatomy-of-effective-commerce-agents#:~:text=In%20our%20comparisons%20across%20several%20enterprise%20deployments,latency%20per%20task)中，带技能的单一智能体在质量上经常同时胜过&quot;一个提示词搞定一切&quot;的设计和子智能体设计，而且每个任务的成本和延迟往往更低。
+
+例如，一家公司发现，其面向客户的智能体中的十几个专家子智能体，使维持一致的品牌体验变得困难，而且增加的延迟损害了用户体验。
+
+我们还经常看到一些常见的智能体设计方案遵循相似的演进路径：意图分类器、固定的多步推理流水线、用户分群、独立的推荐分支，以及顶层的多智能体编排器。
+
+在这些案例中，反馈往往是：大部分这种结构在做的工作，模型已经不再需要它做了，一个清晰的系统提示词、4-5 个轻量数据工具和严格的输出护栏就能覆盖大多数用例。
+
+需要明确的是，子智能体仍然有它们的用武之地，包括在研究前沿。在以下情况使用它们：
+
+- 单一智能体循环因上下文膨胀而出现可测量的性能下降，或
+- 多个任务需要用全新的上下文窗口并行处理，这些窗口在任务完成后即可丢弃，或
+- 单一智能体难以选择合适的工具，或系统提示词中存在相互冲突的指令。
+
+但我们太经常看到企业为每个团队或问题类型都配备自己的子智能体，导致智能体架构变成组织架构图的翻版（这就是康威定律在起作用）。
+
+这篇文章结合我们从大型组织构建智能体中学到的经验，解释了何时应考虑将子智能体折叠进主智能体循环。
+
+## 大型组织构建智能体的失败模式
+
+企业通常希望构建一个将多种产品和能力整合到单一客户界面的智能体。
+
+通常，每项能力由不同的团队负责，所以企业先让每个团队各自构建自己的智能体，然后由中央平台团队在上面构建一个编排器。这可以采取多种结构，包括编排器-子智能体，或者以 MCP 工具形式暴露特定智能体的单一智能体。
+
+这看起来是最简单的解决方案，但会立即引入以下复杂性：
+
+- **上下文管理：**你需要决定智能体之间交换什么上下文，而且经常在来回传递中丢失细节。
+- **子智能体泛滥**：每个团队都发布自己的子智能体，结果企业最终拥有数百个重叠的子智能体，没有强制执行的标准，也没有明确的负责人。
+- **弗兰肯提示词**：每个团队都往系统提示词里加一句，导致规则相互冲突，也没有一致的表达风格。
+- **未经审查、过度局部的评估**：每个人都添加自己的评估，这些评估针对各自的子任务过度优化。没有人拥有或维护整套评估，领导层基于被稀释的、过度局部的分数做决策。
+- **延迟**：多智能体架构的复杂性会增加延迟。一位客户将自己的多智能体外壳与单一智能体循环做了对比评估，发现后者运行速度快约 2 倍。
+
+## 使用渐进式披露的智能体循环
+
+上述编排器-子智能体设计是协调跨团队构建的专家的合理方法，但通常更有效的方法是**通过技能渐进式披露上下文**和**通过工具搜索渐进式披露工具**。换句话说，智能体看到的是技能和工具的简短描述，只有在需要时才完整加载。
+
+这种方法之所以有意义，有三个原因：
+
+- **共享上下文能产生更好的答案：**对于运行时间更长的智能体，我们希望来自多个不同任务的上下文都留在主上下文窗口中。一个看到了每个早期步骤结果的智能体可以把它们连接起来，从而比子智能体返回的一组摘要产生更丰富的输出和更深入的洞察。这也意味着[更少的上下文窗口和更少的有损交接](https://claude.com/blog/building-multi-agent-systems-when-and-how-to-use-them)。
+- **渐进式披露可防止上下文膨胀：**这种技术让团队能够构建可完成各种任务的单一智能体，而无需把所有上下文立即加载到一个冗长的系统提示词中。这消除了团队以往将工作拆分到子智能体的主要原因。事实上，我们[将 Claude Code 面向更先进模型的系统提示词减少了 80% 以上](https://claude.dev/blog/the-new-rules-of-context-engineering-for-claude-5-generation-models/)，其中包括与渐进式披露技能和工具相关的删减。
+- **模型能力更强了：**从 Opus 4.5 开始，模型在单一循环中能管理的内容远超大多数团队的预期。你不能关闭 Opus 5.5 和 Fable 5.1 的思考功能，而且近期的模型越来越会在过程中叙述自己的进展并检查自己的工作，这使得一些外壳元素变得多余。每个新模型都让你可以把更多决策从外壳转移到模型本身。更简单的循环也更容易迁移到下一代模型；在我们帮助客户完成的迁移中，僵化的多智能体结构往往是阻碍新模型承担更多工作的原因。
+
+单一智能体循环设计需要纪律：精心管理的系统提示词、能在正确时机触发的技能和工具描述，以及对上下文窗口、记忆和笔记记录的有意处理。本文后续章节会更深入探讨迁移和设计方面的考量。
+
+应该由一个中央团队负责端到端质量和系统提示词，在每一个新工具和评估发布之前进行审查。保持中央团队精简有助于快速迭代，并降低大型组织中的协调成本。
+
+如果走多智能体路线，先从可行的最简单模式开始（生成器-验证器、编排器-子智能体等）。通过**按上下文划分**来有效分解边界：给每个子智能体分配一份对系统其余部分依赖很少的工作，并让它返回一个紧凑的结果（好的候选包括独立的研究路径、具有干净接口的独立组件，或黑盒验证）。当智能体按问题类型拆分时，它们会陷入&quot;传话游戏&quot;，来回传递信息，每次交接都会降低保真度。
+
+## 如何将子智能体折叠进主智能体循环
+
+许多团队在生产环境中已经有一个编排器和一组专家智能体。以下是建议你朝着它努力的单一循环设计：
+
+- 一个模型和一个上下文窗口运行开放式工具循环，限制条件（轮次和成本预算、写入闸门）在外壳中设置。
+- 每一轮，模型发出一批工具调用。外壳并行运行这些调用，并将原始结果返回给同一个模型，由模型决定下一步：再发一批、向用户提问，还是给出答案。
+- 当模型给出答案或达到[预算](https://platform.claude.com/docs/en/build-with-claude/task-budgets)时循环停止。答案之后可以可选地运行目标或验证器检查。
+- 模型在第一轮把计划写进上下文，并在结果到达时修订它。这是与编排器和专家智能体设置的主要区别：写计划的模型也正是执行计划的模型，所以它可以在轮次中途改变计划。
+- 上下文仍然会被加载，并由智能体自己管理：
+不再需要根据规则目录重写计划的代码步骤，因为模型自己决定每一步。
+- 排序和领域流程移入**技能**。
+- 硬性限制（验证、审批闸门）以及对话过程中出现的任何其他内容（例如记忆查找）移入**工具**。
+- 代码仍可用于加载任何成本低廉且几乎总是相关的内容（例如实体解析步骤），并处理循环所调用工具中的机械性部分（载荷构建、流解析、恢复澄清）。
+
+这种单一循环设计也有助于许多团队正在追求的终态（一个理解用户高层目标并代表用户行动的智能体），因为它把智能体学到的一切都保存在一个上下文中。
+
+下面的建议说明了团队如何分阶段从多智能体系统过渡到单一智能体循环，以及多个团队如何在此过程中持续为该智能体做贡献。
+
+### 任务完成度评估
+
+第一步是创建一套评估集，帮助你判断是否应该把某个子智能体折叠进主智能体循环。我们看到的行之有效的评估结构是：由中央团队拥有的一套共享端到端评估集，加上各技能所属团队随每个技能发布的小型评估集。哪怕只有 10 个黄金示例也足够开始了。
+
+按照评分标准对智能体的最终消息进行评分，是跟踪回答质量的一个很好的起点。当你仍有编排器时，还应跟踪路由准确性（它是否选对了子智能体？）。一旦子智能体被折叠进来，改为检查智能体是否加载了正确的技能或调用了正确的工具。随着时间推移逐步构建任务完成度评估是很有帮助的，因为在比较架构时这一点最为重要。
+
+在内部系统难以回放、用户交互难以模拟的环境中，这可能很复杂。我们在内部行之有效的一种方法是记录重要事件的时间戳，以便日后回放并作为针对性评估运行。
+
+### 逐步减少子智能体
+
+向单一智能体循环演进涉及把子智能体折叠进工具和技能。这可以通过合并领域子智能体、把它们作为工具调用，或用技能和工具取代它们来实现。
+
+### 合并领域智能体
+
+在第一次合并之前，先构建一个小型端到端评估。然后**按共享上下文折叠，从使用最多的子智能体开始。**
+
+[合并](https://claude.com/blog/building-multi-agent-systems-when-and-how-to-use-them)那些相互衔接输出、处理相同数据或经常被一起调用的专家。例如，如果生产流量中有相当大的一部分是一个专家紧接着另一个专家，那就是一对紧密耦合的组合，适合合并成一个领域智能体。
+
+### 将子智能体作为工具调用
+
+当上述三个条件之一适用并且你保留了某个子智能体时，让主智能体把子智能体作为工具来调用会很有效，这样它就能继续与用户保持对话。
+
+我们只建议在子智能体需要直接与用户交谈时，才进行完全交接（由子智能体接管对话）。其他一切都可以是主循环中的技能加工具。
+
+这将允许你为子智能体定义共享的响应模式，由主智能体对照真实数据验证结论，并精简任何最终综合步骤的输入。这是一个很好的第一步，因为你不需要**重写**子智能体。它还能让你在决定把任何子智能体折叠进主智能体之前，先在任务完成度评估上获得一个**基线**。
+
+不过，一些失败模式仍然存在：
+
+- 每个专家都有自己的提示词、上下文、所属团队和评估
+- 每次调用仍然会返回有损的摘要
+- 每次调用都是一个嵌套的模型循环，会增加延迟
+
+### 通过技能和工具将子智能体折叠进主智能体
+
+一次折叠一个子智能体：把每个子智能体的提示词变成技能，把 API 调用变成 MCP 工具。比较有和没有该子智能体时的评估表现，然后决定保留哪些。
+
+比较时，不要只看最终得分，还要看看哪些任务发生了翻转。当我们在一个示例支持智能体上测试时，把一个子智能体折叠进另一个子智能体降低了延迟，但也破坏了一个原本一直正常的流程。主智能体自己拿着订单查询工具自行回答，而没有向发货专家询问交货日期。
+
+在每次更改之前，确保你的评估为生产环境中一起运行的每一条智能体链、以及智能体绝不能违反的每一条规则都设有任务，并且每个任务运行不止一次，因为像这样的破坏只在两次运行中的一次出现。
+
+## 多个团队如何为单一智能体做贡献
+
+领域推理可以从知识库、技能和 MCP 工具中获取。各个团队可以把所有权从智能体转移到技能和工具上，由一个小型中央团队保持对系统提示词和端到端质量的所有权。这包括在新技能、工具和评估发布之前进行审查。
+
+### MCP 工具
+
+当智能体需要执行操作、从系统读取实时数据或以固定格式返回结果时，工具是合适的方案。你也可以在迁移期间用工具继续调用子智能体。我们建议按用户意图对工具分组（而不是每个 API 一个工具），因为一旦系统提示词中的工具定义超过 30-50 个，工具选择往往会变差。
+
+使用带延迟加载的[工具搜索](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool)，限制硬性前置条件，并把任何必要的前置条件移入工具中。例如，如果 Y 需要 X 的输出，Y 的工具会检查它是否存在，并返回一条模型可以执行的指令。按用户权限也是同样的方式。每个工具检查调用它的用户可以看到什么或能做什么，并返回模型可读的明确拒绝信息，因此一个循环就能服务于拥有不同访问权限的用户，而无需为每个权限级别设置单独的智能体。
+
+### 技能
+
+当智能体需要知道一个团队如何做工作——比如专家子智能体的提示词曾经承载的步骤、规则和判断——时，技能是合适的方案。
+
+我们扩充技能库的方法是让维护工作回到编写技能的人手中。Claude 可以通过能够构建、测试和精简其他技能的技能来完成繁重的工作。
+
+为了防止技能泛滥，你可以让每个团队的 DRI 拥有自己的技能，并确保它们制作精良、彼此区分明显，且随附适当的评估一同发布。
+
+- **/skill-creator** 允许你编写结构良好的新技能，并审计现有技能以精简、去重和重构它们。
+- **/skill-doctor** 允许你查看库中每个技能的消耗成本以及实际使用频率，并删除冗余。
+
+### 知识库
+
+对于智能体只是偶尔需要的参考资料，知识库是合适的方案。事实和参考资料（政策、指标定义、产品规格）可以放在模型调用的搜索或查找工具之后，或作为技能内的参考文件随技能发布。避免让[代码检索并把这段上下文粘贴进提示词](https://claude.com/blog/seeing-like-an-agent)。
+
+## 加速这项工作的工具
+
+我们最近[发布](https://code.claude.com/docs/en/commands)了一组 Claude API 技能，可以帮助完成上面提到的大部分工作。我们的[迁移工具包](https://github.com/anthropics/single-agent-loop-kit)把这些技能串联成一个引导式工作流，用于评估并把多智能体系统迁移到单一智能体循环。它包含一个演示，你可以在真实系统上运行之前先试一试：
+
+- **/claude-api build-eval：**可以帮助创建由中央团队拥有的第一套端到端评估集，或每个团队随技能发布的小型评估集
+- **/claude-api prompt-audit：**可以标记你的提示词、技能和工具描述中为旧模型编写的指令，并以 diff 形式提出修复建议。你可以对系统提示词运行它，找出那些为早期模型添加、现在让智能体变慢或更僵化的规则。每个团队的 DRI 也可以对自己的技能和工具描述运行它。
+- **/claude-api hillclimb：**可以针对现有评估迭代改进应用。它可以用于&quot;折叠 vs 保留&quot;的对比（在把一个子智能体折叠成技能加工具之后，让它对技能和工具描述进行迭代，看看折叠版本是否达到或超过子智能体的表现），也可以用于你的系统提示词。
+- **/claude-api cost-optimize：**分析你的调用去向，并从提示词缓存、精简不必要的输入和输出 token、努力程度和模型选择等选项中提出节省建议，一次只改一项。这有助于降低特定设计的成本和延迟。
+
+随着模型的演进，我们对如何最好地使用它们的理解以及最佳实践指南也在演进。这使得任何单一架构都不如它背后的原则重要：测量、一次只改变一件事，并保留经得起考验的东西。
+
+这就是这样的案例之一。随着模型能力越来越强、智能体运行时间越来越长，你的更多子智能体可以变成技能和工具。不过你不必一步到位。构建一个小型端到端评估，折叠一个子智能体，只有当折叠后的版本得分更差时才把它保留为子智能体，然后反复进行。</textarea>
+    </div>
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            
+            <h1 class="article-title u-text-style-h1">Building agents: When to fold subagents into your main agent loop </h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>When to consider using fewer subagents and how to migrate the into your main loop.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <div class="hero-detail-value u-text-style-body-3">Best practices</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">October 22, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>18</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/building-agents-when-to-fold-subagents-into-your-main-agent-loop/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p><em>如果你在 Claude Platform 中构建的智能体包含多个子智能体，可以使用我们的<a href="https://github.com/anthropics/single-agent-loop-kit">迁移工具包</a>来判断哪些适合折叠进主智能体循环。它会运行一个引导式工作流来识别你的模式、评估备选方案并验证最佳方案。它包含一个演示，你可以在正式应用于你的智能体之前先在模拟系统上试用。</em></p><p>子智能体——拥有自己的上下文窗口、工具和指令、由协调器编排的智能体——是智能体设计的核心组成部分。它们在验证、并行工作和模块化权限管理方面非常有效。我们在许多使用 Claude Platform 构建的智能体中都使用了它们，例如我们的<a href="https://www.anthropic.com/engineering/multi-agent-research-system">多智能体研究系统</a>。</p><p>然而，最近 Applied AI 团队发现，在企业智能体部署中，将路由器、规划器和领域子智能体折叠进主智能体循环的做法让很多部署受益。在<a href="https://claude.com/blog/the-anatomy-of-effective-commerce-agents#:~:text=In%20our%20comparisons%20across%20several%20enterprise%20deployments,latency%20per%20task">我们对多个企业部署的对比研究</a>中，带技能的单一智能体在质量上经常同时胜过"一个提示词搞定一切"的设计和子智能体设计，而且每个任务的成本和延迟往往更低。</p><p>例如，一家公司发现，其面向客户的智能体中的十几个专家子智能体，使维持一致的品牌体验变得困难，而且增加的延迟损害了用户体验。</p><p>我们还经常看到一些常见的智能体设计方案遵循相似的演进路径：意图分类器、固定的多步推理流水线、用户分群、独立的推荐分支，以及顶层的多智能体编排器。</p><p>在这些案例中，反馈往往是：大部分这种结构在做的工作，模型已经不再需要它做了，一个清晰的系统提示词、4-5 个轻量数据工具和严格的输出护栏就能覆盖大多数用例。</p><figure style="--media-natural-width:2024px"><img referrerpolicy="strict-origin-when-cross-origin" src="https://assets.claude.com/a7cb2cf08bfcef461166310c0c55f28b72c33b0d.gif" width="2024" height="884" alt="subagent design" loading="lazy" decoding="async" class="Media-module-scss-module__7ZZCyW__image"></figure><p>需要明确的是，子智能体仍然有它们的用武之地，包括在研究前沿。在以下情况使用它们：</p><ul><li>单一智能体循环因上下文膨胀而出现可测量的性能下降，或</li><li>多个任务需要用全新的上下文窗口并行处理，这些窗口在任务完成后即可丢弃，或</li><li>单一智能体难以选择合适的工具，或系统提示词中存在相互冲突的指令。</li></ul><p>但我们太经常看到企业为每个团队或问题类型都配备自己的子智能体，导致智能体架构变成组织架构图的翻版（这就是康威定律在起作用）。</p><p>这篇文章结合我们从大型组织构建智能体中学到的经验，解释了何时应考虑将子智能体折叠进主智能体循环。</p><h2 id="agent-building-failure-modes-for-large-organizations">大型组织构建智能体的失败模式</h2><p>企业通常希望构建一个将多种产品和能力整合到单一客户界面的智能体。</p><p>通常，每项能力由不同的团队负责，所以企业先让每个团队各自构建自己的智能体，然后由中央平台团队在上面构建一个编排器。这可以采取多种结构，包括编排器-子智能体，或者以 MCP 工具形式暴露特定智能体的单一智能体。</p><p>这看起来是最简单的解决方案，但会立即引入以下复杂性：</p><ul><li><strong>上下文管理：</strong>你需要决定智能体之间交换什么上下文，而且经常在来回传递中丢失细节。</li><li><strong>子智能体泛滥</strong>：每个团队都发布自己的子智能体，结果企业最终拥有数百个重叠的子智能体，没有强制执行的标准，也没有明确的负责人。</li><li><strong>弗兰肯提示词</strong>：每个团队都往系统提示词里加一句，导致规则相互冲突，也没有一致的表达风格。</li><li><strong>未经审查、过度局部的评估</strong>：每个人都添加自己的评估，这些评估针对各自的子任务过度优化。没有人拥有或维护整套评估，领导层基于被稀释的、过度局部的分数做决策。</li><li><strong>延迟</strong>：多智能体架构的复杂性会增加延迟。一位客户将自己的多智能体外壳与单一智能体循环做了对比评估，发现后者运行速度快约 2 倍。</li></ul><h2 id="using-an-agent-loop-with-progressive-disclosure">使用渐进式披露的智能体循环</h2><p>上述编排器-子智能体设计是协调跨团队构建的专家的合理方法，但通常更有效的方法是<strong>通过技能渐进式披露上下文</strong>和<strong>通过工具搜索渐进式披露工具</strong>。换句话说，智能体看到的是技能和工具的简短描述，只有在需要时才完整加载。</p><p>这种方法之所以有意义，有三个原因：</p><ul><li><strong>共享上下文能产生更好的答案：</strong>对于运行时间更长的智能体，我们希望来自多个不同任务的上下文都留在主上下文窗口中。一个看到了每个早期步骤结果的智能体可以把它们连接起来，从而比子智能体返回的一组摘要产生更丰富的输出和更深入的洞察。这也意味着<a href="https://claude.com/blog/building-multi-agent-systems-when-and-how-to-use-them">更少的上下文窗口和更少的有损交接</a>。</li><li><strong>渐进式披露可防止上下文膨胀：</strong>这种技术让团队能够构建可完成各种任务的单一智能体，而无需把所有上下文立即加载到一个冗长的系统提示词中。这消除了团队以往将工作拆分到子智能体的主要原因。事实上，我们<a href="https://claude.dev/blog/the-new-rules-of-context-engineering-for-claude-5-generation-models/">将 Claude Code 面向更先进模型的系统提示词减少了 80% 以上</a>，其中包括与渐进式披露技能和工具相关的删减。</li><li><strong>模型能力更强了：</strong>从 Opus 4.5 开始，模型在单一循环中能管理的内容远超大多数团队的预期。你不能关闭 Opus 5.5 和 Fable 5.1 的思考功能，而且近期的模型越来越会在过程中叙述自己的进展并检查自己的工作，这使得一些外壳元素变得多余。每个新模型都让你可以把更多决策从外壳转移到模型本身。更简单的循环也更容易迁移到下一代模型；在我们帮助客户完成的迁移中，僵化的多智能体结构往往是阻碍新模型承担更多工作的原因。</li></ul><p>单一智能体循环设计需要纪律：精心管理的系统提示词、能在正确时机触发的技能和工具描述，以及对上下文窗口、记忆和笔记记录的有意处理。本文后续章节会更深入探讨迁移和设计方面的考量。</p><p>应该由一个中央团队负责端到端质量和系统提示词，在每一个新工具和评估发布之前进行审查。保持中央团队精简有助于快速迭代，并降低大型组织中的协调成本。</p><p>如果走多智能体路线，先从可行的最简单模式开始（生成器-验证器、编排器-子智能体等）。通过<strong>按上下文划分</strong>来有效分解边界：给每个子智能体分配一份对系统其余部分依赖很少的工作，并让它返回一个紧凑的结果（好的候选包括独立的研究路径、具有干净接口的独立组件，或黑盒验证）。当智能体按问题类型拆分时，它们会陷入"传话游戏"，来回传递信息，每次交接都会降低保真度。</p><figure style="--media-natural-width:2024px"><img referrerpolicy="strict-origin-when-cross-origin" src="https://assets.claude.com/cd4b9c4417d5ba31776e8aa79e204966c08c6a43.png" width="2024" height="980" alt="subagents split by problem" loading="lazy" decoding="async" class="Media-module-scss-module__7ZZCyW__image"></figure><h2 id="how-to-fold-subagents-into-the-main-agent-loop">如何将子智能体折叠进主智能体循环</h2><p>许多团队在生产环境中已经有一个编排器和一组专家智能体。以下是建议你朝着它努力的单一循环设计：</p><ul><li>一个模型和一个上下文窗口运行开放式工具循环，限制条件（轮次和成本预算、写入闸门）在外壳中设置。</li><li>每一轮，模型发出一批工具调用。外壳并行运行这些调用，并将原始结果返回给同一个模型，由模型决定下一步：再发一批、向用户提问，还是给出答案。</li><li>当模型给出答案或达到<a href="https://platform.claude.com/docs/en/build-with-claude/task-budgets">预算</a>时循环停止。答案之后可以可选地运行目标或验证器检查。</li><li>模型在第一轮把计划写进上下文，并在结果到达时修订它。这是与编排器和专家智能体设置的主要区别：写计划的模型也正是执行计划的模型，所以它可以在轮次中途改变计划。</li><li>上下文仍然会被加载，并由智能体自己管理：<ul><li>不再需要根据规则目录重写计划的代码步骤，因为模型自己决定每一步。</li><li>排序和领域流程移入<strong>技能</strong>。</li><li>硬性限制（验证、审批闸门）以及对话过程中出现的任何其他内容（例如记忆查找）移入<strong>工具</strong>。</li><li>代码仍可用于加载任何成本低廉且几乎总是相关的内容（例如实体解析步骤），并处理循环所调用工具中的机械性部分（载荷构建、流解析、恢复澄清）。</li></ul></li></ul><p>这种单一循环设计也有助于许多团队正在追求的终态（一个理解用户高层目标并代表用户行动的智能体），因为它把智能体学到的一切都保存在一个上下文中。</p><p>下面的建议说明了团队如何分阶段从多智能体系统过渡到单一智能体循环，以及多个团队如何在此过程中持续为该智能体做贡献。</p><h3>任务完成度评估</h3><p>第一步是创建一套评估集，帮助你判断是否应该把某个子智能体折叠进主智能体循环。我们看到的行之有效的评估结构是：由中央团队拥有的一套共享端到端评估集，加上各技能所属团队随每个技能发布的小型评估集。哪怕只有 10 个黄金示例也足够开始了。</p><p>按照评分标准对智能体的最终消息进行评分，是跟踪回答质量的一个很好的起点。当你仍有编排器时，还应跟踪路由准确性（它是否选对了子智能体？）。一旦子智能体被折叠进来，改为检查智能体是否加载了正确的技能或调用了正确的工具。随着时间推移逐步构建任务完成度评估是很有帮助的，因为在比较架构时这一点最为重要。</p><p>在内部系统难以回放、用户交互难以模拟的环境中，这可能很复杂。我们在内部行之有效的一种方法是记录重要事件的时间戳，以便日后回放并作为针对性评估运行。</p><h3>逐步减少子智能体</h3><p>向单一智能体循环演进涉及把子智能体折叠进工具和技能。这可以通过合并领域子智能体、把它们作为工具调用，或用技能和工具取代它们来实现。</p><figure style="--media-natural-width:2024px"><img referrerpolicy="strict-origin-when-cross-origin" src="https://assets.claude.com/ed6bd97496ffdab88763806d9e14f1ec61ed9255.gif" width="2024" height="892" alt="folding in subagents" loading="lazy" decoding="async" class="Media-module-scss-module__7ZZCyW__image"></figure><h3>合并领域智能体</h3><p>在第一次合并之前，先构建一个小型端到端评估。然后<strong>按共享上下文折叠，从使用最多的子智能体开始。</strong></p><p><a href="https://claude.com/blog/building-multi-agent-systems-when-and-how-to-use-them">合并</a>那些相互衔接输出、处理相同数据或经常被一起调用的专家。例如，如果生产流量中有相当大的一部分是一个专家紧接着另一个专家，那就是一对紧密耦合的组合，适合合并成一个领域智能体。</p><h3>将子智能体作为工具调用</h3><p>当上述三个条件之一适用并且你保留了某个子智能体时，让主智能体把子智能体作为工具来调用会很有效，这样它就能继续与用户保持对话。</p><p>我们只建议在子智能体需要直接与用户交谈时，才进行完全交接（由子智能体接管对话）。其他一切都可以是主循环中的技能加工具。</p><p>这将允许你为子智能体定义共享的响应模式，由主智能体对照真实数据验证结论，并精简任何最终综合步骤的输入。这是一个很好的第一步，因为你不需要<strong>重写</strong>子智能体。它还能让你在决定把任何子智能体折叠进主智能体之前，先在任务完成度评估上获得一个<strong>基线</strong>。</p><p>不过，一些失败模式仍然存在：</p><ul><li>每个专家都有自己的提示词、上下文、所属团队和评估</li><li>每次调用仍然会返回有损的摘要</li><li>每次调用都是一个嵌套的模型循环，会增加延迟</li></ul><h3>通过技能和工具将子智能体折叠进主智能体</h3><p>一次折叠一个子智能体：把每个子智能体的提示词变成技能，把 API 调用变成 MCP 工具。比较有和没有该子智能体时的评估表现，然后决定保留哪些。</p><p>比较时，不要只看最终得分，还要看看哪些任务发生了翻转。当我们在一个示例支持智能体上测试时，把一个子智能体折叠进另一个子智能体降低了延迟，但也破坏了一个原本一直正常的流程。主智能体自己拿着订单查询工具自行回答，而没有向发货专家询问交货日期。</p><p>在每次更改之前，确保你的评估为生产环境中一起运行的每一条智能体链、以及智能体绝不能违反的每一条规则都设有任务，并且每个任务运行不止一次，因为像这样的破坏只在两次运行中的一次出现。</p><h2 id="how-several-teams-can-contribute-to-a-single-agent">多个团队如何为单一智能体做贡献</h2><p>领域推理可以从知识库、技能和 MCP 工具中获取。各个团队可以把所有权从智能体转移到技能和工具上，由一个小型中央团队保持对系统提示词和端到端质量的所有权。这包括在新技能、工具和评估发布之前进行审查。</p><h3>MCP 工具</h3><p>当智能体需要执行操作、从系统读取实时数据或以固定格式返回结果时，工具是合适的方案。你也可以在迁移期间用工具继续调用子智能体。我们建议按用户意图对工具分组（而不是每个 API 一个工具），因为一旦系统提示词中的工具定义超过 30-50 个，工具选择往往会变差。</p><p>使用带延迟加载的<a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool">工具搜索</a>，限制硬性前置条件，并把任何必要的前置条件移入工具中。例如，如果 Y 需要 X 的输出，Y 的工具会检查它是否存在，并返回一条模型可以执行的指令。按用户权限也是同样的方式。每个工具检查调用它的用户可以看到什么或能做什么，并返回模型可读的明确拒绝信息，因此一个循环就能服务于拥有不同访问权限的用户，而无需为每个权限级别设置单独的智能体。</p><h3>技能</h3><p>当智能体需要知道一个团队如何做工作——比如专家子智能体的提示词曾经承载的步骤、规则和判断——时，技能是合适的方案。</p><p>我们扩充技能库的方法是让维护工作回到编写技能的人手中。Claude 可以通过能够构建、测试和精简其他技能的技能来完成繁重的工作。</p><p>为了防止技能泛滥，你可以让每个团队的 DRI 拥有自己的技能，并确保它们制作精良、彼此区分明显，且随附适当的评估一同发布。</p><ul><li><strong>/skill-creator</strong> 允许你编写结构良好的新技能，并审计现有技能以精简、去重和重构它们。</li><li><strong>/skill-doctor</strong> 允许你查看库中每个技能的消耗成本以及实际使用频率，并删除冗余。</li></ul><h3>知识库</h3><p>对于智能体只是偶尔需要的参考资料，知识库是合适的方案。事实和参考资料（政策、指标定义、产品规格）可以放在模型调用的搜索或查找工具之后，或作为技能内的参考文件随技能发布。避免让<a href="https://claude.com/blog/seeing-like-an-agent">代码检索并把这段上下文粘贴进提示词</a>。</p><h2 id="tools-to-accelerate-this-work">加速这项工作的工具</h2><p>我们最近<a href="https://code.claude.com/docs/en/commands">发布</a>了一组 Claude API 技能，可以帮助完成上面提到的大部分工作。我们的<a href="https://github.com/anthropics/single-agent-loop-kit">迁移工具包</a>把这些技能串联成一个引导式工作流，用于评估并把多智能体系统迁移到单一智能体循环。它包含一个演示，你可以在真实系统上运行之前先试一试：</p><ul><li><strong>/claude-api build-eval：</strong>可以帮助创建由中央团队拥有的第一套端到端评估集，或每个团队随技能发布的小型评估集</li><li><strong>/claude-api prompt-audit：</strong>可以标记你的提示词、技能和工具描述中为旧模型编写的指令，并以 diff 形式提出修复建议。你可以对系统提示词运行它，找出那些为早期模型添加、现在让智能体变慢或更僵化的规则。每个团队的 DRI 也可以对自己的技能和工具描述运行它。</li><li><strong>/claude-api hillclimb：</strong>可以针对现有评估迭代改进应用。它可以用于"折叠 vs 保留"的对比（在把一个子智能体折叠成技能加工具之后，让它对技能和工具描述进行迭代，看看折叠版本是否达到或超过子智能体的表现），也可以用于你的系统提示词。</li><li><strong>/claude-api cost-optimize：</strong>分析你的调用去向，并从提示词缓存、精简不必要的输入和输出 token、努力程度和模型选择等选项中提出节省建议，一次只改一项。这有助于降低特定设计的成本和延迟。</li></ul><p>随着模型的演进，我们对如何最好地使用它们的理解以及最佳实践指南也在演进。这使得任何单一架构都不如它背后的原则重要：测量、一次只改变一件事，并保留经得起考验的东西。</p><p>这就是这样的案例之一。随着模型能力越来越强、智能体运行时间越来越长，你的更多子智能体可以变成技能和工具。不过你不必一步到位。构建一个小型端到端评估，折叠一个子智能体，只有当折叠后的版本得分更差时才把它保留为子智能体，然后反复进行。</p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/resources/articles/building-agents-when-to-fold-subagents-into-your-main-agent-loop" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/10/23 09:38:07</p>
+    </div>
+  </footer>
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
