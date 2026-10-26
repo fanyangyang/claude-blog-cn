@@ -6,7 +6,14 @@
     <description>Anthropic Claude 官方博客的中文翻译</description>
     <atom:link href="https://fanyangyang.github.io/claude-blog-cn/rss.xml" rel="self" type="application/rss+xml"/>
     <language>zh-CN</language>
-    <lastBuildDate>Fri, 23 Oct 2026 22:07:35 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 26 Oct 2026 22:10:38 GMT</lastBuildDate>
+    <item>
+      <title>Claude for Nonprofits 扩展计划</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/expanding-claude-for-nonprofits/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/expanding-claude-for-nonprofits/</guid>
+      <pubDate>Sun, 25 Oct 2026 16:00:00 GMT</pubDate>
+      <category>Product announcements</category>
+    </item>
     <item>
       <title>Claude Cowork 与聊天在 Enterprise 中合二为一</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/unified-claude-enterprise/</link>
