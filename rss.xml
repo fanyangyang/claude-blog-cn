@@ -6,7 +6,21 @@
     <description>Anthropic Claude 官方博客的中文翻译</description>
     <atom:link href="https://fanyangyang.github.io/claude-blog-cn/rss.xml" rel="self" type="application/rss+xml"/>
     <language>zh-CN</language>
-    <lastBuildDate>Tue, 27 Oct 2026 10:14:08 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 27 Oct 2026 22:06:31 GMT</lastBuildDate>
+    <item>
+      <title>Claude for Financial Advisors</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-for-financial-advisors/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-for-financial-advisors/</guid>
+      <pubDate>Mon, 26 Oct 2026 16:00:00 GMT</pubDate>
+      <category>Product announcements</category>
+    </item>
+    <item>
+      <title>在 Google Cloud 上管理 Claude Code 成本并展示 ROI</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/how-to-manage-costs-and-demonstrate-roi-for-claude-code-on-google-cloud/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/how-to-manage-costs-and-demonstrate-roi-for-claude-code-on-google-cloud/</guid>
+      <pubDate>Mon, 26 Oct 2026 16:00:00 GMT</pubDate>
+      <category>Best practices</category>
+    </item>
     <item>
       <title>Claude for Nonprofits 扩展计划</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/expanding-claude-for-nonprofits/</link>
@@ -257,13 +271,6 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-for-small-business-launches-new-workflows-integrations-and-training-programs/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-for-small-business-launches-new-workflows-integrations-and-training-programs/</guid>
       <pubDate>Mon, 14 Sep 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
-    </item>
-    <item>
-      <title>Claude for Financial Advisors</title>
-      <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-for-financial-advisors/</link>
-      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-for-financial-advisors/</guid>
-      <pubDate>Sun, 13 Sep 2026 16:00:00 GMT</pubDate>
       <category>Product announcements</category>
     </item>
     <item>

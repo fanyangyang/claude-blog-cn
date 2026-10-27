@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>在 Google Cloud 上管理 Claude Code 成本并展示 ROI — Claude Blog 中文翻译</title>
+  <meta name="description" content="在 Google Cloud 上管理 Anthropic 的 Claude Code 成本并衡量投资回报的最佳实践。">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>在 Google Cloud 上管理 Claude Code 成本并展示 ROI</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/resources/articles/how-to-manage-costs-and-demonstrate-roi-for-claude-code-on-google-cloud" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/how-to-manage-costs-and-demonstrate-roi-for-claude-code-on-google-cloud/en.html">阅读英文原文 →</a>
+      </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># 在 Google Cloud 上管理 Claude Code 成本并展示 ROI
+
+在 Google Cloud 上管理 Anthropic 的 Claude Code 成本并衡量投资回报的最佳实践。
+
+随着组织将越来越多的任务委托给 Claude Code，支出也随之增长，平台团队既需要控制成本，也需要理解其影响。受 [与 Google Cloud 合作的近期网络研讨会 (opens in new tab)](https://www.anthropic.com/webinars/how-to-control-costs-and-show-roi-for-claude-code-on-google-cloud) 的启发，我们在此分享使用 Claude Code 的组织如何在 Google Cloud 上更好地跟踪和优化这些考量，包括三大核心杠杆：控制（Control）、跟踪（Track）和证明（Prove）。
+
+## 控制 Claude Code 支出
+
+Claude on Google Cloud 采用按用量计费的模式，因此你的账单直接反映了开发者在你的 Google Cloud 环境中使用了多少 Claude。采用推动使用；使用量正是你所支付的，也是价值所在。
+
+你的 Claude Code 账单取决于任务消耗的 token 数量以及处理这些任务的模型。Token 消耗随任务复杂度和对话长度而增长。聊天是问答式对话。像 Claude Code 这样的代理（agentic）工具在每项任务上消耗的 token 比聊天更多，因为它要做多步骤的工作：读取文件、运行工具，并在整个任务中进行推理。与此同时，每个模型都有各自的每 token 价格，因此[让模型匹配任务](https://claude.com/blog/claude-model-and-effort-level-in-claude-code)是另一项主要的成本控制手段。
+
+每月影响组织账单的 token 与模型选择，可以通过 [Claude apps gateway](https://claude.com/blog/introducing-the-claude-apps-gateway) 和 Google Cloud 服务进行查看。你可以通过三个相互独立的杠杆来治理支出、管理成本：
+
+- **控制（Control）**。建立护栏来引导使用，而不是过度限制访问、意外地挡住用户。
+- **跟踪（Track）**。在账单到来之前，对支出发生在哪里、以及未来将流向哪里进行细粒度监控。
+- **证明（Prove）**。识别你的组织从这些 token 支出中获得的价值，并精确归因其来源。
+
+以下是如何将控制 → 跟踪 → 证明这一框架应用到你自己在 Google Cloud 上的 Claude Code 部署中。
+
+### **治理工具箱**
+
+Claude on Google Cloud 提供了用于控制、跟踪和证明支出价值的工具与能力。
+
+Google Cloud 已经提供了许多可用于跟踪和控制 Claude 支出的原生能力：
+
+- **按项目计费（Per-project billing）**。允许你为 Claude Code 托管一个专用项目，作为跟踪成本的干净方式。
+- **账单预算与提醒（Billing budgets and alerts）**。允许你设置预算提醒，并在实际支出超过你设定的阈值时收到通知。
+- **支出上限（预览版，Spend caps (Preview)）**。允许你强制执行服务级别的 Google Cloud 支出预算，并支持手动解除上限。
+- **BigQuery 导出**。让你可以将 Claude 支出与其余云成本一起分析。
+- **配额（Quotas）**。Google Cloud 上的 Claude 模型对每个模型系列和端点位置，在请求、输入 token 和输出 token 上设有每分钟限制。
+- **预置吞吐量（Provisioned throughput）**。为预留容量支付固定费用，而不是按量付费。
+
+Claude Code 和 Claude apps gateway 则提供了各自的跟踪与控制能力。Gateway 是一项自托管服务，随开发者已经在使用的同一个 `claude` 二进制发布，运行在你 Google Cloud 项目中、位于 Claude Code 与 Claude on Google Cloud 之间。开发者通过你的身份提供商（例如 Google Workspace）登录，因此每个请求都带有经过验证的身份。这使你能够按 IdP 组设置模型白名单，并按用户、IdP 组或组织设置每日、每周或每月的支出上限。
+
+以下是如何选择并组合这些能力，以管理衡量你在 Claude on Google Cloud 上的 AI 投资成本与 ROI 的三大杠杆：
+
+#### 杠杆一：控制
+
+控制杠杆的核心是提供引导开发者在 Claude Code 使用中的护栏，而不是用任意的上限来限制他们。
+
+引导而非限制之所以重要，是因为高成本会话未必是坏事——事实上，它们往往具有高价值，尤其是在 Claude Code 中。这些会话通常来自你的高级用户，他们站在前沿，使用新的工作流，从 Claude 中获得大量价值，也完成了大量工作。
+
+浪费往往集中在重度使用者的中间地带。例如，他们用 Fable 处理一个 Sonnet 就能轻松搞定的日常任务；或者他们忘记了某个不再关心的定时任务，而它还在继续自动运行。
+
+有四个功能可以为你提供引导用户而非限制用户的护栏：
+
+- **[支出上限（Spend limits） (opens in new tab)](https://code.claude.com/docs/en/claude-apps-gateway-spend-limits)。**Claude apps gateway 允许你按用户、IdP 组或组织范围设置每日、每周或每月的支出上限。组和组织级上限是每位开发者继承的默认值，而非共享池。
+- **阈值提醒（Threshold alerts）**。与 Claude apps gateway 配合使用时，Claude Code on Google Cloud 会在开发者接近上限时发出警告，先是超过 75% 时，再是超过 95% 时。这些是面向开发者的 CLI 内警告，而 Google Cloud Billing 提醒则面向管理员。达到上限时，gateway 会返回 429，直到周期重置或管理员提高上限；你也可以通过 gateway 的管理 API 编写脚本来自动提高上限。
+- **模型默认值与白名单（Model defaults and allowlists）**。通过 Claude apps gateway 指定每个 IdP 组可用的模型，gateway 会在服务端对每个请求强制执行白名单。我们发现设置模型默认值效果非常好，因为大多数人会坚持使用默认模型；如果他们想切换模型，通常是出于某个原因。你可以将模型默认值与模型白名单搭配使用，或单独使用其中一种。
+- **Gateway 管理 API（Gateway Admin API）**。Gateway 提供了[支出上限管理 API (opens in new tab)](https://code.claude.com/docs/en/claude-apps-gateway-spend-limits)，因此你可以通过编程方式设置和更改上限，例如使用工单工作流。
+
+组合这些能力来控制你的整体账单，但要记住，控制只是第一个杠杆。每 token 价格并不能给你全貌。最重要的指标是每任务成本（cost per task），它可以通过跟踪使用情况来监控和分析。
+
+#### 杠杆二：跟踪
+
+这个杠杆的核心是看清支出的去向以及它是如何被使用的。好消息是，你可以跨组织跟踪 Claude Code 的使用量、成本和工具活动。主要的跟踪策略包括：
+
+- **使用量与成本的可观测性（Usage and cost observability）**。[Claude Code 的 OpenTelemetry 指标与事件 (opens in new tab)](https://code.claude.com/docs/en/monitoring-usage)会按技能（skill）、插件（plugin）、agent 和 MCP server 报告使用量和估算成本。通过 OpenTelemetry 收集器或由 Claude apps gateway 转发（用于集中式 OpenTelemetry 配置），以 OpenTelemetry Protocol (OTLP) 将这些数据发送到你已在运行的工具（例如 Google Cloud Monitoring）。
+- **终端用户使用视图（End-user usage view）**。开发者可以直接在 Claude Code 中看到自己的支出并在触及限制前收到使用警告。
+- **向现有系统导出数据（Data export to your existing systems）**。Google Cloud Billing 导出到 BigQuery 的功能让你可以按模型和 token 类型过滤 Claude SKU，将 Claude 支出与你其余的云和 AI 支出放在一起。OTel 数据流向你的可观测性（O11y）技术栈，而 gateway 管理 API 可以将支出上限状态直接送入你的工单系统。
+
+Claude Code——无论是在开发者机器上还是在云工作站上运行——一旦启用即可导出 OpenTelemetry 数据，包括会话、活跃时间、代码行数、提交、拉取请求、token 和成本，并按用户、团队和模型细分。Claude Code 的最新版本还按技能、插件、agent 和 MCP server 细分使用情况，让你不仅能看到整体 Claude Code 使用量，还能看到你组织内部技能和插件的采用情况。使用 Claude apps gateway 时，你无需配置每台机器。在 gateway 上设置一个遥测目标，它就会为已登录的开发者开启遥测。它还会用开发者登录时验证过的邮箱和 IdP 组标记每次导出，而不是使用客户端配置的值。
+
+要将使用量归因到你自己的成本中心和部门，可以设置 OTEL_RESOURCE_ATTRIBUTES 环境变量（例如 department=engineering,cost_center=eng-123）。Claude Code 会将这些标签添加到每个指标和事件中，因此你可以按这些标签进行过滤和聚合。这些指标会带着这些自定义属性落入 Google Cloud Monitoring（或其他监控方案，如 Grafana 或 Splunk）。
+
+Cloud Monitoring 中的 Claude Code 使用量仪表盘，基于 Claude Code 的 OpenTelemetry 指标构建。使用示例数据进行的示意性复刻。典型的采用视图会显示活跃开发者数量、过去 24 小时的会话数以及消耗的 token 总数。橙色框显示的是开发者在触及 gateway 强制执行的支出上限时被阻止的请求。该指标与现有的工单系统搭配得很好，可以作为允许开发者申请提高上限的工作流。
+
+如需现成的 Cloud Monitoring 仪表盘，请参考 [Claude Code Monitoring 模板 (opens in new tab)](https://github.com/GoogleCloudPlatform/monitoring-dashboard-samples/tree/master/dashboards/claude-code)，它将 Claude Code 的 OpenTelemetry 指标转化为采用情况、编码活动和 token 使用量及估算支出的单一视图，让你在 Google Cloud 上推广 Claude Code 时能够按用户和模型跟踪使用量与成本。你可以直接从 Cloud Monitoring 控制台复制该模板。
+
+若要在 Google Cloud 上设置自定义的 Claude Code 遥测，可以从 [Claude Code OTel 快速入门 (opens in new tab)](https://github.com/Google-Cloud-AI/partner-ai-anthropic/tree/main/01-quickstart/otlp-to-telemetry-api)开始。用它来配置 Claude Code，将 OpenTelemetry 直接导出到 Google Cloud 可观测性套件（包括 Cloud Logging 和 Cloud Monitoring）。该快速入门还会将日志路由到分区 BigQuery 表（每种事件类型一张表：API 请求、工具决策、工具结果、助手响应和已完成的 hook 执行），并提供用于按开发者/模型分析支出的 SQL 查询，以及工具成功率与延迟、hook 等待时间、每轮和每会话分析。
+
+#### 杠杆三：证明
+
+控制杠杆负责治理和分配使用量与成本；跟踪杠杆让你可视化这些支出。证明杠杆则是将使用情况映射到 Claude Code on Google Cloud 的 ROI。
+
+平台工程师最关心的 Claude Code 衡量指标包含三个维度：使用情况、开发者满意度和影响。
+
+**采用与使用（Adoption and usage）**指标衡量组织中人们如何使用 Claude，包括已激活用户及其每周和每日使用情况。这些指标揭示诸如使用深度、随时间的用户留存情况，以及谁是你们组织的 Claude Code 高级用户等信息。这些指标全部来自 Claude Code 的 OTel 数据。
+
+**满意度（Satisfaction）**指标监控工程师的用户体验，包括他们对 Claude Code 的满意度、感知的时间节省、对输出的信心，以及可能遇到的摩擦。满意度指标来自推广前后运行的一次简短调查，以及后续的持续用户回访。
+
+**影响（Impact）**指标评估 Claude 如何交付可衡量的工程成果，将吞吐量、周期时间和评审速度与基线进行比较，并对特定的工作成果进行定性衡量。
+
+### **一套起步用的影响指标**
+
+以下是一套起步用的影响指标，分为三个领域：时间、投入和产出量。
+
+**时间（Time）**衡量工作交付的速度：PR 从创建到合并的周期时间，以及代码评审周转时间。
+
+**投入（Effort）**衡量每项变更投入的工作量：每个 PR 的评审迭代次数、每个 PR 的评审评论和返工量。
+
+**产出量（Volume）**衡量释放出来的产能带来了什么：每位工程师的 PR 数、部署频率，以及具名工作成果（named bodies of work）：团队用释放出的产能交付的具体积压事项。这些在数量之外增加了定性视角。
+
+这些是方向性的参考点，而非硬性规则，但它们是衡量 Claude Code 在你组织中影响的良好起点。你需要的基线已经存在：你在源码控制和工单系统中的交付历史。
+
+### **定义你的工作单元**
+
+这些指标大多统计 PR 数量，但一个错别字修复和一个功能发布都是一个 PR。因此，改为统计某一明确定义类别的已合并 PR：Claude 打开 PR，由人来决定它是否发布。诸如 hotfix 或 feature release 之类的标签、工单 ID，以及 Claude 是否参与其中，都能让你在你已运行的系统中轻松找到这些 PR。并非每个工作单元都是 PR；服务切换或从根因上关闭的事故也是例子。同样的规则适用：统计一件完成的事，落在哪里就在哪里统计。
+
+## Claude Code 原生遥测
+
+在落实成本治理和使用跟踪之后，下一步是将这些映射到 ROI。Claude Code 的原生遥测帮助你捕获贡献度和生产力指标，从而记录你的组织获得的价值。
+
+Claude Code 的 OTel 指标让你能够跟踪或推导出代码建议接受率、修改的代码行数、创建的提交数、创建的 PR 数、单位产出的成本以及每位用户的 PR 数。
+
+所有这些原生指标都提供了有用且可操作的信息。当这些信息与通过 [Claude Code telemetry on Google Cloud (opens in new tab)](https://docs.google.com/document/d/1LezclyuvbRQ9tInAet0loCEPiNIITB8eLHvzNik9IBs/edit?tab=t.nr7gi1cdf1oi#heading=h.vdcj39wwyv9f) 捕获的诸如用户提示和工具决策等记录事件相结合时，会更有价值。例如，记录用户提示是了解你的用户群正在尝试构建什么的好方法，因为并非每个工作单元都必然是 PR。请注意，由于提示可能包含敏感内容，用户提示不会自动记录；你必须显式选择启用。
+
+举个例子：如果你是一名 SRE，可以用 Claude Code 排查事故；如果你是一名销售工程师，可以用它生成现场演示的示例数据。这些会话不会产生 PR，但它们确实加速了这些团队的工作流。请记住，Claude Code 的 PR 指标统计的是 Claude Code *创建*的 PR，而不是最终合并的 PR。你的源码控制和工单系统仍然是交付结果的记录来源，因此请将 Claude Code 遥测与 GitHub 或 GitLab 以及你的工单跟踪器关联起来，才能获得全貌。
+
+以下是一些 Claude on Google Cloud 客户通过 Claude Code 取得的可衡量影响。
+
+- [Delivery Hero (opens in new tab)](https://claude.com/customers/delivery-hero) 的一个团队重构了横跨 100 个 UI 组件的设计系统。Claude Code 用几分钟完成了通常需要工程师一周时间的工作。
+- [Shopify (opens in new tab)](https://claude.com/customers/shopify) 的工程师借助 Claude Code 更快地构建，但非工程师也在用几分钟而不是几天的时间构建内部工具。Claude Code 正在扩大 Shopify 中&quot;谁能构建&quot;的范围，而不仅仅是加快已经在构建的人的速度。
+- [Fifth Dimension (opens in new tab)](https://cloud.google.com/customers/fifth-dimension-anthropic) 的工程师普遍在 Google Cloud 上使用 Claude Code。他们合计每月编写超过 30 万行代码，接受率达 98%。
+
+## 开始使用
+
+这篇文章的目标是帮助你熟悉现有的工具和能力，以便管理 Claude Code on Google Cloud 的成本并展示 ROI。作为平台工程师，这套体系不仅用于观察用户群中的行为，还为你提供动态调整治理和设置所需的知识。
+
+这是一个持续循环：从合理的默认值开始，例如组织范围的支出上限、默认模型和模型白名单，然后随着使用数据的到来，按角色和团队进行细化。通过跟踪实际使用情况并将指标与你从 Claude Code 获得的价值相关联，你就可以将这些交付给需要分析使用 Claude Code 的 ROI 和业务影响的相关方。
+
+随着我们委托给 Claude 的工作量和类型不断加深、日趋多样，组织如何使用 Claude Code on Google Cloud 以及从这种使用中获得的价值也都会不断演变。这里概述的 **控制 → 跟踪 → 证明**框架是衡量你 Claude Code 部署的每个方面和成果的稳定起点。
+
+以下资源可以帮助你入门：
+
+- [有效管理成本（Manage costs effectively） (opens in new tab)](https://code.claude.com/docs/en/costs)
+- [监控使用量与成本（Monitoring usage and costs） (opens in new tab)](https://code.claude.com/docs/en/monitoring-usage)
+- [Claude apps gateway 支出上限（Claude apps gateway spend limits） (opens in new tab)](https://code.claude.com/docs/en/claude-apps-gateway-spend-limits)
+- [在 Google Cloud 上部署 Claude apps gateway (opens in new tab)](https://code.claude.com/docs/en/claude-apps-gateway-on-gcp)
+- [创建、编辑或删除预算和预算提醒 (opens in new tab)](https://code.claude.com/docs/en/claude-apps-gateway-on-gcp)
+- [管理支出上限预算 | Cloud Billing (opens in new tab)](https://docs.cloud.google.com/billing/docs/how-to/budgets-spend-caps)</textarea>
+    </div>
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            
+            <h1 class="article-title u-text-style-h1">在 Google Cloud 上管理 Claude Code 成本并展示 ROI</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>在 Google Cloud 上管理 Anthropic 的 Claude Code 成本并衡量投资回报的最佳实践。</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <div class="hero-detail-value u-text-style-body-3">Best practices</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">October 27, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>17</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/how-to-manage-costs-and-demonstrate-roi-for-claude-code-on-google-cloud/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>随着组织将越来越多的任务委托给 Claude Code，支出也随之增长，平台团队既需要控制成本，也需要理解其影响。受 <a href="https://www.anthropic.com/webinars/how-to-control-costs-and-show-roi-for-claude-code-on-google-cloud" target="_blank" rel="noopener noreferrer">与 Google Cloud 合作的近期网络研讨会<span class="sr-only" lang="en" data-export-skip=""> (opens in new tab)</span></a> 的启发，我们在此分享使用 Claude Code 的组织如何在 Google Cloud 上更好地跟踪和优化这些考量，包括三大核心杠杆：控制（Control）、跟踪（Track）和证明（Prove）。</p><h2 id="controls-for-managing-claude-code-spend">控制 Claude Code 支出</h2><p>Claude on Google Cloud 采用按用量计费的模式，因此你的账单直接反映了开发者在你的 Google Cloud 环境中使用了多少 Claude。采用推动使用；使用量正是你所支付的，也是价值所在。</p><p>你的 Claude Code 账单取决于任务消耗的 token 数量以及处理这些任务的模型。Token 消耗随任务复杂度和对话长度而增长。聊天是问答式对话。像 Claude Code 这样的代理（agentic）工具在每项任务上消耗的 token 比聊天更多，因为它要做多步骤的工作：读取文件、运行工具，并在整个任务中进行推理。与此同时，每个模型都有各自的每 token 价格，因此<a href="https://claude.com/blog/claude-model-and-effort-level-in-claude-code">让模型匹配任务</a>是另一项主要的成本控制手段。</p><p>每月影响组织账单的 token 与模型选择，可以通过 <a href="https://claude.com/blog/introducing-the-claude-apps-gateway">Claude apps gateway</a> 和 Google Cloud 服务进行查看。你可以通过三个相互独立的杠杆来治理支出、管理成本：</p><ul><li><strong>控制（Control）</strong>。建立护栏来引导使用，而不是过度限制访问、意外地挡住用户。</li><li><strong>跟踪（Track）</strong>。在账单到来之前，对支出发生在哪里、以及未来将流向哪里进行细粒度监控。</li><li><strong>证明（Prove）</strong>。识别你的组织从这些 token 支出中获得的价值，并精确归因其来源。</li></ul><p>以下是如何将控制 → 跟踪 → 证明这一框架应用到你自己在 Google Cloud 上的 Claude Code 部署中。</p><figure style="--media-natural-width:1999px"><img referrerpolicy="strict-origin-when-cross-origin" src="https://assets.claude.com/50faca60a22f422f7c0f5e9d2f4177a1ea483448.png" width="1999" height="917" alt="graphic showing control - track - prove categories and the tools used in each" loading="lazy" decoding="async" class="Media-module-scss-module__7ZZCyW__image"></figure><h3><strong>治理工具箱</strong></h3><p>Claude on Google Cloud 提供了用于控制、跟踪和证明支出价值的工具与能力。</p><figure style="--media-natural-width:1999px"><img referrerpolicy="strict-origin-when-cross-origin" src="https://assets.claude.com/b3266f5cebd6e2613593339d21200b3a7c034b9a.png" width="1999" height="774" alt="Graphic showing Google Cloud native and Claude Code + Claude apps gateway add" loading="lazy" decoding="async" class="Media-module-scss-module__7ZZCyW__image"></figure><p>Google Cloud 已经提供了许多可用于跟踪和控制 Claude 支出的原生能力：</p><ul><li><strong>按项目计费（Per-project billing）</strong>。允许你为 Claude Code 托管一个专用项目，作为跟踪成本的干净方式。</li><li><strong>账单预算与提醒（Billing budgets and alerts）</strong>。允许你设置预算提醒，并在实际支出超过你设定的阈值时收到通知。</li><li><strong>支出上限（预览版，Spend caps (Preview)）</strong>。允许你强制执行服务级别的 Google Cloud 支出预算，并支持手动解除上限。</li><li><strong>BigQuery 导出</strong>。让你可以将 Claude 支出与其余云成本一起分析。</li><li><strong>配额（Quotas）</strong>。Google Cloud 上的 Claude 模型对每个模型系列和端点位置，在请求、输入 token 和输出 token 上设有每分钟限制。</li><li><strong>预置吞吐量（Provisioned throughput）</strong>。为预留容量支付固定费用，而不是按量付费。</li></ul><p>Claude Code 和 Claude apps gateway 则提供了各自的跟踪与控制能力。Gateway 是一项自托管服务，随开发者已经在使用的同一个 <code>claude</code> 二进制发布，运行在你 Google Cloud 项目中、位于 Claude Code 与 Claude on Google Cloud 之间。开发者通过你的身份提供商（例如 Google Workspace）登录，因此每个请求都带有经过验证的身份。这使你能够按 IdP 组设置模型白名单，并按用户、IdP 组或组织设置每日、每周或每月的支出上限。</p><p>以下是如何选择并组合这些能力，以管理衡量你在 Claude on Google Cloud 上的 AI 投资成本与 ROI 的三大杠杆：</p><h4>杠杆一：控制</h4><p>控制杠杆的核心是提供引导开发者在 Claude Code 使用中的护栏，而不是用任意的上限来限制他们。</p><p>引导而非限制之所以重要，是因为高成本会话未必是坏事——事实上，它们往往具有高价值，尤其是在 Claude Code 中。这些会话通常来自你的高级用户，他们站在前沿，使用新的工作流，从 Claude 中获得大量价值，也完成了大量工作。</p><p>浪费往往集中在重度使用者的中间地带。例如，他们用 Fable 处理一个 Sonnet 就能轻松搞定的日常任务；或者他们忘记了某个不再关心的定时任务，而它还在继续自动运行。</p><p>有四个功能可以为你提供引导用户而非限制用户的护栏：</p><ul><li><strong><a href="https://code.claude.com/docs/en/claude-apps-gateway-spend-limits" target="_blank" rel="noopener noreferrer">支出上限（Spend limits）<span class="sr-only" lang="en" data-export-skip=""> (opens in new tab)</span></a>。</strong>Claude apps gateway 允许你按用户、IdP 组或组织范围设置每日、每周或每月的支出上限。组和组织级上限是每位开发者继承的默认值，而非共享池。</li><li><strong>阈值提醒（Threshold alerts）</strong>。与 Claude apps gateway 配合使用时，Claude Code on Google Cloud 会在开发者接近上限时发出警告，先是超过 75% 时，再是超过 95% 时。这些是面向开发者的 CLI 内警告，而 Google Cloud Billing 提醒则面向管理员。达到上限时，gateway 会返回 429，直到周期重置或管理员提高上限；你也可以通过 gateway 的管理 API 编写脚本来自动提高上限。</li><li><strong>模型默认值与白名单（Model defaults and allowlists）</strong>。通过 Claude apps gateway 指定每个 IdP 组可用的模型，gateway 会在服务端对每个请求强制执行白名单。我们发现设置模型默认值效果非常好，因为大多数人会坚持使用默认模型；如果他们想切换模型，通常是出于某个原因。你可以将模型默认值与模型白名单搭配使用，或单独使用其中一种。</li><li><strong>Gateway 管理 API（Gateway Admin API）</strong>。Gateway 提供了<a href="https://code.claude.com/docs/en/claude-apps-gateway-spend-limits" target="_blank" rel="noopener noreferrer">支出上限管理 API<span class="sr-only" lang="en" data-export-skip=""> (opens in new tab)</span></a>，因此你可以通过编程方式设置和更改上限，例如使用工单工作流。</li></ul><figure style="--media-natural-width:2400px"><img referrerpolicy="strict-origin-when-cross-origin" src="https://assets.claude.com/d1ded8cd5410c90e62905f650bf2a4e09df4cdce.png" width="2400" height="1120" alt="Graphic showing the phases of a spend-cap lifecycle" loading="lazy" decoding="async" class="Media-module-scss-module__7ZZCyW__image"></figure><p>组合这些能力来控制你的整体账单，但要记住，控制只是第一个杠杆。每 token 价格并不能给你全貌。最重要的指标是每任务成本（cost per task），它可以通过跟踪使用情况来监控和分析。</p><h4>杠杆二：跟踪</h4><p>这个杠杆的核心是看清支出的去向以及它是如何被使用的。好消息是，你可以跨组织跟踪 Claude Code 的使用量、成本和工具活动。主要的跟踪策略包括：</p><ul><li><strong>使用量与成本的可观测性（Usage and cost observability）</strong>。<a href="https://code.claude.com/docs/en/monitoring-usage" target="_blank" rel="noopener noreferrer">Claude Code 的 OpenTelemetry 指标与事件<span class="sr-only" lang="en" data-export-skip=""> (opens in new tab)</span></a>会按技能（skill）、插件（plugin）、agent 和 MCP server 报告使用量和估算成本。通过 OpenTelemetry 收集器或由 Claude apps gateway 转发（用于集中式 OpenTelemetry 配置），以 OpenTelemetry Protocol (OTLP) 将这些数据发送到你已在运行的工具（例如 Google Cloud Monitoring）。</li><li><strong>终端用户使用视图（End-user usage view）</strong>。开发者可以直接在 Claude Code 中看到自己的支出并在触及限制前收到使用警告。</li><li><strong>向现有系统导出数据（Data export to your existing systems）</strong>。Google Cloud Billing 导出到 BigQuery 的功能让你可以按模型和 token 类型过滤 Claude SKU，将 Claude 支出与你其余的云和 AI 支出放在一起。OTel 数据流向你的可观测性（O11y）技术栈，而 gateway 管理 API 可以将支出上限状态直接送入你的工单系统。</li></ul><figure style="--media-natural-width:1999px"><img referrerpolicy="strict-origin-when-cross-origin" src="https://assets.claude.com/f2ab59204d683994ef32ddc5b4e6f1167389a800.png" width="1999" height="953" alt="Graphic showing Claude Code telemetry on Google Cloud" loading="lazy" decoding="async" class="Media-module-scss-module__7ZZCyW__image"></figure><p>Claude Code——无论是在开发者机器上还是在云工作站上运行——一旦启用即可导出 OpenTelemetry 数据，包括会话、活跃时间、代码行数、提交、拉取请求、token 和成本，并按用户、团队和模型细分。Claude Code 的最新版本还按技能、插件、agent 和 MCP server 细分使用情况，让你不仅能看到整体 Claude Code 使用量，还能看到你组织内部技能和插件的采用情况。使用 Claude apps gateway 时，你无需配置每台机器。在 gateway 上设置一个遥测目标，它就会为已登录的开发者开启遥测。它还会用开发者登录时验证过的邮箱和 IdP 组标记每次导出，而不是使用客户端配置的值。</p><p>要将使用量归因到你自己的成本中心和部门，可以设置 OTEL_RESOURCE_ATTRIBUTES 环境变量（例如 department=engineering,cost_center=eng-123）。Claude Code 会将这些标签添加到每个指标和事件中，因此你可以按这些标签进行过滤和聚合。这些指标会带着这些自定义属性落入 Google Cloud Monitoring（或其他监控方案，如 Grafana 或 Splunk）。</p><figure style="--media-natural-width:1999px"><img referrerpolicy="strict-origin-when-cross-origin" src="https://assets.claude.com/201a89049ce753ac7e42f8518d1db7908b40a91a.png" width="1999" height="1428" alt="A screenshot of a dashboard" loading="lazy" decoding="async" class="Media-module-scss-module__7ZZCyW__image"><figcaption>Cloud Monitoring 中的 Claude Code 使用量仪表盘，基于 Claude Code 的 OpenTelemetry 指标构建。使用示例数据进行的示意性复刻。</figcaption></figure><p>典型的采用视图会显示活跃开发者数量、过去 24 小时的会话数以及消耗的 token 总数。橙色框显示的是开发者在触及 gateway 强制执行的支出上限时被阻止的请求。该指标与现有的工单系统搭配得很好，可以作为允许开发者申请提高上限的工作流。</p><p>如需现成的 Cloud Monitoring 仪表盘，请参考 <a href="https://github.com/GoogleCloudPlatform/monitoring-dashboard-samples/tree/master/dashboards/claude-code" target="_blank" rel="noopener noreferrer">Claude Code Monitoring 模板<span class="sr-only" lang="en" data-export-skip=""> (opens in new tab)</span></a>，它将 Claude Code 的 OpenTelemetry 指标转化为采用情况、编码活动和 token 使用量及估算支出的单一视图，让你在 Google Cloud 上推广 Claude Code 时能够按用户和模型跟踪使用量与成本。你可以直接从 Cloud Monitoring 控制台复制该模板。</p><p>若要在 Google Cloud 上设置自定义的 Claude Code 遥测，可以从 <a href="https://github.com/Google-Cloud-AI/partner-ai-anthropic/tree/main/01-quickstart/otlp-to-telemetry-api" target="_blank" rel="noopener noreferrer">Claude Code OTel 快速入门<span class="sr-only" lang="en" data-export-skip=""> (opens in new tab)</span></a>开始。用它来配置 Claude Code，将 OpenTelemetry 直接导出到 Google Cloud 可观测性套件（包括 Cloud Logging 和 Cloud Monitoring）。该快速入门还会将日志路由到分区 BigQuery 表（每种事件类型一张表：API 请求、工具决策、工具结果、助手响应和已完成的 hook 执行），并提供用于按开发者/模型分析支出的 SQL 查询，以及工具成功率与延迟、hook 等待时间、每轮和每会话分析。</p><h4>杠杆三：证明</h4><p>控制杠杆负责治理和分配使用量与成本；跟踪杠杆让你可视化这些支出。证明杠杆则是将使用情况映射到 Claude Code on Google Cloud 的 ROI。</p><p>平台工程师最关心的 Claude Code 衡量指标包含三个维度：使用情况、开发者满意度和影响。</p><p><strong>采用与使用（Adoption and usage）</strong>指标衡量组织中人们如何使用 Claude，包括已激活用户及其每周和每日使用情况。这些指标揭示诸如使用深度、随时间的用户留存情况，以及谁是你们组织的 Claude Code 高级用户等信息。这些指标全部来自 Claude Code 的 OTel 数据。</p><p><strong>满意度（Satisfaction）</strong>指标监控工程师的用户体验，包括他们对 Claude Code 的满意度、感知的时间节省、对输出的信心，以及可能遇到的摩擦。满意度指标来自推广前后运行的一次简短调查，以及后续的持续用户回访。</p><p><strong>影响（Impact）</strong>指标评估 Claude 如何交付可衡量的工程成果，将吞吐量、周期时间和评审速度与基线进行比较，并对特定的工作成果进行定性衡量。</p><h3><strong>一套起步用的影响指标</strong></h3><p>以下是一套起步用的影响指标，分为三个领域：时间、投入和产出量。</p><p><strong>时间（Time）</strong>衡量工作交付的速度：PR 从创建到合并的周期时间，以及代码评审周转时间。</p><p><strong>投入（Effort）</strong>衡量每项变更投入的工作量：每个 PR 的评审迭代次数、每个 PR 的评审评论和返工量。</p><p><strong>产出量（Volume）</strong>衡量释放出来的产能带来了什么：每位工程师的 PR 数、部署频率，以及具名工作成果（named bodies of work）：团队用释放出的产能交付的具体积压事项。这些在数量之外增加了定性视角。</p><p>这些是方向性的参考点，而非硬性规则，但它们是衡量 Claude Code 在你组织中影响的良好起点。你需要的基线已经存在：你在源码控制和工单系统中的交付历史。</p><h3><strong>定义你的工作单元</strong></h3><p>这些指标大多统计 PR 数量，但一个错别字修复和一个功能发布都是一个 PR。因此，改为统计某一明确定义类别的已合并 PR：Claude 打开 PR，由人来决定它是否发布。诸如 hotfix 或 feature release 之类的标签、工单 ID，以及 Claude 是否参与其中，都能让你在你已运行的系统中轻松找到这些 PR。并非每个工作单元都是 PR；服务切换或从根因上关闭的事故也是例子。同样的规则适用：统计一件完成的事，落在哪里就在哪里统计。</p><h2 id="claude-code-native-telemetry">Claude Code 原生遥测</h2><p>在落实成本治理和使用跟踪之后，下一步是将这些映射到 ROI。Claude Code 的原生遥测帮助你捕获贡献度和生产力指标，从而记录你的组织获得的价值。</p><figure style="--media-natural-width:1999px"><img referrerpolicy="strict-origin-when-cross-origin" src="https://assets.claude.com/5d1a4e740237e04f4524c9ff169e0f70def7c5ab.png" width="1999" height="963" alt="Graphic showing Claude Code native telemetry with three columns: Usage, Cost, Contribution / Productivity." loading="lazy" decoding="async" class="Media-module-scss-module__7ZZCyW__image"></figure><p>Claude Code 的 OTel 指标让你能够跟踪或推导出代码建议接受率、修改的代码行数、创建的提交数、创建的 PR 数、单位产出的成本以及每位用户的 PR 数。</p><p>所有这些原生指标都提供了有用且可操作的信息。当这些信息与通过 <a href="https://docs.google.com/document/d/1LezclyuvbRQ9tInAet0loCEPiNIITB8eLHvzNik9IBs/edit?tab=t.nr7gi1cdf1oi#heading=h.vdcj39wwyv9f" target="_blank" rel="noopener noreferrer">Claude Code telemetry on Google Cloud<span class="sr-only" lang="en" data-export-skip=""> (opens in new tab)</span></a> 捕获的诸如用户提示和工具决策等记录事件相结合时，会更有价值。例如，记录用户提示是了解你的用户群正在尝试构建什么的好方法，因为并非每个工作单元都必然是 PR。请注意，由于提示可能包含敏感内容，用户提示不会自动记录；你必须显式选择启用。</p><p>举个例子：如果你是一名 SRE，可以用 Claude Code 排查事故；如果你是一名销售工程师，可以用它生成现场演示的示例数据。这些会话不会产生 PR，但它们确实加速了这些团队的工作流。请记住，Claude Code 的 PR 指标统计的是 Claude Code <em>创建</em>的 PR，而不是最终合并的 PR。你的源码控制和工单系统仍然是交付结果的记录来源，因此请将 Claude Code 遥测与 GitHub 或 GitLab 以及你的工单跟踪器关联起来，才能获得全貌。</p><p>以下是一些 Claude on Google Cloud 客户通过 Claude Code 取得的可衡量影响。</p><ul><li><a href="https://claude.com/customers/delivery-hero" target="_blank" rel="noopener noreferrer">Delivery Hero<span class="sr-only" lang="en" data-export-skip=""> (opens in new tab)</span></a> 的一个团队重构了横跨 100 个 UI 组件的设计系统。Claude Code 用几分钟完成了通常需要工程师一周时间的工作。</li><li><a href="https://claude.com/customers/shopify" target="_blank" rel="noopener noreferrer">Shopify<span class="sr-only" lang="en" data-export-skip=""> (opens in new tab)</span></a> 的工程师借助 Claude Code 更快地构建，但非工程师也在用几分钟而不是几天的时间构建内部工具。Claude Code 正在扩大 Shopify 中"谁能构建"的范围，而不仅仅是加快已经在构建的人的速度。</li><li><a href="https://cloud.google.com/customers/fifth-dimension-anthropic" target="_blank" rel="noopener noreferrer">Fifth Dimension<span class="sr-only" lang="en" data-export-skip=""> (opens in new tab)</span></a> 的工程师普遍在 Google Cloud 上使用 Claude Code。他们合计每月编写超过 30 万行代码，接受率达 98%。</li></ul><h2 id="getting-started">开始使用</h2><p>这篇文章的目标是帮助你熟悉现有的工具和能力，以便管理 Claude Code on Google Cloud 的成本并展示 ROI。作为平台工程师，这套体系不仅用于观察用户群中的行为，还为你提供动态调整治理和设置所需的知识。</p><p>这是一个持续循环：从合理的默认值开始，例如组织范围的支出上限、默认模型和模型白名单，然后随着使用数据的到来，按角色和团队进行细化。通过跟踪实际使用情况并将指标与你从 Claude Code 获得的价值相关联，你就可以将这些交付给需要分析使用 Claude Code 的 ROI 和业务影响的相关方。</p><figure style="--media-natural-width:1999px"><img referrerpolicy="strict-origin-when-cross-origin" src="https://assets.claude.com/9a83ef407d2df018b107f8108d1955ad70702d7f.png" width="1999" height="1156" alt="Graphic showing a continuous loop for Control - Track - Prove framework" loading="lazy" decoding="async" class="Media-module-scss-module__7ZZCyW__image"></figure><p>随着我们委托给 Claude 的工作量和类型不断加深、日趋多样，组织如何使用 Claude Code on Google Cloud 以及从这种使用中获得的价值也都会不断演变。这里概述的 <strong>控制 → 跟踪 → 证明</strong>框架是衡量你 Claude Code 部署的每个方面和成果的稳定起点。</p><p>以下资源可以帮助你入门：</p><ul><li><a href="https://code.claude.com/docs/en/costs" target="_blank" rel="noopener noreferrer">有效管理成本（Manage costs effectively）<span class="sr-only" lang="en" data-export-skip=""> (opens in new tab)</span></a></li><li><a href="https://code.claude.com/docs/en/monitoring-usage" target="_blank" rel="noopener noreferrer">监控使用量与成本（Monitoring usage and costs）<span class="sr-only" lang="en" data-export-skip=""> (opens in new tab)</span></a></li><li><a href="https://code.claude.com/docs/en/claude-apps-gateway-spend-limits" target="_blank" rel="noopener noreferrer">Claude apps gateway 支出上限（Claude apps gateway spend limits）<span class="sr-only" lang="en" data-export-skip=""> (opens in new tab)</span></a></li><li><a href="https://code.claude.com/docs/en/claude-apps-gateway-on-gcp" target="_blank" rel="noopener noreferrer">在 Google Cloud 上部署 Claude apps gateway<span class="sr-only" lang="en" data-export-skip=""> (opens in new tab)</span></a></li><li><a href="https://code.claude.com/docs/en/claude-apps-gateway-on-gcp" target="_blank" rel="noopener noreferrer">创建、编辑或删除预算和预算提醒<span class="sr-only" lang="en" data-export-skip=""> (opens in new tab)</span></a></li><li><a href="https://docs.cloud.google.com/billing/docs/how-to/budgets-spend-caps" target="_blank" rel="noopener noreferrer">管理支出上限预算 | Cloud Billing<span class="sr-only" lang="en" data-export-skip=""> (opens in new tab)</span></a></li></ul></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/resources/articles/how-to-manage-costs-and-demonstrate-roi-for-claude-code-on-google-cloud" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/10/28 06:05:09</p>
+    </div>
+  </footer>
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
