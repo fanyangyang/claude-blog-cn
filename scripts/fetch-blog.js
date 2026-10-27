@@ -569,11 +569,21 @@ function illustrationExtension(url) {
 
 function extractArticleBodyNew(html) {
   const $ = cheerio.load(html);
-  const body = $('div.text-rich-text--article.w-richtext').first();
-  if (!body.length) return null;
-  const inner = body.html();
-  if (!inner || body.text().replace(/\s+/g, ' ').trim().length <= 40) return null;
-  return `<div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext">${inner}</div>`;
+  // The official page may split the article body across multiple
+  // text-rich-text--article blocks (e.g. main body + trailing sections),
+  // so collect every block in document order instead of taking .first().
+  const bodies = $('div.text-rich-text--article.w-richtext');
+  if (!bodies.length) return null;
+  const pieces = [];
+  let totalText = 0;
+  bodies.each((i, el) => {
+    const $el = $(el);
+    const text = $el.text().replace(/\s+/g, ' ').trim();
+    totalText += text.length;
+    if (text.length > 40) pieces.push($el.html());
+  });
+  if (totalText <= 40) return null;
+  return `<div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext">${pieces.join('')}</div>`;
 }
 
 function extractArticleMetaNew(html) {

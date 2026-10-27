@@ -6,7 +6,7 @@
     <description>Anthropic Claude 官方博客的中文翻译</description>
     <atom:link href="https://fanyangyang.github.io/claude-blog-cn/rss.xml" rel="self" type="application/rss+xml"/>
     <language>zh-CN</language>
-    <lastBuildDate>Mon, 26 Oct 2026 22:10:38 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 27 Oct 2026 10:14:08 GMT</lastBuildDate>
     <item>
       <title>Claude for Nonprofits 扩展计划</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/expanding-claude-for-nonprofits/</link>
@@ -36,7 +36,7 @@
       <category>Best practices</category>
     </item>
     <item>
-      <title>The full Claude Platform, available on Google Cloud</title>
+      <title>Google Cloud 上的 Claude 模型（Anthropic 托管）正式发布</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-models-on-google-cloud-anthropic-managed/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-models-on-google-cloud-anthropic-managed/</guid>
       <pubDate>Wed, 21 Oct 2026 16:00:00 GMT</pubDate>

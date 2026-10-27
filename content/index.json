@@ -25,7 +25,7 @@
       "translated": true,
       "translatedTitle": "Claude for Nonprofits 扩展计划",
       "translatedSubtitle": "Anthropic 的全新 Claude for Nonprofits 插件为认证非营利组织带来新技能，接手那些让小型团队不堪重负的运营工作。",
-      "translatedAt": "2026-10-27T06:10:00.000Z",
+      "translatedAt": "2026-10-27T10:20:00.000Z",
       "translateLang": "zh"
     },
     {
@@ -52,7 +52,9 @@
       "fetchedAt": "2026-10-23T22:04:50.637Z",
       "translated": true,
       "translatedTitle": "Claude Cowork 与聊天在 Enterprise 中合二为一",
-      "translatedSubtitle": "聊天和 Cowork 最早在九月为 Pro 和 Max 套餐走到了一起。如今，同一个统一的 Claude 体验已面向 Claude Enterprise 套餐全面开放。"
+      "translatedSubtitle": "聊天和 Cowork 最早在九月为 Pro 和 Max 套餐走到了一起。如今，同一个统一的 Claude 体验已面向 Claude Enterprise 套餐全面开放。",
+      "translatedAt": "2026-10-27T10:20:00.000Z",
+      "translateLang": "zh"
     },
     {
       "slug": "claude-duet-safety-privacy-and-security",
@@ -126,7 +128,11 @@
       "categoryUrl": "",
       "productUrl": "",
       "fetchedAt": "2026-10-23T01:37:59.661Z",
-      "translated": true
+      "translated": true,
+      "translatedTitle": "Google Cloud 上的 Claude 模型（Anthropic 托管）正式发布",
+      "translatedSubtitle": "Claude Models on Google Cloud（Anthropic 托管）现已正式全面推出，为 Google Cloud 客户提供完整的 Claude Platform 功能集，支持 Google Cloud IAM 凭据、账单和承诺消费额抵扣。",
+      "translatedAt": "2026-10-27T10:20:00.000Z",
+      "translateLang": "zh"
     },
     {
       "slug": "hcltech-joins-claude-partner-network",
@@ -178,7 +184,9 @@
       "fetchedAt": "2026-10-21T22:05:14.867Z",
       "translated": true,
       "translatedTitle": "Claude Duet 正式亮相",
-      "translatedSubtitle": "Claude Duet 是一款新应用，让 Claude 以主动式智能体的方式工作。研究预览版即日起面向美国地区的 Pro 和 Max 订阅用户开放候补名单。"
+      "translatedSubtitle": "Claude Duet 是一款新应用，让 Claude 以主动式智能体的方式工作。研究预览版即日起面向美国地区的 Pro 和 Max 订阅用户开放候补名单。",
+      "translatedAt": "2026-10-27T10:20:00.000Z",
+      "translateLang": "zh"
     },
     {
       "slug": "claude-security-now-scans-continuously-and-tracks-fixes",
@@ -9085,5 +9093,5 @@
       "productUrl": "https://claude.com/platform/api"
     }
   ],
-  "lastFetched": "2026-10-26T22:05:12.907Z"
+  "lastFetched": "2026-10-27T10:10:18.178Z"
 }
