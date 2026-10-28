@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Introducing artifacts for legal work — Claude Blog 中文翻译</title>
+  <meta name="description" content="Anthropic's new legal artifacts and connectors help legal teams get work done with Claude.">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>Introducing artifacts for legal work</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/resources/articles/introducing-artifacts-for-legal-work" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/introducing-artifacts-for-legal-work/en.html">阅读英文原文 →</a>
+      </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># Introducing artifacts for legal work
+
+Anthropic's new legal artifacts and connectors help legal teams get work done with Claude.
+
+今天，我们推出了一系列开箱即用的 artifacts，法律专业人士可以按自己团队的工作方式加以调整，并与公司内外的同事分享。自五月推出 Claude for Legal 以来，法律团队最常提出的需求就是更简单的设置和更方便地与同事协作。
+
+Artifacts 是交互式工具，例如追踪表和仪表盘，团队可以在 Claude 中使用和分享。我们的新法律图库（legal gallery）包含针对具体任务的 artifacts，例如审查一批合同、追踪监管变化、以及接收来自业务部门的法律请求。每个 artifact 都附带示例打开，法律专业人士可以在加入自己的数据和连接器之前，先了解整个工作流程是如何组织起来的。每项回答或输出都附有来源链接。
+
+我们还在资助那些为司法可及（access-to-justice）工作构建 artifacts 的公益组织，以及教授下一代律师用 Claude 构建应用的法律教育项目；同时，我们将启动 Legal Ambassadors Program，让法律专业人士可以相互学习。
+
+## **图库里有什么**
+
+借助这些 artifacts，法律专业人士只需提供自己的文档和来源，Claude 会完成第一遍处理，再由律师对结果进行判断。它们覆盖了法律团队向我们反馈最多的几类工作：
+
+- **Cite check** 将法律文档与其来源进行比对，标记出不匹配的引文、错误的页码，以及无法支撑论断的来源。
+- **Jurisdiction survey matrix** 在一张表中比较某个法律议题（例如数据泄露通知规则）在各州或各国的情况，并附上底层法律的链接。
+- **Matter board** 将接洽函、电子邮件或电子表格转化为一个包含所有未结事项的看板，显示负责人、下一步和下一个截止日期。
+- **Playbook deviation board** 将合同与贵公司的标准条款进行比对，标记出每一处不同的条款，并发送给负责审批例外情况的人。
+- **Regulatory horizon scan** 根据贵公司的业务和运营地域，将即将出台的法规映射到时间线上，并按影响程度排序，同时附上来源链接。
+- **Tabular review** 从一组合同中构建表格，展示您关心的条款（例如遣散费或竞业限制），并附上具体措辞的链接。
+
+## **贴合团队工作方式，并在护栏下分享**
+
+每个法律团队的工作方式各不相同，而 artifacts 在接入法律团队已在使用的系统时效果最佳。法律专业人士可以要求 Claude 按团队需求定制 artifacts，并使用连接器接入自己的 playbooks 或研究来源，这样就不必手动上传文档。
+
+自推出 Claude for Legal 以来，我们新增了 60 多个法律连接器，包括 Bloomberg Law、Filevine、Ivo、Legora 和 Patlytics。完整列表请参阅我们的[法律目录 （在新标签页中打开）](https://claude.ai/directory/legal)。
+
+Artifacts 支持组织内外的协作。法律团队可以与公司各部门的同事，或与客户和合作伙伴一起使用同一个 artifact，分享设置可确保隐私，并在团队之间建立职业道德墙（ethical walls）。
+
+## **向法律科技公司和律所开放图库**
+
+我们与法律科技公司和律所合作，为法律专业人士构建 artifacts。每个 artifact 都已放入图库，供法律专业人士发现、测试并根据自己的工作进行调整：
+
+- **AI Governance Benchmark，由 [Goodwin （在新标签页中打开）](https://www.goodwinlaw.com/en) 构建**，用于评估一家公司的 AI 治理方法，以发现潜在缺口。
+- **Harvey Intake，由 [Harvey （在新标签页中打开）](https://www.harvey.ai/) 构建**，为业务用户提供在 Claude 中发送法律问题和请求的统一入口，可依据 Harvey 中法务部门自有的指引回答常规问题，并将其余请求转给律师，律师的答复会回到 Claude 中。
+- **Obligations Checker，由 [Foley &amp; Lardner （在新标签页中打开）](https://www.foley.com/) 构建**，审查协议中双方的义务，帮助在交割前验证预期，并在交割后追踪预期履行情况。
+- **Subpoena Response Tool，由 [PwC （在新标签页中打开）](https://www.pwc.com/) 构建**，将您团队的先例、标准异议和模板转化为自动化、可供审计的初稿，让律师在更快响应的同时专注于复杂问题。
+
+我们期待法律科技公司、律所和法律援助机构创建并分享自己的 artifacts，Legora 和 Orrick 也将推出更多 artifacts。
+
+## **司法可及与 Legal Ambassadors Program**
+
+图库中包含九个司法可及类 artifacts，其中五个由我们以 Claude 积分支持的公益组织和公共利益机构构建：
+
+- **Criminal Charge Reality Check，由 [Zealous （在新标签页中打开）](https://zealo.us/) 构建**，输入一项刑事指控，即可向辩护团队展示量刑范围、这些案件通常如何结案的公开数据，以及标准的释放操作手册。仅限纽约州。
+- **Immigration Papers Reader，由 [Mobile Pathways （在新标签页中打开）](https://www.mobilepathways.org/) 构建**，将客户的移民文件转化为对关键日期和缺失文件的通俗易懂的第一遍解读。
+- **Rent Ledger Reviewer，由 [Rising for Justice （在新标签页中打开）](https://www.risingforjustice.org/) 构建**，帮助律师在准备驱逐案件时发现房东租金账本中的错误。基于哥伦比亚特区法律。
+- **Record-Sealing Screener，由 [Rising for Justice （在新标签页中打开）](https://www.risingforjustice.org/) 构建**，帮助律师评估客户的犯罪记录是否符合封存条件。基于哥伦比亚特区法律。
+- **Record Clearance，由 [The Access Project （在新标签页中打开）](https://accessprojectca.org/) 构建**，帮助法律援助团队判断客户的记录能否根据所在州的规则予以清除。
+
+这建立在此前 Oxford Justice Innovators Programme 的基础上——这是我们与牛津技术与正义研究所（Oxford Institute of Technology and Justice）和 Microsoft 合作的为期 12 个月的项目，支持多达 10 位创新者扩大司法可及。
+
+我们还将推出 Legal Ambassadors Program，这是一个面向用 Claude 构建应用的法律专业人士的社区，供大家分享成果、相互学习。[加入等候名单 （在新标签页中打开）](https://form.typeform.com/to/GyMebQvL)。
+
+## **开始使用**
+
+法律团队可以在 Claude 中[浏览图库 （在新标签页中打开）](https://claude.ai/artifacts?templates=legal)，或从我们的 [Claude for Legal （在新标签页中打开）](https://claude.com/solutions/legal) 页面开始。
+
+如需在您的组织中规划推广，请联系我们的销售团队，或与我们的一家实施合作伙伴合作，包括 Accenture、AnswerRocket、Caylent、Deloitte、KPMG、Lazer、Perficient、phData、Protiviti、Provectus、PwC、Sia Partners 和 Tenex。关于这些合作伙伴的更多信息，请[查看我们的合作伙伴目录 （在新标签页中打开）](https://partnerhub.claude.com/directory?filters=1792457729232x209054638212244450)。</textarea>
+    </div>
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            
+            <h1 class="article-title u-text-style-h1">Introducing artifacts for legal work</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>Anthropic's new legal artifacts and connectors help legal teams get work done with Claude.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <div class="hero-detail-value u-text-style-body-3">Product announcements</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">October 28, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>5</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/introducing-artifacts-for-legal-work/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>今天，我们推出了一系列开箱即用的 artifacts，法律专业人士可以按自己团队的工作方式加以调整，并与公司内外的同事分享。自五月推出 Claude for Legal 以来，法律团队最常提出的需求就是更简单的设置和更方便地与同事协作。</p><p>Artifacts 是交互式工具，例如追踪表和仪表盘，团队可以在 Claude 中使用和分享。我们的新法律图库（legal gallery）包含针对具体任务的 artifacts，例如审查一批合同、追踪监管变化、以及接收来自业务部门的法律请求。每个 artifact 都附带示例打开，法律专业人士可以在加入自己的数据和连接器之前，先了解整个工作流程是如何组织起来的。每项回答或输出都附有来源链接。</p><p>我们还在资助那些为司法可及（access-to-justice）工作构建 artifacts 的公益组织，以及教授下一代律师用 Claude 构建应用的法律教育项目；同时，我们将启动 Legal Ambassadors Program，让法律专业人士可以相互学习。</p><figure><div class="Video-module-scss-module__miVj5a__video Video-module-scss-module__miVj5a__youtubeEmbed Media-module-scss-module__7ZZCyW__video" data-youtube-id="o6h3IpqzQGc"><iframe src="https://www.youtube-nocookie.com/embed/o6h3IpqzQGc?enablejsapi=1&amp;rel=0&amp;playsinline=1&amp;modestbranding=1" title="video introducing Anthropic's latest Claude for Legal update" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" sandbox="allow-scripts allow-same-origin allow-presentation allow-popups" allowfullscreen="" class="Video-module-scss-module__miVj5a__player"></iframe></div></figure><h2 id="what-s-in-the-gallery"><strong>图库里有什么</strong></h2><p>借助这些 artifacts，法律专业人士只需提供自己的文档和来源，Claude 会完成第一遍处理，再由律师对结果进行判断。它们覆盖了法律团队向我们反馈最多的几类工作：</p><ul><li><strong>Cite check</strong> 将法律文档与其来源进行比对，标记出不匹配的引文、错误的页码，以及无法支撑论断的来源。</li><li><strong>Jurisdiction survey matrix</strong> 在一张表中比较某个法律议题（例如数据泄露通知规则）在各州或各国的情况，并附上底层法律的链接。</li><li><strong>Matter board</strong> 将接洽函、电子邮件或电子表格转化为一个包含所有未结事项的看板，显示负责人、下一步和下一个截止日期。</li><li><strong>Playbook deviation board</strong> 将合同与贵公司的标准条款进行比对，标记出每一处不同的条款，并发送给负责审批例外情况的人。</li><li><strong>Regulatory horizon scan</strong> 根据贵公司的业务和运营地域，将即将出台的法规映射到时间线上，并按影响程度排序，同时附上来源链接。</li><li><strong>Tabular review</strong> 从一组合同中构建表格，展示您关心的条款（例如遣散费或竞业限制），并附上具体措辞的链接。</li></ul><h2 id="tailored-to-how-teams-work-and-shared-with-guardrails"><strong>贴合团队工作方式，并在护栏下分享</strong></h2><p>每个法律团队的工作方式各不相同，而 artifacts 在接入法律团队已在使用的系统时效果最佳。法律专业人士可以要求 Claude 按团队需求定制 artifacts，并使用连接器接入自己的 playbooks 或研究来源，这样就不必手动上传文档。</p><p>自推出 Claude for Legal 以来，我们新增了 60 多个法律连接器，包括 Bloomberg Law、Filevine、Ivo、Legora 和 Patlytics。完整列表请参阅我们的<a href="https://claude.ai/directory/legal" target="_blank" rel="noopener noreferrer">法律目录<span class="sr-only" lang="en" data-export-skip=""> （在新标签页中打开）</span></a>。</p><p>Artifacts 支持组织内外的协作。法律团队可以与公司各部门的同事，或与客户和合作伙伴一起使用同一个 artifact，分享设置可确保隐私，并在团队之间建立职业道德墙（ethical walls）。</p><h2 id="opening-the-gallery-to-legal-tech-and-law-firms"><strong>向法律科技公司和律所开放图库</strong></h2><p>我们与法律科技公司和律所合作，为法律专业人士构建 artifacts。每个 artifact 都已放入图库，供法律专业人士发现、测试并根据自己的工作进行调整：</p><ul><li><strong>AI Governance Benchmark，由 <a href="https://www.goodwinlaw.com/en" target="_blank" rel="noopener noreferrer">Goodwin<span class="sr-only" lang="en" data-export-skip=""> （在新标签页中打开）</span></a> 构建</strong>，用于评估一家公司的 AI 治理方法，以发现潜在缺口。</li><li><strong>Harvey Intake，由 <a href="https://www.harvey.ai/" target="_blank" rel="noopener noreferrer">Harvey<span class="sr-only" lang="en" data-export-skip=""> （在新标签页中打开）</span></a> 构建</strong>，为业务用户提供在 Claude 中发送法律问题和请求的统一入口，可依据 Harvey 中法务部门自有的指引回答常规问题，并将其余请求转给律师，律师的答复会回到 Claude 中。</li><li><strong>Obligations Checker，由 <a href="https://www.foley.com/" target="_blank" rel="noopener noreferrer">Foley &amp; Lardner<span class="sr-only" lang="en" data-export-skip=""> （在新标签页中打开）</span></a> 构建</strong>，审查协议中双方的义务，帮助在交割前验证预期，并在交割后追踪预期履行情况。</li><li><strong>Subpoena Response Tool，由 <a href="https://www.pwc.com/" target="_blank" rel="noopener noreferrer">PwC<span class="sr-only" lang="en" data-export-skip=""> （在新标签页中打开）</span></a> 构建</strong>，将您团队的先例、标准异议和模板转化为自动化、可供审计的初稿，让律师在更快响应的同时专注于复杂问题。</li></ul><p>我们期待法律科技公司、律所和法律援助机构创建并分享自己的 artifacts，Legora 和 Orrick 也将推出更多 artifacts。</p><h2 id="access-to-justice-and-the-legal-ambassadors-program"><strong>司法可及与 Legal Ambassadors Program</strong></h2><p>图库中包含九个司法可及类 artifacts，其中五个由我们以 Claude 积分支持的公益组织和公共利益机构构建：</p><ul><li><strong>Criminal Charge Reality Check，由 <a href="https://zealo.us/" target="_blank" rel="noopener noreferrer">Zealous<span class="sr-only" lang="en" data-export-skip=""> （在新标签页中打开）</span></a> 构建</strong>，输入一项刑事指控，即可向辩护团队展示量刑范围、这些案件通常如何结案的公开数据，以及标准的释放操作手册。仅限纽约州。</li><li><strong>Immigration Papers Reader，由 <a href="https://www.mobilepathways.org/" target="_blank" rel="noopener noreferrer">Mobile Pathways<span class="sr-only" lang="en" data-export-skip=""> （在新标签页中打开）</span></a> 构建</strong>，将客户的移民文件转化为对关键日期和缺失文件的通俗易懂的第一遍解读。</li><li><strong>Rent Ledger Reviewer，由 <a href="https://www.risingforjustice.org/" target="_blank" rel="noopener noreferrer">Rising for Justice<span class="sr-only" lang="en" data-export-skip=""> （在新标签页中打开）</span></a> 构建</strong>，帮助律师在准备驱逐案件时发现房东租金账本中的错误。基于哥伦比亚特区法律。</li><li><strong>Record-Sealing Screener，由 <a href="https://www.risingforjustice.org/" target="_blank" rel="noopener noreferrer">Rising for Justice<span class="sr-only" lang="en" data-export-skip=""> （在新标签页中打开）</span></a> 构建</strong>，帮助律师评估客户的犯罪记录是否符合封存条件。基于哥伦比亚特区法律。</li><li><strong>Record Clearance，由 <a href="https://accessprojectca.org/" target="_blank" rel="noopener noreferrer">The Access Project<span class="sr-only" lang="en" data-export-skip=""> （在新标签页中打开）</span></a> 构建</strong>，帮助法律援助团队判断客户的记录能否根据所在州的规则予以清除。</li></ul><p>这建立在此前 Oxford Justice Innovators Programme 的基础上——这是我们与牛津技术与正义研究所（Oxford Institute of Technology and Justice）和 Microsoft 合作的为期 12 个月的项目，支持多达 10 位创新者扩大司法可及。</p><p>我们还将推出 Legal Ambassadors Program，这是一个面向用 Claude 构建应用的法律专业人士的社区，供大家分享成果、相互学习。<a href="https://form.typeform.com/to/GyMebQvL" target="_blank" rel="noopener noreferrer">加入等候名单<span class="sr-only" lang="en" data-export-skip=""> （在新标签页中打开）</span></a>。</p><h2 id="getting-started"><strong>开始使用</strong></h2><p>法律团队可以在 Claude 中<a href="https://claude.ai/artifacts?templates=legal" target="_blank" rel="noopener noreferrer">浏览图库<span class="sr-only" lang="en" data-export-skip=""> （在新标签页中打开）</span></a>，或从我们的 <a href="https://claude.com/solutions/legal" target="_blank" rel="noopener noreferrer">Claude for Legal<span class="sr-only" lang="en" data-export-skip=""> （在新标签页中打开）</span></a> 页面开始。</p><p>如需在您的组织中规划推广，请联系我们的销售团队，或与我们的一家实施合作伙伴合作，包括 Accenture、AnswerRocket、Caylent、Deloitte、KPMG、Lazer、Perficient、phData、Protiviti、Provectus、PwC、Sia Partners 和 Tenex。关于这些合作伙伴的更多信息，请<a href="https://partnerhub.claude.com/directory?filters=1792457729232x209054638212244450" target="_blank" rel="noopener noreferrer">查看我们的合作伙伴目录<span class="sr-only" lang="en" data-export-skip=""> （在新标签页中打开）</span></a>。</p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/resources/articles/introducing-artifacts-for-legal-work" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/10/29 00:04:58</p>
+    </div>
+  </footer>
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

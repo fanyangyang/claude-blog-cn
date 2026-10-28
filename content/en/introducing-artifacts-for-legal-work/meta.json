@@ -1,0 +1,23 @@
+{
+  "slug": "introducing-artifacts-for-legal-work",
+  "title": "Introducing artifacts for legal work",
+  "date": "October 28, 2026",
+  "category": "Product announcements",
+  "url": "https://claude.com/resources/articles/introducing-artifacts-for-legal-work",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "",
+  "illustrationBg": "peach",
+  "facets": {
+    "category": [],
+    "product": [],
+    "usecase": []
+  },
+  "subtitle": "Anthropic's new legal artifacts and connectors help legal teams get work done with Claude.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "",
+  "productUrl": "",
+  "fetchedAt": "2026-10-28T16:04:51.066Z"
+}
