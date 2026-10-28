@@ -25,6 +25,62 @@
       "translated": true
     },
     {
+      "slug": "smart-reports-surveys-pooled-budgets",
+      "title": "Smart reports, surveys, and pooled group budgets for Claude Enterprise",
+      "date": "October 28, 2026",
+      "category": "Product announcements",
+      "url": "https://claude.com/resources/articles/smart-reports-surveys-pooled-budgets",
+      "inHero": false,
+      "heroIndex": -1,
+      "inGrid": true,
+      "illustration": "",
+      "illustrationBg": "peach",
+      "facets": {
+        "category": [],
+        "product": [],
+        "usecase": []
+      },
+      "subtitle": "Smart reports show what work is happening and where, surveys capture feedback on it, and pooled group budgets give each team one shared budget.",
+      "authors": [],
+      "readingMinutes": 3,
+      "categoryUrl": "",
+      "productUrl": "",
+      "fetchedAt": "2026-10-28T22:05:48.392Z",
+      "translated": true,
+      "translatedTitle": "面向 Claude Enterprise 的智能报告、调查与群组合并预算",
+      "translatedSubtitle": "智能报告展示工作在哪里发生、进展如何，调查收集对它的反馈，群组合并预算为每个团队提供一个共享预算。",
+      "translatedAt": "2026-10-28T22:07:27.806Z",
+      "translateLang": "zh"
+    },
+    {
+      "slug": "idc-brings-quanta-into-claude-and-adopts-claude-across-the-company",
+      "title": "IDC brings Quanta into Claude and adopts Claude across the company",
+      "date": "October 28, 2026",
+      "category": "Product announcements",
+      "url": "https://claude.com/resources/articles/idc-brings-quanta-into-claude-and-adopts-claude-across-the-company",
+      "inHero": false,
+      "heroIndex": -1,
+      "inGrid": true,
+      "illustration": "",
+      "illustrationBg": "peach",
+      "facets": {
+        "category": [],
+        "product": [],
+        "usecase": []
+      },
+      "subtitle": "IDC integrated Claude as part of its Quanta platform, and it has rolled Claude out across its own business",
+      "authors": [],
+      "readingMinutes": 6,
+      "categoryUrl": "",
+      "productUrl": "",
+      "fetchedAt": "2026-10-28T22:05:48.834Z",
+      "translated": true,
+      "translatedTitle": "IDC 将 Quanta 引入 Claude，并在全公司采用 Claude",
+      "translatedSubtitle": "IDC 将 Claude 集成到其 Quanta 平台中，并在自身业务中全面推广 Claude",
+      "translatedAt": "2026-10-28T22:07:42.928Z",
+      "translateLang": "zh"
+    },
+    {
       "slug": "claude-for-financial-advisors",
       "title": "Claude for Financial Advisors",
       "date": "October 27, 2026",
@@ -9145,5 +9201,5 @@
       "productUrl": "https://claude.com/platform/api"
     }
   ],
-  "lastFetched": "2026-10-28T16:04:58.749Z"
+  "lastFetched": "2026-10-28T22:05:56.556Z"
 }

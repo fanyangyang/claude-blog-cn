@@ -6,11 +6,25 @@
     <description>Anthropic Claude 官方博客的中文翻译</description>
     <atom:link href="https://fanyangyang.github.io/claude-blog-cn/rss.xml" rel="self" type="application/rss+xml"/>
     <language>zh-CN</language>
-    <lastBuildDate>Wed, 28 Oct 2026 16:05:56 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 28 Oct 2026 22:07:51 GMT</lastBuildDate>
     <item>
       <title>Introducing artifacts for legal work</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/introducing-artifacts-for-legal-work/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/introducing-artifacts-for-legal-work/</guid>
+      <pubDate>Tue, 27 Oct 2026 16:00:00 GMT</pubDate>
+      <category>Product announcements</category>
+    </item>
+    <item>
+      <title>面向 Claude Enterprise 的智能报告、调查与群组合并预算</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/smart-reports-surveys-pooled-budgets/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/smart-reports-surveys-pooled-budgets/</guid>
+      <pubDate>Tue, 27 Oct 2026 16:00:00 GMT</pubDate>
+      <category>Product announcements</category>
+    </item>
+    <item>
+      <title>IDC 将 Quanta 引入 Claude，并在全公司采用 Claude</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/idc-brings-quanta-into-claude-and-adopts-claude-across-the-company/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/idc-brings-quanta-into-claude-and-adopts-claude-across-the-company/</guid>
       <pubDate>Tue, 27 Oct 2026 16:00:00 GMT</pubDate>
       <category>Product announcements</category>
     </item>
