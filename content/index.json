@@ -2300,7 +2300,7 @@
     },
     {
       "slug": "auto-mode-default-in-claude-code",
-      "title": "Auto mode is now the default in Claude Code for Pro, Max, and Team plans",
+      "title": "Auto mode is now the default in Claude Code for Pro, Max, Ultra, and Team plans",
       "date": "August 7, 2026",
       "category": "Product announcements",
       "url": "https://claude.com/resources/articles/auto-mode-default-in-claude-code",
@@ -2311,8 +2311,8 @@
       "illustrationBg": "peach",
       "fetchedAt": "2026-09-02T03:50:17.776Z",
       "translated": true,
-      "translatedTitle": "自动模式现已成为 Claude Code Pro、Max 和 Team 计划的默认设置",
-      "translatedAt": "2026-09-03T11:00:00.000Z",
+      "translatedTitle": "自动模式现已成为 Claude Code Pro、Max、Ultra 和 Team 计划的默认设置",
+      "translatedAt": "2026-10-31T22:07:35.897Z",
       "translateLang": "zh",
       "facets": {
         "category": [
@@ -9201,5 +9201,5 @@
       "productUrl": "https://claude.com/platform/api"
     }
   ],
-  "lastFetched": "2026-10-28T22:05:56.556Z"
+  "lastFetched": "2026-10-31T22:05:56.456Z"
 }

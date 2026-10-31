@@ -6,7 +6,7 @@
     <description>Anthropic Claude 官方博客的中文翻译</description>
     <atom:link href="https://fanyangyang.github.io/claude-blog-cn/rss.xml" rel="self" type="application/rss+xml"/>
     <language>zh-CN</language>
-    <lastBuildDate>Wed, 28 Oct 2026 22:07:51 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 31 Oct 2026 22:07:44 GMT</lastBuildDate>
     <item>
       <title>Introducing artifacts for legal work</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/introducing-artifacts-for-legal-work/</link>
@@ -519,7 +519,7 @@
       <category>Best practices</category>
     </item>
     <item>
-      <title>自动模式现已成为 Claude Code Pro、Max 和 Team 计划的默认设置</title>
+      <title>自动模式现已成为 Claude Code Pro、Max、Ultra 和 Team 计划的默认设置</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/auto-mode-default-in-claude-code/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/auto-mode-default-in-claude-code/</guid>
       <pubDate>Thu, 06 Aug 2026 16:00:00 GMT</pubDate>
