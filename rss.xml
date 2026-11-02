@@ -6,7 +6,14 @@
     <description>Anthropic Claude 官方博客的中文翻译</description>
     <atom:link href="https://fanyangyang.github.io/claude-blog-cn/rss.xml" rel="self" type="application/rss+xml"/>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 31 Oct 2026 22:07:44 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 02 Nov 2026 22:05:38 GMT</lastBuildDate>
+    <item>
+      <title>使用消息线程让长时间运行的智能体更快</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/message-threads/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/message-threads/</guid>
+      <pubDate>Sun, 01 Nov 2026 16:00:00 GMT</pubDate>
+      <category>Product announcements</category>
+    </item>
     <item>
       <title>Introducing artifacts for legal work</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/introducing-artifacts-for-legal-work/</link>

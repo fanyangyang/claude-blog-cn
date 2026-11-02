@@ -1,0 +1,7 @@
+{
+  "slug": "message-threads",
+  "translatedTitle": "使用消息线程让长时间运行的智能体更快",
+  "translatedAt": "2026-11-02T22:05:31.459Z",
+  "lang": "zh",
+  "translatedSubtitle": "Messages API 新功能：只需发送一次对话，后续每次调用 API 仅接收新增内容。"
+}
