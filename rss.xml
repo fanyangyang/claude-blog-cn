@@ -6,7 +6,14 @@
     <description>Anthropic Claude 官方博客的中文翻译</description>
     <atom:link href="https://fanyangyang.github.io/claude-blog-cn/rss.xml" rel="self" type="application/rss+xml"/>
     <language>zh-CN</language>
-    <lastBuildDate>Mon, 02 Nov 2026 22:05:38 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 04 Nov 2026 22:05:46 GMT</lastBuildDate>
+    <item>
+      <title>Claude Marketplace 新增面向安全、生产力和创意工作的 agent 与产品</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/new-agents-and-products-claude-marketplace/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/new-agents-and-products-claude-marketplace/</guid>
+      <pubDate>Tue, 03 Nov 2026 16:00:00 GMT</pubDate>
+      <category>General</category>
+    </item>
     <item>
       <title>使用消息线程让长时间运行的智能体更快</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/message-threads/</link>
