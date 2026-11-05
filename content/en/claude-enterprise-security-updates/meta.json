@@ -1,0 +1,23 @@
+{
+  "slug": "claude-enterprise-security-updates",
+  "title": "More visibility and control over Claude Enterprise for security teams",
+  "date": "November 5, 2026",
+  "category": "Product updates",
+  "url": "https://claude.com/resources/articles/claude-enterprise-security-updates",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "",
+  "illustrationBg": "peach",
+  "facets": {
+    "category": [],
+    "product": [],
+    "usecase": []
+  },
+  "subtitle": "Claude Enterprise has new security and admin features, including a security center, inference hooks, centralized management, and additional access controls.",
+  "authors": [],
+  "readingMinutes": 9,
+  "categoryUrl": "",
+  "productUrl": "",
+  "fetchedAt": "2026-11-05T22:04:45.337Z"
+}

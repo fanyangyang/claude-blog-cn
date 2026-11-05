@@ -6,48 +6,62 @@
     <description>Anthropic Claude 官方博客的中文翻译</description>
     <atom:link href="https://fanyangyang.github.io/claude-blog-cn/rss.xml" rel="self" type="application/rss+xml"/>
     <language>zh-CN</language>
-    <lastBuildDate>Wed, 04 Nov 2026 22:05:46 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 05 Nov 2026 22:07:06 GMT</lastBuildDate>
+    <item>
+      <title>Claude 中推出 Personal Finance</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/introducing-personal-finance-in-claude/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/introducing-personal-finance-in-claude/</guid>
+      <pubDate>Wed, 04 Nov 2026 16:00:00 GMT</pubDate>
+      <category>Product updates</category>
+    </item>
+    <item>
+      <title>Claude Enterprise 新增更多安全可见性与控制</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-enterprise-security-updates/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-enterprise-security-updates/</guid>
+      <pubDate>Wed, 04 Nov 2026 16:00:00 GMT</pubDate>
+      <category>Product updates</category>
+    </item>
     <item>
       <title>Claude Marketplace 新增面向安全、生产力和创意工作的 agent 与产品</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/new-agents-and-products-claude-marketplace/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/new-agents-and-products-claude-marketplace/</guid>
       <pubDate>Tue, 03 Nov 2026 16:00:00 GMT</pubDate>
-      <category>General</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>使用消息线程让长时间运行的智能体更快</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/message-threads/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/message-threads/</guid>
       <pubDate>Sun, 01 Nov 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Introducing artifacts for legal work</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/introducing-artifacts-for-legal-work/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/introducing-artifacts-for-legal-work/</guid>
       <pubDate>Tue, 27 Oct 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>面向 Claude Enterprise 的智能报告、调查与群组合并预算</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/smart-reports-surveys-pooled-budgets/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/smart-reports-surveys-pooled-budgets/</guid>
       <pubDate>Tue, 27 Oct 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>IDC 将 Quanta 引入 Claude，并在全公司采用 Claude</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/idc-brings-quanta-into-claude-and-adopts-claude-across-the-company/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/idc-brings-quanta-into-claude-and-adopts-claude-across-the-company/</guid>
       <pubDate>Tue, 27 Oct 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Enterprise announcements</category>
     </item>
     <item>
       <title>Claude for Financial Advisors</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-for-financial-advisors/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-for-financial-advisors/</guid>
       <pubDate>Mon, 26 Oct 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>在 Google Cloud 上管理 Claude Code 成本并展示 ROI</title>
@@ -61,21 +75,21 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/expanding-claude-for-nonprofits/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/expanding-claude-for-nonprofits/</guid>
       <pubDate>Sun, 25 Oct 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Claude Cowork 与聊天在 Enterprise 中合二为一</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/unified-claude-enterprise/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/unified-claude-enterprise/</guid>
       <pubDate>Thu, 22 Oct 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Claude Duet 的安全、隐私与防护</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-duet-safety-privacy-and-security/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-duet-safety-privacy-and-security/</guid>
       <pubDate>Thu, 22 Oct 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Building agents: When to fold subagents into your main agent loop </title>
@@ -89,28 +103,28 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-models-on-google-cloud-anthropic-managed/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-models-on-google-cloud-anthropic-managed/</guid>
       <pubDate>Wed, 21 Oct 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>HCLTech 加入 Claude 合作伙伴网络，成为全球首要合作伙伴</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/hcltech-joins-claude-partner-network/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/hcltech-joins-claude-partner-network/</guid>
       <pubDate>Tue, 20 Oct 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Enterprise announcements</category>
     </item>
     <item>
       <title>Claude Duet 正式亮相</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-duet/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-duet/</guid>
       <pubDate>Tue, 20 Oct 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Claude Security 现已支持持续扫描并追踪修复</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-security-now-scans-continuously-and-tracks-fixes/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-security-now-scans-continuously-and-tracks-fixes/</guid>
       <pubDate>Tue, 20 Oct 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>How an Anthropic BDR in Japan runs his day with Claude Managed Agents</title>
@@ -124,7 +138,7 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/code-review-is-now-generally-available/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/code-review-is-now-generally-available/</guid>
       <pubDate>Wed, 14 Oct 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Agent observability on the Claude Platform</title>
@@ -152,14 +166,14 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/dashboards-and-motion/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/dashboards-and-motion/</guid>
       <pubDate>Wed, 07 Oct 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Claude 现已支持 Google Docs、Sheets 和 Slides</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-now-works-in-google-docs-sheets-and-slides/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-now-works-in-google-docs-sheets-and-slides/</guid>
       <pubDate>Mon, 05 Oct 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Comcast 和 Booz Allen 如何用 Claude Mythos 寻找漏洞利用链并保护代码库</title>
@@ -173,7 +187,7 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/were-expanding-the-claude-startups-program-to-help-founders-build/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/were-expanding-the-claude-startups-program-to-help-founders-build/</guid>
       <pubDate>Mon, 05 Oct 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Cresta 如何将 CX 专业能力变成基于 Claude Agent SDK 的智能体构建器</title>
@@ -187,7 +201,7 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-code-mods/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-code-mods/</guid>
       <pubDate>Wed, 30 Sep 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Anthropic 销售团队如何用 Claude Managed Agents 重建获客流程</title>
@@ -201,7 +215,7 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-for-government-is-now-generally-available/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-for-government-is-now-generally-available/</guid>
       <pubDate>Tue, 29 Sep 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>可以辅导的智能体：Asana 如何用 Claude 构建人机智能体团队</title>
@@ -215,21 +229,21 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/giving-companies-more-control-over-their-ai-agents-with-nvidia/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/giving-companies-more-control-over-their-ai-agents-with-nvidia/</guid>
       <pubDate>Sun, 27 Sep 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Build plugins for Claude</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/build-plugins-for-claude/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/build-plugins-for-claude/</guid>
       <pubDate>Thu, 24 Sep 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Claude Tag now supports personal connectors in channels</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-tag-now-supports-personal-connectors-in-channels/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-tag-now-supports-personal-connectors-in-channels/</guid>
       <pubDate>Wed, 23 Sep 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Coding sessions are longer and use more context. Claude Opus 5.5 is built with that in mind.</title>
@@ -243,7 +257,7 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/how-coderabbit-power-digital-and-thoughtspot-scale-with-snowflake-and-vercel-on-claude-marketplace/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/how-coderabbit-power-digital-and-thoughtspot-scale-with-snowflake-and-vercel-on-claude-marketplace/</guid>
       <pubDate>Tue, 22 Sep 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Enterprise announcements</category>
     </item>
     <item>
       <title>How to prepare for AI-driven code modernization projects </title>
@@ -257,7 +271,7 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-marketplace/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-marketplace/</guid>
       <pubDate>Tue, 22 Sep 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>What a task costs on Opus 5.5</title>
@@ -278,21 +292,21 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/projects-redesigned/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/projects-redesigned/</guid>
       <pubDate>Wed, 16 Sep 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Claude Cowork and chat are now one Claude</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/cowork-is-now-claude/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/cowork-is-now-claude/</guid>
       <pubDate>Tue, 15 Sep 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>将 Salesforce 引入 Claude</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/salesforce-in-claude/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/salesforce-in-claude/</guid>
       <pubDate>Mon, 14 Sep 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>打造 AI 原生的营收组织</title>
@@ -306,7 +320,7 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-for-small-business-launches-new-workflows-integrations-and-training-programs/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-for-small-business-launches-new-workflows-integrations-and-training-programs/</guid>
       <pubDate>Mon, 14 Sep 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>智能体编码正在给 CI 带来压力：我们如何在 Anthropic 扩展测试影响分析</title>
@@ -334,7 +348,7 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/t-rowe-price-brings-more-of-claude-to-its-investment-process/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/t-rowe-price-brings-more-of-claude-to-its-investment-process/</guid>
       <pubDate>Wed, 09 Sep 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Enterprise announcements</category>
     </item>
     <item>
       <title>1,000 位小企业主教会了我们关于 AI 的什么</title>
@@ -362,7 +376,7 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-for-commerce-agents/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-for-commerce-agents/</guid>
       <pubDate>Tue, 01 Sep 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Anthropic 员工如何使用 Claude Tag</title>
@@ -376,7 +390,7 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-for-teachers-now-available-for-schools-and-districts/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-for-teachers-now-available-for-schools-and-districts/</guid>
       <pubDate>Thu, 27 Aug 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Warp 如何在 Claude 上构建自改进代理</title>
@@ -390,28 +404,28 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-in-chrome-generally-available/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-in-chrome-generally-available/</guid>
       <pubDate>Tue, 25 Aug 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Claude Cowork 内置浏览器：无需安装</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/cowork-built-in-browser/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/cowork-built-in-browser/</guid>
       <pubDate>Tue, 25 Aug 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Bain &amp; Company 加入 Claude Partner Network，成为全球首要合作伙伴</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/bain-company-joins-the-claude-partner-network-as-a-global-premier-partner/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/bain-company-joins-the-claude-partner-network-as-a-global-premier-partner/</guid>
       <pubDate>Mon, 24 Aug 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Enterprise announcements</category>
     </item>
     <item>
       <title>Claude 的记忆功能全面可用，内容由你决定</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claudes-memory-works-everywhere-and-you-decide-whats-in-it/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claudes-memory-works-everywhere-and-you-decide-whats-in-it/</guid>
       <pubDate>Mon, 24 Aug 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Anthropic 现场营销人员如何使用 Claude Code 为每位销售代表发送每周个性化更新</title>
@@ -425,7 +439,7 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/bringing-claude-mythos-5-to-more-defenders/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/bringing-claude-mythos-5-to-more-defenders/</guid>
       <pubDate>Thu, 20 Aug 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>AI 原生软件开发生命周期手册</title>
@@ -439,7 +453,7 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/anthropics-approach-to-teaching-and-learning-ai/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/anthropics-approach-to-teaching-and-learning-ai/</guid>
       <pubDate>Wed, 19 Aug 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>monday.com 如何将平台转变为人类与 AI 代理协作的产品</title>
@@ -460,7 +474,7 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/computer-use-skills-api-files-api/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/computer-use-skills-api-files-api/</guid>
       <pubDate>Wed, 19 Aug 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>将对话转化为知识：Slack 如何构建人机协作团队</title>
@@ -502,7 +516,7 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-tag-now-reads-even-more-of-the-room/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-tag-now-reads-even-more-of-the-room/</guid>
       <pubDate>Wed, 12 Aug 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>守卫前沿：JetBrains 如何评估和部署 Claude Fable 5</title>
@@ -516,14 +530,14 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/cowork-chrome-side-panel/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/cowork-chrome-side-panel/</guid>
       <pubDate>Tue, 11 Aug 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Compliance API 覆盖范围扩展至 Claude Cowork 和 Claude Code</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/compliance-api-cowork-and-claude-code/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/compliance-api-cowork-and-claude-code/</guid>
       <pubDate>Mon, 10 Aug 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Anthropic 业务拓展团队如何用 Claude 大规模运营入站与出站业务</title>
@@ -537,7 +551,7 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/auto-mode-default-in-claude-code/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/auto-mode-default-in-claude-code/</guid>
       <pubDate>Thu, 06 Aug 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>在生产环境中运行自动模式</title>
@@ -551,21 +565,21 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/millennium-and-anthropic-are-building-a-digital-risk-analyst-with-claude/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/millennium-and-anthropic-are-building-a-digital-risk-analyst-with-claude/</guid>
       <pubDate>Wed, 05 Aug 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Enterprise announcements</category>
     </item>
     <item>
       <title>在你自己的算力上运行 Claude Code 会话</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/run-claude-code-sessions-on-your-own-compute/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/run-claude-code-sessions-on-your-own-compute/</guid>
       <pubDate>Wed, 05 Aug 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>推理钩子：Claude Enterprise 的内联数据防泄漏</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-enterprise-inference-hooks/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-enterprise-inference-hooks/</guid>
       <pubDate>Tue, 04 Aug 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Claude 成本可见性与管控指南</title>
@@ -579,7 +593,7 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/bringing-mcp-2026-07-28-to-claude/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/bringing-mcp-2026-07-28-to-claude/</guid>
       <pubDate>Mon, 27 Jul 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Claude Design 缔造者：一位产品设计师如何在动手构建之前用它探索想法</title>
@@ -607,14 +621,14 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/four-role-based-claude-certifications/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/four-role-based-claude-certifications/</guid>
       <pubDate>Wed, 22 Jul 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Enterprise announcements</category>
     </item>
     <item>
       <title>用语音模式想清楚难题</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/think-through-hard-problems-in-voice-mode/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/think-through-hard-problems-in-voice-mode/</guid>
       <pubDate>Wed, 22 Jul 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>在 Claude Code 中用 Skills 构建验证循环</title>
@@ -719,7 +733,7 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/bringing-claude-code-and-claude-cowork-to-government/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/bringing-claude-code-and-claude-cowork-to-government/</guid>
       <pubDate>Mon, 06 Jul 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>在 Claude Code 中选择 Claude 模型与投入档位</title>
@@ -733,7 +747,7 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/cowork-web-mobile/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/cowork-web-mobile/</guid>
       <pubDate>Mon, 06 Jul 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>人们如何使用 Claude Cowork</title>
@@ -754,7 +768,7 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/giving-admins-more-visibility-and-control-over-claude-usage-and-spend/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/giving-admins-more-visibility-and-control-over-claude-usage-and-spend/</guid>
       <pubDate>Wed, 01 Jul 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>循环工程：循环（Loop）入门</title>
@@ -768,14 +782,14 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/introducing-the-claude-apps-gateway/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/introducing-the-claude-apps-gateway/</guid>
       <pubDate>Sun, 28 Jun 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Claude 在 Microsoft Foundry 上正式全面可用</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-in-microsoft-foundry/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-in-microsoft-foundry/</guid>
       <pubDate>Sun, 28 Jun 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>构建高效的人机协作团队</title>
@@ -796,14 +810,14 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/the-full-claude-desktop-experience-on-aws-google-cloud-and-microsoft-foundry/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/the-full-claude-desktop-experience-on-aws-google-cloud-and-microsoft-foundry/</guid>
       <pubDate>Sun, 21 Jun 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Claude Code 现已支持 Artifacts</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/artifacts-in-claude-code/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/artifacts-in-claude-code/</guid>
       <pubDate>Wed, 17 Jun 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>驾驭 Claude Code：何时使用 CLAUDE.md、skills、hooks 和 subagents</title>
@@ -817,35 +831,35 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/enterprise-managed-auth/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/enterprise-managed-auth/</guid>
       <pubDate>Wed, 17 Jun 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>认识 Claude Opus 4.8 Build Day 黑客马拉松的获胜者</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/meet-the-winners-of-our-claude-opus-4-8-build-day-hackathon/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/meet-the-winners-of-our-claude-opus-4-8-build-day-hackathon/</guid>
       <pubDate>Tue, 16 Jun 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Claude Design：日常工作中始终保持品牌一致</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-design-stays-on-brand-for-daily-work/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-design-stays-on-brand-for-daily-work/</guid>
       <pubDate>Tue, 16 Jun 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>用 Workload Identity Federation 安全访问 Claude Platform</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/workload-identity-federation/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/workload-identity-federation/</guid>
       <pubDate>Tue, 16 Jun 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Built with Opus 4.7 Claude Code 黑客马拉松获胜者专访</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/meet-the-winners-of-built-with-opus-4-7-claude-code-hackathon/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/meet-the-winners-of-built-with-opus-4-7-claude-code-hackathon/</guid>
       <pubDate>Sun, 14 Jun 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>智能体界面的演进：使用 Claude Managed Agents 构建生产级智能体</title>
@@ -859,21 +873,21 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/whats-new-in-claude-managed-agents/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/whats-new-in-claude-managed-agents/</guid>
       <pubDate>Mon, 08 Jun 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Claude 支持苹果 Foundation Models 框架</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-for-foundation-models/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-for-foundation-models/</guid>
       <pubDate>Sun, 07 Jun 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>面向连接器开发者的可观测性</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/observability-for-developers-building-connectors/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/observability-for-developers-building-connectors/</guid>
       <pubDate>Sun, 07 Jun 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Claude Cowork 产品指南</title>
@@ -929,7 +943,7 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/introducing-dynamic-workflows-in-claude-code/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/introducing-dynamic-workflows-in-claude-code/</guid>
       <pubDate>Wed, 27 May 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>使用 LLM 保护源代码安全</title>
@@ -957,7 +971,7 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/code-w-claude-london-2026-rethinking-how-we-build/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/code-w-claude-london-2026-rethinking-how-we-build/</guid>
       <pubDate>Mon, 25 May 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Anthropic 财务团队如何用 Claude 塑造数字背后的叙事</title>
@@ -971,7 +985,7 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/compliance-api-security-partners/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/compliance-api-security-partners/</guid>
       <pubDate>Wed, 20 May 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>合作伙伴如何让 Opus 为网络安全效力</title>
@@ -999,14 +1013,14 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-managed-agents-updates/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-managed-agents-updates/</guid>
       <pubDate>Mon, 18 May 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Claude Managed Agents 新功能：dreaming、outcomes 与多智能体编排</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/new-in-claude-managed-agents/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/new-in-claude-managed-agents/</guid>
       <pubDate>Mon, 18 May 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>在法律行业部署 Claude</title>
@@ -1041,14 +1055,14 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/code-w-claude-sf-2026-sf/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/code-w-claude-sf-2026-sf/</guid>
       <pubDate>Mon, 11 May 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Claude 面向法律行业</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-for-the-legal-industry/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-for-the-legal-industry/</guid>
       <pubDate>Mon, 11 May 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Anthropic 网络安全团队如何用 Claude Code 打造威胁检测平台</title>
@@ -1062,21 +1076,21 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/agent-view-in-claude-code/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/agent-view-in-claude-code/</guid>
       <pubDate>Sun, 10 May 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>推出 Claude Platform on AWS</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-platform-on-aws/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-platform-on-aws/</guid>
       <pubDate>Sun, 10 May 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>在 Excel、PowerPoint、Word 和 Outlook 中与 Claude 协作</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/collaborate-with-claude-across-excel-powerpoint-word-and-outlook/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/collaborate-with-claude-across-excel-powerpoint-word-and-outlook/</guid>
       <pubDate>Wed, 06 May 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>在金融服务业全面部署 Claude</title>
@@ -1097,7 +1111,7 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-security-public-beta/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-security-public-beta/</guid>
       <pubDate>Wed, 29 Apr 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>构建 Claude Code 的经验教训：提示词缓存就是一切</title>
@@ -1132,7 +1146,7 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-api-skill/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-api-skill/</guid>
       <pubDate>Tue, 28 Apr 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>智能体时代的产品开发</title>
@@ -1153,14 +1167,14 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/connectors-for-everyday-life/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/connectors-for-everyday-life/</guid>
       <pubDate>Wed, 22 Apr 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Claude Managed Agents 的内置记忆</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-managed-agents-memory/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-managed-agents-memory/</guid>
       <pubDate>Wed, 22 Apr 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>用 MCP 构建能触达生产系统的 agent</title>
@@ -1174,7 +1188,7 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/meet-the-winners-of-our-built-with-opus-4-6-claude-code-hackathon/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/meet-the-winners-of-our-built-with-opus-4-6-claude-code-hackathon/</guid>
       <pubDate>Sun, 19 Apr 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>在 Claude Code 中使用 Claude Opus 4.7 的最佳实践</title>
@@ -1195,14 +1209,14 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-code-desktop-redesign/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-code-desktop-redesign/</guid>
       <pubDate>Mon, 13 Apr 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Claude Code 中的 Routines 功能介绍</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/introducing-routines-in-claude-code/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/introducing-routines-in-claude-code/</guid>
       <pubDate>Mon, 13 Apr 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>为 AI 加速的攻击做好安全准备</title>
@@ -1230,21 +1244,21 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/the-advisor-strategy/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/the-advisor-strategy/</guid>
       <pubDate>Wed, 08 Apr 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>让 Claude Cowork 为企业级使用做好准备</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/cowork-for-enterprise/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/cowork-for-enterprise/</guid>
       <pubDate>Wed, 08 Apr 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Claude Managed Agents：以 10 倍速度迈向生产环境</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-managed-agents/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-managed-agents/</guid>
       <pubDate>Tue, 07 Apr 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Carta Healthcare 如何让 AI 像临床抽象员一样推理</title>
@@ -1272,21 +1286,21 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-platform-compliance-api/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-platform-compliance-api/</guid>
       <pubDate>Sun, 29 Mar 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Claude Code 的 Auto mode（自动模式）</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/auto-mode/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/auto-mode/</guid>
       <pubDate>Mon, 23 Mar 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>让 Claude 在你的电脑上干活</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/dispatch-and-computer-use/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/dispatch-and-computer-use/</guid>
       <pubDate>Sun, 22 Mar 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>AI 指数曲线上的产品管理</title>
@@ -1300,35 +1314,35 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/code-with-claude-san-francisco-london-tokyo/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/code-with-claude-san-francisco-london-tokyo/</guid>
       <pubDate>Tue, 17 Mar 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>1M 上下文窗口正式发布，适用于 Opus 4.6 和 Sonnet 4.6</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/1m-context-ga/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/1m-context-ga/</guid>
       <pubDate>Thu, 12 Mar 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Claude 现在可以创建交互式图表、示意图与可视化内容</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-builds-visuals/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-builds-visuals/</guid>
       <pubDate>Wed, 11 Mar 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Claude for Excel 与 PowerPoint 能力再升级</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-excel-powerpoint-updates/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-excel-powerpoint-updates/</guid>
       <pubDate>Tue, 10 Mar 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>为 Claude Code 带来 Code Review</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/code-review/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/code-review/</guid>
       <pubDate>Sun, 08 Mar 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>AI agent 的常见工作流模式及其适用场景</title>
@@ -1349,21 +1363,21 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/improving-skill-creator-test-measure-and-refine-agent-skills/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/improving-skill-creator-test-measure-and-refine-agent-skills/</guid>
       <pubDate>Mon, 02 Mar 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>面向金融的 Cowork 与 plugins</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/cowork-plugins-finance/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/cowork-plugins-finance/</guid>
       <pubDate>Mon, 23 Feb 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>面向企业各部门团队的 Cowork 与 plugins</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/cowork-plugins-across-enterprise/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/cowork-plugins-across-enterprise/</guid>
       <pubDate>Mon, 23 Feb 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>用 AI 进行 COBOL 现代化：打破成本壁垒</title>
@@ -1377,21 +1391,21 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/preview-review-and-merge-with-claude-code/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/preview-review-and-merge-with-claude-code/</guid>
       <pubDate>Thu, 19 Feb 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>用动态过滤提升网页搜索的准确率与效率</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/improved-web-search-with-dynamic-filtering/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/improved-web-search-with-dynamic-filtering/</guid>
       <pubDate>Mon, 16 Feb 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Claude Enterprise 现已支持自助开通</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/self-serve-enterprise/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/self-serve-enterprise/</guid>
       <pubDate>Wed, 11 Feb 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>模型发布幕后：客户在提前测试 Claude Opus 4.6 时发现了什么</title>
@@ -1405,14 +1419,14 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/opus-4-6-finance/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/opus-4-6-finance/</guid>
       <pubDate>Wed, 04 Feb 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>用插件定制 Cowork</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/cowork-plugins/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/cowork-plugins/</guid>
       <pubDate>Thu, 29 Jan 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Claude 技能构建完全指南</title>
@@ -1426,7 +1440,7 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/contribution-metrics/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/contribution-metrics/</guid>
       <pubDate>Wed, 28 Jan 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>领先零售商如何把 AI 试点变成全企业转型</title>
@@ -1440,14 +1454,14 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-team-updates/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-team-updates/</guid>
       <pubDate>Tue, 27 Jan 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>你喜爱的工作工具现已成为 Claude 内的交互式连接器</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/interactive-tools-in-claude/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/interactive-tools-in-claude/</guid>
       <pubDate>Sun, 25 Jan 2026 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Anthropic 增长营销团队如何用 Claude Code 把广告制作时间从 30 分钟压缩到 30 秒</title>
@@ -1489,14 +1503,14 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/organization-skills-and-directory/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/organization-skills-and-directory/</guid>
       <pubDate>Wed, 17 Dec 2025 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>让 Claude 成为更好的电气工程师</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/making-claude-a-better-electrical-engineer/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/making-claude-a-better-electrical-engineer/</guid>
       <pubDate>Thu, 11 Dec 2025 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Claude Code 高阶自定义：如何配置 Hooks</title>
@@ -1524,7 +1538,7 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-code-and-slack/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-code-and-slack/</guid>
       <pubDate>Sun, 07 Dec 2025 16:00:00 GMT</pubDate>
-      <category>Product announcements</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>转向智能体编程进行软件开发的关键收益是什么？</title>
