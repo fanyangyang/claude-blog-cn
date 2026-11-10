@@ -1,6 +1,31 @@
 {
   "articles": [
     {
+      "slug": "jpmorganchase-expands-claude-code",
+      "title": "JPMorganChase expands Claude Code to more employees across the firm",
+      "date": "November 9, 2026",
+      "category": "Enterprise announcements",
+      "url": "https://claude.com/resources/articles/jpmorganchase-expands-claude-code",
+      "inHero": false,
+      "heroIndex": -1,
+      "inGrid": true,
+      "illustration": "",
+      "illustrationBg": "cactus",
+      "facets": {
+        "category": [],
+        "product": [],
+        "usecase": []
+      },
+      "subtitle": "JPMorganChase is rolling out Claude across the firm, to more employees beyond engineers.",
+      "authors": [],
+      "readingMinutes": 4,
+      "categoryUrl": "",
+      "productUrl": "",
+      "fetchedAt": "2026-11-10T04:04:48.541Z",
+      "translated": true,
+      "translatedTitle": "JPMorganChase 将 Claude Code 推广至全公司更多员工"
+    },
+    {
       "slug": "introducing-personal-finance-in-claude",
       "title": "Introducing Personal Finance in Claude",
       "date": "November 5, 2026",
@@ -9313,5 +9338,5 @@
       "productUrl": "https://claude.com/platform/api"
     }
   ],
-  "lastFetched": "2026-11-05T22:04:53.265Z"
+  "lastFetched": "2026-11-10T04:04:56.066Z"
 }
