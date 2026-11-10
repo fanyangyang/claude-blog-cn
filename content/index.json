@@ -1,6 +1,118 @@
 {
   "articles": [
     {
+      "slug": "interactive-connectors-full-tool",
+      "title": "Your apps can now open in Claude, and Claude can work in them",
+      "date": "November 10, 2026",
+      "category": "Product updates",
+      "url": "https://claude.com/resources/articles/interactive-connectors-full-tool",
+      "inHero": false,
+      "heroIndex": -1,
+      "inGrid": true,
+      "illustration": "",
+      "illustrationBg": "peach",
+      "facets": {
+        "category": [],
+        "product": [],
+        "usecase": []
+      },
+      "subtitle": "Interactive connectors can now open beside your chat or full screen, so you and Claude can work in the same tool, where the connector supports it.",
+      "authors": [],
+      "readingMinutes": 4,
+      "categoryUrl": "",
+      "productUrl": "",
+      "fetchedAt": "2026-11-10T22:05:46.801Z",
+      "translated": true,
+      "translatedTitle": "你的应用现在可以在 Claude 中打开，Claude 也能在其中工作",
+      "translatedAt": "2026-11-10T22:07:28.754Z",
+      "translateLang": "zh-CN",
+      "translatedSubtitle": "交互式连接器现在可以在对话旁或全屏打开，让 Claude 与你在同一工具中协作（前提是该连接器支持）。"
+    },
+    {
+      "slug": "how-curative-is-building-a-national-provider-network-with-agents-on-claude",
+      "title": "How Curative is building a national provider network with agents on Claude",
+      "date": "November 10, 2026",
+      "category": "Best practices",
+      "url": "https://claude.com/resources/articles/how-curative-is-building-a-national-provider-network-with-agents-on-claude",
+      "inHero": false,
+      "heroIndex": -1,
+      "inGrid": true,
+      "illustration": "",
+      "illustrationBg": "heather",
+      "facets": {
+        "category": [],
+        "product": [],
+        "usecase": []
+      },
+      "subtitle": "How Curative built a hierarchy of agents on Claude to sign provider contracts about 50 times faster than its team did in 2025.",
+      "authors": [],
+      "readingMinutes": 10,
+      "categoryUrl": "",
+      "productUrl": "",
+      "fetchedAt": "2026-11-10T22:05:47.270Z",
+      "translated": true,
+      "translatedTitle": "Curative 如何用 Claude 上的 agent 构建全国医疗服务提供方网络",
+      "translatedAt": "2026-11-10T22:07:28.754Z",
+      "translateLang": "zh-CN",
+      "translatedSubtitle": "Curative 如何在 Claude 上构建一套 agent 层级体系，使提供方合同签约速度比其团队 2025 年的水平快约 50 倍。"
+    },
+    {
+      "slug": "more-ways-to-work-with-claude-sheets-whiteboards-and-interactive-connectors",
+      "title": "More ways to work with Claude: Sheets, Whiteboards, and Interactive Connectors",
+      "date": "November 10, 2026",
+      "category": "Product updates",
+      "url": "https://claude.com/resources/articles/more-ways-to-work-with-claude-sheets-whiteboards-and-interactive-connectors",
+      "inHero": false,
+      "heroIndex": -1,
+      "inGrid": true,
+      "illustration": "",
+      "illustrationBg": "peach",
+      "facets": {
+        "category": [],
+        "product": [],
+        "usecase": []
+      },
+      "subtitle": "Anthropic introduces Claude Sheets and Claude Whiteboards, and an upgrade to interactive connectors.",
+      "authors": [],
+      "readingMinutes": 5,
+      "categoryUrl": "",
+      "productUrl": "",
+      "fetchedAt": "2026-11-10T22:05:47.779Z",
+      "translated": true,
+      "translatedTitle": "更多与 Claude 协作的方式：Sheets、Whiteboards 和交互式连接器",
+      "translatedAt": "2026-11-10T22:07:28.754Z",
+      "translateLang": "zh-CN",
+      "translatedSubtitle": "Anthropic 推出 Claude Sheets 和 Claude Whiteboards，并升级交互式连接器。"
+    },
+    {
+      "slug": "sheets-whiteboards-data",
+      "title": "Introducing Claude Whiteboards, Claude Sheets, and Claude Data",
+      "date": "November 10, 2026",
+      "category": "Product updates",
+      "url": "https://claude.com/resources/articles/sheets-whiteboards-data",
+      "inHero": false,
+      "heroIndex": -1,
+      "inGrid": true,
+      "illustration": "",
+      "illustrationBg": "peach",
+      "facets": {
+        "category": [],
+        "product": [],
+        "usecase": []
+      },
+      "subtitle": "Brainstorm on a shared whiteboard, build a spreadsheet, and share dashboards with your team, all with Claude. Available today on all paid plans.",
+      "authors": [],
+      "readingMinutes": 6,
+      "categoryUrl": "",
+      "productUrl": "",
+      "fetchedAt": "2026-11-10T22:05:48.258Z",
+      "translated": true,
+      "translatedTitle": "推出 Claude Whiteboards、Claude Sheets 和 Claude Data",
+      "translatedAt": "2026-11-10T22:07:28.754Z",
+      "translateLang": "zh-CN",
+      "translatedSubtitle": "在共享白板上头脑风暴、构建电子表格、与团队共享仪表盘，全部由 Claude 完成。今日起在所有付费方案中可用。"
+    },
+    {
       "slug": "jpmorganchase-expands-claude-code",
       "title": "JPMorganChase expands Claude Code to more employees across the firm",
       "date": "November 9, 2026",
@@ -9338,5 +9450,5 @@
       "productUrl": "https://claude.com/platform/api"
     }
   ],
-  "lastFetched": "2026-11-10T04:04:56.066Z"
+  "lastFetched": "2026-11-10T22:05:55.526Z"
 }

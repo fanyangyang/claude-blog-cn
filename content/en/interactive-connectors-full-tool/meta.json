@@ -1,0 +1,23 @@
+{
+  "slug": "interactive-connectors-full-tool",
+  "title": "Your apps can now open in Claude, and Claude can work in them",
+  "date": "November 10, 2026",
+  "category": "Product updates",
+  "url": "https://claude.com/resources/articles/interactive-connectors-full-tool",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "",
+  "illustrationBg": "peach",
+  "facets": {
+    "category": [],
+    "product": [],
+    "usecase": []
+  },
+  "subtitle": "Interactive connectors can now open beside your chat or full screen, so you and Claude can work in the same tool, where the connector supports it.",
+  "authors": [],
+  "readingMinutes": 4,
+  "categoryUrl": "",
+  "productUrl": "",
+  "fetchedAt": "2026-11-10T22:05:46.801Z"
+}

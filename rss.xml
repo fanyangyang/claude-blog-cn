@@ -6,7 +6,35 @@
     <description>Anthropic Claude 官方博客的中文翻译</description>
     <atom:link href="https://fanyangyang.github.io/claude-blog-cn/rss.xml" rel="self" type="application/rss+xml"/>
     <language>zh-CN</language>
-    <lastBuildDate>Tue, 10 Nov 2026 04:05:36 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 10 Nov 2026 22:07:51 GMT</lastBuildDate>
+    <item>
+      <title>你的应用现在可以在 Claude 中打开，Claude 也能在其中工作</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/interactive-connectors-full-tool/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/interactive-connectors-full-tool/</guid>
+      <pubDate>Mon, 09 Nov 2026 16:00:00 GMT</pubDate>
+      <category>Product updates</category>
+    </item>
+    <item>
+      <title>Curative 如何用 Claude 上的 agent 构建全国医疗服务提供方网络</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/how-curative-is-building-a-national-provider-network-with-agents-on-claude/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/how-curative-is-building-a-national-provider-network-with-agents-on-claude/</guid>
+      <pubDate>Mon, 09 Nov 2026 16:00:00 GMT</pubDate>
+      <category>Best practices</category>
+    </item>
+    <item>
+      <title>更多与 Claude 协作的方式：Sheets、Whiteboards 和交互式连接器</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/more-ways-to-work-with-claude-sheets-whiteboards-and-interactive-connectors/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/more-ways-to-work-with-claude-sheets-whiteboards-and-interactive-connectors/</guid>
+      <pubDate>Mon, 09 Nov 2026 16:00:00 GMT</pubDate>
+      <category>Product updates</category>
+    </item>
+    <item>
+      <title>推出 Claude Whiteboards、Claude Sheets 和 Claude Data</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/sheets-whiteboards-data/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/sheets-whiteboards-data/</guid>
+      <pubDate>Mon, 09 Nov 2026 16:00:00 GMT</pubDate>
+      <category>Product updates</category>
+    </item>
     <item>
       <title>JPMorganChase 将 Claude Code 推广至全公司更多员工</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/jpmorganchase-expands-claude-code/</link>

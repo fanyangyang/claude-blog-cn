@@ -1,0 +1,23 @@
+{
+  "slug": "sheets-whiteboards-data",
+  "title": "Introducing Claude Whiteboards, Claude Sheets, and Claude Data",
+  "date": "November 10, 2026",
+  "category": "Product updates",
+  "url": "https://claude.com/resources/articles/sheets-whiteboards-data",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "",
+  "illustrationBg": "peach",
+  "facets": {
+    "category": [],
+    "product": [],
+    "usecase": []
+  },
+  "subtitle": "Brainstorm on a shared whiteboard, build a spreadsheet, and share dashboards with your team, all with Claude. Available today on all paid plans.",
+  "authors": [],
+  "readingMinutes": 6,
+  "categoryUrl": "",
+  "productUrl": "",
+  "fetchedAt": "2026-11-10T22:05:48.258Z"
+}
