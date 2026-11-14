@@ -6,7 +6,56 @@
     <description>Anthropic Claude 官方博客的中文翻译</description>
     <atom:link href="https://fanyangyang.github.io/claude-blog-cn/rss.xml" rel="self" type="application/rss+xml"/>
     <language>zh-CN</language>
-    <lastBuildDate>Tue, 10 Nov 2026 22:07:51 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 14 Nov 2026 01:43:29 GMT</lastBuildDate>
+    <item>
+      <title>The Claude Tag guide for startups</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-tag-guide-for-startups/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-tag-guide-for-startups/</guid>
+      <pubDate>Thu, 12 Nov 2026 16:00:00 GMT</pubDate>
+      <category>Best practices</category>
+    </item>
+    <item>
+      <title>Building always-on agents</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/building-always-on-agents/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/building-always-on-agents/</guid>
+      <pubDate>Thu, 12 Nov 2026 16:00:00 GMT</pubDate>
+      <category>Best practices</category>
+    </item>
+    <item>
+      <title>J. Crew brings its signature approach to styling to life with Claude</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/j-crew-style-advisor-with-claude/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/j-crew-style-advisor-with-claude/</guid>
+      <pubDate>Wed, 11 Nov 2026 16:00:00 GMT</pubDate>
+      <category>Enterprise announcements</category>
+    </item>
+    <item>
+      <title>Operate Claude Managed Agents inside your security perimeter</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/self-hosted-claude-managed-agents/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/self-hosted-claude-managed-agents/</guid>
+      <pubDate>Wed, 11 Nov 2026 16:00:00 GMT</pubDate>
+      <category>Product updates</category>
+    </item>
+    <item>
+      <title>Introducing Claude for Manufacturing</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-for-manufacturing/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-for-manufacturing/</guid>
+      <pubDate>Wed, 11 Nov 2026 16:00:00 GMT</pubDate>
+      <category>Product updates</category>
+    </item>
+    <item>
+      <title>Introducing Claude Meetings</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-meetings/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/claude-meetings/</guid>
+      <pubDate>Wed, 11 Nov 2026 16:00:00 GMT</pubDate>
+      <category>Product updates</category>
+    </item>
+    <item>
+      <title>Using Claude Opus 5.5 as your daily driver for knowledge work</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/using-claude-opus-5-5-as-your-daily-driver-for-knowledge-work/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/using-claude-opus-5-5-as-your-daily-driver-for-knowledge-work/</guid>
+      <pubDate>Wed, 11 Nov 2026 16:00:00 GMT</pubDate>
+      <category>General</category>
+    </item>
     <item>
       <title>你的应用现在可以在 Claude 中打开，Claude 也能在其中工作</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/interactive-connectors-full-tool/</link>

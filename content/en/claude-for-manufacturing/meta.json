@@ -1,0 +1,23 @@
+{
+  "slug": "claude-for-manufacturing",
+  "title": "Introducing Claude for Manufacturing",
+  "date": "November 12, 2026",
+  "category": "Product updates",
+  "url": "https://claude.com/resources/articles/claude-for-manufacturing",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "",
+  "illustrationBg": "peach",
+  "facets": {
+    "category": [],
+    "product": [],
+    "usecase": []
+  },
+  "subtitle": "Claude for Manufacturing drafts quotes, quality reports, and supplier requests from your plant’s own records, for your team to review and approve.",
+  "authors": [],
+  "readingMinutes": 6,
+  "categoryUrl": "",
+  "productUrl": "",
+  "fetchedAt": "2026-11-12T22:04:59.345Z"
+}

@@ -1,0 +1,23 @@
+{
+  "slug": "claude-meetings",
+  "title": "Introducing Claude Meetings",
+  "date": "November 12, 2026",
+  "category": "Product updates",
+  "url": "https://claude.com/resources/articles/claude-meetings",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "",
+  "illustrationBg": "peach",
+  "facets": {
+    "category": [],
+    "product": [],
+    "usecase": []
+  },
+  "subtitle": "Add Claude to your video calls to take notes, answer questions, and build docs and whiteboards while your team talks.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "",
+  "productUrl": "",
+  "fetchedAt": "2026-11-12T22:05:00.213Z"
+}

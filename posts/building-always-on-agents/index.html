@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Building always-on agents — Claude Blog 中文翻译</title>
+  <meta name="description" content="Always-on agents run indefinitely, deciding how and when to act across many sessions. This guide walks through their core primitives and how they fit together.">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Claude Blog 中文翻译 RSS" href="/rss.xml">
+  
+</head>
+<body>
+<header class="article-topbar">
+  <div class="container article-topbar-inner">
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Blog</a></li>
+        <li class="breadcrumb-sep" aria-hidden="true">/</li>
+        <li class="breadcrumb-item breadcrumb-current"><span>Building always-on agents</span></li>
+      </ol>
+    </nav>
+    <div class="explore-dropdown" data-explore>
+      <button type="button" class="explore-toggle" data-explore-toggle aria-expanded="false" aria-haspopup="true">
+        <span>Explore here</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="explore-menu" data-explore-menu hidden>
+        <a class="explore-item" href="https://claude.com/resources/articles/building-always-on-agents" target="_blank" rel="noopener noreferrer">关于本页提问</a>
+        <button type="button" class="explore-item" data-copy-markdown>复制为 Markdown</button>
+        <a class="explore-item" href="/posts/building-always-on-agents/en.html">阅读英文原文 →</a>
+      </div>
+      <textarea class="u-sr-only" data-markdown-source readonly aria-hidden="true"># Building always-on agents
+
+Always-on agents run indefinitely, deciding how and when to act across many sessions. This guide walks through their core primitives and how they fit together.
+
+过去几个月，我们观察到「常驻型 agent」重新兴起。
+
+常驻型 agent 是有状态且主动的：它们跨会话管理上下文，并在没有直接监督的情况下采取行动。底层上，它们运行在与其他 agent 相同的[核心循环](https://www.anthropic.com/research/building-effective-agents)之上。区别在于外围架构，它由若干原语构成，用来控制 agent 何时唤醒、每次运行之间保留什么、以及工作成果如何抵达用户。[核心循环](https://www.anthropic.com/research/building-effective-agents)与其他 agent 相同。区别在于外围架构，它由若干原语构成，用来控制 agent 何时唤醒、每次运行之间保留什么、以及工作成果如何抵达用户。
+
+这轮复兴主要源于近期的模型进步，让常驻型 agent 变得更实用。首先，最新模型的判断力更好：它们更可靠地理解用户意图，也更清楚何时该主动确认。其次，智能正在变得更便宜——在一个长周期编程基准上，Opus 5.5 每个已解决任务的成本比 Opus 5 低 78%，而在典型工作负载上只低 40%。[一个长周期编程基准](https://platform.claude.com/docs/en/about-claude/models/optimizing-for-cost-and-intelligence)上，Opus 5.5 每个已解决任务的成本比 Opus 5 低 78%，而典型工作负载上只低 40%。
+
+客户开始询问我们如何把这类体验集成进自己的产品。有些公司已经在运行这些模式，另一些则刚开始探索。
+
+本文拆解常驻型 agent 背后的原语，并说明它们如何组合在一起。
+
+## 常驻型 agent 背后的循环
+
+常驻型 agent 其实并不是字面意义上的「一直在线」。这只是对用户体验的描述。
+
+实际上，agent 大部分时间在休眠，周期性唤醒去干活。每一段工作称为一次**运行（run）**：agent 接收到一个事件，完成任务，然后保存发生了什么。一次运行工作在**会话（session）**之上，会话是消息与工具调用的记录。运行结束后，agent 回到休眠状态，等待下一个事件。
+
+## 核心原语
+
+常驻型 agent 的外围架构有五个核心原语：事件收件箱、定时器、记忆、权限和发件箱。
+
+### 事件收件箱
+
+大多数 AI agent 只在用户发消息时运行。相比之下，常驻型 agent 可以被许多来源触发。
+
+一种诱人的做法是让每个事件源直接调用 agent，但这在故障场景下有几个问题。
+
+这正是事件收件箱的用武之地。每个来源不直接调用 agent，而是把事件发到收件箱，由收件箱负责唤醒。
+
+最简单的版本包含三个组件：
+
+- 一个持久化的事件列表，通常是一张数据库表；
+- 一个处理器，通常是一个 HTTP 端点，把事件写入列表；以及
+- 一个 worker，通常是一个后台服务，从列表中读取事件。
+
+收件箱应跟踪每个事件的状态，并且可以根据来源的唯一标识对事件去重。
+
+新事件到来时，处理器把事件写入收件箱并唤醒 worker。worker 读取待处理事件，并一次性取走。
+
+接下来，worker 把事件交给 agent 循环，等待运行结束，然后标记对应事件为已处理。
+
+- **处理器应快速确认事件**。某些来源（例如 webhook 提供方）会把慢响应视为失败。处理器仍可以轻量地做校验和写入。
+- **收件箱应是事实来源**。worker 被唤醒时，应先从收件箱拉取最新事件。这样即使 worker 中途崩溃，也不会丢失事件。
+- **一个收件箱同时只应有一个活跃 worker**。这能防止两次运行重复工作或互相覆盖。若运行中途出现新事件，可以让它排队等待本轮结束。
+- **worker 应把待处理事件批量合并**。例如用户连续发了几条消息，worker 可以把它们合并成一次运行，避免重复处理同一段上下文。
+
+### 定时器
+
+与事件收件箱配合，定时器让常驻型 agent 能够主动行动。定时器通常分为两类。
+
+定时器有自己的持久化存储，通常是另一张数据库表，与收件箱分开。收件箱不应存放定时器。
+
+定时器本身不会发起运行。而是由一个调度器（通常是后台服务）轮询存储，做三件事：
+
+- 扫描存储，找出到期的定时器。
+- 按类别更新每个定时器。
+一次性跟进应被标记为完成。
+- 周期性计划应把到期时间更新为下一次出现的时间。
+
+- 向收件箱写入一个事件并唤醒 worker。
+
+调度器可以自己实现，也可以使用持久化执行引擎。
+
+### 记忆
+
+常驻型 agent 跨许多不连续的运行工作，依赖记忆保持连续性。
+
+与事件收件箱和定时器类似，记忆应有自己的存储。在我们的产品中（例如 Claude Code 的[自动记忆](https://code.claude.com/docs/en/memory)和 Messages API 的[记忆工具](https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool)），它实现为一个文件目录。对常驻型 agent 而言，这些目录应映射到持久化存储。
+
+经验法则是：记忆只应保存 agent 无法重新查到的内容。如果某些信息已经存在于别处，就不必复制进记忆。
+
+- **用户指令：**用户对 agent 行为的任何指令都应保存在独立文件中，并在每次运行时加载。
+- **用户笔记：**agent 应保存它了解到的关于用户的信息，例如角色、偏好或任何纠正反馈。
+- **过往消息：**agent 应跟踪已经告诉过用户什么，避免重复。可以存摘要，也可以存原始消息。
+- **任务进度：**对于每个进行中的任务，agent 应维护一个进度文件，记录已完成与待完成的部分。任何需要跨运行延续的内容都应写入其中。
+
+下图展示了一种示例配置。
+
+以上描述的都是运行期间保存的记忆。你还可以加入「做梦」（dreaming），即回顾过往会话并提炼。[关于 agent 记忆的文章](https://www.anthropic.com/research/components-of-agent-memory)对此有更详细的讨论。
+
+#### 上下文窗口内部
+
+开始任何工作之前，agent 会加载系统提示、工具定义和记忆文件。这份初始上下文「开销」会包含在每次运行中，因此我们建议保持精简，并使用[提示缓存](https://platform.claude.com/docs/en/build-with-claude/prompt-caching)来降低成本。
+
+新会话只带着这份上下文开销和触发运行的事件启动。而既有会话则会带回此前各轮的消息与工具调用。
+
+如果会话变得过长，你可以选择[压缩较早的消息](https://platform.claude.com/docs/en/build-with-claude/compaction)或开始一个新会话。两种方式都会损失细节，因此任何需要持久保留的内容都应在过程中写入记忆。
+
+### 权限
+
+权限是常驻型 agent 风险最高的地方。一次运行持有用户的访问权限，且按设计在无人值守下操作。对每次工具调用，agent 都需要判断是自己继续、拦截，还是等待批准。
+
+权限所需的组件与其他 agent 相同：
+
+- **凭据存储：**常驻型 agent 往往需要敏感的用户凭据（如密码或访问令牌）才有用。[推荐模式](https://code.claude.com/docs/en/agent-sdk/secure-deployment#credential-management)是在 agent 环境之外设置一个代理，由它给外发请求附加凭据。agent 发送不带凭据的请求，代理在转发前注入真实凭据。
+- **自动模式：**常驻型 agent 应能在没有持续用户输入的情况下工作。我们在 Claude Code 的[自动模式](https://www.anthropic.com/research/claude-code-auto-mode)中已经处理过这类问题的一个版本。自动模式使用分类器审查高风险操作，拦截被判定为危险的操作，从而让 Claude 寻找更安全的路径。不过，最重要的决策仍需要用户审查。
+- **延迟工具调用：**在 Claude Code 中，[一个钩子可以延迟工具调用](https://code.claude.com/docs/en/hooks#defer-a-tool-call-for-later)并等待用户追加输入。同样的模式适用于常驻型 agent——它们在某些操作前可能需要澄清或批准。当一次调用被延迟，运行结束，会话在调用中途被保存。请求会展示给用户（例如通过用[MCP Apps](https://modelcontextprotocol.io/extensions/apps/overview)构建的交互卡片），用户的回答作为事件回到收件箱。该事件启动新的运行，带着用户输入恢复已保存的会话。在延迟调用等待响应期间，worker 可以处理其他事件，因此 agent 不会被阻塞。
+
+### 发件箱
+
+对大多数 AI agent 而言，回复是边生成边流式推给用户的，用户可以看到 Claude 如何推理、调用工具并写出答案。
+
+而常驻型 agent 大部分工作在后台完成。用户拿到的是结果和少量细节，而不是完整的逐步拆解。
+
+一次运行可以以三种方式结束：
+
+- agent 向发件箱发送一条消息，
+- agent 判断无需发送任何内容，或
+- agent 使用延迟工具调用请求权限或额外输入。
+
+大多数常驻型 agent 用一个「发送」工具直接把消息投递给用户就够了。只有当你需要控制消息节奏，或让 agent 能从错误中恢复时，才需要正式的发件箱。
+
+发件箱是一张独立的外发消息表，与事件收件箱类似。同时还有一个分发器（通常是后台服务），类似 worker。分发器读取待发消息，决定投递哪些，然后发给用户。延迟工具调用的请求既可以走发件箱，也可以直接在界面中展示。
+
+除投递之外，调校 agent 的发消息频率也很重要。发太多的 agent 会变得嘈杂，发太少的则会漏掉用户需要知道的事。我们建议通过评测找到合适的平衡点。实践中，让 agent 一开始保持安静，再逐步赢得用户的注意力，效果更好。
+
+## 各部分如何组合
+
+五个原语是这样组合在一起的：
+
+每次运行都始于收件箱中的一个事件——无论是用户消息、webhook 还是定时器。worker 取到事件后启动一次运行，在新的或既有的会话中唤醒 agent。agent 读取记忆作为基线，在权限范围内采取行动，然后把学到的东西更新回记忆。运行结束后，agent 向发件箱写入一行记录，分发器把消息投递给用户。
+
+这些部分共同构成一个循环。一次运行可以设置定时器，稍后再次唤醒 agent；当用户回复消息时，回答作为事件回到收件箱。每次运行都很短暂，但循环会无限持续下去——这正是 agent 让人感觉「一直在线」的原因。
+
+## 致谢
+
+*作者：William Hu。特别感谢 Rodrigo Olivares 和 Michael Segner 的贡献。*</textarea>
+    </div>
+  </div>
+</header>
+<main class="main article-main">
+    <section class="hero-blog-post">
+      <div class="container hero-blog-post-contain">
+        <div class="hero-blog-post-layout">
+          <div class="hero-blog-post-content">
+            
+            <h1 class="article-title u-text-style-h1">Building always-on agents</h1>
+            <div class="hero-subtitle u-text-wrap-pretty"><p>Always-on agents run indefinitely, deciding how and when to act across many sessions. This guide walks through their core primitives and how they fit together.</p></div>
+          </div>
+          <aside class="hero-blog-post-details" aria-label="Article details">
+            <ul class="hero-detail-list">
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 17C12.7761 17 13 17.2239 13 17.5C13 17.7761 12.7761 18 12.5 18H7.5C7.22386 18 7 17.7761 7 17.5C7 17.2239 7.22386 17 7.5 17H12.5ZM10 2C13.3137 2 16 4.68629 16 8C16 9.73776 15.2608 11.3033 14.0811 12.3984L13.8389 12.6113C13.3268 13.0382 13 13.5753 13 14.124V15.5C13 15.7761 12.7761 16 12.5 16H7.5C7.22386 16 7 15.7761 7 15.5V14.124C6.99998 13.6438 6.7495 13.1727 6.34375 12.7764L6.16113 12.6113C4.84147 11.5115 4 9.85368 4 8C4 4.68629 6.68629 2 10 2ZM10 3C7.23858 3 5 5.23858 5 8C5 9.5443 5.69948 10.9248 6.80078 11.8428L7.03711 12.0557C7.57356 12.5787 7.99998 13.2899 8 14.124V15H9.5V11.207L7.14648 8.85352L7.08203 8.77539C6.95387 8.58131 6.97562 8.31735 7.14648 8.14648C7.31735 7.97562 7.58131 7.95387 7.77539 8.08203L7.85352 8.14648L10 10.293L12.1465 8.14648L12.2246 8.08203C12.4187 7.95387 12.6827 7.97562 12.8535 8.14648C13.0244 8.31735 13.0461 8.58131 12.918 8.77539L12.8535 8.85352L10.5 11.207V15H12V14.124C12 13.1706 12.5575 12.3776 13.1992 11.8428L13.4004 11.665C14.3848 10.7513 15 9.44786 15 8C15 5.23858 12.7614 3 10 3Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Category</div>
+                  <div class="hero-detail-value u-text-style-body-3">Best practices</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13.5 3C13.7761 3 14 3.22386 14 3.5V4H16.5C17.3284 4 18 4.67157 18 5.5V14.5C18 15.3284 17.3284 16 16.5 16H3.5C2.67157 16 2 15.3284 2 14.5V5.5C2 4.67157 2.67157 4 3.5 4H6V3.5C6 3.22386 6.22386 3 6.5 3C6.77614 3 7 3.22386 7 3.5V4H13V3.5C13 3.22386 13.2239 3 13.5 3ZM3.5 5C3.22386 5 3 5.22386 3 5.5V14.5C3 14.7761 3.22386 15 3.5 15H16.5C16.7761 15 17 14.7761 17 14.5V5.5C17 5.22386 16.7761 5 16.5 5H14V5.5C14 5.77614 13.7761 6 13.5 6C13.2239 6 13 5.77614 13 5.5V5H7V5.5C7 5.77614 6.77614 6 6.5 6C6.22386 6 6 5.77614 6 5.5V5H3.5ZM13.1162 8.17969C13.293 7.96781 13.6083 7.93951 13.8203 8.11621C14.0322 8.29304 14.0605 8.60827 13.8838 8.82031L11.3838 11.8203C11.2939 11.9281 11.1627 11.9927 11.0225 11.999C10.8822 12.0053 10.7458 11.9528 10.6465 11.8535L9.0332 10.2402L6.88379 12.8203C6.70696 13.0322 6.39173 13.0605 6.17969 12.8838C5.96781 12.707 5.93951 12.3917 6.11621 12.1797L8.61621 9.17969L8.69043 9.10742C8.77188 9.0432 8.87221 9.00575 8.97754 9.00098C9.11781 8.99466 9.25422 9.04719 9.35352 9.14648L10.9658 10.7588L13.1162 8.17969Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Date</div>
+                  <div class="hero-detail-value u-text-style-body-3">November 13, 2026</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.5 2C11.7761 2 12 2.22386 12 2.5C12 2.77614 11.7761 3 11.5 3H10.5V4.01953C12.0566 4.12942 13.4719 4.74753 14.582 5.70996L15.3037 4.98926C15.499 4.79436 15.8156 4.79412 16.0107 4.98926C16.2059 5.1844 16.2056 5.501 16.0107 5.69629L15.2891 6.41699C16.3542 7.64511 17 9.24674 17 11C17 14.866 13.866 18 10 18C6.13401 18 3 14.866 3 11C3 7.30217 5.86743 4.27597 9.5 4.01953V3H8.5C8.22386 3 8 2.77614 8 2.5C8 2.22386 8.22386 2 8.5 2H11.5ZM10 5C6.68629 5 4 7.68629 4 11C4 14.3137 6.68629 17 10 17C13.3137 17 16 14.3137 16 11C16 7.68629 13.3137 5 10 5ZM7.17188 8.17188C7.29007 8.05368 7.45914 8.0024 7.62305 8.03516H7.62695C7.62846 8.03541 7.63045 8.03566 7.63281 8.03613C7.63847 8.03729 7.64687 8.03982 7.65723 8.04199C7.67822 8.04638 7.70875 8.05315 7.74707 8.06152C7.82438 8.07842 7.93535 8.10307 8.07031 8.13574C8.34023 8.20109 8.7112 8.29808 9.11133 8.42383C9.51008 8.54915 9.94691 8.70603 10.3467 8.89258C10.7387 9.07552 11.132 9.30384 11.4141 9.58594C12.1951 10.367 12.1951 11.633 11.4141 12.4141C10.633 13.1951 9.36699 13.1951 8.58594 12.4141C8.30384 12.132 8.07552 11.7387 7.89258 11.3467C7.70603 10.9469 7.54915 10.5101 7.42383 10.1113C7.29808 9.7112 7.20109 9.34023 7.13574 9.07031C7.10307 8.93535 7.07842 8.82438 7.06152 8.74707C7.05315 8.70876 7.04638 8.67822 7.04199 8.65723C7.03982 8.64687 7.03729 8.63847 7.03613 8.63281C7.03566 8.63045 7.03541 8.62846 7.03516 8.62695V8.62305L7.02637 8.56055C7.01616 8.41702 7.06868 8.27507 7.17188 8.17188ZM8.37793 9.81152C8.49565 10.1861 8.63741 10.5779 8.79883 10.9238C8.96389 11.2775 9.13316 11.5472 9.29297 11.707C9.68349 12.0975 10.3165 12.0975 10.707 11.707C11.0975 11.3165 11.0975 10.6835 10.707 10.293C10.5472 10.1332 10.2775 9.96389 9.92383 9.79883C9.57792 9.63741 9.18607 9.49565 8.81152 9.37793C8.59583 9.31014 8.38783 9.25179 8.20215 9.20215C8.25179 9.38783 8.31014 9.59583 8.37793 9.81152Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Reading time</div>
+                  <div class="hero-detail-value u-text-style-body-3"><span>14</span> min</div>
+                </div>
+              </li>
+              <li class="hero-detail-item">
+                <div class="hero-detail-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 33 32" fill="none"><path d="M19.9047 4.26392C20.2002 3.93606 20.7077 3.90944 21.036 4.20455L29.036 11.4047L29.1485 11.5297C29.2466 11.6649 29.2999 11.8301 29.3 12C29.3 12.2266 29.2043 12.4436 29.036 12.5953L21.036 19.7954L20.9047 19.8907C20.5839 20.0792 20.1634 20.0233 19.9047 19.736C19.6463 19.4486 19.635 19.0243 19.8563 18.7251L19.9641 18.6048L26.4141 12.8H18.9C13.1565 12.8 8.50039 17.4566 8.50002 23.2001V26.4002L8.4844 26.5611C8.40996 26.9259 8.08677 27.2002 7.70002 27.2002C7.31328 27.2002 6.99009 26.9259 6.91565 26.5611L6.90002 26.4002V23.2001C6.90039 16.5729 12.2728 11.2 18.9 11.2H26.4141L19.9641 5.39519C19.6361 5.09956 19.6093 4.5922 19.9047 4.26392Z" fill="currentColor"></path></svg></div>
+                <div class="hero-detail-content">
+                  <div class="hero-detail-label u-text-style-caption u-foreground-tertiary">Share</div>
+                  <button type="button" class="hero-detail-value is-link hero-copy-link u-text-style-body-3 u-rich-text" data-copy-link data-copy-url="https://fanyangyang.github.io/claude-blog-cn/posts/building-always-on-agents/">Copy link</button>
+                </div>
+              </li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+    <div class="article-body-wrap">
+      <div class="container article-body-layout">
+        <div class="article-container">
+          <article class="article">
+            <div class="article-content u-rich-text">
+              <div data-readtime="content" class="u-rich-text-blog u-margin-trim w-richtext"><p>过去几个月，我们观察到「常驻型 agent」重新兴起。</p><p>常驻型 agent 是有状态且主动的：它们跨会话管理上下文，并在没有直接监督的情况下采取行动。底层上，它们运行在与其他 agent 相同的<a href="https://www.anthropic.com/research/building-effective-agents">核心循环</a>之上。区别在于外围架构，它由若干原语构成，用来控制 agent 何时唤醒、每次运行之间保留什么、以及工作成果如何抵达用户。<a href="https://www.anthropic.com/research/building-effective-agents">核心循环</a>与其他 agent 相同。区别在于外围架构，它由若干原语构成，用来控制 agent 何时唤醒、每次运行之间保留什么、以及工作成果如何抵达用户。</p><p>这轮复兴主要源于近期的模型进步，让常驻型 agent 变得更实用。首先，最新模型的判断力更好：它们更可靠地理解用户意图，也更清楚何时该主动确认。其次，智能正在变得更便宜——在一个长周期编程基准上，Opus 5.5 每个已解决任务的成本比 Opus 5 低 78%，而在典型工作负载上只低 40%。<a href="https://platform.claude.com/docs/en/about-claude/models/optimizing-for-cost-and-intelligence">一个长周期编程基准</a>上，Opus 5.5 每个已解决任务的成本比 Opus 5 低 78%，而典型工作负载上只低 40%。</p><p>客户开始询问我们如何把这类体验集成进自己的产品。有些公司已经在运行这些模式，另一些则刚开始探索。</p><p>本文拆解常驻型 agent 背后的原语，并说明它们如何组合在一起。</p><h2 id="the-cycle-behind-the-always-on-agent">常驻型 agent 背后的循环</h2><p>常驻型 agent 其实并不是字面意义上的「一直在线」。这只是对用户体验的描述。</p><p>实际上，agent 大部分时间在休眠，周期性唤醒去干活。每一段工作称为一次<strong>运行（run）</strong>：agent 接收到一个事件，完成任务，然后保存发生了什么。一次运行工作在<strong>会话（session）</strong>之上，会话是消息与工具调用的记录。运行结束后，agent 回到休眠状态，等待下一个事件。</p><figure style="--media-natural-width:1200px"><img referrerpolicy="strict-origin-when-cross-origin" src="https://assets.claude.com/5dc803bf06d6e92e4aecae762da096626e2fa9ec.gif" width="1200" height="675" alt="Animated diagram of an always-on agent’s timeline: long stretches asleep with no tokens spent, broken by brief runs. Each run has four steps: an event arrives, a session starts, the agent loop runs, and the run writes back to stored state that carries over between runs." loading="lazy" decoding="async" class="Media-module-scss-module__7ZZCyW__image"></figure><h2 id="the-core-primitives">核心原语</h2><p>常驻型 agent 的外围架构有五个核心原语：事件收件箱、定时器、记忆、权限和发件箱。</p><h3>事件收件箱</h3><p>大多数 AI agent 只在用户发消息时运行。相比之下，常驻型 agent 可以被许多来源触发。</p><p>一种诱人的做法是让每个事件源直接调用 agent，但这在故障场景下有几个问题。</p><p>这正是事件收件箱的用武之地。每个来源不直接调用 agent，而是把事件发到收件箱，由收件箱负责唤醒。</p><p>最简单的版本包含三个组件：</p><ul><li>一个持久化的事件列表，通常是一张数据库表；</li><li>一个处理器，通常是一个 HTTP 端点，把事件写入列表；以及</li><li>一个 worker，通常是一个后台服务，从列表中读取事件。</li></ul><p>收件箱应跟踪每个事件的状态，并且可以根据来源的唯一标识对事件去重。</p><figure style="--media-natural-width:2040px"><img referrerpolicy="strict-origin-when-cross-origin" src="https://assets.claude.com/bb08543a505cea3a24c88c718ceec4405e9c0a79.png" width="2040" height="1821" alt="Diagram of the event inbox. A handler (an HTTP endpoint) writes each event to the inbox, a database table that tracks status and drops duplicates, and wakes the worker. The worker reads what’s pending, starts the run, waits for it to finish, and marks the events done." loading="lazy" decoding="async" class="Media-module-scss-module__7ZZCyW__image"></figure><p>新事件到来时，处理器把事件写入收件箱并唤醒 worker。worker 读取待处理事件，并一次性取走。</p><p>接下来，worker 把事件交给 agent 循环，等待运行结束，然后标记对应事件为已处理。</p><ul><li><strong>处理器应快速确认事件</strong>。某些来源（例如 webhook 提供方）会把慢响应视为失败。处理器仍可以轻量地做校验和写入。</li><li><strong>收件箱应是事实来源</strong>。worker 被唤醒时，应先从收件箱拉取最新事件。这样即使 worker 中途崩溃，也不会丢失事件。</li><li><strong>一个收件箱同时只应有一个活跃 worker</strong>。这能防止两次运行重复工作或互相覆盖。若运行中途出现新事件，可以让它排队等待本轮结束。</li><li><strong>worker 应把待处理事件批量合并</strong>。例如用户连续发了几条消息，worker 可以把它们合并成一次运行，避免重复处理同一段上下文。</li></ul><h3>定时器</h3><p>与事件收件箱配合，定时器让常驻型 agent 能够主动行动。定时器通常分为两类。</p><p>定时器有自己的持久化存储，通常是另一张数据库表，与收件箱分开。收件箱不应存放定时器。</p><figure style="--media-natural-width:1400px"><img referrerpolicy="strict-origin-when-cross-origin" src="https://assets.claude.com/c16694e6d979a2ace84d03da0544297b7245c0a8.png" width="1400" height="732" alt="Diagram of timers. A run sets a timer in a database table, either a follow-up set by the agent or a schedule set by the user. A scheduler finds what’s due and adds an event to the event inbox, which starts the next run." loading="lazy" decoding="async" class="Media-module-scss-module__7ZZCyW__image"></figure><p>定时器本身不会发起运行。而是由一个调度器（通常是后台服务）轮询存储，做三件事：</p><ol><li>扫描存储，找出到期的定时器。</li><li>按类别更新每个定时器。<ol><li>一次性跟进应被标记为完成。</li><li>周期性计划应把到期时间更新为下一次出现的时间。</li></ol></li><li>向收件箱写入一个事件并唤醒 worker。</li></ol><p>调度器可以自己实现，也可以使用持久化执行引擎。</p><h3>记忆</h3><p>常驻型 agent 跨许多不连续的运行工作，依赖记忆保持连续性。</p><p>与事件收件箱和定时器类似，记忆应有自己的存储。在我们的产品中（例如 Claude Code 的<a href="https://code.claude.com/docs/en/memory">自动记忆</a>和 Messages API 的<a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool">记忆工具</a>），它实现为一个文件目录。对常驻型 agent 而言，这些目录应映射到持久化存储。</p><p>经验法则是：记忆只应保存 agent 无法重新查到的内容。如果某些信息已经存在于别处，就不必复制进记忆。</p><ul><li><strong>用户指令：</strong>用户对 agent 行为的任何指令都应保存在独立文件中，并在每次运行时加载。</li><li><strong>用户笔记：</strong>agent 应保存它了解到的关于用户的信息，例如角色、偏好或任何纠正反馈。</li><li><strong>过往消息：</strong>agent 应跟踪已经告诉过用户什么，避免重复。可以存摘要，也可以存原始消息。</li><li><strong>任务进度：</strong>对于每个进行中的任务，agent 应维护一个进度文件，记录已完成与待完成的部分。任何需要跨运行延续的内容都应写入其中。</li></ul><p>下图展示了一种示例配置。</p><figure style="--media-natural-width:1400px"><img referrerpolicy="strict-origin-when-cross-origin" src="https://assets.claude.com/e5d209d7ef9b3455dec8a27b777dc12bdf806699.png" width="1400" height="703" alt="Diagram of an example memory setup as a directory of files. instructions.md, index.md, and reported.md are loaded at the start of every run, while the notes/ and progress/ folders are read when needed. The agent writes to memory during the run." loading="lazy" decoding="async" class="Media-module-scss-module__7ZZCyW__image"></figure><p>以上描述的都是运行期间保存的记忆。你还可以加入「做梦」（dreaming），即回顾过往会话并提炼。<a href="https://www.anthropic.com/research/components-of-agent-memory">关于 agent 记忆的文章</a>对此有更详细的讨论。</p><h4>上下文窗口内部</h4><p>开始任何工作之前，agent 会加载系统提示、工具定义和记忆文件。这份初始上下文「开销」会包含在每次运行中，因此我们建议保持精简，并使用<a href="https://platform.claude.com/docs/en/build-with-claude/prompt-caching">提示缓存</a>来降低成本。</p><p>新会话只带着这份上下文开销和触发运行的事件启动。而既有会话则会带回此前各轮的消息与工具调用。</p><p>如果会话变得过长，你可以选择<a href="https://platform.claude.com/docs/en/build-with-claude/compaction">压缩较早的消息</a>或开始一个新会话。两种方式都会损失细节，因此任何需要持久保留的内容都应在过程中写入记忆。</p><figure style="--media-natural-width:1200px"><img referrerpolicy="strict-origin-when-cross-origin" src="https://assets.claude.com/48757f0a147acfe841c943674c6214d34ed4405a.gif" width="1200" height="675" alt="Animated chart of context used over time. A fixed band for the system prompt, tools, and memory is present on every run. An existing session brings back its whole transcript and grows until compaction turns the older transcript into a summary." loading="lazy" decoding="async" class="Media-module-scss-module__7ZZCyW__image"></figure><h3>权限</h3><p>权限是常驻型 agent 风险最高的地方。一次运行持有用户的访问权限，且按设计在无人值守下操作。对每次工具调用，agent 都需要判断是自己继续、拦截，还是等待批准。</p><p>权限所需的组件与其他 agent 相同：</p><ul><li><strong>凭据存储：</strong>常驻型 agent 往往需要敏感的用户凭据（如密码或访问令牌）才有用。<a href="https://code.claude.com/docs/en/agent-sdk/secure-deployment#credential-management">推荐模式</a>是在 agent 环境之外设置一个代理，由它给外发请求附加凭据。agent 发送不带凭据的请求，代理在转发前注入真实凭据。</li><li><strong>自动模式：</strong>常驻型 agent 应能在没有持续用户输入的情况下工作。我们在 Claude Code 的<a href="https://www.anthropic.com/research/claude-code-auto-mode">自动模式</a>中已经处理过这类问题的一个版本。自动模式使用分类器审查高风险操作，拦截被判定为危险的操作，从而让 Claude 寻找更安全的路径。不过，最重要的决策仍需要用户审查。</li><li><strong>延迟工具调用：</strong>在 Claude Code 中，<a href="https://code.claude.com/docs/en/hooks#defer-a-tool-call-for-later">一个钩子可以延迟工具调用</a>并等待用户追加输入。同样的模式适用于常驻型 agent——它们在某些操作前可能需要澄清或批准。当一次调用被延迟，运行结束，会话在调用中途被保存。请求会展示给用户（例如通过用<a href="https://modelcontextprotocol.io/extensions/apps/overview">MCP Apps</a>构建的交互卡片），用户的回答作为事件回到收件箱。该事件启动新的运行，带着用户输入恢复已保存的会话。在延迟调用等待响应期间，worker 可以处理其他事件，因此 agent 不会被阻塞。</li></ul><h3>发件箱</h3><p>对大多数 AI agent 而言，回复是边生成边流式推给用户的，用户可以看到 Claude 如何推理、调用工具并写出答案。</p><p>而常驻型 agent 大部分工作在后台完成。用户拿到的是结果和少量细节，而不是完整的逐步拆解。</p><figure style="--media-natural-width:1506px"><img referrerpolicy="strict-origin-when-cross-origin" src="https://assets.claude.com/700b5f3a446f22493c0307ec65751b6b2f82ccb7.png" width="1506" height="739" alt="Diagram of the outbox. A run ends with nothing to say, a send tool call, or a deferred tool call that asks the user. Messages go to the outbox, a database table, and a dispatcher delivers them to the user. A deferred request can go through the outbox or be shown in your own interface." loading="lazy" decoding="async" class="Media-module-scss-module__7ZZCyW__image"></figure><p>一次运行可以以三种方式结束：</p><ul><li>agent 向发件箱发送一条消息，</li><li>agent 判断无需发送任何内容，或</li><li>agent 使用延迟工具调用请求权限或额外输入。</li></ul><p>大多数常驻型 agent 用一个「发送」工具直接把消息投递给用户就够了。只有当你需要控制消息节奏，或让 agent 能从错误中恢复时，才需要正式的发件箱。</p><p>发件箱是一张独立的外发消息表，与事件收件箱类似。同时还有一个分发器（通常是后台服务），类似 worker。分发器读取待发消息，决定投递哪些，然后发给用户。延迟工具调用的请求既可以走发件箱，也可以直接在界面中展示。</p><p>除投递之外，调校 agent 的发消息频率也很重要。发太多的 agent 会变得嘈杂，发太少的则会漏掉用户需要知道的事。我们建议通过评测找到合适的平衡点。实践中，让 agent 一开始保持安静，再逐步赢得用户的注意力，效果更好。</p><h2 id="how-everything-fits-together">各部分如何组合</h2><p>五个原语是这样组合在一起的：</p><figure style="--media-natural-width:1200px"><img referrerpolicy="strict-origin-when-cross-origin" src="https://assets.claude.com/9f8df7b2dcc9d4637d27f37dae6e40a2a5851c8a.gif" width="1200" height="675" alt="Animated diagram of how the five primitives fit together. Timers and the event inbox start a run, the run works with memory and permissions inside a session, and the outbox delivers messages to the user, whose answer comes back as an event." loading="lazy" decoding="async" class="Media-module-scss-module__7ZZCyW__image"></figure><p>每次运行都始于收件箱中的一个事件——无论是用户消息、webhook 还是定时器。worker 取到事件后启动一次运行，在新的或既有的会话中唤醒 agent。agent 读取记忆作为基线，在权限范围内采取行动，然后把学到的东西更新回记忆。运行结束后，agent 向发件箱写入一行记录，分发器把消息投递给用户。</p><p>这些部分共同构成一个循环。一次运行可以设置定时器，稍后再次唤醒 agent；当用户回复消息时，回答作为事件回到收件箱。每次运行都很短暂，但循环会无限持续下去——这正是 agent 让人感觉「一直在线」的原因。</p><h2 id="acknowledgements">致谢</h2><p><em>作者：William Hu。特别感谢 Rodrigo Olivares 和 Michael Segner 的贡献。</em></p></div>
+            </div>
+            <footer class="article-footer">
+              <hr>
+              <p><a href="https://claude.com/resources/articles/building-always-on-agents" target="_blank">查看原文</a> · 翻译由 AI 生成，如有不准确之处请以原文为准</p>
+              <p><a href="/">← 返回首页</a></p>
+            </footer>
+          </article>
+        </div>
+      </div>
+    </div>
+  </main>
+<footer class="footer">
+    <div class="container">
+      <p>内容来自 <a href="https://claude.com/blog" target="_blank">Claude Blog</a> · 翻译由 AI 生成 · <a href="https://github.com/fanyangyang/claude-blog-cn" target="_blank">GitHub 仓库</a></p>
+      <p class="footer-meta">最后更新：2026/11/14 06:04:48</p>
+    </div>
+  </footer>
+  <script>
+    (function () {
+      function copyText(text, btn, okLabel) {
+        var original = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? (okLabel || 'Copied!') : original;
+          setTimeout(function () { btn.textContent = original; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+          document.body.removeChild(ta);
+        }
+      }
+      document.querySelectorAll('[data-explore]').forEach(function (root) {
+        var toggle = root.querySelector('[data-explore-toggle]');
+        var menu = root.querySelector('[data-explore-menu]');
+        if (!toggle || !menu) return;
+        toggle.addEventListener('click', function () {
+          var open = menu.hasAttribute('hidden');
+          if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!root.contains(e.target)) {
+            menu.setAttribute('hidden', '');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        var mdBtn = root.querySelector('[data-copy-markdown]');
+        var src = root.querySelector('[data-markdown-source]');
+        if (mdBtn && src) {
+          mdBtn.addEventListener('click', function () {
+            copyText(src.value, mdBtn, 'Copied!');
+          });
+        }
+      });
+      document.querySelectorAll('[data-copy-link]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-copy-url') || window.location.href;
+          copyText(url, btn, 'Copied!');
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+{
+  "slug": "self-hosted-claude-managed-agents",
+  "title": "Operate Claude Managed Agents inside your security perimeter",
+  "date": "November 12, 2026",
+  "category": "Product updates",
+  "url": "https://claude.com/resources/articles/self-hosted-claude-managed-agents",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "",
+  "illustrationBg": "peach",
+  "facets": {
+    "category": [],
+    "product": [],
+    "usecase": []
+  },
+  "subtitle": "Introducing self-hosted Claude Managed Agents in private beta. Now you can run agents in your own environment, whether that’s in your own cloud or on-premise.",
+  "authors": [],
+  "readingMinutes": 5,
+  "categoryUrl": "",
+  "productUrl": "",
+  "fetchedAt": "2026-11-12T22:04:58.161Z"
+}
