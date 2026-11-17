@@ -6,7 +6,14 @@
     <description>Anthropic Claude 官方博客的中文翻译</description>
     <atom:link href="https://fanyangyang.github.io/claude-blog-cn/rss.xml" rel="self" type="application/rss+xml"/>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 14 Nov 2026 01:43:29 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 17 Nov 2026 22:05:53 GMT</lastBuildDate>
+    <item>
+      <title>Claude Platform 上的关联计费</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/linked-billing-on-claude-platform/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/linked-billing-on-claude-platform/</guid>
+      <pubDate>Mon, 16 Nov 2026 16:00:00 GMT</pubDate>
+      <category>Product updates</category>
+    </item>
     <item>
       <title>The Claude Tag guide for startups</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/claude-tag-guide-for-startups/</link>

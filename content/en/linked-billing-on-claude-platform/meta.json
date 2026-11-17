@@ -1,0 +1,23 @@
+{
+  "slug": "linked-billing-on-claude-platform",
+  "title": "Linked billing on the Claude Platform",
+  "date": "November 17, 2026",
+  "category": "Product updates",
+  "url": "https://claude.com/resources/articles/linked-billing-on-claude-platform",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "",
+  "illustrationBg": "peach",
+  "facets": {
+    "category": [],
+    "product": [],
+    "usecase": []
+  },
+  "subtitle": "Linked billing is now in beta on the Claude Platform. Third-party platforms can let customers pay for Claude API usage without sharing an API key.",
+  "authors": [],
+  "readingMinutes": 4,
+  "categoryUrl": "",
+  "productUrl": "",
+  "fetchedAt": "2026-11-17T22:04:45.281Z"
+}
