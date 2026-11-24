@@ -1,0 +1,23 @@
+{
+  "slug": "enterprise-guide-to-securing-coding-agents",
+  "title": "The enterprise guide to securing coding agents",
+  "date": "November 23, 2026",
+  "category": "Best practices",
+  "url": "https://claude.com/resources/articles/enterprise-guide-to-securing-coding-agents",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "",
+  "illustrationBg": "cactus",
+  "facets": {
+    "category": [],
+    "product": [],
+    "usecase": []
+  },
+  "subtitle": "How security and technical leaders can scope and bound coding agent risk: AI-specific risks, Claude Code’s layered defenses, and centrally enforced policy.",
+  "authors": [],
+  "readingMinutes": 18,
+  "categoryUrl": "",
+  "productUrl": "",
+  "fetchedAt": "2026-11-23T22:04:46.154Z"
+}

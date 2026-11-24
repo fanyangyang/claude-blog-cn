@@ -1,0 +1,23 @@
+{
+  "slug": "introducing-claude-ship",
+  "title": "Introducing Claude Ship",
+  "date": "November 23, 2026",
+  "category": "General",
+  "url": "https://claude.com/resources/articles/introducing-claude-ship",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "",
+  "illustrationBg": "peach",
+  "facets": {
+    "category": [],
+    "product": [],
+    "usecase": []
+  },
+  "subtitle": "Open a pull request and get back to building. Claude can now review pull requests, fix them, and approve the ones that a team's policy allows.",
+  "authors": [],
+  "readingMinutes": 6,
+  "categoryUrl": "",
+  "productUrl": "",
+  "fetchedAt": "2026-11-23T22:04:46.715Z"
+}

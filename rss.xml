@@ -6,7 +6,35 @@
     <description>Anthropic Claude 官方博客的中文翻译</description>
     <atom:link href="https://fanyangyang.github.io/claude-blog-cn/rss.xml" rel="self" type="application/rss+xml"/>
     <language>zh-CN</language>
-    <lastBuildDate>Tue, 17 Nov 2026 22:05:53 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 24 Nov 2026 00:44:25 GMT</lastBuildDate>
+    <item>
+      <title>KPMG's Todd Lohr on AI when your data is also your clients' data</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/kpmg-todd-lohr-on-ai-when-your-data-is-also-your-clients-data/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/kpmg-todd-lohr-on-ai-when-your-data-is-also-your-clients-data/</guid>
+      <pubDate>Sun, 22 Nov 2026 16:00:00 GMT</pubDate>
+      <category>Perspectives</category>
+    </item>
+    <item>
+      <title>Zero data retention with Enterprise Frontier Safeguards is now in beta</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/zero-data-retention-with-enterprise-frontier-safeguards/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/zero-data-retention-with-enterprise-frontier-safeguards/</guid>
+      <pubDate>Sun, 22 Nov 2026 16:00:00 GMT</pubDate>
+      <category>Product updates</category>
+    </item>
+    <item>
+      <title>The enterprise guide to securing coding agents</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/enterprise-guide-to-securing-coding-agents/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/enterprise-guide-to-securing-coding-agents/</guid>
+      <pubDate>Sun, 22 Nov 2026 16:00:00 GMT</pubDate>
+      <category>Best practices</category>
+    </item>
+    <item>
+      <title>Introducing Claude Ship</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/introducing-claude-ship/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/introducing-claude-ship/</guid>
+      <pubDate>Sun, 22 Nov 2026 16:00:00 GMT</pubDate>
+      <category>General</category>
+    </item>
     <item>
       <title>Claude Platform 上的关联计费</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/linked-billing-on-claude-platform/</link>
@@ -61,7 +89,7 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/using-claude-opus-5-5-as-your-daily-driver-for-knowledge-work/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/using-claude-opus-5-5-as-your-daily-driver-for-knowledge-work/</guid>
       <pubDate>Wed, 11 Nov 2026 16:00:00 GMT</pubDate>
-      <category>General</category>
+      <category>Best practices</category>
     </item>
     <item>
       <title>你的应用现在可以在 Claude 中打开，Claude 也能在其中工作</title>
