@@ -6,7 +6,21 @@
     <description>Anthropic Claude 官方博客的中文翻译</description>
     <atom:link href="https://fanyangyang.github.io/claude-blog-cn/rss.xml" rel="self" type="application/rss+xml"/>
     <language>zh-CN</language>
-    <lastBuildDate>Tue, 24 Nov 2026 00:44:25 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 24 Nov 2026 22:06:12 GMT</lastBuildDate>
+    <item>
+      <title>将 Artifacts 变成 Mac 和 Windows 应用</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/install-as-app/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/install-as-app/</guid>
+      <pubDate>Mon, 23 Nov 2026 16:00:00 GMT</pubDate>
+      <category>Product updates</category>
+    </item>
+    <item>
+      <title>MCP 服务器现在可以随 Claude 发布 skills、运行 tasks 等更多功能</title>
+      <link>https://fanyangyang.github.io/claude-blog-cn/posts/skills-over-mcp-tasks-and-more/</link>
+      <guid>https://fanyangyang.github.io/claude-blog-cn/posts/skills-over-mcp-tasks-and-more/</guid>
+      <pubDate>Mon, 23 Nov 2026 16:00:00 GMT</pubDate>
+      <category>Product updates</category>
+    </item>
     <item>
       <title>KPMG's Todd Lohr on AI when your data is also your clients' data</title>
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/kpmg-todd-lohr-on-ai-when-your-data-is-also-your-clients-data/</link>
@@ -33,7 +47,7 @@
       <link>https://fanyangyang.github.io/claude-blog-cn/posts/introducing-claude-ship/</link>
       <guid>https://fanyangyang.github.io/claude-blog-cn/posts/introducing-claude-ship/</guid>
       <pubDate>Sun, 22 Nov 2026 16:00:00 GMT</pubDate>
-      <category>General</category>
+      <category>Product updates</category>
     </item>
     <item>
       <title>Claude Platform 上的关联计费</title>

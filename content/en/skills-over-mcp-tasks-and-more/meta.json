@@ -1,0 +1,23 @@
+{
+  "slug": "skills-over-mcp-tasks-and-more",
+  "title": "MCP servers can now ship skills, run tasks, and more with Claude",
+  "date": "November 24, 2026",
+  "category": "Product updates",
+  "url": "https://claude.com/resources/articles/skills-over-mcp-tasks-and-more",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "",
+  "illustrationBg": "peach",
+  "facets": {
+    "category": [],
+    "product": [],
+    "usecase": []
+  },
+  "subtitle": "Skills over MCP is in public beta in Claude, so MCP servers can ship skills alongside their tools. Tasks and Elicitation are now generally available, and File Uploads is rolling out soon.",
+  "authors": [],
+  "readingMinutes": 6,
+  "categoryUrl": "",
+  "productUrl": "",
+  "fetchedAt": "2026-11-24T22:04:37.398Z"
+}

@@ -1,0 +1,23 @@
+{
+  "slug": "install-as-app",
+  "title": "Turn artifacts into Mac and Windows apps",
+  "date": "November 24, 2026",
+  "category": "Product updates",
+  "url": "https://claude.com/resources/articles/install-as-app",
+  "inHero": false,
+  "heroIndex": -1,
+  "inGrid": true,
+  "illustration": "",
+  "illustrationBg": "peach",
+  "facets": {
+    "category": [],
+    "product": [],
+    "usecase": []
+  },
+  "subtitle": "Open the artifacts you use every day like any other app, and let them do more on your computer. Rolling out in beta in Claude for Mac and Windows.",
+  "authors": [],
+  "readingMinutes": 4,
+  "categoryUrl": "",
+  "productUrl": "",
+  "fetchedAt": "2026-11-24T22:04:37.019Z"
+}
